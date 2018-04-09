@@ -1,0 +1,6 @@
+newmtl cave
+Kd 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ns 200.00000
+map_Kd cave_d.png
+map_Bump cave_n.png
