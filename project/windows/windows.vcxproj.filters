@@ -511,6 +511,18 @@
     <None Include="..\data\mushroom.vert">
       <Filter>project\data</Filter>
     </None>
+    <None Include="..\data\lowPolyTree.mtl">
+      <Filter>project\data</Filter>
+    </None>
+    <None Include="..\data\tree.frag">
+      <Filter>project\data</Filter>
+    </None>
+    <None Include="..\data\tree.vert">
+      <Filter>project\data</Filter>
+    </None>
+    <None Include="..\data\tree.mtl">
+      <Filter>project\data</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\data\flame.png">
@@ -544,6 +556,12 @@
       <Filter>project\data</Filter>
     </Image>
     <Image Include="..\data\mushroom.png">
+      <Filter>project\data</Filter>
+    </Image>
+    <Image Include="..\data\tree_bottom.png">
+      <Filter>project\data</Filter>
+    </Image>
+    <Image Include="..\data\tree_top.001.png">
       <Filter>project\data</Filter>
     </Image>
   </ItemGroup>

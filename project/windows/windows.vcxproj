@@ -225,10 +225,14 @@
     <None Include="..\data\flame.frag" />
     <None Include="..\data\flame.mtl" />
     <None Include="..\data\flame.vert" />
+    <None Include="..\data\lowPolyTree.mtl" />
     <None Include="..\data\mushroom.frag" />
     <None Include="..\data\mushroom.mtl" />
     <None Include="..\data\mushroom.vert" />
     <None Include="..\data\torch.mtl" />
+    <None Include="..\data\tree.frag" />
+    <None Include="..\data\tree.mtl" />
+    <None Include="..\data\tree.vert" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\data\basicTitle_light.png" />
@@ -242,6 +246,8 @@
     <Image Include="..\data\mushroom.png" />
     <Image Include="..\data\sparks.png" />
     <Image Include="..\data\torchSurface_Color.png" />
+    <Image Include="..\data\tree_bottom.png" />
+    <Image Include="..\data\tree_top.001.png" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="..\data\arial.ttf" />

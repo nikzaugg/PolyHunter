@@ -36,13 +36,16 @@ void RenderProject::initFunction()
 
 	// load materials and shaders before loading the model
 	ShaderPtr mushroomShader = bRenderer().getObjects()->loadShaderFile("mushroom", 0, false, true, false, false, false);
+	ShaderPtr treeShader = bRenderer().getObjects()->loadShaderFile("tree", 0, false, true, false, false, false);
 	ShaderPtr customShader = bRenderer().getObjects()->generateShader("customShader", { 2, true, true, true, true, true, true, true, true, true, false, false, false });	// automatically generates a shader with a maximum of 2 lights
 
 	// create additional properties for a model
 	PropertiesPtr mushroomProperties = bRenderer().getObjects()->createProperties("mushroomProperties");
+	PropertiesPtr treeProperties = bRenderer().getObjects()->createProperties("treeProperties");
 
 	// load models
 	bRenderer().getObjects()->loadObjModel("mushroom.obj", false, true, mushroomShader, mushroomProperties);
+	bRenderer().getObjects()->loadObjModel("tree.obj", false, true, treeShader, treeProperties);
 	//bRenderer().getObjects()->loadObjModel("crystal.obj", false, true, customShader);									// the custom shader created above is used
 	bRenderer().getObjects()->loadObjModel_o("crystal.obj", customShader, FLIP_Z);									// the custom shader created above is used
 
@@ -61,7 +64,7 @@ void RenderProject::initFunction()
 	bRenderer().getObjects()->createCamera("camera", vmml::Vector3f(-33.0, 0.f, -13.0), vmml::Vector3f(0.f, -M_PI_F / 2, 0.f));
 
 	// create lights
-	bRenderer().getObjects()->createLight("sun", vmml::Vector3f(0.0, 30.0, 0.0), vmml::Vector3f(1.0f, 0.f, 0.f), vmml::Vector3f(0.0f, 0.0f, 1.0f), 100.0f, 1.0f, 100.0f);
+	bRenderer().getObjects()->createLight("sun", vmml::Vector3f(0.0, 60.0, 0.0), vmml::Vector3f(1.0f, 0.f, 0.f), vmml::Vector3f(0.0f, 0.0f, 1.0f), 100.0f, 1.0f, 100.0f);
 
 	// postprocessing
 	bRenderer().getObjects()->createFramebuffer("fbo");					// create framebuffer object
@@ -177,11 +180,17 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
 	elapsedTime += deltaTime;
 	/*** Mushroom***/
 	vmml::Matrix4f modelMatrix = vmml::create_translation(vmml::Vector3f(0.0, 0.0, 0.0)) * vmml::create_scaling(vmml::Vector3f(5.0f));
-	float rot = elapsedTime * 0.5;
-	modelMatrix *= vmml::create_rotation(rot, vmml::Vector3f::UNIT_X);
+	/*float rot = elapsedTime * 0.5;
+	modelMatrix *= vmml::create_rotation(rot, vmml::Vector3f::UNIT_X);*/
 	setShaderUniforms("mushroom", modelMatrix, true);
 	// submit to render queue
 	bRenderer().getModelRenderer()->queueModelInstance("mushroom", "mushroom_instance", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
+
+	/*** Tree ***/
+	modelMatrix = vmml::create_translation(vmml::Vector3f(20.0, 0.0, 0.0)) * vmml::create_scaling(vmml::Vector3f(1.0f));
+	setShaderUniforms("tree", modelMatrix, true);
+	// submit to render queue
+	bRenderer().getModelRenderer()->queueModelInstance("tree", "tree_instance", camera, modelMatrix, std::vector<std::string>({ }), true, true);
 
 	/*** Crystal (red) ***/
 	// translate and scale 
