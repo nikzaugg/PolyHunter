@@ -502,6 +502,15 @@
     <None Include="..\data\config.json">
       <Filter>project\data</Filter>
     </None>
+    <None Include="..\data\mushroom.mtl">
+      <Filter>project\data</Filter>
+    </None>
+    <None Include="..\data\mushroom.frag">
+      <Filter>project\data</Filter>
+    </None>
+    <None Include="..\data\mushroom.vert">
+      <Filter>project\data</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\data\flame.png">
@@ -532,6 +541,9 @@
       <Filter>project\data</Filter>
     </Image>
     <Image Include="..\data\sparks.png">
+      <Filter>project\data</Filter>
+    </Image>
+    <Image Include="..\data\mushroom.png">
       <Filter>project\data</Filter>
     </Image>
   </ItemGroup>

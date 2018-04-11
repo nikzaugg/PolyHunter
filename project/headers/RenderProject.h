@@ -24,6 +24,9 @@ public:
 	/* This function is executed when terminating the renderer */
 	void terminateFunction();
 
+	void setShaderUniforms(std::string shaderName, vmml::Matrix4f modelMatrix, bool illumination);
+
+
 	//// iOS specific ////
 
     /* For iOS only: Handle device rotation */
@@ -63,7 +66,7 @@ private:
 	bool _running = false; 
 	GLint _lastStateSpaceKey = 0;
 	vmml::Matrix4f _viewMatrixHUD;
-
+	double elapsedTime = 0.0;
 };
 
 #endif /* defined(PROJECT_MAIN_H) */

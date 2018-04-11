@@ -35,6 +35,7 @@ void RenderProject::initFunction()
 	bRenderer().getObjects()->setShaderVersionES("#version 100");
 
 	// load materials and shaders before loading the model
+	ShaderPtr mushroomShader = bRenderer().getObjects()->loadShaderFile("mushroom", 0, false, false, false, false, false);
 	ShaderPtr customShader = bRenderer().getObjects()->generateShader("customShader", { 2, true, true, true, true, true, true, true, true, true, false, false, false });	// automatically generates a shader with a maximum of 2 lights
 	//ShaderPtr flameShader = bRenderer().getObjects()->loadShaderFile("flame", 0, false, true, true, false, false);				// load shader from file without lighting, the number of lights won't ever change during rendering (no variable number of lights)
 	ShaderPtr flameShader = bRenderer().getObjects()->loadShaderFile_o("flame", 0, AMBIENT_LIGHTING);				// load shader from file without lighting, the number of lights won't ever change during rendering (no variable number of lights)
@@ -43,8 +44,10 @@ void RenderProject::initFunction()
 	// create additional properties for a model
 	PropertiesPtr flameProperties = bRenderer().getObjects()->createProperties("flameProperties");
 	PropertiesPtr streamProperties = bRenderer().getObjects()->createProperties("streamProperties");
+	PropertiesPtr mushroomProperties = bRenderer().getObjects()->createProperties("mushroomProperties");
 
 	// load models
+	bRenderer().getObjects()->loadObjModel("mushroom.obj", false, true, mushroomShader, mushroomProperties);
 	//bRenderer().getObjects()->loadObjModel("cave.obj", true, true, false, 4, true, false);								// automatically generates a shader with a maximum of 4 lights (number of lights may vary between 0 and 4 during rendering without performance loss)
 	bRenderer().getObjects()->loadObjModel_o("cave.obj", 4, FLIP_T | FLIP_Z | VARIABLE_NUMBER_OF_LIGHTS);								// automatically generates a shader with a maximum of 4 lights (number of lights may vary between 0 and 4 during rendering without performance loss)
 	//bRenderer().getObjects()->loadObjModel("cave_stream.obj", true, true, true, 4, false, false, streamProperties);		// automatically loads shader files according to the name of the material
@@ -74,6 +77,7 @@ void RenderProject::initFunction()
 	bRenderer().getObjects()->createLight("secondLight", vmml::Vector3f(148.0f, -3.0f, 15.0f), vmml::Vector3f(0.3f, 1.0f, 0.3f), vmml::Vector3f(1.0f, 1.0f, 1.0f), 100.0f, 0.8f, 100.0f);
 	bRenderer().getObjects()->createLight("thirdLight", vmml::Vector3f(218.0f, -3.0f, 0.0f), vmml::Vector3f(0.8f, 0.2f, 0.2f), vmml::Vector3f(1.0f, 1.0f, 1.0f), 100.0f, 0.8f, 100.0f);
 	bRenderer().getObjects()->createLight("torchLight", -bRenderer().getObjects()->getCamera("camera")->getPosition(), vmml::Vector3f(1.0f, 0.45f, -0.4f), vmml::Vector3f(1.0f, 1.0f, 1.0f), 1400.0f, 0.9f, 280.0f);
+	bRenderer().getObjects()->createLight("sun", vmml::Vector3f(0.0, 60.0, 10.0f), vmml::Vector3f(1.0f, 0.f, 0.f), vmml::Vector3f(0.0f, 0.0f, 1.0f), 100.0f, 1.0f, 100.0f);
 
 	// postprocessing
 	bRenderer().getObjects()->createFramebuffer("fbo");					// create framebuffer object
@@ -182,12 +186,40 @@ void RenderProject::terminateFunction()
 	bRenderer::log("I totally terminated this Renderer :-)");
 }
 
+void RenderProject::setShaderUniforms(std::string shaderName, vmml::Matrix4f modelMatrix, bool illumination) {
+	ShaderPtr shader = bRenderer().getObjects()->getShader(shaderName);
+	if (shader.get())
+	{
+		vmml::Matrix3f normalMatrix;
+		vmml::compute_inverse(vmml::transpose(vmml::Matrix3f(modelMatrix)), normalMatrix);
+		shader->setUniform("NormalMatrix", normalMatrix);
+		shader->setUniform("LightPos", vmml::Vector4f(0.0f, 70.0f, 0.0f, 1.f));
+		shader->setUniform("EyePos", bRenderer().getObjects()->getCamera("camera")->getPosition());
+		shader->setUniform("Ia", vmml::Vector3f(1.f));
+		shader->setUniform("Id", vmml::Vector3f(1.f));
+		shader->setUniform("Is", vmml::Vector3f(1.f));
+	}
+	else
+	{
+		bRenderer::log("No shader available.");
+	}
+}
+
 /* Update render queue */
 void RenderProject::updateRenderQueue(const std::string &camera, const double &deltaTime)
 {
+	elapsedTime += deltaTime;
+	/*** Mushroom***/
+	vmml::Matrix4f modelMatrix = vmml::create_translation(vmml::Vector3f(0.0, 50.0, 0.0)) * vmml::create_scaling(vmml::Vector3f(1.0f));
+	float rot = elapsedTime * 0.5;
+	modelMatrix *= vmml::create_rotation(rot, vmml::Vector3f::UNIT_X);
+	setShaderUniforms("mushroom", modelMatrix, true);
+	// submit to render queue
+	bRenderer().getModelRenderer()->queueModelInstance("mushroom", "mushroom_instance", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
+
 	/*** Cave ***/
 	// translate and scale 
-	vmml::Matrix4f modelMatrix = vmml::create_translation(vmml::Vector3f(30.f, -24.0, 0.0)) * vmml::create_scaling(vmml::Vector3f(0.3f));
+	modelMatrix = vmml::create_translation(vmml::Vector3f(30.f, -24.0, 0.0)) * vmml::create_scaling(vmml::Vector3f(0.3f));
 	// submit to render queue
 	bRenderer().getModelRenderer()->queueModelInstance("cave", "cave_instance", camera, modelMatrix, std::vector<std::string>({ "torchLight", "firstLight", "secondLight", "thirdLight" }), true, true);
 	

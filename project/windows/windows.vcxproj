@@ -225,6 +225,9 @@
     <None Include="..\data\flame.frag" />
     <None Include="..\data\flame.mtl" />
     <None Include="..\data\flame.vert" />
+    <None Include="..\data\mushroom.frag" />
+    <None Include="..\data\mushroom.mtl" />
+    <None Include="..\data\mushroom.vert" />
     <None Include="..\data\torch.mtl" />
   </ItemGroup>
   <ItemGroup>
@@ -236,6 +239,7 @@
     <Image Include="..\data\crystal_n.png" />
     <Image Include="..\data\crystal_s.png" />
     <Image Include="..\data\flame.png" />
+    <Image Include="..\data\mushroom.png" />
     <Image Include="..\data\sparks.png" />
     <Image Include="..\data\torchSurface_Color.png" />
   </ItemGroup>
