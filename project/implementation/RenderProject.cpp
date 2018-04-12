@@ -35,18 +35,19 @@ void RenderProject::initFunction()
 	bRenderer().getObjects()->setShaderVersionES("#version 100");
 
 	// load materials and shaders before loading the model
-	ShaderPtr mushroomShader = bRenderer().getObjects()->loadShaderFile("mushroom", 0, false, true, false, false, false);
-	ShaderPtr treeShader = bRenderer().getObjects()->loadShaderFile("tree", 0, false, true, false, false, false);
+	ShaderPtr basicShader = bRenderer().getObjects()->loadShaderFile("basic", 1, false, true, true, true, false);
 	ShaderPtr customShader = bRenderer().getObjects()->generateShader("customShader", { 2, true, true, true, true, true, true, true, true, true, false, false, false });	// automatically generates a shader with a maximum of 2 lights
 
 	// create additional properties for a model
-	PropertiesPtr mushroomProperties = bRenderer().getObjects()->createProperties("mushroomProperties");
 	PropertiesPtr treeProperties = bRenderer().getObjects()->createProperties("treeProperties");
+	PropertiesPtr sunProperties = bRenderer().getObjects()->createProperties("sunProperties");
+	PropertiesPtr terrainProperties = bRenderer().getObjects()->createProperties("terrainProperties");
 
 	// load models
-	bRenderer().getObjects()->loadObjModel("mushroom.obj", false, true, mushroomShader, mushroomProperties);
-	bRenderer().getObjects()->loadObjModel("tree.obj", false, true, treeShader, treeProperties);
-	//bRenderer().getObjects()->loadObjModel("crystal.obj", false, true, customShader);									// the custom shader created above is used
+	bRenderer().getObjects()->loadObjModel("tree.obj", false, true, basicShader, treeProperties);
+	bRenderer().getObjects()->loadObjModel("sun.obj", false, true, basicShader, sunProperties);
+	bRenderer().getObjects()->loadObjModel("terrain.obj", false, true, basicShader, terrainProperties);
+	// bRenderer().getObjects()->loadObjModel("tree_mat.obj", false, true, treeTrunkProperties);
 	bRenderer().getObjects()->loadObjModel_o("crystal.obj", customShader, FLIP_Z);									// the custom shader created above is used
 
 	// create sprites
@@ -61,10 +62,10 @@ void RenderProject::initFunction()
 		bRenderer().getObjects()->createTextSprite("instructions", vmml::Vector3f(1.f, 1.f, 1.f), "Press space to start", font);
 
 	// create camera
-	bRenderer().getObjects()->createCamera("camera", vmml::Vector3f(-33.0, 0.f, -13.0), vmml::Vector3f(0.f, -M_PI_F / 2, 0.f));
+	bRenderer().getObjects()->createCamera("camera", vmml::Vector3f(50.0, -30.0f, 0.0), vmml::Vector3f(0.f, -M_PI_F / 2, 0.f));
 
 	// create lights
-	bRenderer().getObjects()->createLight("sun", vmml::Vector3f(0.0, 60.0, 0.0), vmml::Vector3f(1.0f, 0.f, 0.f), vmml::Vector3f(0.0f, 0.0f, 1.0f), 100.0f, 1.0f, 100.0f);
+	bRenderer().getObjects()->createLight("sun", vmml::Vector3f(100.0, 100.0, 100.0), vmml::Vector3f(1.0f), vmml::Vector3f(1.0f), 1.0f, 0.5f, 100.0f);
 
 	// postprocessing
 	bRenderer().getObjects()->createFramebuffer("fbo");					// create framebuffer object
@@ -155,48 +156,45 @@ void RenderProject::terminateFunction()
 	bRenderer::log("I totally terminated this Renderer :-)");
 }
 
-void RenderProject::setShaderUniforms(std::string shaderName, vmml::Matrix4f modelMatrix, bool illumination) {
-	ShaderPtr shader = bRenderer().getObjects()->getShader(shaderName);
-	if (shader.get())
-	{
-		vmml::Matrix3f normalMatrix;
-		vmml::compute_inverse(vmml::transpose(vmml::Matrix3f(modelMatrix)), normalMatrix);
-		shader->setUniform("NormalMatrix", normalMatrix);
-		shader->setUniform("LightPos", vmml::Vector4f(0.0f, 70.0f, 0.0f, 1.f));
-		shader->setUniform("EyePos", bRenderer().getObjects()->getCamera("camera")->getPosition());
-		shader->setUniform("Ia", vmml::Vector3f(1.f));
-		shader->setUniform("Id", vmml::Vector3f(1.f));
-		shader->setUniform("Is", vmml::Vector3f(1.f));
-	}
-	else
-	{
-		bRenderer::log("No shader available.");
-	}
-}
 
 /* Update render queue */
 void RenderProject::updateRenderQueue(const std::string &camera, const double &deltaTime)
 {
 	elapsedTime += deltaTime;
-	/*** Mushroom***/
-	vmml::Matrix4f modelMatrix = vmml::create_translation(vmml::Vector3f(0.0, 0.0, 0.0)) * vmml::create_scaling(vmml::Vector3f(5.0f));
-	/*float rot = elapsedTime * 0.5;
-	modelMatrix *= vmml::create_rotation(rot, vmml::Vector3f::UNIT_X);*/
-	setShaderUniforms("mushroom", modelMatrix, true);
-	// submit to render queue
-	bRenderer().getModelRenderer()->queueModelInstance("mushroom", "mushroom_instance", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
 
 	/*** Tree ***/
-	modelMatrix = vmml::create_translation(vmml::Vector3f(20.0, 0.0, 0.0)) * vmml::create_scaling(vmml::Vector3f(1.0f));
-	setShaderUniforms("tree", modelMatrix, true);
+	vmml::Matrix4f modelMatrix = vmml::create_translation(vmml::Vector3f(0.0)) * vmml::create_scaling(vmml::Vector3f(1.0f));
+	vmml::Matrix3f normalMatrix;
+	vmml::compute_inverse(vmml::transpose(vmml::Matrix3f(modelMatrix)), normalMatrix);
+	ShaderPtr basic = bRenderer().getObjects()->getShader("basic");
+	basic->setUniform("NormalMatrix", normalMatrix);
 	// submit to render queue
-	bRenderer().getModelRenderer()->queueModelInstance("tree", "tree_instance", camera, modelMatrix, std::vector<std::string>({ }), true, true);
+	bRenderer().getObjects()->setAmbientColor(vmml::Vector3f(0.5f));
+	bRenderer().getModelRenderer()->queueModelInstance("tree", "tree_instance", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
 
+	/*** Sun ***/
+	modelMatrix = vmml::create_translation(vmml::Vector3f(30., 30.0, 0.0)) * vmml::create_scaling(vmml::Vector3f(1.0f));
+	vmml::compute_inverse(vmml::transpose(vmml::Matrix3f(modelMatrix)), normalMatrix);
+	basic = bRenderer().getObjects()->getShader("basic");
+	basic->setUniform("NormalMatrix", normalMatrix);
+	// submit to render queue
+	bRenderer().getObjects()->setAmbientColor(vmml::Vector3f(0.5f));
+	bRenderer().getModelRenderer()->queueModelInstance("sun", "sun_instance", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
+
+	/*** Terrain ***/
+	modelMatrix = vmml::create_translation(vmml::Vector3f(0, 0, 0.0)) * vmml::create_scaling(vmml::Vector3f(10.0f));
+	vmml::compute_inverse(vmml::transpose(vmml::Matrix3f(modelMatrix)), normalMatrix);
+	basic = bRenderer().getObjects()->getShader("basic");
+	basic->setUniform("NormalMatrix", normalMatrix);
+	// submit to render queue
+	bRenderer().getObjects()->setAmbientColor(vmml::Vector3f(0.5f));
+	bRenderer().getModelRenderer()->queueModelInstance("terrain", "terrain_instance", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
+	
 	/*** Crystal (red) ***/
 	// translate and scale 
 	modelMatrix = vmml::create_translation(vmml::Vector3f(218.0f, -17.0f, 4.0f)) * vmml::create_scaling(vmml::Vector3f(0.1f));
 	// submit to render queue
-	bRenderer().getModelRenderer()->queueModelInstance("crystal", "crystal_red", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, false, true);
+	bRenderer().getModelRenderer()->queueModelInstance("crystal", "crystal_red", camera, modelMatrix, std::vector<std::string>({}), true, false, true);
 }
 
 /* Camera movement */

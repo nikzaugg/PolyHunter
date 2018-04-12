@@ -511,9 +511,6 @@
     <None Include="..\data\mushroom.vert">
       <Filter>project\data</Filter>
     </None>
-    <None Include="..\data\lowPolyTree.mtl">
-      <Filter>project\data</Filter>
-    </None>
     <None Include="..\data\tree.frag">
       <Filter>project\data</Filter>
     </None>
@@ -521,6 +518,15 @@
       <Filter>project\data</Filter>
     </None>
     <None Include="..\data\tree.mtl">
+      <Filter>project\data</Filter>
+    </None>
+    <None Include="..\data\tree_mat.mtl">
+      <Filter>project\data</Filter>
+    </None>
+    <None Include="..\data\tree_trunk.frag">
+      <Filter>project\data</Filter>
+    </None>
+    <None Include="..\data\tree_trunk.vert">
       <Filter>project\data</Filter>
     </None>
   </ItemGroup>

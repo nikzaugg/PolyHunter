@@ -24,8 +24,6 @@ public:
 	/* This function is executed when terminating the renderer */
 	void terminateFunction();
 
-	void setShaderUniforms(std::string shaderName, vmml::Matrix4f modelMatrix, bool illumination);
-
 
 	//// iOS specific ////
 
