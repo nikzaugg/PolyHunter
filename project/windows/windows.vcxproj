@@ -152,6 +152,7 @@
     <ClCompile Include="..\..\externalLibraries\freetype-2.6\src\winfonts\winfnt.c" />
     <ClCompile Include="..\..\project\windows\main.cpp" />
     <ClCompile Include="..\implementation\RenderProject.cpp" />
+    <ClCompile Include="..\implementation\Terrain.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\bRenderer\bRenderer.h" />
@@ -206,6 +207,7 @@
     <ClInclude Include="..\..\bRenderer\headers\View.h" />
     <ClInclude Include="..\..\bRenderer\os_specific\ios\BView.h" />
     <ClInclude Include="..\headers\RenderProject.h" />
+    <ClInclude Include="..\headers\Terrain.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\bRenderer\os_specific\ios\BView.mm" />
