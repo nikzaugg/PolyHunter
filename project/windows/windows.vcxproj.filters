@@ -288,6 +288,12 @@
     <ClCompile Include="..\implementation\RenderProject.cpp">
       <Filter>project\implementation</Filter>
     </ClCompile>
+    <ClCompile Include="..\implementation\Terrain.cpp">
+      <Filter>project\implementation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\implementation\ProceduralOBJLoader.cpp">
+      <Filter>project\implementation</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\bRenderer\bRenderer.h">
@@ -444,6 +450,12 @@
       <Filter>bRenderer\headers</Filter>
     </ClInclude>
     <ClInclude Include="..\headers\RenderProject.h">
+      <Filter>project\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\headers\Terrain.h">
+      <Filter>project\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\headers\ProceduralOBJLoader.h">
       <Filter>project\headers</Filter>
     </ClInclude>
   </ItemGroup>

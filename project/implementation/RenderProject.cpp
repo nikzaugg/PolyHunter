@@ -1,4 +1,5 @@
 #include "RenderProject.h"
+#include "Terrain.h"
 
 /* Initialize the Project */
 void RenderProject::init()
@@ -48,7 +49,9 @@ void RenderProject::initFunction()
 	bRenderer().getObjects()->loadObjModel("sun.obj", false, true, basicShader, sunProperties);
 	bRenderer().getObjects()->loadObjModel("terrain.obj", false, true, basicShader, terrainProperties);
 	// bRenderer().getObjects()->loadObjModel("tree_mat.obj", false, true, treeTrunkProperties);
-	bRenderer().getObjects()->loadObjModel_o("crystal.obj", customShader, FLIP_Z);									// the custom shader created above is used
+	bRenderer().getObjects()->loadObjModel_o("crystal.obj", customShader, FLIP_Z);		// the custom shader created above is used
+
+	Terrain terrain;
 
 	// create sprites
 	bRenderer().getObjects()->createSprite("sparks", "sparks.png");										// create a sprite displaying sparks as a texture
