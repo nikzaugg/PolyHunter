@@ -173,7 +173,7 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
 	bRenderer().getModelRenderer()->queueModelInstance("tree", "tree_instance", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
 
 	/*** Sun ***/
-	modelMatrix = vmml::create_translation(vmml::Vector3f(30., 30.0, 0.0)) * vmml::create_scaling(vmml::Vector3f(1.0f));
+	modelMatrix = vmml::create_translation(vmml::Vector3f(100., 100.0, 100.0)) * vmml::create_scaling(vmml::Vector3f(1.0f));
 	vmml::compute_inverse(vmml::transpose(vmml::Matrix3f(modelMatrix)), normalMatrix);
 	basic = bRenderer().getObjects()->getShader("basic");
 	basic->setUniform("NormalMatrix", normalMatrix);
