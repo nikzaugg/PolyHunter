@@ -5,13 +5,9 @@
 
 int Terrain::_p[] = {};
 
-Terrain::Terrain()
+Terrain::Terrain(ShaderPtr shader, PropertiesPtr properties)
 {
-	
-	//for (int i = 0; i < 512; i++)
-	//{
-	//	Terrain::p[i] = this->permutation[i % 256];
-	//}
+	_properties = properties;
 
 	std::cout << "TERRAIN WORKS!!!" << std::endl;
 
@@ -33,6 +29,7 @@ float Terrain::perlin(float x, float y, float z)
 
 void Terrain::generate()
 {
+	// TODO: Should return a ModelPtr to RenderProject
 	//ModelData terrainData(true, false);
 	ProceduralOBJLoader objLoader;
 
@@ -41,33 +38,54 @@ void Terrain::generate()
 	int startPoint = -_SIZE / 2;
 	int endPoint = _SIZE / 2;
 	
-	for (int x = startPoint; x < endPoint; x++)
+	for (int x = 0; x < _SIZE; ++x)
 	{
-		for (int z = startPoint; z < endPoint; z++)
+		for (int z = 0; z < _SIZE; ++z)
 		{
 			objLoader.addVertex((float)x, 0.0f, (float)z);
 		}	
 	}
 
-	for (int i = 1; i < _SIZE; i++)
+	for (int i = 1; i < _SIZE; ++i)
 	{
-		for (int j = 0; j < _SIZE; j++)
+		for (int j = 0; j < _SIZE - 1; ++j)
 		{
-			int v1, v2, v3;
+			IndexData d1, d2, d3;
 
-			v1 = i * _SIZE + j - _SIZE;
-			v2 = i * _SIZE + j - _SIZE + 1;
-			v3 = i * _SIZE + j;
+			d1.vertexIndex = i * _SIZE + j - _SIZE;
+			d2.vertexIndex = i * _SIZE + j - _SIZE + 1;
+			d3.vertexIndex = i * _SIZE + j;
 
-			objLoader.addFace(v1, v2, v3);
+			objLoader.addFace(d1, d2, d3);
 
-			v1 = i * _SIZE + j - _SIZE + 1;
-			v2 = i * _SIZE + j;
-			v3 = i * _SIZE + j + 1;
+			d1.vertexIndex = i * _SIZE + j - _SIZE + 1;
+			d2.vertexIndex = i * _SIZE + j;
+			d3.vertexIndex = i * _SIZE + j + 1;
 
-			objLoader.addFace(v1, v2, v3);
+			objLoader.addFace(d1, d2, d3);
 		}
 	}
 
-	objLoader.printFaces();
+	objLoader.load();
+
+	ModelData::GroupMap data = objLoader.getData();
+
+
+	for (auto i = data.begin(); i != data.end(); ++i)
+	{
+		GeometryPtr g = GeometryPtr(new Geometry);
+		_groups.insert(std::pair< std::string, GeometryPtr >(i->first, g));
+		GeometryDataPtr gData = i->second;
+		g->initialize(gData);
+		//g->setMaterial(material);
+		//g->setProperties(_properties);
+
+		// expand bounding box
+		_boundingBox.merge(g->getBoundingBoxObjectSpace());
+	}
+
+	for (auto i = _groups.begin(); i != _groups.end(); ++i)
+	{
+		i->second->draw(GL_TRIANGLES);
+	}	
 }

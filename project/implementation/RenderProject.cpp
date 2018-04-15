@@ -10,7 +10,7 @@ void RenderProject::init()
 	if(Input::isTouchDevice())
 		bRenderer().initRenderer(true);										// full screen on iOS
 	else
-		bRenderer().initRenderer(1920, 1080, false, "The Cave - Demo");		// windowed mode on desktop
+		bRenderer().initRenderer(1920, 1080, false, "PolyHunter");		// windowed mode on desktop
 		//bRenderer().initRenderer(View::getScreenWidth(), View::getScreenHeight(), true);		// full screen using full width and height of the screen
 
 	// start main loop 
@@ -51,7 +51,8 @@ void RenderProject::initFunction()
 	// bRenderer().getObjects()->loadObjModel("tree_mat.obj", false, true, treeTrunkProperties);
 	bRenderer().getObjects()->loadObjModel_o("crystal.obj", customShader, FLIP_Z);		// the custom shader created above is used
 
-	Terrain terrain;
+
+	Terrain terrain(basicShader, terrainProperties);
 
 	// create sprites
 	bRenderer().getObjects()->createSprite("sparks", "sparks.png");										// create a sprite displaying sparks as a texture

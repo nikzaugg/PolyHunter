@@ -3,13 +3,22 @@
 
 #include "bRenderer.h"
 
-class Terrain : public Model
+class Terrain
 {
 public:
-	Terrain();
+	typedef std::unordered_map< std::string, GeometryPtr > GroupMap;
+	
+	Terrain(ShaderPtr shader, PropertiesPtr properties);
 
 private:
-	static constexpr int _SIZE = 5;
+	PropertiesPtr _properties;
+	
+	static constexpr int _SIZE = 300;
+
+	int _numFaces;
+
+	GroupMap        _groups;
+	vmml::AABBf		_boundingBox;
 
 	/** @brief Hash lookup table as defined by Ken Perlin. This is a randomly arranged array of all numbers from 0-255 inclusive.
 	*/

@@ -6,39 +6,104 @@ ProceduralOBJLoader::ProceduralOBJLoader()
 				obj::obj_parser::translate_negative_indices)
 {
 	std::cout << "PROCEDURAL OBJ LOADER WORKS!!!" << std::endl;
+	_data = &ModelData(false, true);
+	createGroup(bRenderer::DEFAULT_GROUP_NAME());
+	//createGroup("terrain");
+	_numFaces = 0;
 }
 
 void ProceduralOBJLoader::addVertex(float x, float y, float z)
 {
-	//Vertex v;
-
-	//_group->vboVertices.push_back(v);
-	//_group->vboIndices.push_back(_group->vboIndices.size());
-	this->_vertices.push_back(vmml::Vector3f(x, y, z));
+	_vertices.push_back(vmml::Vector3f(x, y, z));
 }
 
-void ProceduralOBJLoader::addFace(int v1, int v2, int v3)
+void ProceduralOBJLoader::addFace(IndexData d1, IndexData d2, IndexData d3)
 {
-	FaceData f;
-	f.v1 = v1;
-	f.v2 = v2;
-	f.v3 = v3;
+	_group->indices.push_back(d1);
+	_group->indices.push_back(d2);
+	_group->indices.push_back(d3);
 
-	this->_faces.push_back(f);
+	genVertex< true, false, false >(d1);
+	genVertex< true, false, false >(d2);
+	genVertex< true, false, false >(d3);
+
+	genFace< false >(d1, d2, d3);
 }
 
 void ProceduralOBJLoader::printVertices()
 {
-	for (int i = 0; i < this->_vertices.size(); i++)
+	for (int i = 0; i < _vertices.size(); ++i)
 	{
-		std::cout << this->_vertices[i].position << std::endl;
+		std::cout << _vertices[i].position << std::endl;
 	}
 }
 
 void ProceduralOBJLoader::printFaces()
 {
-	for (int i = 0; i < this->_faces.size(); i++)
+	for (int i = 0; i < _faces.size(); ++i)
 	{
-		std::cout << vmml::Vector3i(this->_faces[i].v1, this->_faces[i].v2, this->_faces[i].v3) << std::endl;
+		std::cout << vmml::Vector3i(_faces[i].v1, _faces[i].v2, _faces[i].v3) << std::endl;
 	}
+}
+
+void ProceduralOBJLoader::printNormals()
+{
+	for (FaceData &face : _faces)
+	{
+		std::cout << face.normal << std::endl;
+	}
+}
+
+bool ProceduralOBJLoader::load()
+{
+	
+	// if there is not only vertex- but also face data, update normals accordingly
+	if (_faces.size() > 0)
+	{
+		createFaceNormals();
+		createVertexNormals();
+
+		for (auto i = _groups.begin(); i != _groups.end(); ++i)
+		{
+			for (auto j = i->second->vboIndices.begin(); j != i->second->vboIndices.end(); ++j)
+			{
+				auto idx = i->second->indices[*j].vertexIndex;
+
+				vmml::Vector3f cNormal = _vertices[idx].normal;
+				Vector3 &normal = i->second->vboVertices[*j].normal;
+				normal.x = cNormal.x();
+				normal.y = cNormal.y();
+				normal.z = cNormal.z();
+
+				vmml::Vector3f cTangent = _vertices[idx].tangent;
+				Vector3 &tangent = i->second->vboVertices[*j].tangent;
+				tangent.x = cTangent.x();
+				tangent.y = cTangent.y();
+				tangent.z = cTangent.z();
+
+				vmml::Vector3f cBitangent = _vertices[idx].bitangent;
+				Vector3 &bitangent = i->second->vboVertices[*j].bitangent;
+				bitangent.x = cBitangent.x();
+				bitangent.y = cBitangent.y();
+				bitangent.z = cBitangent.z();
+			}
+		}
+	}
+
+	// delete empty groups
+	auto i = _groups.begin();
+	while (i != _groups.end())
+	{
+		if (i->second->vboIndices.size() == 0 || i->second->vboVertices.size() == 0)
+			_groups.erase(i++);
+		else
+			++i;
+	}
+
+	return true;
+}
+
+ModelData::GroupMap ProceduralOBJLoader::getData() const
+{
+	return _groups;
 }
