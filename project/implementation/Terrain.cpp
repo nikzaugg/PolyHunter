@@ -5,13 +5,12 @@
 
 int Terrain::_p[] = {};
 
-Terrain::Terrain(ShaderPtr shader, PropertiesPtr properties)
+Terrain::Terrain(MaterialPtr material, PropertiesPtr properties)
 {
+	_material = material;
 	_properties = properties;
 
 	std::cout << "TERRAIN WORKS!!!" << std::endl;
-
-	this->generate();
 }
 
 float Terrain::perlin(float x, float y, float z)
@@ -27,7 +26,7 @@ float Terrain::perlin(float x, float y, float z)
 	return 1.0f;
 }
 
-void Terrain::generate()
+ModelPtr Terrain::generate()
 {
 	// TODO: Should return a ModelPtr to RenderProject
 	//ModelData terrainData(true, false);
@@ -42,7 +41,8 @@ void Terrain::generate()
 	{
 		for (int z = 0; z < _SIZE; ++z)
 		{
-			objLoader.addVertex((float)x, 0.0f, (float)z);
+			float y = ((float)rand() / (RAND_MAX));
+			objLoader.addVertex((float)x, y, (float)z);
 		}	
 	}
 
@@ -69,23 +69,7 @@ void Terrain::generate()
 	objLoader.load();
 
 	ModelData::GroupMap data = objLoader.getData();
+	ModelPtr terrainModel = ModelPtr(new Model(data, _material, _properties));
 
-
-	for (auto i = data.begin(); i != data.end(); ++i)
-	{
-		GeometryPtr g = GeometryPtr(new Geometry);
-		_groups.insert(std::pair< std::string, GeometryPtr >(i->first, g));
-		GeometryDataPtr gData = i->second;
-		g->initialize(gData);
-		//g->setMaterial(material);
-		//g->setProperties(_properties);
-
-		// expand bounding box
-		_boundingBox.merge(g->getBoundingBoxObjectSpace());
-	}
-
-	for (auto i = _groups.begin(); i != _groups.end(); ++i)
-	{
-		i->second->draw(GL_TRIANGLES);
-	}	
+	return terrainModel;
 }

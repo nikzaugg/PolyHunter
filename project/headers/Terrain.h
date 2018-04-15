@@ -8,9 +8,12 @@ class Terrain
 public:
 	typedef std::unordered_map< std::string, GeometryPtr > GroupMap;
 	
-	Terrain(ShaderPtr shader, PropertiesPtr properties);
+	Terrain(MaterialPtr material, PropertiesPtr properties);
+
+	ModelPtr generate();
 
 private:
+	MaterialPtr _material;
 	PropertiesPtr _properties;
 	
 	static constexpr int _SIZE = 300;
@@ -42,7 +45,6 @@ private:
 	static int _p[512];
 
 	float perlin(float x, float y, float z);
-	void generate();
 
 };
 typedef std::shared_ptr< Terrain >  TerrainPtr;

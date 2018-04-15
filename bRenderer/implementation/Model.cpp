@@ -62,6 +62,24 @@ Model::Model(const ModelData &modelData, MaterialPtr material, PropertiesPtr pro
 	}
 }
 
+Model::Model(GeometryGroupMap data, MaterialPtr material, PropertiesPtr properties)
+{
+	_material = material;
+	_properties = properties;
+	for (auto i = data.begin(); i != data.end(); ++i)
+	{
+		GeometryPtr g = GeometryPtr(new Geometry);
+		_groups.insert(std::pair< std::string, GeometryPtr >(i->first, g));
+		GeometryDataPtr gData = i->second;
+		g->initialize(gData);
+		g->setMaterial(material);
+		g->setProperties(properties);
+
+		// expand bounding box
+		_boundingBox.merge(g->getBoundingBoxObjectSpace());
+	}
+}
+
 void Model::draw(GLenum mode)
 {
     for (auto i = _groups.begin(); i != _groups.end(); ++i)

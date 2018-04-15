@@ -23,6 +23,7 @@ public:
 	typedef std::unordered_map< std::string, GeometryPtr > GroupMap;
 	typedef  std::shared_ptr< std::unordered_map< ShaderPtr, PropertiesPtr > >	InstanceMapPtr;
 	typedef std::unordered_map< std::string, InstanceMapPtr >	InstancesMap;
+	typedef std::unordered_map< std::string, GeometryDataPtr > GeometryGroupMap;
 
 	/* Functions */
 
@@ -55,6 +56,8 @@ public:
 	*	@param[in] properties Properties that will be passed to the shader of the model (optional)
 	*/
 	Model(const ModelData &modelData, MaterialPtr material, PropertiesPtr	properties = nullptr);
+
+	Model(GeometryGroupMap data, MaterialPtr material, PropertiesPtr properties);
 
 	/**	@brief Virtual destructor
 	*/

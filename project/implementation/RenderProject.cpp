@@ -37,7 +37,7 @@ void RenderProject::initFunction()
 
 	// load materials and shaders before loading the model
 	ShaderPtr basicShader = bRenderer().getObjects()->loadShaderFile("basic", 1, false, true, true, true, false);
-	ShaderPtr customShader = bRenderer().getObjects()->generateShader("customShader", { 2, true, true, true, true, true, true, true, true, true, false, false, false });	// automatically generates a shader with a maximum of 2 lights
+	//ShaderPtr customShader = bRenderer().getObjects()->generateShader("customShader", { 2, true, true, true, true, true, true, true, true, true, false, false, false });	// automatically generates a shader with a maximum of 2 lights
 
 	// create additional properties for a model
 	PropertiesPtr treeProperties = bRenderer().getObjects()->createProperties("treeProperties");
@@ -47,12 +47,15 @@ void RenderProject::initFunction()
 	// load models
 	bRenderer().getObjects()->loadObjModel("tree.obj", false, true, basicShader, treeProperties);
 	bRenderer().getObjects()->loadObjModel("sun.obj", false, true, basicShader, sunProperties);
-	bRenderer().getObjects()->loadObjModel("terrain.obj", false, true, basicShader, terrainProperties);
+	 bRenderer().getObjects()->loadObjModel("terrain.obj", false, true, basicShader, terrainProperties);
 	// bRenderer().getObjects()->loadObjModel("tree_mat.obj", false, true, treeTrunkProperties);
-	bRenderer().getObjects()->loadObjModel_o("crystal.obj", customShader, FLIP_Z);		// the custom shader created above is used
+	//bRenderer().getObjects()->loadObjModel_o("crystal.obj", customShader, FLIP_Z);		// the custom shader created above is used
 
+	MaterialPtr terrainMaterial = bRenderer().getObjects()->loadObjMaterial("terrain.mtl", "terrain_mtl", basicShader);
+	Terrain terrain(terrainMaterial, terrainProperties);
+	ModelPtr terrainModel = terrain.generate();
 
-	Terrain terrain(basicShader, terrainProperties);
+	bRenderer().getObjects()->addModel("proceduralTerrain", terrainModel);
 
 	// create sprites
 	bRenderer().getObjects()->createSprite("sparks", "sparks.png");										// create a sprite displaying sparks as a texture
@@ -193,12 +196,21 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
 	// submit to render queue
 	bRenderer().getObjects()->setAmbientColor(vmml::Vector3f(0.5f));
 	bRenderer().getModelRenderer()->queueModelInstance("terrain", "terrain_instance", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
+
+	/*** Procedural Terrain ***/
+	modelMatrix = vmml::create_translation(vmml::Vector3f(0, 0, 0.0)) * vmml::create_scaling(vmml::Vector3f(10.0f));
+	vmml::compute_inverse(vmml::transpose(vmml::Matrix3f(modelMatrix)), normalMatrix);
+	basic = bRenderer().getObjects()->getShader("basic");
+	basic->setUniform("NormalMatrix", normalMatrix);
+	bRenderer().getObjects()->setAmbientColor(vmml::Vector3f(0.5f));
+	bRenderer().getModelRenderer()->queueModelInstance("proceduralTerrain", "proceduralTerrain_instance", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
+
 	
 	/*** Crystal (red) ***/
 	// translate and scale 
-	modelMatrix = vmml::create_translation(vmml::Vector3f(218.0f, -17.0f, 4.0f)) * vmml::create_scaling(vmml::Vector3f(0.1f));
-	// submit to render queue
-	bRenderer().getModelRenderer()->queueModelInstance("crystal", "crystal_red", camera, modelMatrix, std::vector<std::string>({}), true, false, true);
+	//modelMatrix = vmml::create_translation(vmml::Vector3f(218.0f, -17.0f, 4.0f)) * vmml::create_scaling(vmml::Vector3f(0.1f));
+	//// submit to render queue
+	//bRenderer().getModelRenderer()->queueModelInstance("crystal", "crystal_red", camera, modelMatrix, std::vector<std::string>({}), true, false, true);
 }
 
 /* Camera movement */
