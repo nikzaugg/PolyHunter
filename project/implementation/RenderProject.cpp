@@ -42,19 +42,19 @@ void RenderProject::initFunction()
 	// create additional properties for a model
 	PropertiesPtr treeProperties = bRenderer().getObjects()->createProperties("treeProperties");
 	PropertiesPtr sunProperties = bRenderer().getObjects()->createProperties("sunProperties");
-	PropertiesPtr terrainProperties = bRenderer().getObjects()->createProperties("terrainProperties");
+	//PropertiesPtr terrainProperties = bRenderer().getObjects()->createProperties("terrainProperties");
+	PropertiesPtr procTerrainProperties = bRenderer().getObjects()->createProperties("procTerrainProperties");
 
 	// load models
 	bRenderer().getObjects()->loadObjModel("tree.obj", false, true, basicShader, treeProperties);
 	bRenderer().getObjects()->loadObjModel("sun.obj", false, true, basicShader, sunProperties);
-	 bRenderer().getObjects()->loadObjModel("terrain.obj", false, true, basicShader, terrainProperties);
+	 //bRenderer().getObjects()->loadObjModel("terrain.obj", false, true, basicShader, terrainProperties);
 	// bRenderer().getObjects()->loadObjModel("tree_mat.obj", false, true, treeTrunkProperties);
 	//bRenderer().getObjects()->loadObjModel_o("crystal.obj", customShader, FLIP_Z);		// the custom shader created above is used
 
-	MaterialPtr terrainMaterial = bRenderer().getObjects()->loadObjMaterial("terrain.mtl", "terrain_mtl", basicShader);
-	Terrain terrain(terrainMaterial, terrainProperties);
+	MaterialPtr terrainMaterial = bRenderer().getObjects()->loadObjMaterial("terrain.mtl", "terrain", basicShader);
+	Terrain terrain = Terrain(terrainMaterial, procTerrainProperties);
 	ModelPtr terrainModel = terrain.generate();
-
 	bRenderer().getObjects()->addModel("proceduralTerrain", terrainModel);
 
 	// create sprites
@@ -189,23 +189,22 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
 	bRenderer().getModelRenderer()->queueModelInstance("sun", "sun_instance", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
 
 	/*** Terrain ***/
-	modelMatrix = vmml::create_translation(vmml::Vector3f(0, 0, 0.0)) * vmml::create_scaling(vmml::Vector3f(10.0f));
-	vmml::compute_inverse(vmml::transpose(vmml::Matrix3f(modelMatrix)), normalMatrix);
-	basic = bRenderer().getObjects()->getShader("basic");
-	basic->setUniform("NormalMatrix", normalMatrix);
-	// submit to render queue
-	bRenderer().getObjects()->setAmbientColor(vmml::Vector3f(0.5f));
-	bRenderer().getModelRenderer()->queueModelInstance("terrain", "terrain_instance", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
+	//modelMatrix = vmml::create_translation(vmml::Vector3f(0, 0, 0.0)) * vmml::create_scaling(vmml::Vector3f(10.0f));
+	//vmml::compute_inverse(vmml::transpose(vmml::Matrix3f(modelMatrix)), normalMatrix);
+	//basic = bRenderer().getObjects()->getShader("basic");
+	//basic->setUniform("NormalMatrix", normalMatrix);
+	//// submit to render queue
+	//bRenderer().getObjects()->setAmbientColor(vmml::Vector3f(0.5f));
+	//bRenderer().getModelRenderer()->queueModelInstance("terrain", "terrain_instance", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
 
 	/*** Procedural Terrain ***/
-	modelMatrix = vmml::create_translation(vmml::Vector3f(0, 0, 0.0)) * vmml::create_scaling(vmml::Vector3f(10.0f));
+	modelMatrix = vmml::create_translation(vmml::Vector3f(-75.0, 0.0, 75.0)) * vmml::create_scaling(vmml::Vector3f(1.0f));
 	vmml::compute_inverse(vmml::transpose(vmml::Matrix3f(modelMatrix)), normalMatrix);
 	basic = bRenderer().getObjects()->getShader("basic");
 	basic->setUniform("NormalMatrix", normalMatrix);
 	bRenderer().getObjects()->setAmbientColor(vmml::Vector3f(0.5f));
 	bRenderer().getModelRenderer()->queueModelInstance("proceduralTerrain", "proceduralTerrain_instance", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
 
-	
 	/*** Crystal (red) ***/
 	// translate and scale 
 	//modelMatrix = vmml::create_translation(vmml::Vector3f(218.0f, -17.0f, 4.0f)) * vmml::create_scaling(vmml::Vector3f(0.1f));

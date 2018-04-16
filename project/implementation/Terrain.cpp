@@ -38,6 +38,10 @@ ModelPtr Terrain::generate()
 	{
 		for (int j = 0; j < _VERTEX_COUNT; j++)
 		{
+			float uPos = (float)i / ((float)_VERTEX_COUNT/2.0 - 1);
+			float vPos = (float)j / ((float)_VERTEX_COUNT/2.0 - 1);
+			objLoader.addTexCoords(uPos, vPos);
+
 			float xPos = (float)j / ((float)_VERTEX_COUNT - 1) * _SIZE;
 			float yPos = ((float)rand()*3.0 / (RAND_MAX));
 			float zPos = (float)i / ((float)_VERTEX_COUNT - 1) * _SIZE;
@@ -55,13 +59,18 @@ ModelPtr Terrain::generate()
 			d1.vertexIndex = topLeft;
 			d2.vertexIndex = bottomLeft;
 			d3.vertexIndex = topRight;
+			d1.texCoordsIndex = topLeft;
+			d2.texCoordsIndex = bottomLeft;
+			d3.texCoordsIndex = topRight;
 			objLoader.addFace(d1, d2, d3);
-			
-			IndexData d11, d22, d33;
-			d11.vertexIndex = topRight;
-			d22.vertexIndex = bottomLeft;
-			d33.vertexIndex = bottomRight;
-			objLoader.addFace(d11, d22, d33);
+
+			d1.vertexIndex = topRight;
+			d2.vertexIndex = bottomLeft;
+			d3.vertexIndex = bottomRight;
+			d1.texCoordsIndex = topRight;
+			d2.texCoordsIndex = bottomLeft;
+			d3.texCoordsIndex = bottomRight;
+			objLoader.addFace(d1, d2, d3);
 		}
 	}
 

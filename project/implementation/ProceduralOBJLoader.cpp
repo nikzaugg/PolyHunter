@@ -17,15 +17,20 @@ void ProceduralOBJLoader::addVertex(float x, float y, float z)
 	_vertices.push_back(vmml::Vector3f(x, y, z));
 }
 
+void ProceduralOBJLoader::addTexCoords(float u, float v)
+{
+	_texCoords.push_back(vmml::Vector2f(u, v));
+}
+
 void ProceduralOBJLoader::addFace(IndexData d1, IndexData d2, IndexData d3)
 {
 	_group->indices.push_back(d1);
 	_group->indices.push_back(d2);
 	_group->indices.push_back(d3);
 
-	genVertex< true, false, false >(d1);
-	genVertex< true, false, false >(d2);
-	genVertex< true, false, false >(d3);
+	genVertex< true, true, false >(d1);
+	genVertex< true, true, false >(d2);
+	genVertex< true, true, false >(d3);
 
 	genFace< false >(d1, d2, d3);
 }
@@ -56,7 +61,7 @@ void ProceduralOBJLoader::printNormals()
 
 bool ProceduralOBJLoader::load()
 {
-	
+
 	// if there is not only vertex- but also face data, update normals accordingly
 	if (_faces.size() > 0)
 	{
