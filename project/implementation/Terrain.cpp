@@ -33,36 +33,35 @@ ModelPtr Terrain::generate()
 	ProceduralOBJLoader objLoader;
 
 	vmml::Vector3f center = vmml::Vector3f(0.0f, 0.0f, 0.0f);
-
-	int startPoint = -_SIZE / 2;
-	int endPoint = _SIZE / 2;
 	
-	for (int x = 0; x < _SIZE; ++x)
+	for (int i = 0; i < _VERTEX_COUNT; i++)
 	{
-		for (int z = 0; z < _SIZE; ++z)
+		for (int j = 0; j < _VERTEX_COUNT; j++)
 		{
-			float y = ((float)rand() / (RAND_MAX));
-			objLoader.addVertex((float)x, y, (float)z);
-		}	
+			float xPos = (float)j / ((float)_VERTEX_COUNT - 1) * _SIZE;
+			float yPos = ((float)rand()*3.0 / (RAND_MAX));
+			float zPos = (float)i / ((float)_VERTEX_COUNT - 1) * _SIZE;
+			objLoader.addVertex(xPos, yPos, zPos);
+		}
 	}
 
-	for (int i = 1; i < _SIZE; ++i)
-	{
-		for (int j = 0; j < _SIZE - 1; ++j)
-		{
+	for (int gz = 0; gz<_VERTEX_COUNT /2 - 1; ++gz) {
+		for (int gx = 0; gx<_VERTEX_COUNT /2 - 1; ++gx) {
+			int topLeft = (gz*_VERTEX_COUNT) + gx;
+			int topRight = topLeft + 1;
+			int bottomLeft = ((gz + 1)*_VERTEX_COUNT) + gx;
+			int bottomRight = bottomLeft + 1;
 			IndexData d1, d2, d3;
-
-			d1.vertexIndex = i * _SIZE + j - _SIZE;
-			d2.vertexIndex = i * _SIZE + j - _SIZE + 1;
-			d3.vertexIndex = i * _SIZE + j;
-
+			d1.vertexIndex = topLeft;
+			d2.vertexIndex = bottomLeft;
+			d3.vertexIndex = topRight;
 			objLoader.addFace(d1, d2, d3);
-
-			d1.vertexIndex = i * _SIZE + j - _SIZE + 1;
-			d2.vertexIndex = i * _SIZE + j;
-			d3.vertexIndex = i * _SIZE + j + 1;
-
-			objLoader.addFace(d1, d2, d3);
+			
+			IndexData d11, d22, d33;
+			d11.vertexIndex = topRight;
+			d22.vertexIndex = bottomLeft;
+			d33.vertexIndex = bottomRight;
+			objLoader.addFace(d11, d22, d33);
 		}
 	}
 
