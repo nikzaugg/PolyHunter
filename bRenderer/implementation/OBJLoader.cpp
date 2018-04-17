@@ -59,6 +59,7 @@ void OBJLoader::genVertex(const IndexData &d)
 	{
 		v.texCoord.s = _texCoords[d.texCoordsIndex].x();
 		v.texCoord.t = _texCoords[d.texCoordsIndex].y();
+		// std::cout << v.texCoord.s << " | " << v.texCoord.t << std::endl;
 		if (_data->getFlipT())
 		{
 			v.texCoord.t = 1.0f - v.texCoord.t;

@@ -5,17 +5,12 @@
 
 int Terrain::_p[] = {};
 
-Terrain::Terrain()
+Terrain::Terrain(MaterialPtr material, PropertiesPtr properties)
 {
-	
-	//for (int i = 0; i < 512; i++)
-	//{
-	//	Terrain::p[i] = this->permutation[i % 256];
-	//}
+	_material = material;
+	_properties = properties;
 
 	std::cout << "TERRAIN WORKS!!!" << std::endl;
-
-	this->generate();
 }
 
 float Terrain::perlin(float x, float y, float z)
@@ -31,43 +26,58 @@ float Terrain::perlin(float x, float y, float z)
 	return 1.0f;
 }
 
-void Terrain::generate()
+ModelPtr Terrain::generate()
 {
+	// TODO: Should return a ModelPtr to RenderProject
 	//ModelData terrainData(true, false);
 	ProceduralOBJLoader objLoader;
 
 	vmml::Vector3f center = vmml::Vector3f(0.0f, 0.0f, 0.0f);
-
-	int startPoint = -_SIZE / 2;
-	int endPoint = _SIZE / 2;
 	
-	for (int x = startPoint; x < endPoint; x++)
+	for (int i = 0; i < _VERTEX_COUNT; i++)
 	{
-		for (int z = startPoint; z < endPoint; z++)
+		for (int j = 0; j < _VERTEX_COUNT; j++)
 		{
-			objLoader.addVertex((float)x, 0.0f, (float)z);
-		}	
-	}
+			float uPos = (float)i / ((float)_VERTEX_COUNT/2.0 - 1);
+			float vPos = (float)j / ((float)_VERTEX_COUNT/2.0 - 1);
+			objLoader.addTexCoords(uPos, vPos);
 
-	for (int i = 1; i < _SIZE; i++)
-	{
-		for (int j = 0; j < _SIZE; j++)
-		{
-			int v1, v2, v3;
-
-			v1 = i * _SIZE + j - _SIZE;
-			v2 = i * _SIZE + j - _SIZE + 1;
-			v3 = i * _SIZE + j;
-
-			objLoader.addFace(v1, v2, v3);
-
-			v1 = i * _SIZE + j - _SIZE + 1;
-			v2 = i * _SIZE + j;
-			v3 = i * _SIZE + j + 1;
-
-			objLoader.addFace(v1, v2, v3);
+			float xPos = (float)j / ((float)_VERTEX_COUNT - 1) * _SIZE;
+			float yPos = ((float)rand()*3.0 / (RAND_MAX));
+			float zPos = (float)i / ((float)_VERTEX_COUNT - 1) * _SIZE;
+			objLoader.addVertex(xPos, yPos, zPos);
 		}
 	}
 
-	objLoader.printFaces();
+	for (int gz = 0; gz<_VERTEX_COUNT /2 - 1; ++gz) {
+		for (int gx = 0; gx<_VERTEX_COUNT /2 - 1; ++gx) {
+			int topLeft = (gz*_VERTEX_COUNT) + gx;
+			int topRight = topLeft + 1;
+			int bottomLeft = ((gz + 1)*_VERTEX_COUNT) + gx;
+			int bottomRight = bottomLeft + 1;
+			IndexData d1, d2, d3;
+			d1.vertexIndex = topLeft;
+			d2.vertexIndex = bottomLeft;
+			d3.vertexIndex = topRight;
+			d1.texCoordsIndex = topLeft;
+			d2.texCoordsIndex = bottomLeft;
+			d3.texCoordsIndex = topRight;
+			objLoader.addFace(d1, d2, d3);
+
+			d1.vertexIndex = topRight;
+			d2.vertexIndex = bottomLeft;
+			d3.vertexIndex = bottomRight;
+			d1.texCoordsIndex = topRight;
+			d2.texCoordsIndex = bottomLeft;
+			d3.texCoordsIndex = bottomRight;
+			objLoader.addFace(d1, d2, d3);
+		}
+	}
+
+	objLoader.load();
+
+	ModelData::GroupMap data = objLoader.getData();
+	ModelPtr terrainModel = ModelPtr(new Model(data, _material, _properties));
+
+	return terrainModel;
 }

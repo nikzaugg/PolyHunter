@@ -92,7 +92,7 @@ public:
 	*/
 	ModelData::GroupMap getData() { return _groups; }
 
-private:
+protected:
 
 	/* Functions */
 
@@ -150,7 +150,6 @@ private:
 	static void loadObjMtl(const std::string &fileName, MaterialMap &materials, const std::string &materialName = "");
 
 	/* Variables */
-
 	obj::obj_parser::flags_type _flags;
 	ModelData                   *_data = nullptr;
 	MaterialMap                  _materials;
