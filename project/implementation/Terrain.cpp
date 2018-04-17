@@ -49,8 +49,8 @@ ModelPtr Terrain::generate()
 		}
 	}
 
-	for (int gz = 0; gz<_VERTEX_COUNT /2 - 1; ++gz) {
-		for (int gx = 0; gx<_VERTEX_COUNT /2 - 1; ++gx) {
+	for (int gz = 0; gz<_VERTEX_COUNT/2 - 1; ++gz) {
+		for (int gx = 0; gx<_VERTEX_COUNT/2 - 1; ++gx) {
 			int topLeft = (gz*_VERTEX_COUNT) + gx;
 			int topRight = topLeft + 1;
 			int bottomLeft = ((gz + 1)*_VERTEX_COUNT) + gx;
@@ -77,7 +77,7 @@ ModelPtr Terrain::generate()
 	objLoader.load();
 
 	ModelData::GroupMap data = objLoader.getData();
-	ModelPtr terrainModel = ModelPtr(new Model(data, _material, _properties));
+    ModelPtr terrainModel = ModelPtr(new Model(data, _material, _properties));
 
 	return terrainModel;
 }

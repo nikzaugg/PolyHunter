@@ -288,12 +288,6 @@
     <ClCompile Include="..\implementation\RenderProject.cpp">
       <Filter>project\implementation</Filter>
     </ClCompile>
-    <ClCompile Include="..\implementation\Terrain.cpp">
-      <Filter>project\implementation</Filter>
-    </ClCompile>
-    <ClCompile Include="..\implementation\ProceduralOBJLoader.cpp">
-      <Filter>project\implementation</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\bRenderer\bRenderer.h">
@@ -452,12 +446,6 @@
     <ClInclude Include="..\headers\RenderProject.h">
       <Filter>project\headers</Filter>
     </ClInclude>
-    <ClInclude Include="..\headers\Terrain.h">
-      <Filter>project\headers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\headers\ProceduralOBJLoader.h">
-      <Filter>project\headers</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\bRenderer\os_specific\ios\FileHandler_ios.mm">
@@ -514,33 +502,6 @@
     <None Include="..\data\config.json">
       <Filter>project\data</Filter>
     </None>
-    <None Include="..\data\mushroom.mtl">
-      <Filter>project\data</Filter>
-    </None>
-    <None Include="..\data\mushroom.frag">
-      <Filter>project\data</Filter>
-    </None>
-    <None Include="..\data\mushroom.vert">
-      <Filter>project\data</Filter>
-    </None>
-    <None Include="..\data\tree.frag">
-      <Filter>project\data</Filter>
-    </None>
-    <None Include="..\data\tree.vert">
-      <Filter>project\data</Filter>
-    </None>
-    <None Include="..\data\tree.mtl">
-      <Filter>project\data</Filter>
-    </None>
-    <None Include="..\data\tree_mat.mtl">
-      <Filter>project\data</Filter>
-    </None>
-    <None Include="..\data\tree_trunk.frag">
-      <Filter>project\data</Filter>
-    </None>
-    <None Include="..\data\tree_trunk.vert">
-      <Filter>project\data</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\data\flame.png">
@@ -571,15 +532,6 @@
       <Filter>project\data</Filter>
     </Image>
     <Image Include="..\data\sparks.png">
-      <Filter>project\data</Filter>
-    </Image>
-    <Image Include="..\data\mushroom.png">
-      <Filter>project\data</Filter>
-    </Image>
-    <Image Include="..\data\tree_bottom.png">
-      <Filter>project\data</Filter>
-    </Image>
-    <Image Include="..\data\tree_top.001.png">
       <Filter>project\data</Filter>
     </Image>
   </ItemGroup>

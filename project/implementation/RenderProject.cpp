@@ -204,12 +204,6 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
 	basic->setUniform("NormalMatrix", normalMatrix);
 	bRenderer().getObjects()->setAmbientColor(vmml::Vector3f(0.5f));
 	bRenderer().getModelRenderer()->queueModelInstance("proceduralTerrain", "proceduralTerrain_instance", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
-
-	/*** Crystal (red) ***/
-	// translate and scale 
-	//modelMatrix = vmml::create_translation(vmml::Vector3f(218.0f, -17.0f, 4.0f)) * vmml::create_scaling(vmml::Vector3f(0.1f));
-	//// submit to render queue
-	//bRenderer().getModelRenderer()->queueModelInstance("crystal", "crystal_red", camera, modelMatrix, std::vector<std::string>({}), true, false, true);
 }
 
 /* Camera movement */
