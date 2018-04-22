@@ -36,6 +36,19 @@ void ProceduralOBJLoader::addFace(IndexData d1, IndexData d2, IndexData d3)
 	genFace< false >(d1, d2, d3);
 }
 
+void ProceduralOBJLoader::addFaceNoTex(IndexData d1, IndexData d2, IndexData d3)
+{
+	_group->indices.push_back(d1);
+	_group->indices.push_back(d2);
+	_group->indices.push_back(d3);
+
+	genVertex< true, false, false >(d1);
+	genVertex< true, false, false >(d2);
+	genVertex< true, false, false >(d3);
+
+	genFace< false >(d1, d2, d3);
+}
+
 void ProceduralOBJLoader::printVertices()
 {
 	for (int i = 0; i < _vertices.size(); ++i)

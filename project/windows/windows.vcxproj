@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -14,18 +14,19 @@
     <ProjectGuid>{7F1DCBC4-75C9-4514-A335-4C657CCC8251}</ProjectGuid>
     <RootNamespace>windows</RootNamespace>
     <ProjectName>bRenderer</ProjectName>
+    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
@@ -150,7 +151,12 @@
     <ClCompile Include="..\..\externalLibraries\freetype-2.6\src\type42\type42.c" />
     <ClCompile Include="..\..\externalLibraries\freetype-2.6\src\winfonts\winfnt.c" />
     <ClCompile Include="..\..\project\windows\main.cpp" />
+    <ClCompile Include="..\implementation\PerlinNoise.cpp" />
+    <ClCompile Include="..\implementation\PerlinNoise2D.cpp" />
+    <ClCompile Include="..\implementation\ProceduralOBJLoader.cpp" />
     <ClCompile Include="..\implementation\RenderProject.cpp" />
+    <ClCompile Include="..\implementation\Skybox.cpp" />
+    <ClCompile Include="..\implementation\Terrain.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\bRenderer\bRenderer.h" />
@@ -204,7 +210,12 @@
     <ClInclude Include="..\..\bRenderer\headers\Touch.h" />
     <ClInclude Include="..\..\bRenderer\headers\View.h" />
     <ClInclude Include="..\..\bRenderer\os_specific\ios\BView.h" />
+    <ClInclude Include="..\headers\PerlinNoise.h" />
+    <ClInclude Include="..\headers\PerlinNoise2D.h" />
+    <ClInclude Include="..\headers\ProceduralOBJLoader.h" />
     <ClInclude Include="..\headers\RenderProject.h" />
+    <ClInclude Include="..\headers\Skybox.h" />
+    <ClInclude Include="..\headers\Terrain.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\bRenderer\os_specific\ios\BView.mm" />
@@ -224,6 +235,8 @@
     <None Include="..\data\flame.frag" />
     <None Include="..\data\flame.mtl" />
     <None Include="..\data\flame.vert" />
+    <None Include="..\data\skybox.frag" />
+    <None Include="..\data\skybox.vert" />
     <None Include="..\data\torch.mtl" />
   </ItemGroup>
   <ItemGroup>

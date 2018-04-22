@@ -17,7 +17,7 @@ private:
 	PropertiesPtr _properties;
 	
 	static constexpr int _VERTEX_COUNT = 128;
-	static constexpr int _SIZE = 300;
+	static constexpr int _SIZE = 100;
 
 	int _numFaces;
 
