@@ -38,6 +38,7 @@ void ModelRenderer::drawModel(ModelPtr model, const vmml::Matrix4f &modelMatrix,
 {
 	vmml::Matrix4f modelViewMatrix = viewMatrix*modelMatrix;
 	vmml::Matrix4f modelViewProjectionMatrix = projectionMatrix*modelViewMatrix;
+	vmml::Matrix3f normalMatrix;
 	vmml::Visibility visibility = vmml::VISIBILITY_FULL;
 
 	GLint compareShader = -1;
@@ -70,6 +71,10 @@ void ModelRenderer::drawModel(ModelPtr model, const vmml::Matrix4f &modelMatrix,
 				{
 					compareShader = shader->getProgramID();
 
+					// compute NormalMatrix and set in shader
+					vmml::compute_inverse(vmml::transpose(vmml::Matrix3f(modelMatrix)), normalMatrix);
+
+					shader->setUniform("NormalMatrix", normalMatrix);
 					shader->setUniform(bRenderer::DEFAULT_SHADER_UNIFORM_PROJECTION_MATRIX(), projectionMatrix);
 					shader->setUniform(bRenderer::DEFAULT_SHADER_UNIFORM_MODEL_VIEW_MATRIX(), modelViewMatrix);
 

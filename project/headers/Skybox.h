@@ -17,6 +17,7 @@ private:
 	PropertiesPtr _properties;
 
 	int _numFaces;
+	const int SIZE = 500;
 
 	GroupMap        _groups;
 	vmml::AABBf		_boundingBox;

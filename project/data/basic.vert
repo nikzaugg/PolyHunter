@@ -37,7 +37,10 @@ void main()
 {
     camPosVarying = ModelViewMatrix * Position;
 	posVarying = ModelMatrix * Position; // posViewSpace
-    normalVarying = normalize(NormalMatrix * Normal);
+    // need to invert z-value of normal to get the normal right
+    // TODO: export blender normal in the right coordinate system, so that
+    // we can remove this
+    normalVarying = normalize(NormalMatrix * (Normal * vec3(1.0, 1.0, -1.0)));
     tangentVarying = normalize(NormalMatrix * Tangent);
 
     texCoordVarying = TexCoord;

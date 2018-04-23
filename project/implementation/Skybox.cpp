@@ -19,18 +19,18 @@ ModelPtr Skybox::generate()
 	IndexData d1, d2, d3;
 
 	// FRONT
-	objLoader.addVertex(-1.0, -1.0, 1.0);
-	objLoader.addVertex(1.0, -1.0, 1.0);
-	objLoader.addVertex(1.0, 1.0, 1.0);
-	objLoader.addVertex(-1.0, 1.0, 1.0);
+	objLoader.addVertex(-SIZE, -SIZE, SIZE);
+	objLoader.addVertex(SIZE, -SIZE, SIZE);
+	objLoader.addVertex(SIZE, SIZE, SIZE);
+	objLoader.addVertex(-SIZE, SIZE, SIZE);
 
 	// BACK
-	objLoader.addVertex(-1.0, -1.0, -1.0);
-	objLoader.addVertex(1.0, -1.0, -1.0);
-	objLoader.addVertex(1.0, 1.0, -1.0);
-	objLoader.addVertex(-1.0, 1.0, -1.0);
+	objLoader.addVertex(-SIZE, -SIZE, -SIZE);
+	objLoader.addVertex(SIZE, -SIZE, -SIZE);
+	objLoader.addVertex(SIZE, SIZE, -SIZE);
+	objLoader.addVertex(-SIZE, SIZE, -SIZE);
 
-	// front
+	// front face
 	d1.vertexIndex = 2;
 	d2.vertexIndex = 1;
 	d3.vertexIndex = 0;
@@ -40,7 +40,7 @@ ModelPtr Skybox::generate()
 	d3.vertexIndex = 2;
 	objLoader.addFaceNoTex(d1, d2, d3);
 
-	// right
+	// right face
 	d1.vertexIndex = 6;
 	d2.vertexIndex = 5;
 	d3.vertexIndex = 1;
@@ -50,7 +50,7 @@ ModelPtr Skybox::generate()
 	d3.vertexIndex = 6;
 	objLoader.addFaceNoTex(d1, d2, d3);
 
-	// back
+	// back face
 	d1.vertexIndex = 5;
 	d2.vertexIndex = 6;
 	d3.vertexIndex = 7;
@@ -60,7 +60,7 @@ ModelPtr Skybox::generate()
 	d3.vertexIndex = 5;
 	objLoader.addFaceNoTex(d1, d2, d3);
 
-	// left
+	// left face
 	d1.vertexIndex = 3;
 	d2.vertexIndex = 0;
 	d3.vertexIndex = 4;
@@ -70,7 +70,7 @@ ModelPtr Skybox::generate()
 	d3.vertexIndex = 3;
 	objLoader.addFaceNoTex(d1, d2, d3);
 
-	// bottom
+	// bottom face
 	d1.vertexIndex = 1;
 	d2.vertexIndex = 5;
 	d3.vertexIndex = 4;
@@ -80,7 +80,7 @@ ModelPtr Skybox::generate()
 	d3.vertexIndex = 1;
 	objLoader.addFaceNoTex(d1, d2, d3);
 
-	// top
+	// top face
 	d1.vertexIndex = 6;
 	d2.vertexIndex = 2;
 	d3.vertexIndex = 3;
