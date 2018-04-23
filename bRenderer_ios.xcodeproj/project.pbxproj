@@ -7,6 +7,23 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		31A71EDE20865D6F00A2D46A /* basic.vert in Resources */ = {isa = PBXBuildFile; fileRef = 31A71ED120865D6C00A2D46A /* basic.vert */; };
+		31A71EDF20865D6F00A2D46A /* terrain.vert in Resources */ = {isa = PBXBuildFile; fileRef = 31A71ED220865D6C00A2D46A /* terrain.vert */; };
+		31A71EE020865D6F00A2D46A /* tree.png in Resources */ = {isa = PBXBuildFile; fileRef = 31A71ED320865D6C00A2D46A /* tree.png */; };
+		31A71EE120865D6F00A2D46A /* terrain.png in Resources */ = {isa = PBXBuildFile; fileRef = 31A71ED420865D6D00A2D46A /* terrain.png */; };
+		31A71EE220865D6F00A2D46A /* sun.obj in Resources */ = {isa = PBXBuildFile; fileRef = 31A71ED520865D6D00A2D46A /* sun.obj */; };
+		31A71EE320865D6F00A2D46A /* terrain.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 31A71ED620865D6D00A2D46A /* terrain.mtl */; };
+		31A71EE420865D6F00A2D46A /* terrain.frag in Resources */ = {isa = PBXBuildFile; fileRef = 31A71ED720865D6D00A2D46A /* terrain.frag */; };
+		31A71EE520865D6F00A2D46A /* sun.png in Resources */ = {isa = PBXBuildFile; fileRef = 31A71ED820865D6D00A2D46A /* sun.png */; };
+		31A71EE620865D6F00A2D46A /* sun.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 31A71ED920865D6E00A2D46A /* sun.mtl */; };
+		31A71EE720865D6F00A2D46A /* tree.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 31A71EDA20865D6E00A2D46A /* tree.mtl */; };
+		31A71EE820865D6F00A2D46A /* tree.obj in Resources */ = {isa = PBXBuildFile; fileRef = 31A71EDB20865D6E00A2D46A /* tree.obj */; };
+		31A71EE920865D6F00A2D46A /* terrain.obj in Resources */ = {isa = PBXBuildFile; fileRef = 31A71EDC20865D6E00A2D46A /* terrain.obj */; };
+		31A71EEA20865D6F00A2D46A /* basic.frag in Resources */ = {isa = PBXBuildFile; fileRef = 31A71EDD20865D6E00A2D46A /* basic.frag */; };
+		31A71EED20865D8800A2D46A /* ProceduralOBJLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 31A71EEB20865D8800A2D46A /* ProceduralOBJLoader.cpp */; };
+		31A71EEE20865D8800A2D46A /* Terrain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 31A71EEC20865D8800A2D46A /* Terrain.cpp */; };
+		31F377FF2089512500EBEC30 /* PerlinNoise2D.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 31F377FD2089512400EBEC30 /* PerlinNoise2D.cpp */; };
+		31F378002089512500EBEC30 /* PerlinNoise.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 31F377FE2089512400EBEC30 /* PerlinNoise.cpp */; };
 		B44186971BA331E300604D7F /* RenderProject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B44186961BA331E300604D7F /* RenderProject.cpp */; };
 		B47949A21BA6742B00B5E9DC /* arial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B47949851BA6742B00B5E9DC /* arial.ttf */; };
 		B47949A31BA6742B00B5E9DC /* basicTitle_light.png in Resources */ = {isa = PBXBuildFile; fileRef = B47949861BA6742B00B5E9DC /* basicTitle_light.png */; };
@@ -135,6 +152,27 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		31A71ED120865D6C00A2D46A /* basic.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = basic.vert; sourceTree = "<group>"; };
+		31A71ED220865D6C00A2D46A /* terrain.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = terrain.vert; sourceTree = "<group>"; };
+		31A71ED320865D6C00A2D46A /* tree.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tree.png; sourceTree = "<group>"; };
+		31A71ED420865D6D00A2D46A /* terrain.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = terrain.png; sourceTree = "<group>"; };
+		31A71ED520865D6D00A2D46A /* sun.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = sun.obj; sourceTree = "<group>"; };
+		31A71ED620865D6D00A2D46A /* terrain.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = terrain.mtl; sourceTree = "<group>"; };
+		31A71ED720865D6D00A2D46A /* terrain.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = terrain.frag; sourceTree = "<group>"; };
+		31A71ED820865D6D00A2D46A /* sun.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sun.png; sourceTree = "<group>"; };
+		31A71ED920865D6E00A2D46A /* sun.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = sun.mtl; sourceTree = "<group>"; };
+		31A71EDA20865D6E00A2D46A /* tree.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = tree.mtl; sourceTree = "<group>"; };
+		31A71EDB20865D6E00A2D46A /* tree.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = tree.obj; sourceTree = "<group>"; };
+		31A71EDC20865D6E00A2D46A /* terrain.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = terrain.obj; sourceTree = "<group>"; };
+		31A71EDD20865D6E00A2D46A /* basic.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = basic.frag; sourceTree = "<group>"; };
+		31A71EEB20865D8800A2D46A /* ProceduralOBJLoader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ProceduralOBJLoader.cpp; sourceTree = "<group>"; };
+		31A71EEC20865D8800A2D46A /* Terrain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Terrain.cpp; sourceTree = "<group>"; };
+		31A71EEF20865D9200A2D46A /* ProceduralOBJLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProceduralOBJLoader.h; sourceTree = "<group>"; };
+		31A71EF020865D9300A2D46A /* Terrain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Terrain.h; sourceTree = "<group>"; };
+		31F377FB2089511D00EBEC30 /* PerlinNoise.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PerlinNoise.h; sourceTree = "<group>"; };
+		31F377FC2089511E00EBEC30 /* PerlinNoise2D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PerlinNoise2D.h; sourceTree = "<group>"; };
+		31F377FD2089512400EBEC30 /* PerlinNoise2D.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PerlinNoise2D.cpp; sourceTree = "<group>"; };
+		31F377FE2089512400EBEC30 /* PerlinNoise.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PerlinNoise.cpp; sourceTree = "<group>"; };
 		B44186941BA331E300604D7F /* RenderProject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RenderProject.h; sourceTree = "<group>"; };
 		B44186961BA331E300604D7F /* RenderProject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RenderProject.cpp; sourceTree = "<group>"; };
 		B47949851BA6742B00B5E9DC /* arial.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = arial.ttf; sourceTree = "<group>"; };
@@ -345,6 +383,7 @@
 			);
 			name = CustomTemplate;
 			sourceTree = "<group>";
+			usesTabs = 0;
 		};
 		29B97323FDCFA39411CA2CEA /* externalLibraries */ = {
 			isa = PBXGroup;
@@ -363,6 +402,10 @@
 		B44186931BA331E300604D7F /* headers */ = {
 			isa = PBXGroup;
 			children = (
+				31F377FB2089511D00EBEC30 /* PerlinNoise.h */,
+				31F377FC2089511E00EBEC30 /* PerlinNoise2D.h */,
+				31A71EEF20865D9200A2D46A /* ProceduralOBJLoader.h */,
+				31A71EF020865D9300A2D46A /* Terrain.h */,
 				B44186941BA331E300604D7F /* RenderProject.h */,
 			);
 			path = headers;
@@ -371,6 +414,10 @@
 		B44186951BA331E300604D7F /* implementation */ = {
 			isa = PBXGroup;
 			children = (
+				31F377FE2089512400EBEC30 /* PerlinNoise.cpp */,
+				31F377FD2089512400EBEC30 /* PerlinNoise2D.cpp */,
+				31A71EEB20865D8800A2D46A /* ProceduralOBJLoader.cpp */,
+				31A71EEC20865D8800A2D46A /* Terrain.cpp */,
 				B44186961BA331E300604D7F /* RenderProject.cpp */,
 			);
 			path = implementation;
@@ -379,6 +426,19 @@
 		B47949841BA6742B00B5E9DC /* data */ = {
 			isa = PBXGroup;
 			children = (
+				31A71EDD20865D6E00A2D46A /* basic.frag */,
+				31A71ED120865D6C00A2D46A /* basic.vert */,
+				31A71ED920865D6E00A2D46A /* sun.mtl */,
+				31A71ED520865D6D00A2D46A /* sun.obj */,
+				31A71ED820865D6D00A2D46A /* sun.png */,
+				31A71ED720865D6D00A2D46A /* terrain.frag */,
+				31A71ED620865D6D00A2D46A /* terrain.mtl */,
+				31A71EDC20865D6E00A2D46A /* terrain.obj */,
+				31A71ED420865D6D00A2D46A /* terrain.png */,
+				31A71ED220865D6C00A2D46A /* terrain.vert */,
+				31A71EDA20865D6E00A2D46A /* tree.mtl */,
+				31A71EDB20865D6E00A2D46A /* tree.obj */,
+				31A71ED320865D6C00A2D46A /* tree.png */,
 				B47949851BA6742B00B5E9DC /* arial.ttf */,
 				B47949861BA6742B00B5E9DC /* basicTitle_light.png */,
 				B47949871BA6742B00B5E9DC /* blurShader.frag */,
@@ -694,7 +754,7 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0620;
+				LastUpgradeCheck = 0920;
 				TargetAttributes = {
 					1D6058900D05DD3D006BFB54 = {
 						DevelopmentTeam = 94PFB8AHJE;
@@ -726,39 +786,52 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B4794A311BA6743D00B5E9DC /* LICENSE.txt in Resources */,
-				B47949A81BA6742B00B5E9DC /* cave_d.png in Resources */,
-				B47949B01BA6742B00B5E9DC /* crystal.mtl in Resources */,
-				B47949A91BA6742B00B5E9DC /* cave_n.png in Resources */,
-				B47949AB1BA6742B00B5E9DC /* cave_stream.mtl in Resources */,
-				B47949B61BA6742B00B5E9DC /* flame.mtl in Resources */,
-				B47949AE1BA6742B00B5E9DC /* cave_stream_n.png in Resources */,
-				B47949B51BA6742B00B5E9DC /* flame.frag in Resources */,
-				B47949AC1BA6742B00B5E9DC /* cave_stream.obj in Resources */,
-				B47949A61BA6742B00B5E9DC /* cave.mtl in Resources */,
-				B47949B21BA6742B00B5E9DC /* crystal_d.png in Resources */,
-				B47949A21BA6742B00B5E9DC /* arial.ttf in Resources */,
-				B47949B41BA6742B00B5E9DC /* crystal_s.png in Resources */,
-				B47949B71BA6742B00B5E9DC /* flame.obj in Resources */,
-				B4794A2A1BA6743D00B5E9DC /* LICENSE.txt in Resources */,
-				B47949A51BA6742B00B5E9DC /* blurShader.vert in Resources */,
-				B47949AA1BA6742B00B5E9DC /* cave_stream.frag in Resources */,
-				B47949AD1BA6742B00B5E9DC /* cave_stream.vert in Resources */,
-				B47949AF1BA6742B00B5E9DC /* config.json in Resources */,
-				B47949BD1BA6742B00B5E9DC /* torch.obj in Resources */,
-				B47949A71BA6742B00B5E9DC /* cave.obj in Resources */,
-				B47949B81BA6742B00B5E9DC /* flame.png in Resources */,
-				B47949BE1BA6742B00B5E9DC /* torchSurface_Color.png in Resources */,
-				B47949B91BA6742B00B5E9DC /* flame.vert in Resources */,
+				31A71EE620865D6F00A2D46A /* sun.mtl in Resources */,
 				B47949A31BA6742B00B5E9DC /* basicTitle_light.png in Resources */,
-				B47949BC1BA6742B00B5E9DC /* torch.mtl in Resources */,
-				B47949A41BA6742B00B5E9DC /* blurShader.frag in Resources */,
+				B47949B81BA6742B00B5E9DC /* flame.png in Resources */,
+				B47949A51BA6742B00B5E9DC /* blurShader.vert in Resources */,
+				31A71EEA20865D6F00A2D46A /* basic.frag in Resources */,
 				B47949BB1BA6742B00B5E9DC /* sparks.png in Resources */,
-				B47949BA1BA6742B00B5E9DC /* KozGoPro-ExtraLight.otf in Resources */,
-				B4794A301BA6743D00B5E9DC /* LICENSE.txt in Resources */,
+				31A71EE520865D6F00A2D46A /* sun.png in Resources */,
+				B47949A21BA6742B00B5E9DC /* arial.ttf in Resources */,
+				B47949B21BA6742B00B5E9DC /* crystal_d.png in Resources */,
+				B47949AD1BA6742B00B5E9DC /* cave_stream.vert in Resources */,
+				B47949A41BA6742B00B5E9DC /* blurShader.frag in Resources */,
+				B47949A91BA6742B00B5E9DC /* cave_n.png in Resources */,
+				31A71EE720865D6F00A2D46A /* tree.mtl in Resources */,
+				B47949A61BA6742B00B5E9DC /* cave.mtl in Resources */,
+				B47949B01BA6742B00B5E9DC /* crystal.mtl in Resources */,
+				31A71EE020865D6F00A2D46A /* tree.png in Resources */,
+				B47949B61BA6742B00B5E9DC /* flame.mtl in Resources */,
+				B47949AF1BA6742B00B5E9DC /* config.json in Resources */,
+				B47949AB1BA6742B00B5E9DC /* cave_stream.mtl in Resources */,
+				B47949BC1BA6742B00B5E9DC /* torch.mtl in Resources */,
+				B47949BD1BA6742B00B5E9DC /* torch.obj in Resources */,
 				B47949B31BA6742B00B5E9DC /* crystal_n.png in Resources */,
+				31A71EE820865D6F00A2D46A /* tree.obj in Resources */,
+				31A71EDE20865D6F00A2D46A /* basic.vert in Resources */,
+				31A71EE120865D6F00A2D46A /* terrain.png in Resources */,
+				B47949AA1BA6742B00B5E9DC /* cave_stream.frag in Resources */,
+				B47949BA1BA6742B00B5E9DC /* KozGoPro-ExtraLight.otf in Resources */,
+				31A71EE220865D6F00A2D46A /* sun.obj in Resources */,
+				31A71EDF20865D6F00A2D46A /* terrain.vert in Resources */,
+				B47949B51BA6742B00B5E9DC /* flame.frag in Resources */,
+				B47949A81BA6742B00B5E9DC /* cave_d.png in Resources */,
+				B47949AE1BA6742B00B5E9DC /* cave_stream_n.png in Resources */,
+				B47949A71BA6742B00B5E9DC /* cave.obj in Resources */,
 				B47949B11BA6742B00B5E9DC /* crystal.obj in Resources */,
+				B47949BE1BA6742B00B5E9DC /* torchSurface_Color.png in Resources */,
+				B47949AC1BA6742B00B5E9DC /* cave_stream.obj in Resources */,
+				B47949B41BA6742B00B5E9DC /* crystal_s.png in Resources */,
+				31A71EE320865D6F00A2D46A /* terrain.mtl in Resources */,
+				B47949B71BA6742B00B5E9DC /* flame.obj in Resources */,
+				B47949B91BA6742B00B5E9DC /* flame.vert in Resources */,
+				B4794A311BA6743D00B5E9DC /* LICENSE.txt in Resources */,
+				B4794A2A1BA6743D00B5E9DC /* LICENSE.txt in Resources */,
+				31A71EE920865D6F00A2D46A /* terrain.obj in Resources */,
+				B4794A301BA6743D00B5E9DC /* LICENSE.txt in Resources */,
 				B4CB8CD01B72E43300FE041B /* Project-Info.plist in Resources */,
+				31A71EE420865D6F00A2D46A /* terrain.frag in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -790,6 +863,7 @@
 				B4794A351BA6743D00B5E9DC /* Configuration.cpp in Sources */,
 				B4794A471BA6743D00B5E9DC /* ShaderDataGenerator.cpp in Sources */,
 				B47AD6BD1B827DB300AFC632 /* ftfntfmt.c in Sources */,
+				31F377FF2089512500EBEC30 /* PerlinNoise2D.cpp in Sources */,
 				B47AD6F51B82801400AFC632 /* ftdebug.c in Sources */,
 				B47AD6F11B827FDE00AFC632 /* ftbitmap.c in Sources */,
 				B47AD6F91B82803B00AFC632 /* ftgasp.c in Sources */,
@@ -806,6 +880,7 @@
 				B4794A561BA6743D00B5E9DC /* TextureData_ios.mm in Sources */,
 				B4794A4F1BA6743D00B5E9DC /* Renderer_desktop.cpp in Sources */,
 				B47AD6EF1B827FCF00AFC632 /* ftbase.c in Sources */,
+				31F378002089512500EBEC30 /* PerlinNoise.cpp in Sources */,
 				B47AD6E51B827F3300AFC632 /* type42.c in Sources */,
 				B4794A481BA6743D00B5E9DC /* ShaderSource.cpp in Sources */,
 				B4794A501BA6743D00B5E9DC /* TextureData_desktop.cpp in Sources */,
@@ -818,6 +893,7 @@
 				B47AD6CF1B827E7100AFC632 /* ftwinfnt.c in Sources */,
 				B44186971BA331E300604D7F /* RenderProject.cpp in Sources */,
 				B4794A421BA6743D00B5E9DC /* OBJLoader.cpp in Sources */,
+				31A71EED20865D8800A2D46A /* ProceduralOBJLoader.cpp in Sources */,
 				B4794A401BA6743D00B5E9DC /* ModelRenderer.cpp in Sources */,
 				B4794A461BA6743D00B5E9DC /* ShaderDataFile.cpp in Sources */,
 				B47AD6D71B827EC000AFC632 /* pshinter.c in Sources */,
@@ -849,6 +925,7 @@
 				B4794A341BA6743D00B5E9DC /* Camera.cpp in Sources */,
 				B4794A3E1BA6743D00B5E9DC /* Model.cpp in Sources */,
 				B4794A3A1BA6743D00B5E9DC /* Geometry.cpp in Sources */,
+				31A71EEE20865D8800A2D46A /* Terrain.cpp in Sources */,
 				B4794A521BA6743D00B5E9DC /* BView.mm in Sources */,
 				B4794A321BA6743D00B5E9DC /* obj.cpp in Sources */,
 				B47AD6CB1B827E4C00AFC632 /* ftsynth.c in Sources */,
@@ -870,6 +947,7 @@
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
+				ENABLE_BITCODE = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SYSTEM_APPS_DIR)/Xcode.app/Contents/Developer/Library/Frameworks\"",
@@ -895,6 +973,7 @@
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = "";
+				PRODUCT_BUNDLE_IDENTIFIER = ch.uzh.ifi.cgapp;
 				PRODUCT_NAME = bRenderer_ios;
 				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = NO;
 				SDKROOT = iphoneos;
@@ -911,6 +990,7 @@
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
+				ENABLE_BITCODE = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SYSTEM_APPS_DIR)/Xcode.app/Contents/Developer/Library/Frameworks\"",
@@ -934,6 +1014,7 @@
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = "";
+				PRODUCT_BUNDLE_IDENTIFIER = ch.uzh.ifi.cgapp;
 				PRODUCT_NAME = bRenderer_ios;
 				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = NO;
 				SDKROOT = iphoneos;
@@ -945,11 +1026,34 @@
 		C01FCF4F08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				FRAMEWORK_SEARCH_PATHS = $SRCROOT;
 				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = $SRCROOT;
 				ONLY_ACTIVE_ARCH = YES;
@@ -963,10 +1067,32 @@
 		C01FCF5008A954540054247B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				FRAMEWORK_SEARCH_PATHS = $SRCROOT;
 				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = $SRCROOT;
 				ONLY_ACTIVE_ARCH = YES;

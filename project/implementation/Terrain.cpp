@@ -1,9 +1,11 @@
 #include "Terrain.h"
 #include "ProceduralOBJLoader.h"
+#include "PerlinNoise.h"
+#include "PerlinNoise2D.h"
 
-#include "iostream";
+#include "iostream"
 
-int Terrain::_p[] = {};
+float ** _heights;
 
 Terrain::Terrain(MaterialPtr material, PropertiesPtr properties)
 {
@@ -11,19 +13,7 @@ Terrain::Terrain(MaterialPtr material, PropertiesPtr properties)
 	_properties = properties;
 
 	std::cout << "TERRAIN WORKS!!!" << std::endl;
-}
 
-float Terrain::perlin(float x, float y, float z)
-{
-	// Calculate the "unit cube" that the point asked will be located in
-	// The left bound is ( |_x_|,|_y_|,|_z_| ) and the right bound is that
-	// plus 1.  Next we calculate the location (from 0.0 to 1.0) in that cube.
-	int xi = (int)x & 255;								
-	int yi = (int)y & 255;								
-	int zi = (int)z & 255;								
-	float xf = x - (int)x;
-
-	return 1.0f;
 }
 
 ModelPtr Terrain::generate()
@@ -31,11 +21,17 @@ ModelPtr Terrain::generate()
 	// TODO: Should return a ModelPtr to RenderProject
 	//ModelData terrainData(true, false);
 	ProceduralOBJLoader objLoader;
+	PerlinNoise2D perlinNoise;
+
+	//generateHeights();
 
 	vmml::Vector3f center = vmml::Vector3f(0.0f, 0.0f, 0.0f);
+
+	_heights = new float*[_VERTEX_COUNT];
 	
 	for (int i = 0; i < _VERTEX_COUNT; i++)
 	{
+		_heights[i] = new float[_VERTEX_COUNT];
 		for (int j = 0; j < _VERTEX_COUNT; j++)
 		{
 			float uPos = (float)i / ((float)_VERTEX_COUNT/2.0 - 1);
@@ -43,9 +39,10 @@ ModelPtr Terrain::generate()
 			objLoader.addTexCoords(uPos, vPos);
 
 			float xPos = (float)j / ((float)_VERTEX_COUNT - 1) * _SIZE;
-			float yPos = ((float)rand()*3.0 / (RAND_MAX));
 			float zPos = (float)i / ((float)_VERTEX_COUNT - 1) * _SIZE;
-			objLoader.addVertex(xPos, yPos, zPos);
+			_heights[i][j] = perlinNoise.generateHeight(xPos, zPos);
+
+			objLoader.addVertex(xPos, _heights[i][j], zPos);
 		}
 	}
 
@@ -80,4 +77,21 @@ ModelPtr Terrain::generate()
 	ModelPtr terrainModel = ModelPtr(new Model(data, _material, _properties));
 
 	return terrainModel;
+}
+
+float** Terrain::generateHeights()
+{
+	PerlinNoise2D perlinNoise;
+	float ** heights = new float*[_VERTEX_COUNT];
+
+	for (int z = 0; z < _VERTEX_COUNT; z++)
+	{
+		for (int x = 0; x < _VERTEX_COUNT; x++)
+		{
+			perlinNoise.generateHeight((float)x, (float)z);
+		}
+	}
+
+
+	return heights;
 }

@@ -151,8 +151,11 @@
     <ClCompile Include="..\..\externalLibraries\freetype-2.6\src\type42\type42.c" />
     <ClCompile Include="..\..\externalLibraries\freetype-2.6\src\winfonts\winfnt.c" />
     <ClCompile Include="..\..\project\windows\main.cpp" />
+    <ClCompile Include="..\implementation\PerlinNoise.cpp" />
+    <ClCompile Include="..\implementation\PerlinNoise2D.cpp" />
     <ClCompile Include="..\implementation\ProceduralOBJLoader.cpp" />
     <ClCompile Include="..\implementation\RenderProject.cpp" />
+    <ClCompile Include="..\implementation\Skybox.cpp" />
     <ClCompile Include="..\implementation\Terrain.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -207,8 +210,11 @@
     <ClInclude Include="..\..\bRenderer\headers\Touch.h" />
     <ClInclude Include="..\..\bRenderer\headers\View.h" />
     <ClInclude Include="..\..\bRenderer\os_specific\ios\BView.h" />
+    <ClInclude Include="..\headers\PerlinNoise.h" />
+    <ClInclude Include="..\headers\PerlinNoise2D.h" />
     <ClInclude Include="..\headers\ProceduralOBJLoader.h" />
     <ClInclude Include="..\headers\RenderProject.h" />
+    <ClInclude Include="..\headers\Skybox.h" />
     <ClInclude Include="..\headers\Terrain.h" />
   </ItemGroup>
   <ItemGroup>
@@ -229,16 +235,9 @@
     <None Include="..\data\flame.frag" />
     <None Include="..\data\flame.mtl" />
     <None Include="..\data\flame.vert" />
-    <None Include="..\data\mushroom.frag" />
-    <None Include="..\data\mushroom.mtl" />
-    <None Include="..\data\mushroom.vert" />
+    <None Include="..\data\skybox.frag" />
+    <None Include="..\data\skybox.vert" />
     <None Include="..\data\torch.mtl" />
-    <None Include="..\data\tree.frag" />
-    <None Include="..\data\tree.mtl" />
-    <None Include="..\data\tree.vert" />
-    <None Include="..\data\tree_mat.mtl" />
-    <None Include="..\data\tree_trunk.frag" />
-    <None Include="..\data\tree_trunk.vert" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\data\basicTitle_light.png" />
@@ -249,11 +248,8 @@
     <Image Include="..\data\crystal_n.png" />
     <Image Include="..\data\crystal_s.png" />
     <Image Include="..\data\flame.png" />
-    <Image Include="..\data\mushroom.png" />
     <Image Include="..\data\sparks.png" />
     <Image Include="..\data\torchSurface_Color.png" />
-    <Image Include="..\data\tree_bottom.png" />
-    <Image Include="..\data\tree_top.001.png" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="..\data\arial.ttf" />

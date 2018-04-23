@@ -27,22 +27,14 @@ attribute vec3 Tangent;
 attribute vec3 Bitangent;
 attribute vec4 TexCoord;
 
-varying vec4 texCoordVarying;
-varying mediump vec4 posVarying;        // pos in world space
+varying mediump vec4 texCoordVarying;
+varying mediump vec4 posVarying;   // pos in world space
 varying mediump vec4 camPosVarying;        // pos in world space
 varying mediump vec3 normalVarying;     // normal in world space
 varying mediump vec3 tangentVarying;    // tangent in world space
 
 void main()
 {
-    camPosVarying = ModelViewMatrix * Position;
-	posVarying = ModelMatrix * Position; // posViewSpace
-    // need to invert z-value of normal to get the normal right
-    // TODO: export blender normal in the right coordinate system, so that
-    // we can remove this
-    normalVarying = normalize(NormalMatrix * (Normal * vec3(1.0, 1.0, -1.0)));
-    tangentVarying = normalize(NormalMatrix * Tangent);
-
-    texCoordVarying = TexCoord;
+    texCoordVarying = Position;
     gl_Position = ProjectionMatrix * ModelViewMatrix * Position;
 }

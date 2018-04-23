@@ -288,10 +288,19 @@
     <ClCompile Include="..\implementation\RenderProject.cpp">
       <Filter>project\implementation</Filter>
     </ClCompile>
-    <ClCompile Include="..\implementation\Terrain.cpp">
+    <ClCompile Include="..\implementation\PerlinNoise.cpp">
+      <Filter>project\implementation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\implementation\PerlinNoise2D.cpp">
       <Filter>project\implementation</Filter>
     </ClCompile>
     <ClCompile Include="..\implementation\ProceduralOBJLoader.cpp">
+      <Filter>project\implementation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\implementation\Terrain.cpp">
+      <Filter>project\implementation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\implementation\Skybox.cpp">
       <Filter>project\implementation</Filter>
     </ClCompile>
   </ItemGroup>
@@ -452,10 +461,19 @@
     <ClInclude Include="..\headers\RenderProject.h">
       <Filter>project\headers</Filter>
     </ClInclude>
-    <ClInclude Include="..\headers\Terrain.h">
+    <ClInclude Include="..\headers\PerlinNoise.h">
+      <Filter>project\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\headers\PerlinNoise2D.h">
       <Filter>project\headers</Filter>
     </ClInclude>
     <ClInclude Include="..\headers\ProceduralOBJLoader.h">
+      <Filter>project\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\headers\Terrain.h">
+      <Filter>project\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\headers\Skybox.h">
       <Filter>project\headers</Filter>
     </ClInclude>
   </ItemGroup>
@@ -514,31 +532,10 @@
     <None Include="..\data\config.json">
       <Filter>project\data</Filter>
     </None>
-    <None Include="..\data\mushroom.mtl">
+    <None Include="..\data\skybox.frag">
       <Filter>project\data</Filter>
     </None>
-    <None Include="..\data\mushroom.frag">
-      <Filter>project\data</Filter>
-    </None>
-    <None Include="..\data\mushroom.vert">
-      <Filter>project\data</Filter>
-    </None>
-    <None Include="..\data\tree.frag">
-      <Filter>project\data</Filter>
-    </None>
-    <None Include="..\data\tree.vert">
-      <Filter>project\data</Filter>
-    </None>
-    <None Include="..\data\tree.mtl">
-      <Filter>project\data</Filter>
-    </None>
-    <None Include="..\data\tree_mat.mtl">
-      <Filter>project\data</Filter>
-    </None>
-    <None Include="..\data\tree_trunk.frag">
-      <Filter>project\data</Filter>
-    </None>
-    <None Include="..\data\tree_trunk.vert">
+    <None Include="..\data\skybox.vert">
       <Filter>project\data</Filter>
     </None>
   </ItemGroup>
@@ -571,15 +568,6 @@
       <Filter>project\data</Filter>
     </Image>
     <Image Include="..\data\sparks.png">
-      <Filter>project\data</Filter>
-    </Image>
-    <Image Include="..\data\mushroom.png">
-      <Filter>project\data</Filter>
-    </Image>
-    <Image Include="..\data\tree_bottom.png">
-      <Filter>project\data</Filter>
-    </Image>
-    <Image Include="..\data\tree_top.001.png">
       <Filter>project\data</Filter>
     </Image>
   </ItemGroup>

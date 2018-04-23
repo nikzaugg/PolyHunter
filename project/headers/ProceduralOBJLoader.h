@@ -13,6 +13,8 @@ public:
 
 	void addFace(IndexData d1, IndexData d2, IndexData d3);
 
+	void addFaceNoTex(IndexData d1, IndexData d2, IndexData d3);
+
 	void addFace(int v1, int v2, int v3);
 
 	void printVertices();

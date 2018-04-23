@@ -6,7 +6,8 @@ ProceduralOBJLoader::ProceduralOBJLoader()
 				obj::obj_parser::translate_negative_indices)
 {
 	std::cout << "PROCEDURAL OBJ LOADER WORKS!!!" << std::endl;
-	_data = &ModelData(false, true);
+    ModelData dataPtr = ModelData(false, true);
+    _data = &dataPtr;
 	createGroup(bRenderer::DEFAULT_GROUP_NAME());
 	//createGroup("terrain");
 	_numFaces = 0;
@@ -31,6 +32,19 @@ void ProceduralOBJLoader::addFace(IndexData d1, IndexData d2, IndexData d3)
 	genVertex< true, true, false >(d1);
 	genVertex< true, true, false >(d2);
 	genVertex< true, true, false >(d3);
+
+	genFace< false >(d1, d2, d3);
+}
+
+void ProceduralOBJLoader::addFaceNoTex(IndexData d1, IndexData d2, IndexData d3)
+{
+	_group->indices.push_back(d1);
+	_group->indices.push_back(d2);
+	_group->indices.push_back(d3);
+
+	genVertex< true, false, false >(d1);
+	genVertex< true, false, false >(d2);
+	genVertex< true, false, false >(d3);
 
 	genFace< false >(d1, d2, d3);
 }

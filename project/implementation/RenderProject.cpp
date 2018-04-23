@@ -1,5 +1,6 @@
 #include "RenderProject.h"
 #include "Terrain.h"
+#include "Skybox.h"
 
 /* Initialize the Project */
 void RenderProject::init()
@@ -35,27 +36,39 @@ void RenderProject::initFunction()
 	bRenderer().getObjects()->setShaderVersionDesktop("#version 120");
 	bRenderer().getObjects()->setShaderVersionES("#version 100");
 
-	// load materials and shaders before loading the model
+	// SHADERS
 	ShaderPtr basicShader = bRenderer().getObjects()->loadShaderFile("basic", 1, false, true, true, true, false);
-	//ShaderPtr customShader = bRenderer().getObjects()->generateShader("customShader", { 2, true, true, true, true, true, true, true, true, true, false, false, false });	// automatically generates a shader with a maximum of 2 lights
+	ShaderPtr skyboxShader = bRenderer().getObjects()->loadShaderFile("skybox", 1, false, true, true, true, false);
 
-	// create additional properties for a model
+	// PROPERTIES FOR THE MODELS
 	PropertiesPtr treeProperties = bRenderer().getObjects()->createProperties("treeProperties");
 	PropertiesPtr sunProperties = bRenderer().getObjects()->createProperties("sunProperties");
-	//PropertiesPtr terrainProperties = bRenderer().getObjects()->createProperties("terrainProperties");
 	PropertiesPtr procTerrainProperties = bRenderer().getObjects()->createProperties("procTerrainProperties");
+	PropertiesPtr skyboxProperties = bRenderer().getObjects()->createProperties("skyboxProperties");
 
-	// load models
+	// BLENDER MODELS (.obj)
 	bRenderer().getObjects()->loadObjModel("tree.obj", false, true, basicShader, treeProperties);
 	bRenderer().getObjects()->loadObjModel("sun.obj", false, true, basicShader, sunProperties);
-	 //bRenderer().getObjects()->loadObjModel("terrain.obj", false, true, basicShader, terrainProperties);
-	// bRenderer().getObjects()->loadObjModel("tree_mat.obj", false, true, treeTrunkProperties);
-	//bRenderer().getObjects()->loadObjModel_o("crystal.obj", customShader, FLIP_Z);		// the custom shader created above is used
 
+	// PROCEDURAL TERRAIN
 	MaterialPtr terrainMaterial = bRenderer().getObjects()->loadObjMaterial("terrain.mtl", "terrain", basicShader);
 	Terrain terrain = Terrain(terrainMaterial, procTerrainProperties);
 	ModelPtr terrainModel = terrain.generate();
 	bRenderer().getObjects()->addModel("proceduralTerrain", terrainModel);
+
+	// SKYBOX (with CubeMap)
+	TextureData left = TextureData("left.png");
+	TextureData right = TextureData("right.png");
+	TextureData bottom = TextureData("bottom.png");
+	TextureData top = TextureData("top.png");
+	TextureData front = TextureData("front.png");
+	TextureData back = TextureData("back.png");
+	CubeMapPtr skyBoxCubeMapPtr = bRenderer().getObjects()->createCubeMap("skyBoxCubeMap", std::vector<TextureData>{left, right, bottom, top, front, back});
+	MaterialPtr skyboxMaterial = bRenderer().getObjects()->loadObjMaterial("terrain.mtl", "skybox", skyboxShader);
+	Skybox skybox = Skybox(skyboxMaterial, skyboxProperties);
+	ModelPtr skyBoxModel = skybox.generate();
+	bRenderer().getObjects()->addModel("skybox", skyBoxModel);
+	bRenderer().getObjects()->addCubeMap("skyBoxCubeMap", skyBoxCubeMapPtr);
 
 	// create sprites
 	bRenderer().getObjects()->createSprite("sparks", "sparks.png");										// create a sprite displaying sparks as a texture
@@ -72,7 +85,7 @@ void RenderProject::initFunction()
 	bRenderer().getObjects()->createCamera("camera", vmml::Vector3f(50.0, -30.0f, 0.0), vmml::Vector3f(0.f, -M_PI_F / 2, 0.f));
 
 	// create lights
-	bRenderer().getObjects()->createLight("sun", vmml::Vector3f(100.0, 100.0, 100.0), vmml::Vector3f(1.0f), vmml::Vector3f(1.0f), 1.0f, 0.5f, 100.0f);
+	bRenderer().getObjects()->createLight("sun", vmml::Vector3f(200.0, 200.0, -200.0), vmml::Vector3f(1.0f), vmml::Vector3f(1.0f), 1.0f, 0.5f, 100.0f);
 
 	// postprocessing
 	bRenderer().getObjects()->createFramebuffer("fbo");					// create framebuffer object
@@ -147,8 +160,6 @@ void RenderProject::loopFunction(const double &deltaTime, const double &elapsedT
 	//// Camera Movement ////
 	updateCamera("camera", deltaTime);
 	
-	
-
 	/// Update render queue ///
 	updateRenderQueue("camera", deltaTime);
 
@@ -169,47 +180,49 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
 {
 	elapsedTime += deltaTime;
 
-	/*** Tree ***/
-	vmml::Matrix4f modelMatrix = vmml::create_translation(vmml::Vector3f(0.0)) * vmml::create_scaling(vmml::Vector3f(1.0f));
+	vmml::Matrix4f modelMatrix;
 	vmml::Matrix3f normalMatrix;
-	vmml::compute_inverse(vmml::transpose(vmml::Matrix3f(modelMatrix)), normalMatrix);
-	ShaderPtr basic = bRenderer().getObjects()->getShader("basic");
-	basic->setUniform("NormalMatrix", normalMatrix);
-	// submit to render queue
+	ShaderPtr skybox;
+
+	/// TREE ///
+	modelMatrix = 
+		vmml::create_translation(vmml::Vector3f(0.0, 0.0, -10.0)) * 
+		vmml::create_rotation((float)elapsedTime * M_PI_F/10, vmml::Vector3f::UNIT_Y) *
+		vmml::create_scaling(vmml::Vector3f(1.0f));
+	// set ambient color
 	bRenderer().getObjects()->setAmbientColor(vmml::Vector3f(0.5f));
-	bRenderer().getModelRenderer()->queueModelInstance("tree", "tree_instance", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
+	// draw model
+	bRenderer().getModelRenderer()->drawModel("tree", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
 
-	/*** Sun ***/
-	modelMatrix = vmml::create_translation(vmml::Vector3f(100., 100.0, 100.0)) * vmml::create_scaling(vmml::Vector3f(1.0f));
-	vmml::compute_inverse(vmml::transpose(vmml::Matrix3f(modelMatrix)), normalMatrix);
-	basic = bRenderer().getObjects()->getShader("basic");
-	basic->setUniform("NormalMatrix", normalMatrix);
-	// submit to render queue
+	/// SUN ///
+	modelMatrix = 
+		vmml::create_translation(vmml::Vector3f(200., 200.0, -200.0)) * 
+		vmml::create_scaling(vmml::Vector3f(1.0f));
+	// set ambient color
 	bRenderer().getObjects()->setAmbientColor(vmml::Vector3f(0.5f));
-	bRenderer().getModelRenderer()->queueModelInstance("sun", "sun_instance", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
+	// draw model
+	bRenderer().getModelRenderer()->drawModel("sun", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
 
-	/*** Terrain ***/
-	//modelMatrix = vmml::create_translation(vmml::Vector3f(0, 0, 0.0)) * vmml::create_scaling(vmml::Vector3f(10.0f));
-	//vmml::compute_inverse(vmml::transpose(vmml::Matrix3f(modelMatrix)), normalMatrix);
-	//basic = bRenderer().getObjects()->getShader("basic");
-	//basic->setUniform("NormalMatrix", normalMatrix);
-	//// submit to render queue
-	//bRenderer().getObjects()->setAmbientColor(vmml::Vector3f(0.5f));
-	//bRenderer().getModelRenderer()->queueModelInstance("terrain", "terrain_instance", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
-
-	/*** Procedural Terrain ***/
-	modelMatrix = vmml::create_translation(vmml::Vector3f(-75.0, 0.0, 75.0)) * vmml::create_scaling(vmml::Vector3f(1.0f));
-	vmml::compute_inverse(vmml::transpose(vmml::Matrix3f(modelMatrix)), normalMatrix);
-	basic = bRenderer().getObjects()->getShader("basic");
-	basic->setUniform("NormalMatrix", normalMatrix);
+	/// Procedural Terrain ///
+	modelMatrix = 
+		vmml::create_translation(vmml::Vector3f(-75.0, 0.0, 75.0)) * 
+		vmml::create_scaling(vmml::Vector3f(5.0f));
+	// set ambient color
 	bRenderer().getObjects()->setAmbientColor(vmml::Vector3f(0.5f));
-	bRenderer().getModelRenderer()->queueModelInstance("proceduralTerrain", "proceduralTerrain_instance", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
+	// draw model
+	bRenderer().getModelRenderer()->drawModel("proceduralTerrain", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
 
-	/*** Crystal (red) ***/
-	// translate and scale 
-	//modelMatrix = vmml::create_translation(vmml::Vector3f(218.0f, -17.0f, 4.0f)) * vmml::create_scaling(vmml::Vector3f(0.1f));
-	//// submit to render queue
-	//bRenderer().getModelRenderer()->queueModelInstance("crystal", "crystal_red", camera, modelMatrix, std::vector<std::string>({}), true, false, true);
+	/// Skybox ///
+	modelMatrix = 
+		vmml::create_translation(vmml::Vector3f(0.0, 30.0, 0.0)) * 
+		vmml::create_scaling(vmml::Vector3f(1.0));
+	// set CubeMap for skybox texturing
+	skybox = bRenderer().getObjects()->getShader("skybox");
+	skybox->setUniform("CubeMap", bRenderer().getObjects()->getCubeMap("skyBoxCubeMap"));
+	// set ambient color
+	bRenderer().getObjects()->setAmbientColor(vmml::Vector3f(0.5f));
+	// draw model
+	bRenderer().getModelRenderer()->drawModel("skybox", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
 }
 
 /* Camera movement */

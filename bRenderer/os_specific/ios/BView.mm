@@ -254,7 +254,7 @@
         CGPoint beginTouchPosition = [touch locationInView:self];
         
         // add touch
-        _touches[(int)touch] = {beginTouchPosition.x, beginTouchPosition.y, beginTouchPosition.x, beginTouchPosition.y, beginTouchPosition.x, beginTouchPosition.y};
+        _touches[(int)(size_t)touch] = {static_cast<GLfloat>(beginTouchPosition.x), static_cast<GLfloat>(beginTouchPosition.y), static_cast<GLfloat>(beginTouchPosition.x), static_cast<GLfloat>(beginTouchPosition.y), static_cast<GLfloat>(beginTouchPosition.x), static_cast<GLfloat>(beginTouchPosition.y)};
     }
 }
 /* Receive touch events: Touch moved */
@@ -269,10 +269,10 @@
         CGPoint currentTouchPosition = [touch locationInView:self];
         
         // update touch
-        _touches[(int)touch].lastPositionX = _touches[(int)touch].currentPositionX;
-        _touches[(int)touch].lastPositionY = _touches[(int)touch].currentPositionY;
-        _touches[(int)touch].currentPositionX = currentTouchPosition.x;
-        _touches[(int)touch].currentPositionY = currentTouchPosition.y;
+        _touches[(int)(size_t)touch].lastPositionX = _touches[(int)(size_t)touch].currentPositionX;
+        _touches[(int)(size_t)touch].lastPositionY = _touches[(int)(size_t)touch].currentPositionY;
+        _touches[(int)(size_t)touch].currentPositionX = currentTouchPosition.x;
+        _touches[(int)(size_t)touch].currentPositionY = currentTouchPosition.y;
     }
 }
 /* Receive touch events: Touch ended */
@@ -284,7 +284,7 @@
     for (UITouch *touch in touches) {
         
         // remove touch
-        _touches.erase((int)touch);
+        _touches.erase((int)(size_t)touch);
         
         if (touch.tapCount >= 2) {
             // double Tap
@@ -309,7 +309,7 @@
     for (UITouch *touch in touches) {
         
         // remove touch
-        _touches.erase((int)touch);
+        _touches.erase((int)(size_t)touch);
     }
     
 }
@@ -337,12 +337,12 @@
 
 - (Touch)getLastSingleTapLocation
 {
-    return {_lastSingleTapLocation.x, _lastSingleTapLocation.y, _lastSingleTapLocation.x, _lastSingleTapLocation.y, _lastSingleTapLocation.x, _lastSingleTapLocation.y};
+    return {static_cast<GLfloat>(_lastSingleTapLocation.x), static_cast<GLfloat>(_lastSingleTapLocation.y), static_cast<GLfloat>(_lastSingleTapLocation.x), static_cast<GLfloat>(_lastSingleTapLocation.y), static_cast<GLfloat>(_lastSingleTapLocation.x), static_cast<GLfloat>(_lastSingleTapLocation.y)};
 }
 
 - (Touch)getLastDoubleTapLocation
 {
-    return {_lastDoubleTapLocation.x, _lastDoubleTapLocation.y, _lastDoubleTapLocation.x, _lastDoubleTapLocation.y, _lastSingleTapLocation.x, _lastSingleTapLocation.y};
+    return {static_cast<GLfloat>(_lastDoubleTapLocation.x), static_cast<GLfloat>(_lastDoubleTapLocation.y), static_cast<GLfloat>(_lastDoubleTapLocation.x), static_cast<GLfloat>(_lastDoubleTapLocation.y), static_cast<GLfloat>(_lastSingleTapLocation.x), static_cast<GLfloat>(_lastSingleTapLocation.y)};
 }
 
 - (void)dealloc
