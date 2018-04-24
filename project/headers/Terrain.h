@@ -16,8 +16,8 @@ private:
 	MaterialPtr _material;
 	PropertiesPtr _properties;
 	
-	static constexpr int _VERTEX_COUNT = 128;
-	static constexpr int _SIZE = 100;
+	int _VERTEX_COUNT;
+	int _SIZE;
 
 	int _numFaces;
 
