@@ -2,8 +2,8 @@
 #include "ProceduralOBJLoader.h"
 #include "PerlinNoise.h"
 #include "PerlinNoise2D.h"
-#include "math.h";
-#include "noise\noise.h"
+#include "math.h"
+#include "noise.h"
 #include "iostream"
 
 float ** _heights;
@@ -57,13 +57,13 @@ ModelPtr Terrain::generate()
 			float ny = ((float)i / ((float)_VERTEX_COUNT)) -0.5;
 
 			perlin.SetSeed(2);
-			float height = 1 * noise(1 * nx, 1 * ny)
-			+0.5 * noise(2 * nx, 2 * ny)
-			+0.25 * noise(4 * nx, 4 * ny);
+            float height = noise(1 * nx, 1 * ny)
+            + 0.5 * noise(2 * nx, 2 * ny)
+            + 0.25 * noise(4 * nx, 2 * ny);
 
 			height = pow(height, 4.18);
 
-			// std::cout << height << std::endl;
+            // std::cout << height << std::endl;
 			
 			_heights[i][j] = height * 10;
 			

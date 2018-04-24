@@ -36,7 +36,7 @@ varying mediump vec3 tangentVarying;    // tangent in world space
 
 void main()
 {
-    heightColor = vec4(Position.y/10.0, Position.y/10.0, Position.y/10.0, 1.0);
+    heightColor = vec4(Position.y/50.0, Position.y/50.0, Position.y/50.0, 1.0);
     camPosVarying = ModelViewMatrix * Position;
 	posVarying = ModelMatrix * Position; // posViewSpace
     // need to invert z-value of normal to get the normal right
