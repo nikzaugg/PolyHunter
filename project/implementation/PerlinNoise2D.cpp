@@ -85,7 +85,7 @@ float PerlinNoise2D::perlin(float x, float z)
 
 	y1 = lerp(x1, x2, v);
 
-	return (y1 + 1);
+	return y1;
 }
 
 float PerlinNoise2D::generateHeight(float x, float z)

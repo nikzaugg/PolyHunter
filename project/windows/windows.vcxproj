@@ -224,6 +224,8 @@
     <None Include="..\..\bRenderer\os_specific\ios\Renderer_ios.mm" />
     <None Include="..\..\bRenderer\os_specific\ios\TextureData_ios.mm" />
     <None Include="..\..\bRenderer\os_specific\ios\View_ios.mm" />
+    <None Include="..\data\basic.frag" />
+    <None Include="..\data\basic.vert" />
     <None Include="..\data\blurShader.frag" />
     <None Include="..\data\blurShader.vert" />
     <None Include="..\data\cave.mtl" />
@@ -237,6 +239,8 @@
     <None Include="..\data\flame.vert" />
     <None Include="..\data\skybox.frag" />
     <None Include="..\data\skybox.vert" />
+    <None Include="..\data\terrain.frag" />
+    <None Include="..\data\terrain.vert" />
     <None Include="..\data\torch.mtl" />
   </ItemGroup>
   <ItemGroup>

@@ -8,9 +8,7 @@ public:
 
 	float generateHeight(float x, float z);
 
-	float getSmoothNoise(float x, float z);
-
-	float getInterpolatedNoise(float x, float z);
+	float perlin(float x, float z);
 
 private:
 	/** @brief Hash lookup table as defined by Ken Perlin. This is a randomly arranged array of all numbers from 0-255 inclusive.
@@ -33,8 +31,6 @@ private:
 	/** @brief Permutation Table Array
 	*/
 	static int _p[512];
-
-	float perlin(float x, float z);
 
 	int inc(int num);
 

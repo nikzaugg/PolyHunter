@@ -538,6 +538,18 @@
     <None Include="..\data\skybox.vert">
       <Filter>project\data</Filter>
     </None>
+    <None Include="..\data\terrain.frag">
+      <Filter>project\data</Filter>
+    </None>
+    <None Include="..\data\terrain.vert">
+      <Filter>project\data</Filter>
+    </None>
+    <None Include="..\data\basic.frag">
+      <Filter>project\data</Filter>
+    </None>
+    <None Include="..\data\basic.vert">
+      <Filter>project\data</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\data\flame.png">

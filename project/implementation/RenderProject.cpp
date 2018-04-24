@@ -39,6 +39,7 @@ void RenderProject::initFunction()
 	// SHADERS
 	ShaderPtr basicShader = bRenderer().getObjects()->loadShaderFile("basic", 1, false, true, true, true, false);
 	ShaderPtr skyboxShader = bRenderer().getObjects()->loadShaderFile("skybox", 1, false, true, true, true, false);
+	ShaderPtr terrainShader = bRenderer().getObjects()->loadShaderFile("terrain", 1, false, true, true, true, false);
 
 	// PROPERTIES FOR THE MODELS
 	PropertiesPtr treeProperties = bRenderer().getObjects()->createProperties("treeProperties");
@@ -48,10 +49,10 @@ void RenderProject::initFunction()
 
 	// BLENDER MODELS (.obj)
 	bRenderer().getObjects()->loadObjModel("tree.obj", false, true, basicShader, treeProperties);
-	bRenderer().getObjects()->loadObjModel("sun.obj", false, true, basicShader, sunProperties);
+	//bRenderer().getObjects()->loadObjModel("sun.obj", false, true, basicShader, sunProperties);
 
 	// PROCEDURAL TERRAIN
-	MaterialPtr terrainMaterial = bRenderer().getObjects()->loadObjMaterial("tree.mtl", "terrain", basicShader);
+	MaterialPtr terrainMaterial = bRenderer().getObjects()->loadObjMaterial("tree.mtl", "terrain", terrainShader);
 	Terrain terrain = Terrain(terrainMaterial, procTerrainProperties);
 	ModelPtr terrainModel = terrain.generate();
 	bRenderer().getObjects()->addModel("proceduralTerrain", terrainModel);
@@ -195,13 +196,13 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
 	bRenderer().getModelRenderer()->drawModel("tree", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
 
 	/// SUN ///
-	modelMatrix = 
-		vmml::create_translation(vmml::Vector3f(200., 200.0, -200.0)) * 
-		vmml::create_scaling(vmml::Vector3f(1.0f));
-	// set ambient color
-	bRenderer().getObjects()->setAmbientColor(vmml::Vector3f(0.5f));
-	// draw model
-	bRenderer().getModelRenderer()->drawModel("sun", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
+	//modelMatrix = 
+	//	vmml::create_translation(vmml::Vector3f(200., 200.0, -200.0)) * 
+	//	vmml::create_scaling(vmml::Vector3f(1.0f));
+	//// set ambient color
+	//bRenderer().getObjects()->setAmbientColor(vmml::Vector3f(0.5f));
+	//// draw model
+	//bRenderer().getModelRenderer()->drawModel("sun", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
 
 	/// Procedural Terrain ///
 	modelMatrix = 
