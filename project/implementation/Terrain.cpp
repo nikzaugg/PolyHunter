@@ -3,10 +3,12 @@
 #include "PerlinNoise.h"
 #include "PerlinNoise2D.h"
 #include "math.h";
-
+#include "noise\noise.h"
 #include "iostream"
 
 float ** _heights;
+using namespace noise;
+module::Perlin perlin;
 
 Terrain::Terrain(MaterialPtr material, PropertiesPtr properties)
 {
@@ -16,8 +18,11 @@ Terrain::Terrain(MaterialPtr material, PropertiesPtr properties)
 	std::cout << "TERRAIN WORKS!!!" << std::endl;
 	this->_VERTEX_COUNT = 100;
 	this->_SIZE = 100;
+}
 
-
+double Terrain::noise(double nx, double ny) {
+	// Rescale from -1.0:+1.0 to 0.0:1.0
+	return perlin.GetValue(nx, ny, 0) / 2.0 + 0.5;
 }
 
 ModelPtr Terrain::generate()
@@ -32,8 +37,6 @@ ModelPtr Terrain::generate()
 
 	vmml::Vector3f center = vmml::Vector3f(0.0f, 0.0f, 0.0f);
 
-
-	
 	_heights = new float*[_VERTEX_COUNT];
 	
 	for (int i = 0; i < _VERTEX_COUNT; i++)
@@ -50,16 +53,16 @@ ModelPtr Terrain::generate()
 			float xPos = ((float)j / ((float)_VERTEX_COUNT - 1)) * _SIZE;
 			float zPos = ((float)i / ((float)_VERTEX_COUNT - 1)) * _SIZE;
 
-			float nx = ((float)j / ((float)_VERTEX_COUNT));
-			float ny = ((float)i / ((float)_VERTEX_COUNT));
+			float nx = ((float)j / ((float)_VERTEX_COUNT)) -0.5;
+			float ny = ((float)i / ((float)_VERTEX_COUNT)) -0.5;
 
-			 float height = 1 * perlinNoise.perlin(1.75 * nx, 1.75 * ny, 0.3)
-				+ 0.5 * perlinNoise.perlin(2 * nx, 2 * ny, 0.3)
-				+ 0.25 * perlinNoise.perlin(4 * nx, 2 * ny, 0.3);
-			 
-			// float height = perlinNoise.perlin(nx, ny, 0.8);
+			perlin.SetSeed(2);
+			float height = 1 * noise(1 * nx, 1 * ny)
+			+0.5 * noise(2 * nx, 2 * ny)
+			+0.25 * noise(4 * nx, 4 * ny);
 
-			// float height = perlinNoise.generateHeight(nx, ny, 0.8);
+			height = pow(height, 4.18);
+
 			// std::cout << height << std::endl;
 			
 			_heights[i][j] = height * 10;

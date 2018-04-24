@@ -101,7 +101,7 @@ float PerlinNoise::perlin(float x, float y, float z)
 float PerlinNoise::generateHeight(float x, float y, float z)
 {
 	float total = 0;
-	float frequency = 4;
+	float frequency = 6;
 	float amplitude = 70;
 	float maxValue = 0;
 	float persistence = 2;

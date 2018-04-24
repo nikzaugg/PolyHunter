@@ -17,6 +17,7 @@ void Geometry::initialize(GeometryDataPtr geometryData)
 
 void Geometry::draw(GLenum mode)
 {
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glBindBuffer(GL_ARRAY_BUFFER, _vertexBuffer);
 
 	if (_material)

@@ -10,6 +10,8 @@ public:
 	
 	Terrain(MaterialPtr material, PropertiesPtr properties);
 
+	double noise(double x, double y);
+
 	ModelPtr generate();
 
 private:

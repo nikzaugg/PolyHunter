@@ -40,19 +40,26 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IncludePath>C:\dev\graphics\PolyHunter\externalLibraries\libnoise\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\dev\graphics\PolyHunter\externalLibraries\libnoise\bin;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IncludePath>C:\dev\graphics\PolyHunter\externalLibraries\libnoise\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\dev\graphics\PolyHunter\externalLibraries\libnoise\bin;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)\externalLibraries\vmmlib-library;$(SolutionDir)\externalLibraries\boost-library;$(SolutionDir)\externalLibraries\glew-1.13.0\include;$(SolutionDir)\externalLibraries\FreeImage3170;$(SolutionDir)\externalLibraries\glfw-3.1.1\include;$(SolutionDir)\externalLibraries\freetype-2.6\include;$(SolutionDir)\project\headers;$(SolutionDir)\bRenderer;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\dev\graphics\PolyHunter\externalLibraries\libnoise\include;$(SolutionDir)\externalLibraries\vmmlib-library;$(SolutionDir)\externalLibraries\boost-library;$(SolutionDir)\externalLibraries\glew-1.13.0\include;$(SolutionDir)\externalLibraries\FreeImage3170;$(SolutionDir)\externalLibraries\glfw-3.1.1\include;$(SolutionDir)\externalLibraries\freetype-2.6\include;$(SolutionDir)\project\headers;$(SolutionDir)\bRenderer;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>FT2_BUILD_LIBRARY;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)\externalLibraries\glew-1.13.0\lib_win32;$(SolutionDir)\externalLibraries\FreeImage3170;$(SolutionDir)\externalLibraries\glfw-3.1.1\lib_win32</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;glew32.lib;glfw3dll.lib;FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\dev\graphics\PolyHunter\externalLibraries\libnoise;$(SolutionDir)\externalLibraries\glew-1.13.0\lib_win32;$(SolutionDir)\externalLibraries\FreeImage3170;$(SolutionDir)\externalLibraries\glfw-3.1.1\lib_win32</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glew32.lib;glfw3dll.lib;FreeImage.lib;libnoise.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -62,15 +69,15 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>false</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)\externalLibraries\vmmlib-library;$(SolutionDir)\externalLibraries\boost-library;$(SolutionDir)\externalLibraries\glew-1.13.0\include;$(SolutionDir)\externalLibraries\FreeImage3170;$(SolutionDir)\externalLibraries\glfw-3.1.1\include;$(SolutionDir)\externalLibraries\freetype-2.6\include;$(SolutionDir)\project\headers;$(SolutionDir)\bRenderer;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\dev\graphics\PolyHunter\externalLibraries\libnoise\include;$(SolutionDir)\externalLibraries\vmmlib-library;$(SolutionDir)\externalLibraries\boost-library;$(SolutionDir)\externalLibraries\glew-1.13.0\include;$(SolutionDir)\externalLibraries\FreeImage3170;$(SolutionDir)\externalLibraries\glfw-3.1.1\include;$(SolutionDir)\externalLibraries\freetype-2.6\include;$(SolutionDir)\project\headers;$(SolutionDir)\bRenderer;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>FT2_BUILD_LIBRARY;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(SolutionDir)\externalLibraries\glew-1.13.0\lib_win32;$(SolutionDir)\externalLibraries\FreeImage3170;$(SolutionDir)\externalLibraries\glfw-3.1.1\lib_win32</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;glew32.lib;glfw3dll.lib;FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\dev\graphics\PolyHunter\externalLibraries\libnoise;$(SolutionDir)\externalLibraries\glew-1.13.0\lib_win32;$(SolutionDir)\externalLibraries\FreeImage3170;$(SolutionDir)\externalLibraries\glfw-3.1.1\lib_win32</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glew32.lib;glfw3dll.lib;FreeImage.lib;libnoise.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
