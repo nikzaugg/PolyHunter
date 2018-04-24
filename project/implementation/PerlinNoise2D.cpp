@@ -85,18 +85,18 @@ float PerlinNoise2D::perlin(float x, float z)
 
 	y1 = lerp(x1, x2, v);
 
-	return y1;
+	return (y1 + 1) / 2;
 }
 
 float PerlinNoise2D::generateHeight(float x, float z)
 {
 	float total = 0;
 	float frequency = 4;
-	float amplitude = 128;
+	float amplitude = 1;
 	float maxValue = 0;
 	float persistence = 2;
 
-	int octaves = 3;
+	int octaves = 1;
 
 	for (int i = 0; i < octaves; i++)
 	{

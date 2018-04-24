@@ -26,6 +26,7 @@ varying lowp vec4 ambientVarying;
 varying lowp vec4 diffuseVarying;
 varying lowp vec4 specularVarying;
 varying lowp vec4 texCoordVarying;
+varying lowp vec4 heightColor;
 varying mediump vec4 posVarying;        // pos in world space
 varying mediump vec4 camPosVarying;     // cam pos in world space
 varying mediump vec3 normalVarying;     // normal in world space
@@ -53,9 +54,9 @@ void main()
         mediump vec3 specular = Ks * angleFactor * lightSpecularColor_0;
         specular_ = vec4(clamp(specular, 0.0, 1.0), 1.0);
     }
-
-    lowp vec4 color = texture2D(DiffuseMap, texCoordVarying.st);
-    gl_FragColor = (ambientResult + diffuseResult + specular_) * color;   
+    // lowp vec4 color = texture2D(DiffuseMap, texCoordVarying.st);
+    gl_FragColor = heightColor;
+    // gl_FragColor = (ambientResult + diffuseResult + specular_) * color;   
     // gl_FragColor =  texCoordVarying;
     // gl_FragColor = vec4(normalVarying, 1.0);
 }

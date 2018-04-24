@@ -28,6 +28,7 @@ attribute vec3 Bitangent;
 attribute vec4 TexCoord;
 
 varying vec4 texCoordVarying;
+varying lowp vec4 heightColor;
 varying mediump vec4 posVarying;        // pos in world space
 varying mediump vec4 camPosVarying;        // pos in world space
 varying mediump vec3 normalVarying;     // normal in world space
@@ -35,6 +36,7 @@ varying mediump vec3 tangentVarying;    // tangent in world space
 
 void main()
 {
+    heightColor = vec4(Position.y/10.0, Position.y/10.0, Position.y/10.0, 1.0);
     camPosVarying = ModelViewMatrix * Position;
 	posVarying = ModelMatrix * Position; // posViewSpace
     // need to invert z-value of normal to get the normal right
@@ -44,5 +46,6 @@ void main()
     tangentVarying = normalize(NormalMatrix * Tangent);
 
     texCoordVarying = TexCoord;
+    // gl_Position = ProjectionMatrix * ModelViewMatrix * vec4(Position.x, 0.0, Position.z, 1.0);
     gl_Position = ProjectionMatrix * ModelViewMatrix * Position;
 }

@@ -6,6 +6,8 @@ class PerlinNoise
 public:
 	PerlinNoise();
 
+	float perlin(float x, float y, float z);
+
 	float generateHeight(float x, float y, float z);
 
 private:
@@ -29,8 +31,6 @@ private:
 	/** @brief Permutation Table Array
 	*/
 	static int _p[512];
-
-	float perlin(float x, float y, float z);
 
 	int inc(int num);
 

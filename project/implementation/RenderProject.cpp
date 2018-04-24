@@ -52,7 +52,7 @@ void RenderProject::initFunction()
 	//bRenderer().getObjects()->loadObjModel("sun.obj", false, true, basicShader, sunProperties);
 
 	// PROCEDURAL TERRAIN
-	MaterialPtr terrainMaterial = bRenderer().getObjects()->loadObjMaterial("tree.mtl", "terrain", terrainShader);
+	MaterialPtr terrainMaterial = bRenderer().getObjects()->loadObjMaterial("terrain.mtl", "terrain", terrainShader);
 	Terrain terrain = Terrain(terrainMaterial, procTerrainProperties);
 	ModelPtr terrainModel = terrain.generate();
 	bRenderer().getObjects()->addModel("proceduralTerrain", terrainModel);

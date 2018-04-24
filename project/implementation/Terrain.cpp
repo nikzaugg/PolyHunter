@@ -15,7 +15,7 @@ Terrain::Terrain(MaterialPtr material, PropertiesPtr properties)
 
 	std::cout << "TERRAIN WORKS!!!" << std::endl;
 	this->_VERTEX_COUNT = 100;
-	this->_SIZE = 300;
+	this->_SIZE = 100;
 
 
 }
@@ -25,7 +25,8 @@ ModelPtr Terrain::generate()
 	// TODO: Should return a ModelPtr to RenderProject
 	//ModelData terrainData(true, false);
 	ProceduralOBJLoader objLoader;
-	PerlinNoise2D perlinNoise;
+	PerlinNoise2D perlinNoise2D;
+	PerlinNoise perlinNoise;
 
 	//generateHeights();
 
@@ -49,15 +50,20 @@ ModelPtr Terrain::generate()
 			float xPos = ((float)j / ((float)_VERTEX_COUNT - 1)) * _SIZE;
 			float zPos = ((float)i / ((float)_VERTEX_COUNT - 1)) * _SIZE;
 
-			float nx = j / (float)_SIZE;
-			float ny = i / (float)_SIZE;
+			float nx = ((float)j / ((float)_VERTEX_COUNT));
+			float ny = ((float)i / ((float)_VERTEX_COUNT));
 
-			float height = 1 * perlinNoise.perlin(1.75f * nx, 1.75f * ny)
-				+ 0.5 * perlinNoise.perlin(2 * nx, 2 * ny) 
-				+ 0.25 * perlinNoise.perlin(4 * nx, 2 * ny);
+			 float height = 1 * perlinNoise.perlin(1.75 * nx, 1.75 * ny, 0.3)
+				+ 0.5 * perlinNoise.perlin(2 * nx, 2 * ny, 0.3)
+				+ 0.25 * perlinNoise.perlin(4 * nx, 2 * ny, 0.3);
+			 
+			// float height = perlinNoise.perlin(nx, ny, 0.8);
 
-			_heights[i][j] = height * 100;
-
+			// float height = perlinNoise.generateHeight(nx, ny, 0.8);
+			// std::cout << height << std::endl;
+			
+			_heights[i][j] = height * 10;
+			
 			objLoader.addVertex(xPos, _heights[i][j], zPos);
 		}
 	}
