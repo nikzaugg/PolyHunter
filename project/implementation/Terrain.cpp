@@ -10,14 +10,18 @@ float ** _heights;
 using namespace noise;
 module::Perlin perlin;
 
-Terrain::Terrain(MaterialPtr material, PropertiesPtr properties)
+Terrain::Terrain(MaterialPtr material, PropertiesPtr properties, ShaderPtr shader)
 {
 	_material = material;
 	_properties = properties;
+	_shader = shader;
 
 	std::cout << "TERRAIN WORKS!!!" << std::endl;
 	this->_VERTEX_COUNT = 100;
 	this->_SIZE = 100;
+
+	this->_amplitude = 5;
+	this->_exponent = 4.18;
 }
 
 double Terrain::noise(double nx, double ny) {
@@ -38,7 +42,7 @@ ModelPtr Terrain::generate()
 	vmml::Vector3f center = vmml::Vector3f(0.0f, 0.0f, 0.0f);
 
 	_heights = new float*[_VERTEX_COUNT];
-	
+
 	for (int i = 0; i < _VERTEX_COUNT; i++)
 	{
 		_heights[i] = new float[_VERTEX_COUNT];
@@ -56,16 +60,14 @@ ModelPtr Terrain::generate()
 			float nx = ((float)j / ((float)_VERTEX_COUNT)) -0.5;
 			float ny = ((float)i / ((float)_VERTEX_COUNT)) -0.5;
 
-			perlin.SetSeed(2);
+			perlin.SetSeed(22);
 			float height = 1 * noise(1 * nx, 1 * ny)
 			+0.5 * noise(2 * nx, 2 * ny)
 			+0.25 * noise(4 * nx, 4 * ny);
 
-			height = pow(height, 4.18);
-
-			// std::cout << height << std::endl;
+			height = pow(height, _exponent);
 			
-			_heights[i][j] = height * 10;
+			_heights[i][j] = height * 5;
 			
 			objLoader.addVertex(xPos, _heights[i][j], zPos);
 		}
@@ -99,6 +101,8 @@ ModelPtr Terrain::generate()
 
 		}
 	}
+
+	_shader->setUniform("amplitude", _amplitude);
 
 	objLoader.load();
 

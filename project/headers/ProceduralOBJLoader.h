@@ -11,9 +11,13 @@ public:
 
 	void addTexCoords(float u, float v);
 
+	void addColor(float r, float g, float b, float a);
+
 	void addFace(IndexData d1, IndexData d2, IndexData d3);
 
 	void addFaceNoTex(IndexData d1, IndexData d2, IndexData d3);
+
+	void addFaceWithColors(IndexData d1, IndexData d2, IndexData d3);
 
 	void addFace(int v1, int v2, int v3);
 
@@ -31,6 +35,9 @@ public:
 
 private:
 	int _numFaces;
+
+	template< bool POSITION, bool TEX_COORD, bool NORMAL, bool COLOR >
+	void genVertex(const IndexData &d);
 
 };
 typedef std::shared_ptr< ProceduralOBJLoader >  ProceduralOBJLoaderPtr;

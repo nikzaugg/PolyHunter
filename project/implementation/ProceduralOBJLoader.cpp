@@ -23,15 +23,111 @@ void ProceduralOBJLoader::addTexCoords(float u, float v)
 	_texCoords.push_back(vmml::Vector2f(u, v));
 }
 
+void ProceduralOBJLoader::addColor(float r, float g, float b, float a)
+{
+	_colors.push_back(vmml::Vector4f(r, g, b, a));
+}
+
+template< bool POSITION, bool TEX_COORD, bool NORMAL, bool COLOR >
+void ProceduralOBJLoader::genVertex(const IndexData &d)
+{
+	Vertex v;
+
+	if (POSITION)
+	{
+		v.position.x = _vertices[d.vertexIndex].x();
+		v.position.y = _vertices[d.vertexIndex].y();
+		v.position.z = _vertices[d.vertexIndex].z();
+		if (_data->getFlipZ())
+		{
+			v.position.z *= -1.0f;
+		}
+	}
+	else
+	{
+		v.position.x = 0;
+		v.position.y = 0;
+		v.position.z = 0;
+	}
+
+	if (TEX_COORD)
+	{
+		v.texCoord.s = _texCoords[d.texCoordsIndex].x();
+		v.texCoord.t = _texCoords[d.texCoordsIndex].y();
+		if (_data->getFlipT())
+		{
+			v.texCoord.t = 1.0f - v.texCoord.t;
+		}
+	}
+	else
+	{
+		v.texCoord.s = 0;
+		v.texCoord.t = 0;
+	}
+
+	if (NORMAL)
+	{
+		v.normal.x = _normals[d.normalIndex].x();
+		v.normal.y = _normals[d.normalIndex].y();
+		v.normal.z = _normals[d.normalIndex].z();
+		_vertices[d.vertexIndex].normal = _normals[d.normalIndex];
+	}
+	else
+	{
+		v.normal.x = 0;
+		v.normal.y = 0;
+		v.normal.z = 0;
+		_vertices[d.vertexIndex].normal = vmml::Vector3f::ZERO;
+	}
+
+	if (COLOR)
+	{
+		v.color.r = _colors[d.colorIndex].x();
+		v.color.g = _colors[d.colorIndex].y();
+		v.color.b = _colors[d.colorIndex].z();
+		v.color.a = _colors[d.colorIndex].a();
+	}
+	else
+	{
+		v.color.r = 0;
+		v.color.g = 0;
+		v.color.b = 0;
+		v.color.a = 0;
+	}
+
+	v.tangent.x = 0.0;
+	v.tangent.y = 0.0;
+	v.tangent.z = 0.0;
+	v.bitangent.x = 0.0;
+	v.bitangent.y = 0.0;
+	v.bitangent.z = 0.0;
+
+	_group->vboVertices.push_back(v);
+	_group->vboIndices.push_back(_group->vboIndices.size());
+}
+
+template< bool NORMAL >
+void OBJLoader::genFace(const IndexData &d1, const IndexData &d2, const IndexData &d3)
+{
+	FaceData f;
+	f.v1 = d1.vertexIndex;
+	f.v2 = d2.vertexIndex;
+	f.v3 = d3.vertexIndex;
+	f.normal = vmml::Vector3f::ZERO;
+
+	_faces.push_back(f);
+}
+
+
 void ProceduralOBJLoader::addFace(IndexData d1, IndexData d2, IndexData d3)
 {
 	_group->indices.push_back(d1);
 	_group->indices.push_back(d2);
 	_group->indices.push_back(d3);
 
-	genVertex< true, true, false >(d1);
-	genVertex< true, true, false >(d2);
-	genVertex< true, true, false >(d3);
+	genVertex< true, true, false, false >(d1);
+	genVertex< true, true, false, false >(d2);
+	genVertex< true, true, false, false >(d3);
 
 	genFace< false >(d1, d2, d3);
 }
@@ -42,9 +138,22 @@ void ProceduralOBJLoader::addFaceNoTex(IndexData d1, IndexData d2, IndexData d3)
 	_group->indices.push_back(d2);
 	_group->indices.push_back(d3);
 
-	genVertex< true, false, false >(d1);
-	genVertex< true, false, false >(d2);
-	genVertex< true, false, false >(d3);
+	genVertex< true, false, false, false >(d1);
+	genVertex< true, false, false, false >(d2);
+	genVertex< true, false, false, false >(d3);
+
+	genFace< false >(d1, d2, d3);
+}
+
+void ProceduralOBJLoader::addFaceWithColors(IndexData d1, IndexData d2, IndexData d3)
+{
+	_group->indices.push_back(d1);
+	_group->indices.push_back(d2);
+	_group->indices.push_back(d3);
+
+	genVertex< true, true, true, true >(d1);
+	genVertex< true, true, true, true >(d2);
+	genVertex< true, true, true, true >(d3);
 
 	genFace< false >(d1, d2, d3);
 }

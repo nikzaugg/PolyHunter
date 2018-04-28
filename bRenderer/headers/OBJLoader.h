@@ -162,6 +162,7 @@ protected:
 	std::vector<VertexData>     _vertices;
 	std::vector<vmml::Vector2f>    _texCoords;
 	std::vector<vmml::Vector3f>    _normals;
+	std::vector<vmml::Vector4f>	   _colors;
 	std::vector<vmml::Vector3f>    _tangents;
 	std::vector<vmml::Vector3f>    _bitangents;
 };
