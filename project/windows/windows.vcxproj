@@ -41,8 +41,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>C:\dev\graphics\PolyHunter\externalLibraries\libnoise\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\dev\graphics\PolyHunter\externalLibraries\libnoise\bin;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)\externalLibraries\libnoise\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)\externalLibraries\libnoise\bin;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IncludePath>C:\dev\graphics\PolyHunter\externalLibraries\libnoise\include;$(IncludePath)</IncludePath>
@@ -58,7 +58,7 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\dev\graphics\PolyHunter\externalLibraries\libnoise;$(SolutionDir)\externalLibraries\glew-1.13.0\lib_win32;$(SolutionDir)\externalLibraries\FreeImage3170;$(SolutionDir)\externalLibraries\glfw-3.1.1\lib_win32</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)\externalLibraries\libnoise;$(SolutionDir)\externalLibraries\glew-1.13.0\lib_win32;$(SolutionDir)\externalLibraries\FreeImage3170;$(SolutionDir)\externalLibraries\glfw-3.1.1\lib_win32</AdditionalLibraryDirectories>
       <AdditionalDependencies>opengl32.lib;glew32.lib;glfw3dll.lib;FreeImage.lib;libnoise.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
