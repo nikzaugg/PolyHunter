@@ -82,10 +82,6 @@ struct Vertex
 		bitangent.z = 0.0f;
 		texCoord.s = 0.0f;
 		texCoord.t = 0.0f;
-		color.r = 0.0f;
-		color.g = 0.0f;
-		color.b = 0.0f;
-		color.a = 0.0f;
 	}
 
 	Vertex(GLfloat pX, GLfloat pY, GLfloat pZ, GLfloat tS, GLfloat tT)
@@ -104,10 +100,6 @@ struct Vertex
 		bitangent.z = 0.0f;
 		texCoord.s = tS;
 		texCoord.t = tT;
-		color.r = 0.0f;
-		color.g = 0.0f;
-		color.b = 0.0f;
-		color.a = 0.0f;
 	}
 
 	Vertex(GLfloat pX, GLfloat pY, GLfloat pZ, GLfloat nX, GLfloat nY, GLfloat nZ, GLfloat tX, GLfloat tY, GLfloat tZ, GLfloat bX, GLfloat bY, GLfloat bZ, GLfloat tS, GLfloat tT)
@@ -126,32 +118,6 @@ struct Vertex
 		bitangent.z = bZ;
 		texCoord.s = tS;
 		texCoord.t = tT;
-		color.r = 0.0f;
-		color.g = 0.0f;
-		color.b = 0.0f;
-		color.a = 0.0f;
-	}
-
-	Vertex(GLfloat pX, GLfloat pY, GLfloat pZ, GLfloat nX, GLfloat nY, GLfloat nZ, GLfloat tX, GLfloat tY, GLfloat tZ, GLfloat bX, GLfloat bY, GLfloat bZ, GLfloat tS, GLfloat tT, GLubyte r, GLubyte g, GLubyte b, GLubyte a)
-	{
-		position.x = pX;
-		position.y = pY;
-		position.z = pZ;
-		normal.x = nX;
-		normal.y = nY;
-		normal.z = nZ;
-		tangent.x = tX;
-		tangent.y = tY;
-		tangent.z = tZ;
-		bitangent.x = bX;
-		bitangent.y = bY;
-		bitangent.z = bZ;
-		texCoord.s = tS;
-		texCoord.t = tT;
-		color.r = r;
-		color.g = g;
-		color.b = b;
-		color.a = a;
 	}
 
 	Point3      position;
@@ -159,7 +125,6 @@ struct Vertex
 	Vector3     tangent;
 	Vector3     bitangent;
 	TexCoord    texCoord;
-	Color		color;
 };
 
 typedef GLushort Index;

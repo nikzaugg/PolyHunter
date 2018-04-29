@@ -17,10 +17,6 @@ public:
 
 	void addFaceNoTex(IndexData d1, IndexData d2, IndexData d3);
 
-	void addFaceWithColors(IndexData d1, IndexData d2, IndexData d3);
-
-	void addFace(int v1, int v2, int v3);
-
 	void printVertices();
 
 	void printFaces();
@@ -31,13 +27,8 @@ public:
 
 	ModelData::GroupMap getData() const;
 
-	//void createFaceNormals();
-
 private:
 	int _numFaces;
-
-	template< bool POSITION, bool TEX_COORD, bool NORMAL, bool COLOR >
-	void genVertex(const IndexData &d);
 
 };
 typedef std::shared_ptr< ProceduralOBJLoader >  ProceduralOBJLoaderPtr;

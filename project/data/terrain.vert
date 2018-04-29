@@ -22,6 +22,7 @@ uniform vec3 lightSpecularColor_0;
 uniform vec4 lightPositionViewSpace_0;
 
 uniform float amplitude;
+uniform float heightPercent;
 
 attribute vec4 Position;
 attribute vec3 Normal;
@@ -31,23 +32,29 @@ attribute vec4 TexCoord;
 
 varying vec4 texCoordVarying;
 varying lowp vec4 heightColor;
-varying mediump vec4 posVarying;        // pos in world space
+varying mediump vec4 posVarying;        // pos in world space   
 varying mediump vec4 camPosVarying;        // pos in world space
 varying mediump vec3 normalVarying;     // normal in world space
 varying mediump vec3 tangentVarying;    // tangent in world space
 
+vec4 biome()
+{
+    mediump float slope = 1.0 - Normal.y;
+
+    if (slope > 0.2 || Position.y > heightPercent * 80)
+    {
+        return vec4(0.36, 0.37, 0.36, 1.0);
+    }
+    else if (Position.y < heightPercent * 5) 
+    {
+        return vec4(0.48, 0.32, 0.19, 1.0);
+    }
+    return vec4(0.34, 0.58, 0.19, 1.0);
+}
+
 void main()
 {
-    heightColor = vec4(Position.y/amplitude, Position.y/amplitude, Position.y/amplitude, 1.0);
-    lowp float heightNormalized = Position.y / amplitude;
-
-    // if (heightNormalized > 2.0) {
-    //     heightColor = vec4(1.0, 1.0, 1.0, 1.0);
-    // } else if (heightNormalized > 0.8) {
-    //      heightColor = vec4(0.0, 1.0, 0.0, 1.0);
-    // } else if (heightNormalized > 0.7) {
-    //      heightColor = vec4(1.0, 0.0, 0.0, 1.0);
-    // }
+    heightColor = biome();
 
     camPosVarying = ModelViewMatrix * Position;
 	posVarying = ModelMatrix * Position; // posViewSpace

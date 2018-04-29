@@ -35,6 +35,8 @@ private:
 	float ** generateHeights();
 
 	float ** _heights;
+
+	float _maxHeight;
 };
 typedef std::shared_ptr< Terrain >  TerrainPtr;
 #endif /* defined(B_TERRAIN_H) */

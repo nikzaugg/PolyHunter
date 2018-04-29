@@ -37,6 +37,7 @@ public:
 		vmml::Vector3f         normal;
 		vmml::Vector3f         tangent;
 		vmml::Vector3f         bitangent;
+		vmml::Vector4f		   color;
 
 		GLfloat x()   { return position.x(); }
 		GLfloat y()   { return position.y(); }

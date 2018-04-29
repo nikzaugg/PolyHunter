@@ -22,6 +22,7 @@ Terrain::Terrain(MaterialPtr material, PropertiesPtr properties, ShaderPtr shade
 
 	this->_amplitude = 5;
 	this->_exponent = 4.18;
+	this->_maxHeight = 0.0f;
 }
 
 double Terrain::noise(double nx, double ny) {
@@ -60,14 +61,19 @@ ModelPtr Terrain::generate()
 			float nx = ((float)j / ((float)_VERTEX_COUNT)) -0.5;
 			float ny = ((float)i / ((float)_VERTEX_COUNT)) -0.5;
 
-			perlin.SetSeed(22);
+			perlin.SetSeed(1000);
 			float height = 1 * noise(1 * nx, 1 * ny)
 			+0.5 * noise(2 * nx, 2 * ny)
 			+0.25 * noise(4 * nx, 4 * ny);
 
 			height = pow(height, _exponent);
 			
-			_heights[i][j] = height * 5;
+			_heights[i][j] = height * _amplitude;
+	
+			if (_maxHeight < _heights[i][j]) 
+			{
+				_maxHeight = _heights[i][j];
+			}
 			
 			objLoader.addVertex(xPos, _heights[i][j], zPos);
 		}
@@ -103,6 +109,7 @@ ModelPtr Terrain::generate()
 	}
 
 	_shader->setUniform("amplitude", _amplitude);
+	_shader->setUniform("heightPercent", _maxHeight / 100);
 
 	objLoader.load();
 
