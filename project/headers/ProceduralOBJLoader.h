@@ -25,6 +25,8 @@ public:
 
 	bool load();
 
+	bool flatNormals();
+
 	ModelData::GroupMap getData() const;
 
 private:

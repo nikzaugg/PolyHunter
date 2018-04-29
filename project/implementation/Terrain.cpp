@@ -18,9 +18,9 @@ Terrain::Terrain(MaterialPtr material, PropertiesPtr properties, ShaderPtr shade
 
 	std::cout << "TERRAIN WORKS!!!" << std::endl;
 	this->_VERTEX_COUNT = 100;
-	this->_SIZE = 100;
+	this->_SIZE = 500;
 
-	this->_amplitude = 5;
+	this->_amplitude = 70;
 	this->_exponent = 4.18;
 	this->_maxHeight = 0.0f;
 }
@@ -61,7 +61,7 @@ ModelPtr Terrain::generate()
 			float nx = ((float)j / ((float)_VERTEX_COUNT)) -0.5;
 			float ny = ((float)i / ((float)_VERTEX_COUNT)) -0.5;
 
-			perlin.SetSeed(1000);
+			perlin.SetSeed(549);
 			float height = 1 * noise(1 * nx, 1 * ny)
 			+0.5 * noise(2 * nx, 2 * ny)
 			+0.25 * noise(4 * nx, 4 * ny);
@@ -97,9 +97,9 @@ ModelPtr Terrain::generate()
 			objLoader.addFace(d1, d2, d3);
 
 			IndexData d4, d5, d6;
-			d4.vertexIndex = topRight;
-			d5.vertexIndex = bottomLeft;
-			d6.vertexIndex = bottomRight;
+			d5.vertexIndex = topRight;
+			d6.vertexIndex = bottomLeft;
+			d4.vertexIndex = bottomRight;
 			d4.texCoordsIndex = topRight;
 			d5.texCoordsIndex = bottomLeft;
 			d6.texCoordsIndex = bottomRight;
@@ -110,7 +110,6 @@ ModelPtr Terrain::generate()
 
 	_shader->setUniform("amplitude", _amplitude);
 	_shader->setUniform("heightPercent", _maxHeight / 100);
-
 	objLoader.load();
 
 	ModelData::GroupMap data = objLoader.getData();
