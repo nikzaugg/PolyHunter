@@ -11,11 +11,11 @@ public:
 
 	void addTexCoords(float u, float v);
 
+	void addColor(float r, float g, float b, float a);
+
 	void addFace(IndexData d1, IndexData d2, IndexData d3);
 
 	void addFaceNoTex(IndexData d1, IndexData d2, IndexData d3);
-
-	void addFace(int v1, int v2, int v3);
 
 	void printVertices();
 
@@ -25,9 +25,9 @@ public:
 
 	bool load();
 
-	ModelData::GroupMap getData() const;
+	bool flatNormals();
 
-	//void createFaceNormals();
+	ModelData::GroupMap getData() const;
 
 private:
 	int _numFaces;

@@ -10,6 +10,8 @@ public:
 	
 	Terrain(MaterialPtr material, PropertiesPtr properties);
 
+	Terrain(MaterialPtr material, PropertiesPtr properties, ShaderPtr shader);
+
 	double noise(double x, double y);
 
 	ModelPtr generate();
@@ -17,9 +19,13 @@ public:
 private:
 	MaterialPtr _material;
 	PropertiesPtr _properties;
+	ShaderPtr _shader;
 	
 	int _VERTEX_COUNT;
 	int _SIZE;
+
+	float _exponent;
+	float _amplitude;
 
 	int _numFaces;
 
@@ -29,6 +35,8 @@ private:
 	float ** generateHeights();
 
 	float ** _heights;
+
+	float _maxHeight;
 };
 typedef std::shared_ptr< Terrain >  TerrainPtr;
 #endif /* defined(B_TERRAIN_H) */

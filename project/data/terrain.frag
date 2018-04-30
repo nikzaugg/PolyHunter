@@ -3,6 +3,8 @@ $B_SHADER_VERSION
 precision mediump float;
 #endif
 
+// #extension GL_EXT_gpu_shader4 : require
+
 uniform mediump mat4 ViewMatrix;
 uniform mediump mat4 ModelMatrix;
 uniform mat4 ModelViewMatrix;
@@ -55,8 +57,7 @@ void main()
         specular_ = vec4(clamp(specular, 0.0, 1.0), 1.0);
     }
     // lowp vec4 color = texture2D(DiffuseMap, texCoordVarying.st);
-    gl_FragColor = heightColor;
-    // gl_FragColor = (ambientResult + diffuseResult + specular_) * color;   
+    gl_FragColor = (ambientResult + diffuseResult) * heightColor;
     // gl_FragColor =  texCoordVarying;
     // gl_FragColor = vec4(normalVarying, 1.0);
 }

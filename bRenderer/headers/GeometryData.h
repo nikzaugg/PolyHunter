@@ -12,17 +12,27 @@ struct IndexData
     GLushort vertexIndex;
     GLushort texCoordsIndex;
     GLushort normalIndex;
+	GLushort colorIndex;
     
     IndexData()
     : vertexIndex(0)
     , texCoordsIndex(0)
     , normalIndex(0)
+	, colorIndex(0)
     {}
 
 	IndexData(GLushort vIndex, GLushort tIndex, GLushort nIndex)
 		: vertexIndex(vIndex)
 		, texCoordsIndex(tIndex)
 		, normalIndex(nIndex)
+		, colorIndex(0)
+	{}
+
+	IndexData(GLushort vIndex, GLushort tIndex, GLushort nIndex, GLushort cIndex)
+		: vertexIndex(vIndex)
+		, texCoordsIndex(tIndex)
+		, normalIndex(nIndex)
+		, colorIndex(cIndex)
 	{}
 };
 

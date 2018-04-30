@@ -550,6 +550,9 @@
     <None Include="..\data\basic.vert">
       <Filter>project\data</Filter>
     </None>
+    <None Include="..\data\terrain.geom">
+      <Filter>project\data</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\data\flame.png">

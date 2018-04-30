@@ -10,14 +10,19 @@ float ** _heights;
 using namespace noise;
 module::Perlin perlin;
 
-Terrain::Terrain(MaterialPtr material, PropertiesPtr properties)
+Terrain::Terrain(MaterialPtr material, PropertiesPtr properties, ShaderPtr shader)
 {
 	_material = material;
 	_properties = properties;
+	_shader = shader;
 
 	std::cout << "TERRAIN WORKS!!!" << std::endl;
 	this->_VERTEX_COUNT = 100;
-	this->_SIZE = 100;
+	this->_SIZE = 500;
+
+	this->_amplitude = 70;
+	this->_exponent = 4.18;
+	this->_maxHeight = 0.0f;
 }
 
 double Terrain::noise(double nx, double ny) {
@@ -33,12 +38,8 @@ ModelPtr Terrain::generate()
 	PerlinNoise2D perlinNoise2D;
 	PerlinNoise perlinNoise;
 
-	//generateHeights();
-
-	vmml::Vector3f center = vmml::Vector3f(0.0f, 0.0f, 0.0f);
-
 	_heights = new float*[_VERTEX_COUNT];
-	
+
 	for (int i = 0; i < _VERTEX_COUNT; i++)
 	{
 		_heights[i] = new float[_VERTEX_COUNT];
@@ -56,16 +57,19 @@ ModelPtr Terrain::generate()
 			float nx = ((float)j / ((float)_VERTEX_COUNT)) -0.5;
 			float ny = ((float)i / ((float)_VERTEX_COUNT)) -0.5;
 
-			perlin.SetSeed(2);
-            float height = noise(1 * nx, 1 * ny)
-            + 0.5 * noise(2 * nx, 2 * ny)
-            + 0.25 * noise(4 * nx, 2 * ny);
+			perlin.SetSeed(549);
+			float height = 1 * noise(1 * nx, 1 * ny)
+			+0.5 * noise(2 * nx, 2 * ny)
+			+0.25 * noise(4 * nx, 4 * ny);
 
-			height = pow(height, 4.18);
-
-            // std::cout << height << std::endl;
+			height = pow(height, _exponent);
 			
-			_heights[i][j] = height * 10;
+			_heights[i][j] = height * _amplitude;
+	
+			if (_maxHeight < _heights[i][j]) 
+			{
+				_maxHeight = _heights[i][j];
+			}
 			
 			objLoader.addVertex(xPos, _heights[i][j], zPos);
 		}
@@ -89,9 +93,9 @@ ModelPtr Terrain::generate()
 			objLoader.addFace(d1, d2, d3);
 
 			IndexData d4, d5, d6;
-			d4.vertexIndex = topRight;
-			d5.vertexIndex = bottomLeft;
-			d6.vertexIndex = bottomRight;
+			d5.vertexIndex = topRight;
+			d6.vertexIndex = bottomLeft;
+			d4.vertexIndex = bottomRight;
 			d4.texCoordsIndex = topRight;
 			d5.texCoordsIndex = bottomLeft;
 			d6.texCoordsIndex = bottomRight;
@@ -100,6 +104,8 @@ ModelPtr Terrain::generate()
 		}
 	}
 
+	_shader->setUniform("amplitude", _amplitude);
+	_shader->setUniform("heightPercent", _maxHeight / 100);
 	objLoader.load();
 
 	ModelData::GroupMap data = objLoader.getData();
