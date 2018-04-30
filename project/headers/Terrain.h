@@ -2,23 +2,21 @@
 #define B_TERRAIN_H
 
 #include "bRenderer.h"
+#include "Entity.h"
 
-class Terrain
+class Terrain : public Entity
 {
 public:
-	typedef std::unordered_map< std::string, GeometryPtr > GroupMap;
-	
-	Terrain(MaterialPtr material, PropertiesPtr properties, ShaderPtr shader);
-
+    Terrain(std::string modelName, std::string materialFile, std::string materialName, std::string propName, ShaderPtr shader, Renderer & renderer, vmml::Vector3f pos, float rotX, float rotY, float rotZ, float scale);
+    
+    typedef std::unordered_map< std::string, GeometryPtr > GroupMap;
+	void process(std::string cameraName, const double &deltaTime);
+    void render(std::string cameraName);
 	double noise(double x, double y);
 
-	ModelPtr generate();
+	ModelData::GroupMap generate();
 
 private:
-	MaterialPtr _material;
-	PropertiesPtr _properties;
-	ShaderPtr _shader;
-	
 	int _VERTEX_COUNT;
 	int _SIZE;
 
@@ -27,6 +25,7 @@ private:
 
 	int _numFaces;
 
+    ModelData::GroupMap _data;
 	GroupMap        _groups;
 	vmml::AABBf		_boundingBox;
 

@@ -697,13 +697,13 @@
 		B44186951BA331E300604D7F /* implementation */ = {
 			isa = PBXGroup;
 			children = (
+				31A71EEC20865D8800A2D46A /* Terrain.cpp */,
 				31B0FD782097A20200601F21 /* Entity.cpp */,
 				31B0FD752097A1D600601F21 /* Player.cpp */,
 				318C88E7208FBE6000B218B1 /* Skybox.cpp */,
 				31F377FE2089512400EBEC30 /* PerlinNoise.cpp */,
 				31F377FD2089512400EBEC30 /* PerlinNoise2D.cpp */,
 				31A71EEB20865D8800A2D46A /* ProceduralOBJLoader.cpp */,
-				31A71EEC20865D8800A2D46A /* Terrain.cpp */,
 				B44186961BA331E300604D7F /* RenderProject.cpp */,
 			);
 			path = implementation;

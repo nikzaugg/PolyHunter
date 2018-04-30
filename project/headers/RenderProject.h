@@ -3,6 +3,7 @@
 
 #include "bRenderer.h"
 #include "Player.h"
+#include "Terrain.h"
 
 class RenderProject : public IRenderProject
 {
@@ -67,6 +68,7 @@ private:
 	vmml::Matrix4f _viewMatrixHUD;
 	double elapsedTime = 0.0;
     PlayerPtr _player;
+    TerrainPtr _terrain;
 };
 
 #endif /* defined(PROJECT_MAIN_H) */

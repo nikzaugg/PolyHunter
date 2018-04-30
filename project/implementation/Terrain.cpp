@@ -10,19 +10,20 @@ float ** _heights;
 using namespace noise;
 module::Perlin perlin;
 
-Terrain::Terrain(MaterialPtr material, PropertiesPtr properties, ShaderPtr shader)
+Terrain::Terrain(std::string modelName, std::string materialFile, std::string materialName, std::string propName, ShaderPtr shader, Renderer & renderer, vmml::Vector3f pos, float rotX, float rotY, float rotZ, float scale)
+: Entity(modelName, materialFile, materialName, propName, shader, renderer, pos, rotX, rotY, rotZ, scale)
 {
-	_material = material;
-	_properties = properties;
-	_shader = shader;
-
-	std::cout << "TERRAIN WORKS!!!" << std::endl;
-	this->_VERTEX_COUNT = 100;
-	this->_SIZE = 300;
-
-	this->_amplitude = 70;
-	this->_exponent = 4.18;
-	this->_maxHeight = 0.0f;
+    std::cout << "TERRAIN WORKS!!!" << std::endl;
+    this->_VERTEX_COUNT = 100;
+    this->_SIZE = 300;
+    this->_amplitude = 70;
+    this->_exponent = 4.18;
+    this->_maxHeight = 0.0f;
+    
+    _data = generate();
+    ModelPtr terrainModel = ModelPtr(new Model(this->_data, getMaterial(), getProperties()));
+    SetModel(terrainModel);
+    renderer.getObjects()->addModel("terrain", terrainModel);
 }
 
 double Terrain::noise(double nx, double ny) {
@@ -30,9 +31,10 @@ double Terrain::noise(double nx, double ny) {
 	return perlin.GetValue(nx, ny, 0) / 2.0 + 0.5;
 }
 
-ModelPtr Terrain::generate()
+ModelData::GroupMap Terrain::generate()
 {
 	ProceduralOBJLoader objLoader;
+
 	_heights = new float*[_VERTEX_COUNT];
 
 	// noise generation
@@ -108,12 +110,22 @@ ModelPtr Terrain::generate()
 		}
 	}
 
-	_shader->setUniform("amplitude", _amplitude);
-	_shader->setUniform("heightPercent", _maxHeight / 100);
 	objLoader.load();
 
 	ModelData::GroupMap data = objLoader.getData();
-	ModelPtr terrainModel = ModelPtr(new Model(data, _material, _properties));
+	return data;
+}
 
-	return terrainModel;
+void Terrain::process(std::string cameraName, const double &deltaTime)
+{
+    render(cameraName);
+}
+
+void Terrain::render(std::string camera)
+{
+    getShader()->setUniform("amplitude", _amplitude);
+    getShader()->setUniform("heightPercent", _maxHeight / 100);
+    renderer().getObjects()->setAmbientColor(vmml::Vector3f(0.5f));
+    // draw model
+    renderer().getModelRenderer()->drawModel("terrain", camera, computeTransformationMatrix(), std::vector<std::string>({ "sun" }), true, true);
 }

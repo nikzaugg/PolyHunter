@@ -56,10 +56,7 @@ void RenderProject::initFunction()
     _player = PlayerPtr(new Player("sun.obj", "sun", "sunProperties", basicShader, getProjectRenderer(), vmml::Vector3f(50.0, 1.0, -50.0), 0.0, 0.0, 0.0, 1.0));
 
     // PROCEDURAL TERRAIN
-    MaterialPtr terrainMaterial = bRenderer().getObjects()->loadObjMaterial("terrain.mtl", "terrain", terrainShader);
-    Terrain terrain = Terrain(terrainMaterial, procTerrainProperties, terrainShader);
-    ModelPtr terrainModel = terrain.generate();
-    bRenderer().getObjects()->addModel("terrain", terrainModel);
+    _terrain = TerrainPtr(new Terrain("terrain", "terrain.mtl", "terrain", "terrainProperties", terrainShader, getProjectRenderer(), vmml::Vector3f(0.0), 0.0, 0.0, 0.0, 1.0));
     
 	// SKYBOX (with CubeMap)
 	/*TextureData left = TextureData("left.png");
@@ -190,6 +187,7 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
 	ShaderPtr skybox;
     
     _player->process("camera", deltaTime);
+    _terrain->process("camera", deltaTime);
 
 	/// TREE ///
 	modelMatrix = 
@@ -210,15 +208,6 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
     bRenderer().getObjects()->setAmbientColor(vmml::Vector3f(0.5f));
     // draw model
     bRenderer().getModelRenderer()->drawModel("sun", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
-
-	/// Procedural Terrain ///
-    modelMatrix =
-        vmml::create_translation(vmml::Vector3f(0.0)) *
-        vmml::create_scaling(vmml::Vector3f(1.0f));
-    // set ambient color
-    bRenderer().getObjects()->setAmbientColor(vmml::Vector3f(0.5f));
-    // draw model
-    bRenderer().getModelRenderer()->drawModel("terrain", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
 
 	/// Skybox ///
 	//modelMatrix = 
@@ -261,8 +250,8 @@ void RenderProject::updateCamera(const std::string &camera, const double &deltaT
 				Touch touch = t->second;
 				// If touch is in left half of the view: move around
 				if (touch.startPositionX < bRenderer().getView()->getWidth() / 2){
-					cameraForward = -(touch.currentPositionY - touch.startPositionY) / 100;
-					cameraSideward = (touch.currentPositionX - touch.startPositionX) / 100;
+					cameraForward = -(touch.currentPositionY - touch.startPositionY) / 50;
+					cameraSideward = (touch.currentPositionX - touch.startPositionX) / 50;
 
 				}
 				// if touch is in right half of the view: look around

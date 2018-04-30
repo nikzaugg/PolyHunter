@@ -20,6 +20,24 @@ Entity::Entity(std::string objName, std::string modelName, std::string propName,
     this->_scale = scale;
 }
 
+Entity::Entity(std::string modelName, std::string materialFile, std::string materialName, std::string propName, ShaderPtr shader, Renderer & renderer, vmml::Vector3f pos, float rotX, float rotY, float rotZ, float scale)
+{
+    _renderer = renderer;
+    _modelName = modelName;
+    _propertiesName = propName;
+    _materialName = materialName;
+    _materialFile = materialFile;
+    
+    this->_shader = shader;
+    this->_material = _renderer.getObjects()->loadObjMaterial(_materialFile, _materialName);
+    this->_properties = _renderer.getObjects()->createProperties(_propertiesName);
+    this->_position = pos;
+    this->_rotX = rotX;
+    this->_rotY = rotY;
+    this->_rotZ = rotZ;
+    this->_scale = scale;
+}
+
 void Entity::increasePosition(float dx, float dy, float dz)
 {
     _position.x() += dx;
@@ -50,6 +68,22 @@ std::string Entity::getModelName() {
 void Entity::SetModel(ModelPtr model)
 {
     _model = model;
+}
+
+ShaderPtr Entity::getShader(){
+    return _shader;
+}
+
+MaterialPtr Entity::getMaterial(){
+    return _material;
+}
+
+std::string Entity::getMaterialName(){
+    return _materialName;
+}
+
+PropertiesPtr Entity::getProperties(){
+    return _properties;
 }
 
 vmml::Vector3f Entity::getPosition()
