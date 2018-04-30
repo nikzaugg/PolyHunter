@@ -53,7 +53,7 @@ void RenderProject::initFunction()
 	bRenderer().getObjects()->loadObjModel("sun.obj", false, true, basicShader, sunProperties);
     
     // create Player object
-    _player = PlayerPtr(new Player("sun.obj", "sun", "sunProperties", basicShader, getProjectRenderer(), vmml::Vector3f(50.0, 1.0, -50.0), 0.0, 0.0, 0.0, 1.0));
+    _player = PlayerPtr(new Player("sun.obj", "sun", "sunProperties", basicShader, getProjectRenderer(), vmml::Vector3f(50.0, 0.0, -50.0), 0.0, 0.0, 0.0, 1.0));
 
     // PROCEDURAL TERRAIN
     _terrain = TerrainPtr(new Terrain("terrain", "terrain.mtl", "terrain", "terrainProperties", terrainShader, getProjectRenderer(), vmml::Vector3f(0.0), 0.0, 0.0, 0.0, 1.0));
@@ -186,12 +186,12 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
 	vmml::Matrix3f normalMatrix;
 	ShaderPtr skybox;
     
-    _player->process("camera", deltaTime);
+    _player->process("camera", deltaTime, _terrain);
     _terrain->process("camera", deltaTime);
 
 	/// TREE ///
 	modelMatrix = 
-		vmml::create_translation(vmml::Vector3f(0.0, 0.0, -10.0)) * 
+		vmml::create_translation(vmml::Vector3f(50.0, 0.0, 50.0)) * 
 		vmml::create_rotation((float)elapsedTime * M_PI_F/10, vmml::Vector3f::UNIT_Y) *
 		vmml::create_scaling(vmml::Vector3f(1.0f));
 	// set ambient color

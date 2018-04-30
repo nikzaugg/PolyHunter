@@ -31,6 +31,48 @@ double Terrain::noise(double nx, double ny) {
 	return perlin.GetValue(nx, ny, 0) / 2.0 + 0.5;
 }
 
+float Terrain::barryCentric(vmml::Vector3f p1, vmml::Vector3f p2, vmml::Vector3f p3, vmml::Vector2f pos) {
+    float det = (p2.z() - p3.z()) * (p1.x() - p3.x()) + (p3.x() - p2.x()) * (p1.z() - p3.z());
+    float l1 = ((p2.z() - p3.z()) * (pos.x() - p3.x()) + (p3.x() - p2.x()) * (pos.y() - p3.z())) / det;
+    float l2 = ((p3.z() - p1.z()) * (pos.x() - p3.x()) + (p1.x() - p3.x()) * (pos.y() - p3.z())) / det;
+    float l3 = 1.0f - l1 - l2;
+    return l1 * p1.y() + l2 * p2.y() + l3 * p3.y();
+}
+
+float Terrain::getHeightOfTerrain(float worldX, float worldZ){
+    float terrainZ = worldX - getPosition().x();
+    float terrainX = (-1.0)*worldZ - getPosition().z();
+    int sizeHeights = (_VERTEX_COUNT) - 1;
+//    std::cout << "size of heights: " << sizeHeights << std::endl;
+    float gridSquareSize = _SIZE / (float) sizeHeights;
+    int gridX = floor(terrainX / gridSquareSize);
+    int gridZ = floor(terrainZ / gridSquareSize);
+//    std::cout << "gridX: " << gridX << std::endl;
+//    std::cout << "gridZ: " << gridZ << std::endl;
+    if (gridX >= sizeHeights || gridZ >= sizeHeights || gridX < 0 || gridZ < 0) {
+        return 0.0;
+    }
+    float xCoord = remainderf(terrainX, gridSquareSize) / gridSquareSize;
+    float zCoord = remainderf(terrainZ, gridSquareSize) / gridSquareSize;
+    float result;
+    if (xCoord >= (1-zCoord)) {
+        result = barryCentric(
+                              vmml::Vector3f(0, _heights[gridX][gridZ], 0),
+                              vmml::Vector3f(1, _heights[gridX + 1][gridZ], 0),
+                              vmml::Vector3f(0, _heights[gridX][gridZ + 1], 1),
+                              vmml::Vector2f(xCoord, zCoord)
+                              );
+    } else {
+        result = barryCentric(
+                              vmml::Vector3f(1, _heights[gridX + 1][gridZ], 0),
+                              vmml::Vector3f(1,_heights[gridX + 1][gridZ + 1], 1),
+                              vmml::Vector3f(0,_heights[gridX][gridZ + 1], 1),
+                              vmml::Vector2f(xCoord, zCoord)
+                              );
+    }
+    return result;
+}
+
 ModelData::GroupMap Terrain::generate()
 {
 	ProceduralOBJLoader objLoader;
