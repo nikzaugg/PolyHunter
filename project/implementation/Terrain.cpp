@@ -18,7 +18,7 @@ Terrain::Terrain(MaterialPtr material, PropertiesPtr properties, ShaderPtr shade
 
 	std::cout << "TERRAIN WORKS!!!" << std::endl;
 	this->_VERTEX_COUNT = 100;
-	this->_SIZE = 500;
+	this->_SIZE = 300;
 
 	this->_amplitude = 70;
 	this->_exponent = 4.18;
@@ -44,10 +44,36 @@ ModelPtr Terrain::generate()
 
 	_heights = new float*[_VERTEX_COUNT];
 
-	for (int i = 0; i < _VERTEX_COUNT; i++)
+	// noise generation
+	for (int  i = 0; i < _VERTEX_COUNT; i++)
 	{
 		_heights[i] = new float[_VERTEX_COUNT];
 		for (int j = 0; j < _VERTEX_COUNT; j++)
+		{
+			float nx = ((float)j / ((float)_VERTEX_COUNT)) - 0.5;
+			float nz = ((float)i / ((float)_VERTEX_COUNT)) - 0.5;
+
+			perlin.SetSeed(549);
+			float height = 1 * noise(1 * nx, 1 * nz)
+				+ 0.5 * noise(2 * nx, 2 * nz)
+				+ 0.25 * noise(4 * nx, 4 * nz);
+			
+			height = pow(height, _exponent);
+
+			_heights[i][j] = height * 10;
+
+			if (_maxHeight < _heights[i][j])
+			{
+				_maxHeight = _heights[i][j];
+			}
+		}
+	}
+
+	int counter = 0;
+	for (int i = 0; i < _VERTEX_COUNT - 1; i++)
+	{
+		
+		for (int j = 0; j < _VERTEX_COUNT - 1; j++)
 		{
 			float uPos = (float)j / ((float)_VERTEX_COUNT - 1);
 			float vPos = (float)i / ((float)_VERTEX_COUNT - 1);
@@ -55,58 +81,93 @@ ModelPtr Terrain::generate()
 			vPos = 1 - vPos;
 			objLoader.addTexCoords(uPos, vPos);
 
-			float xPos = ((float)j / ((float)_VERTEX_COUNT - 1)) * _SIZE;
-			float zPos = ((float)i / ((float)_VERTEX_COUNT - 1)) * _SIZE;
+			float xTopLeft = ((float)j / ((float)_VERTEX_COUNT - 1)) * _SIZE;
+			float zTopLeft = ((float)i / ((float)_VERTEX_COUNT - 1)) * _SIZE;
 
-			float nx = ((float)j / ((float)_VERTEX_COUNT)) -0.5;
-			float ny = ((float)i / ((float)_VERTEX_COUNT)) -0.5;
+			float xTopRight = ((float)(j+1) / ((float)_VERTEX_COUNT - 1)) * _SIZE;
+			float zTopRight = ((float)i / ((float)_VERTEX_COUNT - 1)) * _SIZE;
 
-			perlin.SetSeed(549);
-			float height = 1 * noise(1 * nx, 1 * ny)
-			+0.5 * noise(2 * nx, 2 * ny)
-			+0.25 * noise(4 * nx, 4 * ny);
+			float xBottomLeft = ((float)j / ((float)_VERTEX_COUNT - 1)) * _SIZE;
+			float zBottomLeft = ((float)(i+1) / ((float)_VERTEX_COUNT - 1)) * _SIZE;
 
-			height = pow(height, _exponent);
+			float xBottomRight = ((float)(j + 1) / ((float)_VERTEX_COUNT - 1)) * _SIZE;
+			float zBottomRight = ((float)(i + 1) / ((float)_VERTEX_COUNT - 1)) * _SIZE;
+
+			//float nxTopLeft = ((float)j / ((float)_VERTEX_COUNT)) -0.5;
+			//float nzTopLeft = ((float)i / ((float)_VERTEX_COUNT)) -0.5;
+
+			//float nxTopRight = ((float)(j+1) / ((float)_VERTEX_COUNT)) - 0.5;
+			//float nzTopRight = ((float)i / ((float)_VERTEX_COUNT)) - 0.5;
+
+			//float nxBottomLeft = ((float)j / ((float)_VERTEX_COUNT)) - 0.5;
+			//float nzBottomLeft = ((float)(i+1) / ((float)_VERTEX_COUNT)) - 0.5;
+
+			//float nxBottomRight = ((float)(j + 1) / ((float)_VERTEX_COUNT)) - 0.5;
+			//float nzBottomRight = ((float)(i + 1) / ((float)_VERTEX_COUNT)) - 0.5;
+
 			
-			_heights[i][j] = height * _amplitude;
-	
-			if (_maxHeight < _heights[i][j]) 
-			{
-				_maxHeight = _heights[i][j];
-			}
 			
-			objLoader.addVertex(xPos, _heights[i][j], zPos);
-		}
-	}
-
-	for (int i = 0; i < _VERTEX_COUNT - 1; i++) {
-		for (int j = 0; j < _VERTEX_COUNT - 1; j++) {
-
-			long int topLeft = (i*_VERTEX_COUNT) + j;
-			long int topRight = topLeft + 1;
-			long int bottomLeft = ((i + 1)*_VERTEX_COUNT) + j;
-			long int bottomRight = bottomLeft + 1;
-
+			objLoader.addVertex(xTopLeft, _heights[i][j], zTopLeft);
+			objLoader.addVertex(xBottomLeft, _heights[i+1][j], zBottomLeft);
+			objLoader.addVertex(xTopRight, _heights[i][j+1], zTopRight);
+			
 			IndexData d1, d2, d3;
-			d1.vertexIndex = topLeft;
-			d2.vertexIndex = bottomLeft;
-			d3.vertexIndex = topRight;
-			d1.texCoordsIndex = topLeft;
-			d2.texCoordsIndex = bottomLeft;
-			d3.texCoordsIndex = topRight;
+			d1.vertexIndex = counter++;
+			d2.vertexIndex = counter++;
+			d3.vertexIndex = counter++;
+
 			objLoader.addFace(d1, d2, d3);
 
-			IndexData d4, d5, d6;
-			d5.vertexIndex = topRight;
-			d6.vertexIndex = bottomLeft;
-			d4.vertexIndex = bottomRight;
-			d4.texCoordsIndex = topRight;
-			d5.texCoordsIndex = bottomLeft;
-			d6.texCoordsIndex = bottomRight;
-			objLoader.addFace(d4, d5, d6);
+			objLoader.addVertex(xBottomRight, _heights[i+1][j+1], zBottomRight);
+			objLoader.addVertex(xTopRight, _heights[i][j+1], zTopRight);
+			objLoader.addVertex(xBottomLeft, _heights[i+1][j], zBottomLeft);
 
+			IndexData d4, d5, d6;
+			d4.vertexIndex = counter++;
+			d5.vertexIndex = counter++;
+			d6.vertexIndex = counter++;
+
+			objLoader.addFace(d4, d5, d6);
+			
+
+			//objLoader.addVertex(xPos, _heights[i][j], zPos);
 		}
 	}
+
+	//for (int i = 0; i < _VERTEX_COUNT - 1; i++) {
+	//	for (int j = 0; j < _VERTEX_COUNT - 1; j++) {
+
+	//		long int topLeft = (i*_VERTEX_COUNT) + j;
+	//		long int topRight = topLeft + 2;
+
+
+	//		long int bottomLeft = ((i + 1)*_VERTEX_COUNT) + j;
+	//		long int bottomRight = bottomLeft + 1;
+
+	//		long int topLeft1 = topLeft + 1;
+
+
+	//		IndexData d1, d2, d3;
+	//		d1.vertexIndex = topLeft;
+	//		d2.vertexIndex = bottomLeft;
+	//		d3.vertexIndex = topRight;
+	//		d1.texCoordsIndex = topLeft;
+	//		d2.texCoordsIndex = bottomLeft;
+	//		d3.texCoordsIndex = topRight;
+	//		objLoader.addFace(d1, d2, d3);
+
+	//		IndexData d4, d5, d6;
+	//		d4.vertexIndex = bottomRight;
+	//		d5.vertexIndex = topRight;
+	//		d6.vertexIndex = bottomLeft;
+	//		
+	//		d4.texCoordsIndex = topRight;
+	//		d5.texCoordsIndex = bottomLeft;
+	//		d6.texCoordsIndex = bottomRight;
+	//		objLoader.addFace(d4, d5, d6);
+
+	//	}
+	//}
 
 	_shader->setUniform("amplitude", _amplitude);
 	_shader->setUniform("heightPercent", _maxHeight / 100);

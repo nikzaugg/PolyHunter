@@ -3,8 +3,6 @@ $B_SHADER_VERSION
 precision mediump float;
 #endif
 
-#extension GL_EXT_gpu_shader4 : require
-
 uniform mediump mat4 ViewMatrix;
 uniform mediump mat4 ModelMatrix;
 uniform mat4 ModelViewMatrix;
@@ -36,8 +34,9 @@ varying vec4 texCoordVarying;
 varying lowp vec4 heightColor;
 varying mediump vec4 posVarying;        // pos in world space   
 varying mediump vec4 camPosVarying;        // pos in world space
-flat varying mediump vec3 normalVarying;     // normal in world space
+varying mediump vec3 normalVarying;     // normal in world space
 varying mediump vec3 tangentVarying;    // tangent in world space
+
 vec4 biome()
 {
     mediump float slope = 1.0 - Normal.y;
@@ -55,7 +54,7 @@ vec4 biome()
 
 void main()
 {
-    heightColor = biome();
+    
 
     camPosVarying = ModelViewMatrix * Position;
 	posVarying = ModelMatrix * Position; // posViewSpace
@@ -63,6 +62,7 @@ void main()
     // TODO: export blender normal in the right coordinate system, so that
     // we can remove this
     normalVarying = normalize(NormalMatrix * (Normal * vec3(1.0, 1.0, -1.0)));
+    heightColor = biome();
     tangentVarying = normalize(NormalMatrix * Tangent);
 
     texCoordVarying = TexCoord;

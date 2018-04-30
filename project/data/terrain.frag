@@ -3,8 +3,6 @@ $B_SHADER_VERSION
 precision mediump float;
 #endif
 
-#extension GL_EXT_gpu_shader4 : require
-
 uniform mediump mat4 ViewMatrix;
 uniform mediump mat4 ModelMatrix;
 uniform mat4 ModelViewMatrix;
@@ -31,13 +29,14 @@ varying lowp vec4 texCoordVarying;
 varying lowp vec4 heightColor;
 varying mediump vec4 posVarying;        // pos in world space
 varying mediump vec4 camPosVarying;     // cam pos in world space
-flat varying mediump vec3 normalVarying;     // normal in world space
+varying mediump vec3 normalVarying;     // normal in world space
 varying mediump vec3 tangentVarying;    // tangent in world space
 
 void main()
 {
     lowp vec4 ambientResult = vec4(ambientColor *lightIntensity_0, 1.0);
     lowp vec4 specular_ = vec4(0.0);
+
 
     mediump vec4 pos = posVarying;
     mediump vec3 n = normalize(normalVarying); 
