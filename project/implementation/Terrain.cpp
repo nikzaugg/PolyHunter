@@ -92,20 +92,6 @@ ModelPtr Terrain::generate()
 
 			float xBottomRight = ((float)(j + 1) / ((float)_VERTEX_COUNT - 1)) * _SIZE;
 			float zBottomRight = ((float)(i + 1) / ((float)_VERTEX_COUNT - 1)) * _SIZE;
-
-			//float nxTopLeft = ((float)j / ((float)_VERTEX_COUNT)) -0.5;
-			//float nzTopLeft = ((float)i / ((float)_VERTEX_COUNT)) -0.5;
-
-			//float nxTopRight = ((float)(j+1) / ((float)_VERTEX_COUNT)) - 0.5;
-			//float nzTopRight = ((float)i / ((float)_VERTEX_COUNT)) - 0.5;
-
-			//float nxBottomLeft = ((float)j / ((float)_VERTEX_COUNT)) - 0.5;
-			//float nzBottomLeft = ((float)(i+1) / ((float)_VERTEX_COUNT)) - 0.5;
-
-			//float nxBottomRight = ((float)(j + 1) / ((float)_VERTEX_COUNT)) - 0.5;
-			//float nzBottomRight = ((float)(i + 1) / ((float)_VERTEX_COUNT)) - 0.5;
-
-			
 			
 			objLoader.addVertex(xTopLeft, _heights[i][j], zTopLeft);
 			objLoader.addVertex(xBottomLeft, _heights[i+1][j], zBottomLeft);
@@ -128,46 +114,8 @@ ModelPtr Terrain::generate()
 			d6.vertexIndex = counter++;
 
 			objLoader.addFace(d4, d5, d6);
-			
-
-			//objLoader.addVertex(xPos, _heights[i][j], zPos);
 		}
 	}
-
-	//for (int i = 0; i < _VERTEX_COUNT - 1; i++) {
-	//	for (int j = 0; j < _VERTEX_COUNT - 1; j++) {
-
-	//		long int topLeft = (i*_VERTEX_COUNT) + j;
-	//		long int topRight = topLeft + 2;
-
-
-	//		long int bottomLeft = ((i + 1)*_VERTEX_COUNT) + j;
-	//		long int bottomRight = bottomLeft + 1;
-
-	//		long int topLeft1 = topLeft + 1;
-
-
-	//		IndexData d1, d2, d3;
-	//		d1.vertexIndex = topLeft;
-	//		d2.vertexIndex = bottomLeft;
-	//		d3.vertexIndex = topRight;
-	//		d1.texCoordsIndex = topLeft;
-	//		d2.texCoordsIndex = bottomLeft;
-	//		d3.texCoordsIndex = topRight;
-	//		objLoader.addFace(d1, d2, d3);
-
-	//		IndexData d4, d5, d6;
-	//		d4.vertexIndex = bottomRight;
-	//		d5.vertexIndex = topRight;
-	//		d6.vertexIndex = bottomLeft;
-	//		
-	//		d4.texCoordsIndex = topRight;
-	//		d5.texCoordsIndex = bottomLeft;
-	//		d6.texCoordsIndex = bottomRight;
-	//		objLoader.addFace(d4, d5, d6);
-
-	//	}
-	//}
 
 	_shader->setUniform("amplitude", _amplitude);
 	_shader->setUniform("heightPercent", _maxHeight / 100);
