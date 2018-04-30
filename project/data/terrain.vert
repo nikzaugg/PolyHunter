@@ -39,9 +39,10 @@ varying mediump vec3 tangentVarying;    // tangent in world space
 
 vec4 biome()
 {
-    mediump float slope = 1.0 - Normal.y;
+    // Slope doesn't work well with split terrain
+    mediump float slope = 1.0 - normalVarying.y;
 
-    if (slope > 0.2 || Position.y > heightPercent * 80)
+    if (Position.y > heightPercent * 50)
     {
         return vec4(0.36, 0.37, 0.36, 1.0);
     }
@@ -54,8 +55,6 @@ vec4 biome()
 
 void main()
 {
-    
-
     camPosVarying = ModelViewMatrix * Position;
 	posVarying = ModelMatrix * Position; // posViewSpace
     // need to invert z-value of normal to get the normal right

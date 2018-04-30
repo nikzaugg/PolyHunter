@@ -32,13 +32,8 @@ double Terrain::noise(double nx, double ny) {
 
 ModelPtr Terrain::generate()
 {
-	// TODO: Should return a ModelPtr to RenderProject
-	//ModelData terrainData(true, false);
 	ProceduralOBJLoader objLoader;
-	PerlinNoise2D perlinNoise2D;
-	PerlinNoise perlinNoise;
 
-	//generateHeights();
 
 	vmml::Vector3f center = vmml::Vector3f(0.0f, 0.0f, 0.0f);
 
@@ -60,7 +55,7 @@ ModelPtr Terrain::generate()
 			
 			height = pow(height, _exponent);
 
-			_heights[i][j] = height * 10;
+			_heights[i][j] = height * _amplitude;
 
 			if (_maxHeight < _heights[i][j])
 			{
@@ -125,21 +120,4 @@ ModelPtr Terrain::generate()
 	ModelPtr terrainModel = ModelPtr(new Model(data, _material, _properties));
 
 	return terrainModel;
-}
-
-float** Terrain::generateHeights()
-{
-	PerlinNoise2D perlinNoise;
-	float ** heights = new float*[_VERTEX_COUNT];
-
-	for (int z = 0; z < _VERTEX_COUNT; z++)
-	{
-		for (int x = 0; x < _VERTEX_COUNT; x++)
-		{
-			perlinNoise.generateHeight((float)x, (float)z);
-		}
-	}
-
-
-	return heights;
 }

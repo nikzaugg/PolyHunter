@@ -55,8 +55,7 @@ void main()
         mediump vec3 specular = Ks * angleFactor * lightSpecularColor_0;
         specular_ = vec4(clamp(specular, 0.0, 1.0), 1.0);
     }
-    // lowp vec4 color = texture2D(DiffuseMap, texCoordVarying.st);
-    gl_FragColor = (ambientResult + diffuseResult + specular_) * heightColor;   
-    // gl_FragColor =  texCoordVarying;
+    gl_FragColor = (ambientResult + diffuseResult + specular_) * heightColor;
+    // Color according to normals
     // gl_FragColor = vec4(normalVarying, 1.0);
 }
