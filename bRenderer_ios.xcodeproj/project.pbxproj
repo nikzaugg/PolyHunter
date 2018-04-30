@@ -62,6 +62,8 @@
 		31A71EEA20865D6F00A2D46A /* basic.frag in Resources */ = {isa = PBXBuildFile; fileRef = 31A71EDD20865D6E00A2D46A /* basic.frag */; };
 		31A71EED20865D8800A2D46A /* ProceduralOBJLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 31A71EEB20865D8800A2D46A /* ProceduralOBJLoader.cpp */; };
 		31A71EEE20865D8800A2D46A /* Terrain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 31A71EEC20865D8800A2D46A /* Terrain.cpp */; };
+		31B0FD772097A1D600601F21 /* Player.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 31B0FD752097A1D600601F21 /* Player.cpp */; };
+		31B0FD792097A20200601F21 /* Entity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 31B0FD782097A20200601F21 /* Entity.cpp */; };
 		31F377FF2089512500EBEC30 /* PerlinNoise2D.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 31F377FD2089512400EBEC30 /* PerlinNoise2D.cpp */; };
 		31F378002089512500EBEC30 /* PerlinNoise.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 31F377FE2089512400EBEC30 /* PerlinNoise.cpp */; };
 		B44186971BA331E300604D7F /* RenderProject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B44186961BA331E300604D7F /* RenderProject.cpp */; };
@@ -319,6 +321,10 @@
 		31A71EEC20865D8800A2D46A /* Terrain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Terrain.cpp; sourceTree = "<group>"; };
 		31A71EEF20865D9200A2D46A /* ProceduralOBJLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProceduralOBJLoader.h; sourceTree = "<group>"; };
 		31A71EF020865D9300A2D46A /* Terrain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Terrain.h; sourceTree = "<group>"; };
+		31B0FD752097A1D600601F21 /* Player.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Player.cpp; sourceTree = "<group>"; };
+		31B0FD782097A20200601F21 /* Entity.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Entity.cpp; sourceTree = "<group>"; };
+		31B0FD7A2097A21D00601F21 /* Entity.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Entity.h; sourceTree = "<group>"; };
+		31B0FD7B2097A22F00601F21 /* Player.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Player.h; sourceTree = "<group>"; };
 		31F377FB2089511D00EBEC30 /* PerlinNoise.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PerlinNoise.h; sourceTree = "<group>"; };
 		31F377FC2089511E00EBEC30 /* PerlinNoise2D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PerlinNoise2D.h; sourceTree = "<group>"; };
 		31F377FD2089512400EBEC30 /* PerlinNoise2D.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PerlinNoise2D.cpp; sourceTree = "<group>"; };
@@ -682,6 +688,8 @@
 				31A71EEF20865D9200A2D46A /* ProceduralOBJLoader.h */,
 				31A71EF020865D9300A2D46A /* Terrain.h */,
 				B44186941BA331E300604D7F /* RenderProject.h */,
+				31B0FD7A2097A21D00601F21 /* Entity.h */,
+				31B0FD7B2097A22F00601F21 /* Player.h */,
 			);
 			path = headers;
 			sourceTree = "<group>";
@@ -689,6 +697,8 @@
 		B44186951BA331E300604D7F /* implementation */ = {
 			isa = PBXGroup;
 			children = (
+				31B0FD782097A20200601F21 /* Entity.cpp */,
+				31B0FD752097A1D600601F21 /* Player.cpp */,
 				318C88E7208FBE6000B218B1 /* Skybox.cpp */,
 				31F377FE2089512400EBEC30 /* PerlinNoise.cpp */,
 				31F377FD2089512400EBEC30 /* PerlinNoise2D.cpp */,
@@ -1219,6 +1229,7 @@
 				B47AD6E71B827F4A00AFC632 /* winfnt.c in Sources */,
 				B4794A441BA6743D00B5E9DC /* RenderQueue.cpp in Sources */,
 				B4794A4D1BA6743D00B5E9DC /* FileHandler_desktop.cpp in Sources */,
+				31B0FD772097A1D600601F21 /* Player.cpp in Sources */,
 				B4CB8CCE1B72E43300FE041B /* AppDelegate.m in Sources */,
 				B4794A4B1BA6743D00B5E9DC /* Texture.cpp in Sources */,
 				B4794A511BA6743D00B5E9DC /* View_desktop.cpp in Sources */,
@@ -1227,6 +1238,7 @@
 				B4794A341BA6743D00B5E9DC /* Camera.cpp in Sources */,
 				B4794A3E1BA6743D00B5E9DC /* Model.cpp in Sources */,
 				B4794A3A1BA6743D00B5E9DC /* Geometry.cpp in Sources */,
+				31B0FD792097A20200601F21 /* Entity.cpp in Sources */,
 				31A71EEE20865D8800A2D46A /* Terrain.cpp in Sources */,
 				B4794A521BA6743D00B5E9DC /* BView.mm in Sources */,
 				B4794A321BA6743D00B5E9DC /* obj.cpp in Sources */,

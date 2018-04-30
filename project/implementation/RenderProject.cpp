@@ -1,6 +1,7 @@
 #include "RenderProject.h"
 #include "Terrain.h"
 #include "Skybox.h"
+#include "Player.h"
 
 /* Initialize the Project */
 void RenderProject::init()
@@ -49,14 +50,17 @@ void RenderProject::initFunction()
 
 	// BLENDER MODELS (.obj)
 	bRenderer().getObjects()->loadObjModel("tree.obj", false, true, basicShader, treeProperties);
-	//bRenderer().getObjects()->loadObjModel("sun.obj", false, true, basicShader, sunProperties);
+	bRenderer().getObjects()->loadObjModel("sun.obj", false, true, basicShader, sunProperties);
+    
+    // create Player object
+    _player = PlayerPtr(new Player("sun.obj", "sun", "sunProperties", basicShader, getProjectRenderer(), vmml::Vector3f(50.0, 1.0, -50.0), 0.0, 0.0, 0.0, 1.0));
 
-	// PROCEDURAL TERRAIN
-	MaterialPtr terrainMaterial = bRenderer().getObjects()->loadObjMaterial("terrain.mtl", "terrain", terrainShader);
-	Terrain terrain = Terrain(terrainMaterial, procTerrainProperties, terrainShader);
-	ModelPtr terrainModel = terrain.generate();
-	bRenderer().getObjects()->addModel("proceduralTerrain", terrainModel);
-
+    // PROCEDURAL TERRAIN
+    MaterialPtr terrainMaterial = bRenderer().getObjects()->loadObjMaterial("terrain.mtl", "terrain", terrainShader);
+    Terrain terrain = Terrain(terrainMaterial, procTerrainProperties, terrainShader);
+    ModelPtr terrainModel = terrain.generate();
+    bRenderer().getObjects()->addModel("terrain", terrainModel);
+    
 	// SKYBOX (with CubeMap)
 	/*TextureData left = TextureData("left.png");
 	TextureData right = TextureData("right.png");
@@ -184,6 +188,8 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
 	vmml::Matrix4f modelMatrix;
 	vmml::Matrix3f normalMatrix;
 	ShaderPtr skybox;
+    
+    _player->process("camera", deltaTime);
 
 	/// TREE ///
 	modelMatrix = 
@@ -196,22 +202,23 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
 	bRenderer().getModelRenderer()->drawModel("tree", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
 
 	/// SUN ///
-	//modelMatrix = 
-	//	vmml::create_translation(vmml::Vector3f(200., 200.0, -200.0)) * 
-	//	vmml::create_scaling(vmml::Vector3f(1.0f));
-	//// set ambient color
-	//bRenderer().getObjects()->setAmbientColor(vmml::Vector3f(0.5f));
-	//// draw model
-	//bRenderer().getModelRenderer()->drawModel("sun", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
+    modelMatrix =
+        vmml::create_translation(vmml::Vector3f(200., 200.0, -200.0)) *
+        vmml::create_rotation((float)elapsedTime * M_PI_F/10, vmml::Vector3f::UNIT_Y) *
+        vmml::create_scaling(vmml::Vector3f(1.0f));
+    // set ambient color
+    bRenderer().getObjects()->setAmbientColor(vmml::Vector3f(0.5f));
+    // draw model
+    bRenderer().getModelRenderer()->drawModel("sun", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
 
 	/// Procedural Terrain ///
-	modelMatrix = 
-		vmml::create_translation(vmml::Vector3f(-75.0, 0.0, 75.0)) * 
-		vmml::create_scaling(vmml::Vector3f(5.0f));
-	// set ambient color
-	bRenderer().getObjects()->setAmbientColor(vmml::Vector3f(0.5f));
-	// draw model
-	bRenderer().getModelRenderer()->drawModel("proceduralTerrain", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
+    modelMatrix =
+        vmml::create_translation(vmml::Vector3f(0.0)) *
+        vmml::create_scaling(vmml::Vector3f(1.0f));
+    // set ambient color
+    bRenderer().getObjects()->setAmbientColor(vmml::Vector3f(0.5f));
+    // draw model
+    bRenderer().getModelRenderer()->drawModel("terrain", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
 
 	/// Skybox ///
 	//modelMatrix = 

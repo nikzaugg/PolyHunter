@@ -2,6 +2,7 @@
 #define PROJECT_MAIN_H
 
 #include "bRenderer.h"
+#include "Player.h"
 
 class RenderProject : public IRenderProject
 {
@@ -65,6 +66,7 @@ private:
 	GLint _lastStateSpaceKey = 0;
 	vmml::Matrix4f _viewMatrixHUD;
 	double elapsedTime = 0.0;
+    PlayerPtr _player;
 };
 
 #endif /* defined(PROJECT_MAIN_H) */
