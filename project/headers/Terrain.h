@@ -8,8 +8,6 @@ class Terrain
 public:
 	typedef std::unordered_map< std::string, GeometryPtr > GroupMap;
 	
-	Terrain(MaterialPtr material, PropertiesPtr properties);
-
 	Terrain(MaterialPtr material, PropertiesPtr properties, ShaderPtr shader);
 
 	double noise(double x, double y);
@@ -31,8 +29,6 @@ private:
 
 	GroupMap        _groups;
 	vmml::AABBf		_boundingBox;
-
-	float ** generateHeights();
 
 	float ** _heights;
 

@@ -3,8 +3,6 @@ $B_SHADER_VERSION
 precision mediump float;
 #endif
 
-// #extension GL_EXT_gpu_shader4 : require
-
 uniform mediump mat4 ViewMatrix;
 uniform mediump mat4 ModelMatrix;
 uniform mat4 ModelViewMatrix;
@@ -38,11 +36,13 @@ varying mediump vec4 posVarying;        // pos in world space
 varying mediump vec4 camPosVarying;        // pos in world space
 varying mediump vec3 normalVarying;     // normal in world space
 varying mediump vec3 tangentVarying;    // tangent in world space
+
 vec4 biome()
 {
-    mediump float slope = 1.0 - Normal.y;
+    // Slope doesn't work well with split terrain
+    mediump float slope = 1.0 - normalVarying.y;
 
-    if (slope > 0.2 || Position.y > heightPercent * 80.0)
+    if (Position.y > heightPercent * 50.0)
     {
         return vec4(0.36, 0.37, 0.36, 1.0);
     }
@@ -55,13 +55,13 @@ vec4 biome()
 
 void main()
 {
-    heightColor = biome();
     camPosVarying = ModelViewMatrix * Position;
 	posVarying = ModelMatrix * Position; // posViewSpace
     // need to invert z-value of normal to get the normal right
     // TODO: export blender normal in the right coordinate system, so that
     // we can remove this
     normalVarying = normalize(NormalMatrix * (Normal * vec3(1.0, 1.0, -1.0)));
+    heightColor = biome();
     tangentVarying = normalize(NormalMatrix * Tangent);
 
     texCoordVarying = TexCoord;
