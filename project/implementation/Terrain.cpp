@@ -40,8 +40,8 @@ float Terrain::barryCentric(vmml::Vector3f p1, vmml::Vector3f p2, vmml::Vector3f
 }
 
 float Terrain::getHeightOfTerrain(float worldX, float worldZ){
-    float terrainZ = worldX - getPosition().x();
-    float terrainX = (-1.0)*worldZ - getPosition().z();
+    float terrainX = worldX - getPosition().x();
+    float terrainZ = worldZ - getPosition().z();
     int sizeHeights = (_VERTEX_COUNT) - 1;
 //    std::cout << "size of heights: " << sizeHeights << std::endl;
     float gridSquareSize = _SIZE / (float) sizeHeights;
@@ -55,7 +55,7 @@ float Terrain::getHeightOfTerrain(float worldX, float worldZ){
     float xCoord = remainderf(terrainX, gridSquareSize) / gridSquareSize;
     float zCoord = remainderf(terrainZ, gridSquareSize) / gridSquareSize;
     float result;
-    if (xCoord >= (1-zCoord)) {
+    if (xCoord <= (1-zCoord)) {
         result = barryCentric(
                               vmml::Vector3f(0, _heights[gridX][gridZ], 0),
                               vmml::Vector3f(1, _heights[gridX + 1][gridZ], 0),
@@ -95,7 +95,7 @@ ModelData::GroupMap Terrain::generate()
 			
 			height = pow(height, _exponent);
 
-			_heights[i][j] = height * _amplitude;
+            _heights[i][j] = height * _amplitude;
 
 			if (_maxHeight < _heights[i][j])
 			{
@@ -129,8 +129,9 @@ ModelData::GroupMap Terrain::generate()
 			float zBottomRight = ((float)(i + 1) / ((float)_VERTEX_COUNT - 1)) * _SIZE;
 			
 			objLoader.addVertex(xTopLeft, _heights[i][j], zTopLeft);
+            objLoader.addVertex(xTopRight, _heights[i][j+1], zTopRight);
 			objLoader.addVertex(xBottomLeft, _heights[i+1][j], zBottomLeft);
-			objLoader.addVertex(xTopRight, _heights[i][j+1], zTopRight);
+
 			
 			IndexData d1, d2, d3;
 			d1.vertexIndex = counter++;
@@ -139,10 +140,10 @@ ModelData::GroupMap Terrain::generate()
 
 			objLoader.addFace(d1, d2, d3);
 
-			objLoader.addVertex(xBottomRight, _heights[i+1][j+1], zBottomRight);
-			objLoader.addVertex(xTopRight, _heights[i][j+1], zTopRight);
 			objLoader.addVertex(xBottomLeft, _heights[i+1][j], zBottomLeft);
-
+			objLoader.addVertex(xTopRight, _heights[i][j+1], zTopRight);
+            objLoader.addVertex(xBottomRight, _heights[i+1][j+1], zBottomRight);
+			
 			IndexData d4, d5, d6;
 			d4.vertexIndex = counter++;
 			d5.vertexIndex = counter++;
@@ -168,6 +169,7 @@ void Terrain::render(std::string camera)
     getShader()->setUniform("amplitude", _amplitude);
     getShader()->setUniform("heightPercent", _maxHeight / 100);
     renderer().getObjects()->setAmbientColor(vmml::Vector3f(0.5f));
+    std::cout << computeTransformationMatrix() << std::endl;
     // draw model
     renderer().getModelRenderer()->drawModel("terrain", camera, computeTransformationMatrix(), std::vector<std::string>({ "sun" }), true, true);
 }

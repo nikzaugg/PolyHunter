@@ -39,13 +39,13 @@ void RenderProject::initFunction()
 
 	// SHADERS
 	ShaderPtr basicShader = bRenderer().getObjects()->loadShaderFile("basic", 1, false, true, true, true, false);
-	ShaderPtr skyboxShader = bRenderer().getObjects()->loadShaderFile("skybox", 1, false, true, true, true, false);
+	// ShaderPtr skyboxShader = bRenderer().getObjects()->loadShaderFile("skybox", 1, false, true, true, true, false);
 	ShaderPtr terrainShader = bRenderer().getObjects()->loadShaderFile("terrain", 1, false, true, true, true, false);
 
 	// PROPERTIES FOR THE MODELS
 	PropertiesPtr treeProperties = bRenderer().getObjects()->createProperties("treeProperties");
 	PropertiesPtr sunProperties = bRenderer().getObjects()->createProperties("sunProperties");
-	PropertiesPtr procTerrainProperties = bRenderer().getObjects()->createProperties("procTerrainProperties");
+	// PropertiesPtr procTerrainProperties = bRenderer().getObjects()->createProperties("procTerrainProperties");
 	PropertiesPtr skyboxProperties = bRenderer().getObjects()->createProperties("skyboxProperties");
 
 	// BLENDER MODELS (.obj)
@@ -53,7 +53,7 @@ void RenderProject::initFunction()
 	bRenderer().getObjects()->loadObjModel("sun.obj", false, true, basicShader, sunProperties);
     
     // create Player object
-    _player = PlayerPtr(new Player("sun.obj", "sun", "sunProperties", basicShader, getProjectRenderer(), vmml::Vector3f(50.0, 0.0, -50.0), 0.0, 0.0, 0.0, 1.0));
+    _player = PlayerPtr(new Player("sun.obj", "sun", "sunProperties", basicShader, getProjectRenderer(), vmml::Vector3f(50.0, 0.0, 50.0), 0.0, 0.0, 0.0, 1.0));
 
     // PROCEDURAL TERRAIN
     _terrain = TerrainPtr(new Terrain("terrain", "terrain.mtl", "terrain", "terrainProperties", terrainShader, getProjectRenderer(), vmml::Vector3f(0.0), 0.0, 0.0, 0.0, 1.0));
@@ -191,7 +191,7 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
 
 	/// TREE ///
 	modelMatrix = 
-		vmml::create_translation(vmml::Vector3f(50.0, 0.0, 50.0)) * 
+		vmml::create_translation(vmml::Vector3f(100.0, 0.0, 0.0)) *
 		vmml::create_rotation((float)elapsedTime * M_PI_F/10, vmml::Vector3f::UNIT_Y) *
 		vmml::create_scaling(vmml::Vector3f(1.0f));
 	// set ambient color
@@ -201,7 +201,7 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
 
 	/// SUN ///
     modelMatrix =
-        vmml::create_translation(vmml::Vector3f(200., 200.0, -200.0)) *
+        vmml::create_translation(vmml::Vector3f(0.0, 0.0, 100.0)) *
         vmml::create_rotation((float)elapsedTime * M_PI_F/10, vmml::Vector3f::UNIT_Y) *
         vmml::create_scaling(vmml::Vector3f(1.0f));
     // set ambient color

@@ -19,7 +19,7 @@ void Player::process(std::string cameraName, const double &deltaTime, TerrainPtr
 
     _upwardsSpeed += GRAVITY * deltaTime;
     increasePosition(0.0, _upwardsSpeed * deltaTime, 0.0);
-    float terrainHeight = terrain->getHeightOfTerrain(getPosition().x(), getPosition().z());
+    float terrainHeight = terrain->getHeightOfTerrain(getPosition().z(), getPosition().x());
     // std::cout << terrainHeight << std::endl;
     if (getPosition().y() < terrainHeight)
     {
@@ -44,7 +44,7 @@ void Player::checkInputs() {
         _currentSpeed = -RUN_SPEED;
     }
     else {
-        _currentSpeed = -2.0;
+        _currentSpeed = 3.0;
     }
     
     if (renderer().getInput()->getKeyState(bRenderer::KEY_J) == bRenderer::INPUT_PRESS) {
