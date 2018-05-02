@@ -184,9 +184,10 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
 	vmml::Matrix3f normalMatrix;
 	ShaderPtr skybox;
     
-    float lightPosition = bRenderer().getObjects()->getLight("sun")->getPosition().z();
-    bRenderer().getObjects()->getLight("sun")->setPosition(vmml::Vector3f(30.0, 50.0, elapsedTime * 3.0));
-
+    // Move Light to See changes in Colors/Lighting
+    // float lightPosition = bRenderer().getObjects()->getLight("sun")->getPosition().z();
+    bRenderer().getObjects()->getLight("sun")->setPosition(vmml::Vector3f(elapsedTime * 3.0, 100.0, elapsedTime * 3.0));
+    
     _player->process("camera", deltaTime, _terrain);
     _terrain->process("camera", deltaTime);
 
@@ -203,7 +204,7 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
     
 	/// SUN ///
     modelMatrix =
-        vmml::create_translation(vmml::Vector3f(30.0, 50.0, elapsedTime * 3.0)) *
+        vmml::create_translation(vmml::Vector3f(elapsedTime * 3.0, 100.0, elapsedTime * 3.0)) *
         vmml::create_rotation((float)elapsedTime * M_PI_F/10, vmml::Vector3f::UNIT_Y) *
         vmml::create_scaling(vmml::Vector3f(1.0f));
     // set ambient color
