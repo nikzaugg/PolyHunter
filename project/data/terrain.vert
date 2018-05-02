@@ -30,17 +30,17 @@ attribute vec3 Tangent;
 attribute vec3 Bitangent;
 attribute vec4 TexCoord;
 
-varying vec4 texCoordVarying;
-varying lowp vec4 heightColor;
-varying mediump vec4 posVarying;        // pos in world space   
-varying mediump vec4 camPosVarying;        // pos in world space
-varying mediump vec3 normalVarying;     // normal in world space
-varying mediump vec3 tangentVarying;    // tangent in world space
+varying lowp vec4 vertexColor_varying;
+varying lowp vec4 texCoord_varying;
+// Everything in View Space
+varying mediump vec4 position_varying_ViewSpace;
+varying mediump vec3 normal_varying_ViewSpace;
+varying mediump vec3 tangent_varying_ViewSpace;
 
 vec4 biome()
 {
     // Slope doesn't work well with split terrain
-    mediump float slope = 1.0 - normalVarying.y;
+    mediump float slope = 1.0 - normal_varying_ViewSpace.y;
 
     if (Position.y > heightPercent * 50.0)
     {
@@ -55,16 +55,20 @@ vec4 biome()
 
 void main()
 {
-    camPosVarying = ModelViewMatrix * Position;
-	posVarying = ModelMatrix * Position; // posViewSpace
-    
     /*READ THIS*/
     // Normals of Terrain need to be inverted to be correct, as they are computed inverse in the OBJ Loader
-    normalVarying = normalize(NormalMatrix * (Normal * vec3(-1.0, -1.0, 1.0)));
-    heightColor = biome();
-    tangentVarying = normalize(NormalMatrix * Tangent);
-
-    texCoordVarying = TexCoord;
-    // gl_Position = ProjectionMatrix * ModelViewMatrix * vec4(Position.x, 0.0, Position.z, 1.0);
-    gl_Position = ProjectionMatrix * ModelViewMatrix * Position;
+    vec3 normal_ViewSpace = mat3(ModelViewMatrix) * (Normal * vec3(-1.0, -1.0, 1.0));
+    vec3 tangent_ViewSpace = mat3(ModelViewMatrix) * Tangent;
+    vec3 bitangent_ViewSpace = mat3(ModelViewMatrix) * Bitangent;
+	vec4 posViewSpace = ModelViewMatrix * Position;
+    
+    // Outputs to Fragment Shader
+    normal_varying_ViewSpace = normal_ViewSpace;
+    tangent_varying_ViewSpace = tangent_ViewSpace;
+    position_varying_ViewSpace = posViewSpace;
+    texCoord_varying = TexCoord;
+    vertexColor_varying = biome();
+    
+    // Position of Vertex
+    gl_Position = ProjectionMatrix*posViewSpace;
 }

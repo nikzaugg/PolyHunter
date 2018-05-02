@@ -20,43 +20,31 @@ uniform vec3 lightDiffuseColor_0;
 uniform vec3 lightSpecularColor_0;
 uniform vec4 lightPositionViewSpace_0;
 
-uniform sampler2D DiffuseMap;
-
-varying lowp vec4 ambientVarying;
-varying lowp vec4 diffuseVarying;
-varying lowp vec4 specularVarying;
-varying lowp vec4 texCoordVarying;
-varying lowp vec4 heightColor;
-varying mediump vec4 posVarying;        // pos in world space
-varying mediump vec4 camPosVarying;     // cam pos in world space
-varying mediump vec3 normalVarying;     // normal in world space
-varying mediump vec3 tangentVarying;    // tangent in world space
+varying lowp vec4 vertexColor_varying;
+varying lowp vec4 texCoord_varying;
+// Everything in View Space
+varying mediump vec4 position_varying_ViewSpace;
+varying mediump vec3 normal_varying_ViewSpace;
+varying mediump vec3 tangent_varying_ViewSpace;
 
 void main()
 {
-    lowp vec4 ambientResult = vec4(ambientColor *lightIntensity_0, 1.0);
-    lowp vec4 specular_ = vec4(0.0);
+    vec4 position = position_varying_ViewSpace;
+    vec3 normal = normalize(normal_varying_ViewSpace);
+    vec4 lightPosition = lightPositionViewSpace_0;
+    vec4 lightVector = normalize(lightPosition - position);
     
-    mediump vec4 pos = posVarying;
-    mediump vec3 n = normalize(normalVarying); 
-    mediump vec3 l = normalize(lightPositionViewSpace_0 - pos).xyz;
+    // ambient part
+    vec4 ambientPart = vec4(ambientColor * lightIntensity_0, 1.0);
     
-    lowp float intensity = dot(n, l);
-    lowp vec3 diffuse = Kd * clamp(intensity, 0.0, 1.0) * lightDiffuseColor_0;
-    lowp vec4 diffuseResult = vec4(clamp(diffuse, 0.0, 1.0), 1.0);
+    // diffuse part
+    float intensityFactor = dot(normal, lightVector.xyz);
+    vec3 diffuseTerm = Kd * clamp(intensityFactor, 0.0, 1.0) * lightDiffuseColor_0;
+    vec4 diffusePart = vec4(clamp(diffuseTerm, 0.0, 1.0), 1.0);
     
-    if(intensity > 0.0) {
-        mediump vec4 direction = vec4(camPosVarying - pos);
-        mediump vec3 V = direction.xyz;
-        mediump vec3 H = (V+l)/length(V+l);
-
-        lowp float angleFactor = pow(max(0.0, dot(n, H)), Ns);
-        mediump vec3 specular = Ks * angleFactor * lightSpecularColor_0;
-        specular_ = vec4(clamp(specular, 0.0, 1.0), 1.0);
-    }
-    gl_FragColor = (ambientResult + diffuseResult) * heightColor;
+    gl_FragColor = (ambientPart + diffusePart) * vertexColor_varying;
     
     // Color according to normals
-    // vec3 normal = n/2.0 + vec3(0.5);
-    // gl_FragColor = vec4(normal, 1.0);
+    // vec3 normal_test = normal/2.0 + vec3(0.5);
+    // gl_FragColor = vec4(normal_test, 1.0);
 }
