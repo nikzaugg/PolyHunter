@@ -14,9 +14,9 @@ Terrain::Terrain(std::string modelName, std::string materialFile, std::string ma
 : Entity(modelName, materialFile, materialName, propName, shader, renderer, pos, rotX, rotY, rotZ, scale)
 {
     std::cout << "TERRAIN WORKS!!!" << std::endl;
-    this->_VERTEX_COUNT = 100;
+    this->_VERTEX_COUNT = 96;
     this->_SIZE = 300;
-    this->_amplitude = 70;
+    this->_amplitude = 5;
     this->_exponent = 4.18;
     this->_maxHeight = 0.0f;
     

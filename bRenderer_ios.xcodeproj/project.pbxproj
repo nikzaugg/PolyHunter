@@ -7,6 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3136FA23209A1D76008436CF /* skybox.frag in Resources */ = {isa = PBXBuildFile; fileRef = 3136FA21209A1D75008436CF /* skybox.frag */; };
+		3136FA24209A1D76008436CF /* skybox.vert in Resources */ = {isa = PBXBuildFile; fileRef = 3136FA22209A1D75008436CF /* skybox.vert */; };
+		3136FA2B209A5D4D008436CF /* back.png in Resources */ = {isa = PBXBuildFile; fileRef = 3136FA25209A5D4A008436CF /* back.png */; };
+		3136FA2C209A5D4D008436CF /* left.png in Resources */ = {isa = PBXBuildFile; fileRef = 3136FA26209A5D4B008436CF /* left.png */; };
+		3136FA2D209A5D4D008436CF /* front.png in Resources */ = {isa = PBXBuildFile; fileRef = 3136FA27209A5D4B008436CF /* front.png */; };
+		3136FA2E209A5D4D008436CF /* bottom.png in Resources */ = {isa = PBXBuildFile; fileRef = 3136FA28209A5D4C008436CF /* bottom.png */; };
+		3136FA2F209A5D4D008436CF /* right.png in Resources */ = {isa = PBXBuildFile; fileRef = 3136FA29209A5D4C008436CF /* right.png */; };
+		3136FA30209A5D4D008436CF /* top.png in Resources */ = {isa = PBXBuildFile; fileRef = 3136FA2A209A5D4C008436CF /* top.png */; };
+		3136FA34209A60C6008436CF /* skybox.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 3136FA33209A60C5008436CF /* skybox.mtl */; };
 		318C88E8208FBE6000B218B1 /* Skybox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 318C88E7208FBE6000B218B1 /* Skybox.cpp */; };
 		318C88F1208FBEFC00B218B1 /* libnoise.m in Sources */ = {isa = PBXBuildFile; fileRef = 318C88F0208FBEFC00B218B1 /* libnoise.m */; };
 		318C88F2208FBEFC00B218B1 /* libnoise.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 318C88EF208FBEFC00B218B1 /* libnoise.h */; };
@@ -217,6 +226,15 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		3136FA21209A1D75008436CF /* skybox.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = skybox.frag; sourceTree = "<group>"; };
+		3136FA22209A1D75008436CF /* skybox.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = skybox.vert; sourceTree = "<group>"; };
+		3136FA25209A5D4A008436CF /* back.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = back.png; sourceTree = "<group>"; };
+		3136FA26209A5D4B008436CF /* left.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = left.png; sourceTree = "<group>"; };
+		3136FA27209A5D4B008436CF /* front.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = front.png; sourceTree = "<group>"; };
+		3136FA28209A5D4C008436CF /* bottom.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bottom.png; sourceTree = "<group>"; };
+		3136FA29209A5D4C008436CF /* right.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = right.png; sourceTree = "<group>"; };
+		3136FA2A209A5D4C008436CF /* top.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = top.png; sourceTree = "<group>"; };
+		3136FA33209A60C5008436CF /* skybox.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = skybox.mtl; sourceTree = "<group>"; };
 		318C88E6208FBE4E00B218B1 /* Skybox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Skybox.h; sourceTree = "<group>"; };
 		318C88E7208FBE6000B218B1 /* Skybox.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Skybox.cpp; sourceTree = "<group>"; };
 		318C88ED208FBEFC00B218B1 /* liblibnoise.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = liblibnoise.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -302,8 +320,6 @@
 		318C8945208FBF3D00B218B1 /* misc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = misc.h; sourceTree = "<group>"; };
 		318C8946208FBF3E00B218B1 /* vectortable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vectortable.h; sourceTree = "<group>"; };
 		318C896E208FBFD200B218B1 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
-		318C8970208FC15A00B218B1 /* skybox.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = skybox.frag; sourceTree = "<group>"; };
-		318C8971208FC15A00B218B1 /* skybox.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = skybox.vert; sourceTree = "<group>"; };
 		31A71ED120865D6C00A2D46A /* basic.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = basic.vert; sourceTree = "<group>"; };
 		31A71ED220865D6C00A2D46A /* terrain.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = terrain.vert; sourceTree = "<group>"; };
 		31A71ED320865D6C00A2D46A /* tree.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tree.png; sourceTree = "<group>"; };
@@ -712,8 +728,15 @@
 		B47949841BA6742B00B5E9DC /* data */ = {
 			isa = PBXGroup;
 			children = (
-				318C8970208FC15A00B218B1 /* skybox.frag */,
-				318C8971208FC15A00B218B1 /* skybox.vert */,
+				3136FA33209A60C5008436CF /* skybox.mtl */,
+				3136FA25209A5D4A008436CF /* back.png */,
+				3136FA28209A5D4C008436CF /* bottom.png */,
+				3136FA27209A5D4B008436CF /* front.png */,
+				3136FA26209A5D4B008436CF /* left.png */,
+				3136FA29209A5D4C008436CF /* right.png */,
+				3136FA2A209A5D4C008436CF /* top.png */,
+				3136FA21209A1D75008436CF /* skybox.frag */,
+				3136FA22209A1D75008436CF /* skybox.vert */,
 				31A71EDD20865D6E00A2D46A /* basic.frag */,
 				31A71ED120865D6C00A2D46A /* basic.vert */,
 				31A71ED920865D6E00A2D46A /* sun.mtl */,
@@ -1105,6 +1128,7 @@
 				B47949BB1BA6742B00B5E9DC /* sparks.png in Resources */,
 				31A71EE520865D6F00A2D46A /* sun.png in Resources */,
 				B47949A21BA6742B00B5E9DC /* arial.ttf in Resources */,
+				3136FA2F209A5D4D008436CF /* right.png in Resources */,
 				B47949B21BA6742B00B5E9DC /* crystal_d.png in Resources */,
 				B47949AD1BA6742B00B5E9DC /* cave_stream.vert in Resources */,
 				B47949A41BA6742B00B5E9DC /* blurShader.frag in Resources */,
@@ -1122,26 +1146,34 @@
 				31A71EE820865D6F00A2D46A /* tree.obj in Resources */,
 				31A71EDE20865D6F00A2D46A /* basic.vert in Resources */,
 				31A71EE120865D6F00A2D46A /* terrain.png in Resources */,
+				3136FA2B209A5D4D008436CF /* back.png in Resources */,
 				B47949AA1BA6742B00B5E9DC /* cave_stream.frag in Resources */,
 				B47949BA1BA6742B00B5E9DC /* KozGoPro-ExtraLight.otf in Resources */,
 				31A71EE220865D6F00A2D46A /* sun.obj in Resources */,
 				31A71EDF20865D6F00A2D46A /* terrain.vert in Resources */,
+				3136FA2E209A5D4D008436CF /* bottom.png in Resources */,
 				B47949B51BA6742B00B5E9DC /* flame.frag in Resources */,
+				3136FA30209A5D4D008436CF /* top.png in Resources */,
 				B47949A81BA6742B00B5E9DC /* cave_d.png in Resources */,
 				B47949AE1BA6742B00B5E9DC /* cave_stream_n.png in Resources */,
 				B47949A71BA6742B00B5E9DC /* cave.obj in Resources */,
 				B47949B11BA6742B00B5E9DC /* crystal.obj in Resources */,
 				B47949BE1BA6742B00B5E9DC /* torchSurface_Color.png in Resources */,
 				B47949AC1BA6742B00B5E9DC /* cave_stream.obj in Resources */,
+				3136FA34209A60C6008436CF /* skybox.mtl in Resources */,
 				B47949B41BA6742B00B5E9DC /* crystal_s.png in Resources */,
 				31A71EE320865D6F00A2D46A /* terrain.mtl in Resources */,
 				B47949B71BA6742B00B5E9DC /* flame.obj in Resources */,
 				B47949B91BA6742B00B5E9DC /* flame.vert in Resources */,
+				3136FA2D209A5D4D008436CF /* front.png in Resources */,
 				B4794A311BA6743D00B5E9DC /* LICENSE.txt in Resources */,
 				B4794A2A1BA6743D00B5E9DC /* LICENSE.txt in Resources */,
+				3136FA24209A1D76008436CF /* skybox.vert in Resources */,
 				31A71EE920865D6F00A2D46A /* terrain.obj in Resources */,
 				B4794A301BA6743D00B5E9DC /* LICENSE.txt in Resources */,
+				3136FA2C209A5D4D008436CF /* left.png in Resources */,
 				B4CB8CD01B72E43300FE041B /* Project-Info.plist in Resources */,
+				3136FA23209A1D76008436CF /* skybox.frag in Resources */,
 				31A71EE420865D6F00A2D46A /* terrain.frag in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

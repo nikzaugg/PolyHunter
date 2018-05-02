@@ -21,20 +21,42 @@ uniform vec3 lightDiffuseColor_0;
 uniform vec3 lightSpecularColor_0;
 uniform vec4 lightPositionViewSpace_0;
 
+uniform float amplitude;
+uniform float heightPercent;
+
 attribute vec4 Position;
 attribute vec3 Normal;
 attribute vec3 Tangent;
 attribute vec3 Bitangent;
 attribute vec4 TexCoord;
 
-varying mediump vec4 texCoordVarying;
-varying mediump vec4 posVarying;   // pos in world space
-varying mediump vec4 camPosVarying;        // pos in world space
-varying mediump vec3 normalVarying;     // normal in world space
-varying mediump vec3 tangentVarying;    // tangent in world space
+varying lowp vec4 vertexColor_varying;
+varying lowp vec4 texCoord_varying;
+// Everything in View Space
+varying mediump vec4 position_varying_ViewSpace;
+varying mediump vec3 normal_varying_ViewSpace;
+varying mediump vec3 tangent_varying_ViewSpace;
+varying mediump vec4 height;
 
 void main()
 {
-    texCoordVarying = Position;
-    gl_Position = ProjectionMatrix * ModelViewMatrix * Position;
+    /*READ THIS*/
+    // Need to flip z-coord of Normal
+    vec3 normal_ViewSpace = mat3(ModelViewMatrix) * (Normal * vec3(1.0, 1.0, -11.0));
+    vec3 tangent_ViewSpace = mat3(ModelViewMatrix) * Tangent;
+    vec3 bitangent_ViewSpace = mat3(ModelViewMatrix) * Bitangent;
+    vec4 posViewSpace = ModelViewMatrix * Position;
+    
+    // Outputs to Fragment Shader
+    normal_varying_ViewSpace = normal_ViewSpace;
+    tangent_varying_ViewSpace = tangent_ViewSpace;
+    position_varying_ViewSpace = posViewSpace;
+    texCoord_varying = TexCoord;
+    
+    height = Position;
+    
+    // Position of Vertex
+    gl_Position = ProjectionMatrix*posViewSpace;
 }
+
+
