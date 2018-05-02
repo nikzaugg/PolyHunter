@@ -55,9 +55,7 @@ vec4 biome()
 
 void main()
 {
-    /*READ THIS*/
-    // Normals of Terrain need to be inverted to be correct, as they are computed inverse in the OBJ Loader
-    vec3 normal_ViewSpace = mat3(ModelViewMatrix) * (Normal * vec3(-1.0, -1.0, 1.0));
+    vec3 normal_ViewSpace = normalize(mat3(ModelViewMatrix) * Normal);
     vec3 tangent_ViewSpace = mat3(ModelViewMatrix) * Tangent;
     vec3 bitangent_ViewSpace = mat3(ModelViewMatrix) * Bitangent;
 	vec4 posViewSpace = ModelViewMatrix * Position;
@@ -70,5 +68,5 @@ void main()
     vertexColor_varying = biome();
     
     // Position of Vertex
-    gl_Position = ProjectionMatrix*posViewSpace;
+    gl_Position = ProjectionMatrix* posViewSpace;
 }

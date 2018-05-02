@@ -205,7 +205,7 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
     
 	/// SUN ///
     modelMatrix =
-        vmml::create_translation(vmml::Vector3f(0.0, 0.0, 50.0)) *
+        vmml::create_translation(vmml::Vector3f(elapsedTime * 3.0, 100.0, elapsedTime * 3.0)) *
         vmml::create_rotation((float)elapsedTime * M_PI_F/10, vmml::Vector3f::UNIT_Y) *
         vmml::create_scaling(vmml::Vector3f(1.0f));
     // set ambient color
@@ -215,7 +215,7 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
 
 	/// Skybox ///
     modelMatrix =
-        vmml::create_translation(vmml::Vector3f(0.0, 0.0, 0.0)) *
+        vmml::create_translation(vmml::Vector3f(0.0, 0.0, 0)) *
         vmml::create_scaling(vmml::Vector3f(1.0));
     // set CubeMap for skybox texturing
     // skybox = bRenderer().getObjects()->getShader("skybox");

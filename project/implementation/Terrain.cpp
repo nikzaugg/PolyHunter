@@ -14,9 +14,9 @@ Terrain::Terrain(std::string modelName, std::string materialFile, std::string ma
 : Entity(modelName, materialFile, materialName, propName, shader, renderer, pos, rotX, rotY, rotZ, scale)
 {
     std::cout << "TERRAIN WORKS!!!" << std::endl;
-    this->_VERTEX_COUNT = 96;
+    this->_VERTEX_COUNT = 64;
     this->_SIZE = 300;
-    this->_amplitude = 5;
+    this->_amplitude = 70;
     this->_exponent = 4.18;
     this->_maxHeight = 0.0f;
     
@@ -105,9 +105,11 @@ ModelData::GroupMap Terrain::generate()
     }
     
     int counter = 0;
+    // 0 1 2 3
     for (int i = 0; i < _VERTEX_COUNT - 1; i++)
     {
         
+        // 0 1 2 3
         for (int j = 0; j < _VERTEX_COUNT - 1; j++)
         {
             float uPos = (float)j / ((float)_VERTEX_COUNT - 1);
@@ -116,21 +118,26 @@ ModelData::GroupMap Terrain::generate()
             vPos = 1 - vPos;
             objLoader.addTexCoords(uPos, vPos);
             
-            float xTopLeft = ((float)j / ((float)_VERTEX_COUNT - 1)) * _SIZE;
-            float zTopLeft = ((float)i / ((float)_VERTEX_COUNT - 1)) * _SIZE;
+            float xTopLeft = ((float)i / ((float)_VERTEX_COUNT - 1)) * _SIZE;
+            float zTopLeft = ((float)j / ((float)_VERTEX_COUNT - 1)) * _SIZE;
             
-            float xTopRight = ((float)(j+1) / ((float)_VERTEX_COUNT - 1)) * _SIZE;
-            float zTopRight = ((float)i / ((float)_VERTEX_COUNT - 1)) * _SIZE;
+            std::cout << "TopLeft: "<< xTopLeft << " | " << zTopLeft << std::endl;
             
-            float xBottomLeft = ((float)j / ((float)_VERTEX_COUNT - 1)) * _SIZE;
-            float zBottomLeft = ((float)(i+1) / ((float)_VERTEX_COUNT - 1)) * _SIZE;
+            float xTopRight = ((float)(i) / ((float)_VERTEX_COUNT - 1)) * _SIZE;
+            float zTopRight = ((float)(j+1) / ((float)_VERTEX_COUNT - 1)) * _SIZE;
             
-            float xBottomRight = ((float)(j + 1) / ((float)_VERTEX_COUNT - 1)) * _SIZE;
-            float zBottomRight = ((float)(i + 1) / ((float)_VERTEX_COUNT - 1)) * _SIZE;
+            std::cout << "TopRight: "<< xTopRight << " | " << zTopRight << std::endl;
+            std::cout << " ---------------------" << std::endl;
             
-            objLoader.addVertex(xTopLeft, _heights[i][j], zTopLeft);
-            objLoader.addVertex(xTopRight, _heights[i][j+1], zTopRight);
-            objLoader.addVertex(xBottomLeft, _heights[i+1][j], zBottomLeft);
+            float xBottomLeft = ((float)(i+1) / ((float)_VERTEX_COUNT - 1)) * _SIZE;
+            float zBottomLeft = ((float)(j) / ((float)_VERTEX_COUNT - 1)) * _SIZE;
+            
+            float xBottomRight = ((float)(i + 1) / ((float)_VERTEX_COUNT - 1)) * _SIZE;
+            float zBottomRight = ((float)(j + 1) / ((float)_VERTEX_COUNT - 1)) * _SIZE;
+            
+            objLoader.addVertex(xTopLeft, _heights[i][j], (-1.0)*zTopLeft);
+            objLoader.addVertex(xTopRight, _heights[i][j+1], (-1.0)*zTopRight);
+            objLoader.addVertex(xBottomLeft, _heights[i+1][j], (-1.0)*zBottomLeft);
             
             
             IndexData d1, d2, d3;
@@ -138,18 +145,18 @@ ModelData::GroupMap Terrain::generate()
             d2.vertexIndex = counter++;
             d3.vertexIndex = counter++;
             
-            objLoader.addFace(d1, d2, d3);
+            objLoader.addFace(d3, d2, d1);
             
-            objLoader.addVertex(xBottomLeft, _heights[i+1][j], zBottomLeft);
-            objLoader.addVertex(xTopRight, _heights[i][j+1], zTopRight);
-            objLoader.addVertex(xBottomRight, _heights[i+1][j+1], zBottomRight);
+            objLoader.addVertex(xBottomLeft, _heights[i+1][j], (-1.0)*zBottomLeft);
+            objLoader.addVertex(xTopRight, _heights[i][j+1], (-1.0)*zTopRight);
+            objLoader.addVertex(xBottomRight, _heights[i+1][j+1], (-1.0)*zBottomRight);
             
             IndexData d4, d5, d6;
             d4.vertexIndex = counter++;
             d5.vertexIndex = counter++;
             d6.vertexIndex = counter++;
             
-            objLoader.addFace(d4, d5, d6);
+            objLoader.addFace(d6, d5, d4);
         }
     }
     
