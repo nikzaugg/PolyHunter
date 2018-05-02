@@ -39,13 +39,11 @@ void RenderProject::initFunction()
 
 	// SHADERS
 	ShaderPtr basicShader = bRenderer().getObjects()->loadShaderFile("basic", 1, false, true, true, true, false);
-	// ShaderPtr skyboxShader = bRenderer().getObjects()->loadShaderFile("skybox", 1, false, true, true, true, false);
 	ShaderPtr terrainShader = bRenderer().getObjects()->loadShaderFile("terrain", 1, false, true, true, true, false);
 
 	// PROPERTIES FOR THE MODELS
 	PropertiesPtr treeProperties = bRenderer().getObjects()->createProperties("treeProperties");
 	PropertiesPtr sunProperties = bRenderer().getObjects()->createProperties("sunProperties");
-	// PropertiesPtr procTerrainProperties = bRenderer().getObjects()->createProperties("procTerrainProperties");
 	PropertiesPtr skyboxProperties = bRenderer().getObjects()->createProperties("skyboxProperties");
 
 	// BLENDER MODELS (.obj)
@@ -53,10 +51,10 @@ void RenderProject::initFunction()
 	bRenderer().getObjects()->loadObjModel("sun.obj", false, true, basicShader, sunProperties);
     
     // create Player object
-    _player = PlayerPtr(new Player("sun.obj", "sun", "sunProperties", basicShader, getProjectRenderer(), vmml::Vector3f(50.0, 0.0, 50.0), 0.0, 0.0, 0.0, 1.0));
+    _player = PlayerPtr(new Player("sun.obj", "sun", "sunProperties", basicShader, getProjectRenderer(), vmml::Vector3f(0.0, 0.0, 0.0), 0.0, 0.0, 0.0, 1.0));
 
     // PROCEDURAL TERRAIN
-    _terrain = TerrainPtr(new Terrain("terrain", "terrain.mtl", "terrain", "terrainProperties", terrainShader, getProjectRenderer(), vmml::Vector3f(0.0), 0.0, 0.0, 0.0, 1.0));
+    _terrain = TerrainPtr(new Terrain("terrain", "terrain.mtl", "terrain", "terrainProperties", terrainShader, getProjectRenderer(), vmml::Vector3f(0.0), 0.0, 0.0, 0.0, 0.5));
     
 	// SKYBOX (with CubeMap)
 	/*TextureData left = TextureData("left.png");
@@ -87,7 +85,7 @@ void RenderProject::initFunction()
 	bRenderer().getObjects()->createCamera("camera", vmml::Vector3f(50.0, -30.0f, 0.0), vmml::Vector3f(0.f, -M_PI_F / 2, 0.f));
 
 	// create lights
-	bRenderer().getObjects()->createLight("sun", vmml::Vector3f(200.0, 200.0, -200.0), vmml::Vector3f(1.0f), vmml::Vector3f(1.0f), 1.0f, 0.5f, 100.0f);
+	bRenderer().getObjects()->createLight("sun", vmml::Vector3f(0.0, 200.0, 0.0), vmml::Vector3f(1.0f), vmml::Vector3f(1.0f), 1.0f, 0.5f, 100.0f);
 
 	// postprocessing
 	bRenderer().getObjects()->createFramebuffer("fbo");					// create framebuffer object

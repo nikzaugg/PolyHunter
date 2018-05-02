@@ -44,7 +44,7 @@ void Player::checkInputs() {
         _currentSpeed = -RUN_SPEED;
     }
     else {
-        _currentSpeed = 3.0;
+        _currentSpeed = 0.0;
     }
     
     if (renderer().getInput()->getKeyState(bRenderer::KEY_J) == bRenderer::INPUT_PRESS) {

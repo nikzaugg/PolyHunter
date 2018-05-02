@@ -55,6 +55,8 @@ void main()
         specular_ = vec4(clamp(specular, 0.0, 1.0), 1.0);
     }
     gl_FragColor = (ambientResult + diffuseResult) * heightColor;
+    
     // Color according to normals
-    // gl_FragColor = vec4(normalVarying, 1.0);
+    // vec3 normal = n/2.0 + vec3(0.5);
+    // gl_FragColor = vec4(normal, 1.0);
 }

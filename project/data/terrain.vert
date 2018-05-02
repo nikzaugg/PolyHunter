@@ -57,10 +57,10 @@ void main()
 {
     camPosVarying = ModelViewMatrix * Position;
 	posVarying = ModelMatrix * Position; // posViewSpace
-    // need to invert z-value of normal to get the normal right
-    // TODO: export blender normal in the right coordinate system, so that
-    // we can remove this
-    normalVarying = normalize(NormalMatrix * (Normal * vec3(1.0, 1.0, -1.0)));
+    
+    /*READ THIS*/
+    // Normals of Terrain need to be inverted to be correct, as they are computed inverse in the OBJ Loader
+    normalVarying = normalize(NormalMatrix * (Normal * vec3(-1.0, -1.0, 1.0)));
     heightColor = biome();
     tangentVarying = normalize(NormalMatrix * Tangent);
 

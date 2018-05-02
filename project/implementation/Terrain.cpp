@@ -27,8 +27,8 @@ Terrain::Terrain(std::string modelName, std::string materialFile, std::string ma
 }
 
 double Terrain::noise(double nx, double ny) {
-	// Rescale from -1.0:+1.0 to 0.0:1.0
-	return perlin.GetValue(nx, ny, 0) / 2.0 + 0.5;
+    // Rescale from -1.0:+1.0 to 0.0:1.0
+    return perlin.GetValue(nx, ny, 0) / 2.0 + 0.5;
 }
 
 float Terrain::barryCentric(vmml::Vector3f p1, vmml::Vector3f p2, vmml::Vector3f p3, vmml::Vector2f pos) {
@@ -43,12 +43,12 @@ float Terrain::getHeightOfTerrain(float worldX, float worldZ){
     float terrainX = worldX - getPosition().x();
     float terrainZ = worldZ - getPosition().z();
     int sizeHeights = (_VERTEX_COUNT) - 1;
-//    std::cout << "size of heights: " << sizeHeights << std::endl;
+    //    std::cout << "size of heights: " << sizeHeights << std::endl;
     float gridSquareSize = _SIZE / (float) sizeHeights;
     int gridX = floor(terrainX / gridSquareSize);
     int gridZ = floor(terrainZ / gridSquareSize);
-//    std::cout << "gridX: " << gridX << std::endl;
-//    std::cout << "gridZ: " << gridZ << std::endl;
+    //    std::cout << "gridX: " << gridX << std::endl;
+    //    std::cout << "gridZ: " << gridZ << std::endl;
     if (gridX >= sizeHeights || gridZ >= sizeHeights || gridX < 0 || gridZ < 0) {
         return 0.0;
     }
@@ -75,88 +75,88 @@ float Terrain::getHeightOfTerrain(float worldX, float worldZ){
 
 ModelData::GroupMap Terrain::generate()
 {
-	ProceduralOBJLoader objLoader;
-
-	_heights = new float*[_VERTEX_COUNT];
-
-	// noise generation
-	for (int  i = 0; i < _VERTEX_COUNT; i++)
-	{
-		_heights[i] = new float[_VERTEX_COUNT];
-		for (int j = 0; j < _VERTEX_COUNT; j++)
-		{
-			float nx = ((float)j / ((float)_VERTEX_COUNT)) - 0.5;
-			float nz = ((float)i / ((float)_VERTEX_COUNT)) - 0.5;
-
-			perlin.SetSeed(549);
-			float height = 1 * noise(1 * nx, 1 * nz)
-				+ 0.5 * noise(2 * nx, 2 * nz)
-				+ 0.25 * noise(4 * nx, 4 * nz);
-			
-			height = pow(height, _exponent);
-
+    ProceduralOBJLoader objLoader;
+    
+    _heights = new float*[_VERTEX_COUNT];
+    
+    // noise generation
+    for (int  i = 0; i < _VERTEX_COUNT; i++)
+    {
+        _heights[i] = new float[_VERTEX_COUNT];
+        for (int j = 0; j < _VERTEX_COUNT; j++)
+        {
+            float nx = ((float)j / ((float)_VERTEX_COUNT)) - 0.5;
+            float nz = ((float)i / ((float)_VERTEX_COUNT)) - 0.5;
+            
+            perlin.SetSeed(549);
+            float height = 1 * noise(1 * nx, 1 * nz)
+            + 0.5 * noise(2 * nx, 2 * nz)
+            + 0.25 * noise(4 * nx, 4 * nz);
+            
+            height = pow(height, _exponent);
+            
             _heights[i][j] = height * _amplitude;
-
-			if (_maxHeight < _heights[i][j])
-			{
-				_maxHeight = _heights[i][j];
-			}
-		}
-	}
-
-	int counter = 0;
-	for (int i = 0; i < _VERTEX_COUNT - 1; i++)
-	{
-		
-		for (int j = 0; j < _VERTEX_COUNT - 1; j++)
-		{
-			float uPos = (float)j / ((float)_VERTEX_COUNT - 1);
-			float vPos = (float)i / ((float)_VERTEX_COUNT - 1);
-			uPos = 1 - uPos;
-			vPos = 1 - vPos;
-			objLoader.addTexCoords(uPos, vPos);
-
-			float xTopLeft = ((float)j / ((float)_VERTEX_COUNT - 1)) * _SIZE;
-			float zTopLeft = ((float)i / ((float)_VERTEX_COUNT - 1)) * _SIZE;
-
-			float xTopRight = ((float)(j+1) / ((float)_VERTEX_COUNT - 1)) * _SIZE;
-			float zTopRight = ((float)i / ((float)_VERTEX_COUNT - 1)) * _SIZE;
-
-			float xBottomLeft = ((float)j / ((float)_VERTEX_COUNT - 1)) * _SIZE;
-			float zBottomLeft = ((float)(i+1) / ((float)_VERTEX_COUNT - 1)) * _SIZE;
-
-			float xBottomRight = ((float)(j + 1) / ((float)_VERTEX_COUNT - 1)) * _SIZE;
-			float zBottomRight = ((float)(i + 1) / ((float)_VERTEX_COUNT - 1)) * _SIZE;
-			
-			objLoader.addVertex(xTopLeft, _heights[i][j], zTopLeft);
+            
+            if (_maxHeight < _heights[i][j])
+            {
+                _maxHeight = _heights[i][j];
+            }
+        }
+    }
+    
+    int counter = 0;
+    for (int i = 0; i < _VERTEX_COUNT - 1; i++)
+    {
+        
+        for (int j = 0; j < _VERTEX_COUNT - 1; j++)
+        {
+            float uPos = (float)j / ((float)_VERTEX_COUNT - 1);
+            float vPos = (float)i / ((float)_VERTEX_COUNT - 1);
+            uPos = 1 - uPos;
+            vPos = 1 - vPos;
+            objLoader.addTexCoords(uPos, vPos);
+            
+            float xTopLeft = ((float)j / ((float)_VERTEX_COUNT - 1)) * _SIZE;
+            float zTopLeft = ((float)i / ((float)_VERTEX_COUNT - 1)) * _SIZE;
+            
+            float xTopRight = ((float)(j+1) / ((float)_VERTEX_COUNT - 1)) * _SIZE;
+            float zTopRight = ((float)i / ((float)_VERTEX_COUNT - 1)) * _SIZE;
+            
+            float xBottomLeft = ((float)j / ((float)_VERTEX_COUNT - 1)) * _SIZE;
+            float zBottomLeft = ((float)(i+1) / ((float)_VERTEX_COUNT - 1)) * _SIZE;
+            
+            float xBottomRight = ((float)(j + 1) / ((float)_VERTEX_COUNT - 1)) * _SIZE;
+            float zBottomRight = ((float)(i + 1) / ((float)_VERTEX_COUNT - 1)) * _SIZE;
+            
+            objLoader.addVertex(xTopLeft, _heights[i][j], zTopLeft);
             objLoader.addVertex(xTopRight, _heights[i][j+1], zTopRight);
-			objLoader.addVertex(xBottomLeft, _heights[i+1][j], zBottomLeft);
-
-			
-			IndexData d1, d2, d3;
-			d1.vertexIndex = counter++;
-			d2.vertexIndex = counter++;
-			d3.vertexIndex = counter++;
-
-			objLoader.addFace(d1, d2, d3);
-
-			objLoader.addVertex(xBottomLeft, _heights[i+1][j], zBottomLeft);
-			objLoader.addVertex(xTopRight, _heights[i][j+1], zTopRight);
+            objLoader.addVertex(xBottomLeft, _heights[i+1][j], zBottomLeft);
+            
+            
+            IndexData d1, d2, d3;
+            d1.vertexIndex = counter++;
+            d2.vertexIndex = counter++;
+            d3.vertexIndex = counter++;
+            
+            objLoader.addFace(d1, d2, d3);
+            
+            objLoader.addVertex(xBottomLeft, _heights[i+1][j], zBottomLeft);
+            objLoader.addVertex(xTopRight, _heights[i][j+1], zTopRight);
             objLoader.addVertex(xBottomRight, _heights[i+1][j+1], zBottomRight);
-			
-			IndexData d4, d5, d6;
-			d4.vertexIndex = counter++;
-			d5.vertexIndex = counter++;
-			d6.vertexIndex = counter++;
-
-			objLoader.addFace(d4, d5, d6);
-		}
-	}
-
-	objLoader.load();
-
-	ModelData::GroupMap data = objLoader.getData();
-	return data;
+            
+            IndexData d4, d5, d6;
+            d4.vertexIndex = counter++;
+            d5.vertexIndex = counter++;
+            d6.vertexIndex = counter++;
+            
+            objLoader.addFace(d4, d5, d6);
+        }
+    }
+    
+    objLoader.load();
+    
+    ModelData::GroupMap data = objLoader.getData();
+    return data;
 }
 
 void Terrain::process(std::string cameraName, const double &deltaTime)
