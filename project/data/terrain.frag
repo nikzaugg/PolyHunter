@@ -22,6 +22,7 @@ uniform vec4 lightPositionViewSpace_0;
 
 varying lowp vec4 vertexColor_varying;
 varying lowp vec4 texCoord_varying;
+varying mediump vec3 normal_ModelSpace;
 // Everything in View Space
 varying mediump vec4 position_varying_ViewSpace;
 varying mediump vec3 normal_varying_ViewSpace;
@@ -31,11 +32,13 @@ void main()
 {
     vec4 position = position_varying_ViewSpace;
     vec3 normal = normalize(normal_varying_ViewSpace);
+    vec3 normal_modelSpace = normalize(normal_ModelSpace);
     vec4 lightPosition = lightPositionViewSpace_0;
     vec4 lightVector = normalize(lightPosition - position);
     
     // ambient part
     vec4 ambientPart = vec4(ambientColor * lightIntensity_0, 1.0);
+    ambientPart = clamp(ambientPart, 0.0, 1.0);
     
     // diffuse part
     float intensityFactor = dot(normal, lightVector.xyz);
@@ -45,6 +48,9 @@ void main()
     gl_FragColor = (ambientPart + diffusePart) * vertexColor_varying;
     
     // Color according to normals
-//    vec3 normal_test = normal/2.0 + vec3(0.5);
-//    gl_FragColor = vec4(normal_test, 1.0);
+    // vec3 normal_test = normal/2.0 + vec3(0.5);
+    // gl_FragColor = vec4(normal_test, 1.0);
+    
+    // Color accordin to model space normals
+    //gl_FragColor = vec4(normal_modelSpace, 1.0) * vec4(1.0);
 }

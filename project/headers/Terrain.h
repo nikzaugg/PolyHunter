@@ -3,6 +3,7 @@
 
 #include "bRenderer.h"
 #include "Entity.h"
+#include "ProceduralOBJLoader.h"
 
 class Terrain : public Entity
 {
@@ -16,21 +17,26 @@ public:
     float getHeightOfTerrain(float worldX, float worldZ);
     float barryCentric(vmml::Vector3f p1, vmml::Vector3f p2, vmml::Vector3f p3, vmml::Vector2f pos);
 	ModelData::GroupMap generate();
+    void generateHeights();
+    void generateVertices();
+    void generateIdices();
 
 private:
-	int _VERTEX_COUNT;
-	int _SIZE;
 
 	float _exponent;
 	float _amplitude;
+    
+    int _TERRAIN_SIZE;
+    int _VERTEX_COUNT;
 
 	int _numFaces;
 
+    ProceduralOBJLoader _objLoader;
     ModelData::GroupMap _data;
 	GroupMap        _groups;
 	vmml::AABBf		_boundingBox;
 
-	float ** _heights;
+    float ** _heights;
 
 	float _maxHeight;
 };

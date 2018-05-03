@@ -1,3 +1,4 @@
+#include "Entity.h"
 #include "Terrain.h"
 #include "ProceduralOBJLoader.h"
 #include "PerlinNoise.h"
@@ -14,16 +15,18 @@ Terrain::Terrain(std::string modelName, std::string materialFile, std::string ma
 : Entity(modelName, materialFile, materialName, propName, shader, renderer, pos, rotX, rotY, rotZ, scale)
 {
     std::cout << "TERRAIN WORKS!!!" << std::endl;
-    this->_VERTEX_COUNT = 64;
-    this->_SIZE = 300;
-    this->_amplitude = 70;
-    this->_exponent = 4.18;
-    this->_maxHeight = 0.0f;
+    _amplitude = 70;
+    _exponent = 4.18;
+    _maxHeight = 0.0f;
+    _TERRAIN_SIZE = 300;
+    _VERTEX_COUNT = 97;
     
     _data = generate();
-    ModelPtr terrainModel = ModelPtr(new Model(this->_data, getMaterial(), getProperties()));
+    
+    ModelPtr terrainModel = ModelPtr(new Model(_data, getMaterial(), getProperties()));
     SetModel(terrainModel);
     renderer.getObjects()->addModel("terrain", terrainModel);
+    _objLoader = ProceduralOBJLoader();
 }
 
 double Terrain::noise(double nx, double ny) {
@@ -44,7 +47,7 @@ float Terrain::getHeightOfTerrain(float worldX, float worldZ){
     float terrainZ = worldZ - getPosition().z();
     int sizeHeights = (_VERTEX_COUNT) - 1;
     //    std::cout << "size of heights: " << sizeHeights << std::endl;
-    float gridSquareSize = _SIZE / (float) sizeHeights;
+    float gridSquareSize = _TERRAIN_SIZE / (float) sizeHeights;
     int gridX = floor(terrainX / gridSquareSize);
     int gridZ = floor(terrainZ / gridSquareSize);
     //    std::cout << "gridX: " << gridX << std::endl;
@@ -75,10 +78,19 @@ float Terrain::getHeightOfTerrain(float worldX, float worldZ){
 
 ModelData::GroupMap Terrain::generate()
 {
-    ProceduralOBJLoader objLoader;
+    generateHeights();
+    generateVertices();
+    generateIdices();
     
+    _objLoader.load();
+    
+    ModelData::GroupMap data = _objLoader.getData();
+    return data;
+}
+
+void Terrain::generateHeights()
+{
     _heights = new float*[_VERTEX_COUNT];
-    
     // noise generation
     for (int  i = 0; i < _VERTEX_COUNT; i++)
     {
@@ -103,41 +115,54 @@ ModelData::GroupMap Terrain::generate()
             }
         }
     }
-    
-    int counter = 0;
+}
+
+void Terrain::generateVertices()
+{
     // 0 1 2 3
-    for (int i = 0; i < _VERTEX_COUNT - 1; i++)
+    for (int i = 0; i < _VERTEX_COUNT-1; i++)
     {
-        
         // 0 1 2 3
-        for (int j = 0; j < _VERTEX_COUNT - 1; j++)
+        for (int j = 0; j < _VERTEX_COUNT-1; j++)
         {
-            float uPos = (float)j / ((float)_VERTEX_COUNT - 1);
-            float vPos = (float)i / ((float)_VERTEX_COUNT - 1);
-            uPos = 1 - uPos;
-            vPos = 1 - vPos;
-            objLoader.addTexCoords(uPos, vPos);
+            float xTopLeft = ((float)i / ((float)_VERTEX_COUNT - 1)) * _TERRAIN_SIZE;
+            float zTopLeft = ((float)j / ((float)_VERTEX_COUNT - 1)) * _TERRAIN_SIZE;
             
-            float xTopLeft = ((float)i / ((float)_VERTEX_COUNT - 1)) * _SIZE;
-            float zTopLeft = ((float)j / ((float)_VERTEX_COUNT - 1)) * _SIZE;
+            // std::cout << "TopLeft: "<< xTopLeft << " | " << zTopLeft << std::endl;
             
-            std::cout << "TopLeft: "<< xTopLeft << " | " << zTopLeft << std::endl;
+            float xTopRight = ((float)(i) / ((float)_VERTEX_COUNT - 1)) * _TERRAIN_SIZE;
+            float zTopRight = ((float)(j+1) / ((float)_VERTEX_COUNT - 1)) * _TERRAIN_SIZE;
             
-            float xTopRight = ((float)(i) / ((float)_VERTEX_COUNT - 1)) * _SIZE;
-            float zTopRight = ((float)(j+1) / ((float)_VERTEX_COUNT - 1)) * _SIZE;
+            // std::cout << "TopRight: "<< xTopRight << " | " << zTopRight << std::endl;
             
-            std::cout << "TopRight: "<< xTopRight << " | " << zTopRight << std::endl;
-            std::cout << " ---------------------" << std::endl;
+            float xBottomLeft = ((float)(i+1) / ((float)_VERTEX_COUNT - 1)) * _TERRAIN_SIZE;
+            float zBottomLeft = ((float)(j) / ((float)_VERTEX_COUNT - 1)) * _TERRAIN_SIZE;
             
-            float xBottomLeft = ((float)(i+1) / ((float)_VERTEX_COUNT - 1)) * _SIZE;
-            float zBottomLeft = ((float)(j) / ((float)_VERTEX_COUNT - 1)) * _SIZE;
+            // std::cout << "BottomLeft: "<< xBottomLeft << " | " << zBottomLeft << std::endl;
             
-            float xBottomRight = ((float)(i + 1) / ((float)_VERTEX_COUNT - 1)) * _SIZE;
-            float zBottomRight = ((float)(j + 1) / ((float)_VERTEX_COUNT - 1)) * _SIZE;
+            float xBottomRight = ((float)(i + 1) / ((float)_VERTEX_COUNT - 1)) * _TERRAIN_SIZE;
+            float zBottomRight = ((float)(j + 1) / ((float)_VERTEX_COUNT - 1)) * _TERRAIN_SIZE;
             
-            objLoader.addVertex(xTopLeft, _heights[i][j], (-1.0)*zTopLeft);
-            objLoader.addVertex(xTopRight, _heights[i][j+1], (-1.0)*zTopRight);
-            objLoader.addVertex(xBottomLeft, _heights[i+1][j], (-1.0)*zBottomLeft);
+            // std::cout << "BottomRight: "<< xBottomRight << " | " << zBottomRight << std::endl;
+            // std::cout << " ---------------------" << std::endl;
+            
+            _objLoader.addVertex(xTopLeft, _heights[j][i], zTopLeft);
+            _objLoader.addVertex(xBottomLeft, _heights[j][i+1], zBottomLeft);
+            _objLoader.addVertex(xTopRight, _heights[j+1][i], zTopRight);
+            
+            _objLoader.addVertex(xTopRight, _heights[j+1][i], zTopRight);
+            _objLoader.addVertex(xBottomLeft, _heights[j][i+1], zBottomLeft);
+            _objLoader.addVertex(xBottomRight, _heights[j+1][i+1], zBottomRight);
+        }
+    }
+}
+
+void Terrain::generateIdices()
+{
+    int counter = 0;
+    
+    for (int i = 0; i<_VERTEX_COUNT-1; i++) {
+        for (int j = 0; j < _VERTEX_COUNT-1 ; j++) {
             
             
             IndexData d1, d2, d3;
@@ -145,25 +170,19 @@ ModelData::GroupMap Terrain::generate()
             d2.vertexIndex = counter++;
             d3.vertexIndex = counter++;
             
-            objLoader.addFace(d3, d2, d1);
-            
-            objLoader.addVertex(xBottomLeft, _heights[i+1][j], (-1.0)*zBottomLeft);
-            objLoader.addVertex(xTopRight, _heights[i][j+1], (-1.0)*zTopRight);
-            objLoader.addVertex(xBottomRight, _heights[i+1][j+1], (-1.0)*zBottomRight);
+            _objLoader.addFaceNoTex(d1, d2, d3);
             
             IndexData d4, d5, d6;
             d4.vertexIndex = counter++;
             d5.vertexIndex = counter++;
             d6.vertexIndex = counter++;
             
-            objLoader.addFace(d6, d5, d4);
+            _objLoader.addFaceNoTex(d4, d5, d6);
         }
     }
     
-    objLoader.load();
-    
-    ModelData::GroupMap data = objLoader.getData();
-    return data;
+    std::cout << "Nr of Indices created: "<< counter << std::endl;
+
 }
 
 void Terrain::process(std::string cameraName, const double &deltaTime)

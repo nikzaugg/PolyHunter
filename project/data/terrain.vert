@@ -32,6 +32,7 @@ attribute vec4 TexCoord;
 
 varying lowp vec4 vertexColor_varying;
 varying lowp vec4 texCoord_varying;
+varying mediump vec3 normal_ModelSpace;
 // Everything in View Space
 varying mediump vec4 position_varying_ViewSpace;
 varying mediump vec3 normal_varying_ViewSpace;
@@ -55,7 +56,8 @@ vec4 biome()
 
 void main()
 {
-    vec3 normal_ViewSpace = normalize(mat3(ModelViewMatrix) * Normal);
+    normal_ModelSpace = normalize(NormalMatrix * (Normal * vec3(-1.0, -1.0, 1.0)));
+    vec3 normal_ViewSpace = normalize(mat3(ModelViewMatrix) * (Normal * vec3(-1.0, -1.0, 1.0)));
     vec3 tangent_ViewSpace = mat3(ModelViewMatrix) * Tangent;
     vec3 bitangent_ViewSpace = mat3(ModelViewMatrix) * Bitangent;
 	vec4 posViewSpace = ModelViewMatrix * Position;

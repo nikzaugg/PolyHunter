@@ -49,7 +49,7 @@ void main()
     gl_FragColor = (ambientPart + diffusePart) * color;
     
     // Color according to normals
-    // vec3 normal_test = normal/2.0 + vec3(0.5);
-    // gl_FragColor = vec4(normal_test, 1.0);
+//     vec3 normal_test = normal/2.0 + vec3(0.5);
+//     gl_FragColor = vec4(normal_test, 1.0);
 }
 
