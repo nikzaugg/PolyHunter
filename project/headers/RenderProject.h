@@ -69,6 +69,10 @@ private:
 	double elapsedTime = 0.0;
     PlayerPtr _player;
     TerrainPtr _terrain;
+    
+    bool _animation_forward;
+    float _animation;
+    float _animationSpeed;
 };
 
 #endif /* defined(PROJECT_MAIN_H) */

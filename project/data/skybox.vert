@@ -42,7 +42,7 @@ void main()
 {
     /*READ THIS*/
     // Need to flip z-coord of Normal
-    vec3 normal_ViewSpace = mat3(ModelViewMatrix) * (Normal * vec3(1.0, 1.0, -11.0));
+    vec3 normal_ViewSpace = mat3(ModelViewMatrix) * (Normal * vec3(1.0, 1.0, -1.0));
     vec3 tangent_ViewSpace = mat3(ModelViewMatrix) * Tangent;
     vec3 bitangent_ViewSpace = mat3(ModelViewMatrix) * Bitangent;
     vec4 posViewSpace = ModelViewMatrix * Position;

@@ -175,8 +175,7 @@ void Terrain::render(std::string camera)
 {
     getShader()->setUniform("amplitude", _amplitude);
     getShader()->setUniform("heightPercent", _maxHeight / 100);
-    renderer().getObjects()->setAmbientColor(vmml::Vector3f(0.5f));
-    std::cout << computeTransformationMatrix() << std::endl;
+    renderer().getObjects()->setAmbientColor(vmml::Vector3f(0.3f));
     // draw model
     renderer().getModelRenderer()->drawModel("terrain", camera, computeTransformationMatrix(), std::vector<std::string>({ "sun" }), true, true);
 }

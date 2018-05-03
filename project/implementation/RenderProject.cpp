@@ -32,6 +32,9 @@ void RenderProject::initFunction()
 	_cameraSpeed = 40.0f;
 	_running = false; _lastStateSpaceKey = bRenderer::INPUT_UNDEFINED;
 	_viewMatrixHUD = Camera::lookAt(vmml::Vector3f(0.0f, 0.0f, 0.25f), vmml::Vector3f::ZERO, vmml::Vector3f::UP);
+    _animation_forward = true;
+    _animation = 0.0;
+    _animationSpeed = 20.0;
 
 	// set shader versions (optional)
 	bRenderer().getObjects()->setShaderVersionDesktop("#version 120");
@@ -69,7 +72,7 @@ void RenderProject::initFunction()
     _player = PlayerPtr(new Player("sun.obj", "sun", "sunProperties", basicShader, getProjectRenderer(), vmml::Vector3f(0.0, 0.0, 0.0), 0.0, 0.0, 0.0, 1.0));
 
     // PROCEDURAL TERRAIN
-    _terrain = TerrainPtr(new Terrain("terrain", "terrain.mtl", "terrain", "terrainProperties", terrainShader, getProjectRenderer(), vmml::Vector3f(0.0), 0.0, 0.0, 0.0, 0.5));
+    _terrain = TerrainPtr(new Terrain("terrain", "terrain.mtl", "terrain", "terrainProperties", terrainShader, getProjectRenderer(), vmml::Vector3f(0.0), 0.0, 0.0, 0.0, 1.0));
     
 	// create sprites
 	bRenderer().getObjects()->createSprite("sparks", "sparks.png");										// create a sprite displaying sparks as a texture
@@ -187,7 +190,37 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
     
     // Move Light to see changes in Colors/Lighting
     // float lightPosition = bRenderer().getObjects()->getLight("sun")->getPosition().z();
-    bRenderer().getObjects()->getLight("sun")->setPosition(vmml::Vector3f(elapsedTime * 3.0, 100.0, elapsedTime * 3.0));
+    if(_animation_forward)
+    {
+        if(_animation > 300.0)
+        {
+            _animation_forward = false;
+        } else
+        {
+            _animation += deltaTime * _animationSpeed;
+        }
+    } else {
+        if(_animation < 0.0)
+        {
+            _animation_forward = true;
+        }
+        else
+        {
+            _animation -= deltaTime * _animationSpeed;
+        }
+    }
+    
+     bRenderer().getObjects()->getLight("sun")->setPosition(vmml::Vector3f(_animation, 240.0, _animation));
+    
+    /// SUN ///
+    modelMatrix =
+    vmml::create_translation(vmml::Vector3f(_animation, 240.0, _animation)) *
+    vmml::create_rotation((float)elapsedTime * M_PI_F/10, vmml::Vector3f::UNIT_Y) *
+    vmml::create_scaling(vmml::Vector3f(0.5f));
+    // set ambient color
+    bRenderer().getObjects()->setAmbientColor(vmml::Vector3f(0.5f));
+    // draw model
+    bRenderer().getModelRenderer()->drawModel("sun", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
     
     _player->process("camera", deltaTime, _terrain);
     _terrain->process("camera", deltaTime);
@@ -202,21 +235,10 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
 	// draw model
 	bRenderer().getModelRenderer()->drawModel("tree", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
 
-    
-	/// SUN ///
-    modelMatrix =
-        vmml::create_translation(vmml::Vector3f(elapsedTime * 3.0, 100.0, elapsedTime * 3.0)) *
-        vmml::create_rotation((float)elapsedTime * M_PI_F/10, vmml::Vector3f::UNIT_Y) *
-        vmml::create_scaling(vmml::Vector3f(1.0f));
-    // set ambient color
-    bRenderer().getObjects()->setAmbientColor(vmml::Vector3f(0.5f));
-    // draw model
-    bRenderer().getModelRenderer()->drawModel("sun", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
-
 	/// Skybox ///
     modelMatrix =
-        vmml::create_translation(vmml::Vector3f(0.0, 0.0, 0)) *
-        vmml::create_scaling(vmml::Vector3f(1.0));
+        vmml::create_translation(vmml::Vector3f(150.0, 100.0, 150.0)) *
+        vmml::create_scaling(vmml::Vector3f(2.0));
     // set CubeMap for skybox texturing
     // skybox = bRenderer().getObjects()->getShader("skybox");
     // skybox->setUniform("CubeMap", bRenderer().getObjects()->getCubeMap("skyBoxCubeMap"));

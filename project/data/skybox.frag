@@ -50,7 +50,7 @@ void main()
     vec4 heightNormalized = normalize(height);
     float blue_color = heightNormalized.y/2.0 + 0.5;
     
-    gl_FragColor = vec4(0.53,0.807, 0.98, 1.0) * (blue_color + 0.3);
+    gl_FragColor = vec4(0.53,0.807, 0.98, 1.0) * (blue_color + 0.6);
     
     // Color according to normals
     // vec3 normal_test = normal/2.0 + vec3(0.5);
