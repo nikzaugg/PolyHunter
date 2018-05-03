@@ -247,6 +247,7 @@
     <None Include="..\data\skybox.frag" />
     <None Include="..\data\skybox.vert" />
     <None Include="..\data\terrain.frag" />
+    <None Include="..\data\terrain.geom" />
     <None Include="..\data\terrain.vert" />
     <None Include="..\data\torch.mtl" />
   </ItemGroup>

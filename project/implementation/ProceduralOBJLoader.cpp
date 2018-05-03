@@ -23,6 +23,24 @@ void ProceduralOBJLoader::addTexCoords(float u, float v)
 	_texCoords.push_back(vmml::Vector2f(u, v));
 }
 
+void ProceduralOBJLoader::addColor(float r, float g, float b, float a)
+{
+	_colors.push_back(vmml::Vector4f(r, g, b, a));
+}
+
+template< bool NORMAL >
+void OBJLoader::genFace(const IndexData &d1, const IndexData &d2, const IndexData &d3)
+{
+	FaceData f;
+	f.v1 = d1.vertexIndex;
+	f.v2 = d2.vertexIndex;
+	f.v3 = d3.vertexIndex;
+	f.normal = vmml::Vector3f::ZERO;
+
+	_faces.push_back(f);
+}
+
+
 void ProceduralOBJLoader::addFace(IndexData d1, IndexData d2, IndexData d3)
 {
 	_group->indices.push_back(d1);

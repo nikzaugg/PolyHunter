@@ -2,6 +2,8 @@
 #define PROJECT_MAIN_H
 
 #include "bRenderer.h"
+#include "Player.h"
+#include "Terrain.h"
 
 class RenderProject : public IRenderProject
 {
@@ -65,6 +67,12 @@ private:
 	GLint _lastStateSpaceKey = 0;
 	vmml::Matrix4f _viewMatrixHUD;
 	double elapsedTime = 0.0;
+    PlayerPtr _player;
+    TerrainPtr _terrain;
+    
+    bool _animation_forward;
+    float _animation;
+    float _animationSpeed;
 };
 
 #endif /* defined(PROJECT_MAIN_H) */

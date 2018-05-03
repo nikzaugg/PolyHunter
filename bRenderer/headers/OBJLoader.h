@@ -37,6 +37,7 @@ public:
 		vmml::Vector3f         normal;
 		vmml::Vector3f         tangent;
 		vmml::Vector3f         bitangent;
+		vmml::Vector4f		   color;
 
 		GLfloat x()   { return position.x(); }
 		GLfloat y()   { return position.y(); }
@@ -162,6 +163,7 @@ protected:
 	std::vector<VertexData>     _vertices;
 	std::vector<vmml::Vector2f>    _texCoords;
 	std::vector<vmml::Vector3f>    _normals;
+	std::vector<vmml::Vector4f>	   _colors;
 	std::vector<vmml::Vector3f>    _tangents;
 	std::vector<vmml::Vector3f>    _bitangents;
 };

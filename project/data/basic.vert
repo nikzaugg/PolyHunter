@@ -21,28 +21,38 @@ uniform vec3 lightDiffuseColor_0;
 uniform vec3 lightSpecularColor_0;
 uniform vec4 lightPositionViewSpace_0;
 
+uniform float amplitude;
+uniform float heightPercent;
+
 attribute vec4 Position;
 attribute vec3 Normal;
 attribute vec3 Tangent;
 attribute vec3 Bitangent;
 attribute vec4 TexCoord;
 
-varying vec4 texCoordVarying;
-varying mediump vec4 posVarying;        // pos in world space
-varying mediump vec4 camPosVarying;        // pos in world space
-varying mediump vec3 normalVarying;     // normal in world space
-varying mediump vec3 tangentVarying;    // tangent in world space
+varying lowp vec4 vertexColor_varying;
+varying lowp vec4 texCoord_varying;
+// Everything in View Space
+varying mediump vec4 position_varying_ViewSpace;
+varying mediump vec3 normal_varying_ViewSpace;
+varying mediump vec3 tangent_varying_ViewSpace;
 
 void main()
 {
-    camPosVarying = ModelViewMatrix * Position;
-	posVarying = ModelMatrix * Position; // posViewSpace
-    // need to invert z-value of normal to get the normal right
-    // TODO: export blender normal in the right coordinate system, so that
-    // we can remove this
-    normalVarying = normalize(NormalMatrix * (Normal * vec3(1.0, 1.0, -1.0)));
-    tangentVarying = normalize(NormalMatrix * Tangent);
-
-    texCoordVarying = TexCoord;
-    gl_Position = ProjectionMatrix * ModelViewMatrix * Position;
+    /*READ THIS*/
+    // Need to flip z-coord of Normal
+    vec3 normal_ViewSpace = mat3(ModelViewMatrix) * (Normal * vec3(1.0, 1.0, -1.0));
+    vec3 tangent_ViewSpace = mat3(ModelViewMatrix) * Tangent;
+    vec3 bitangent_ViewSpace = mat3(ModelViewMatrix) * Bitangent;
+    vec4 posViewSpace = ModelViewMatrix * Position;
+    
+    // Outputs to Fragment Shader
+    normal_varying_ViewSpace = normal_ViewSpace;
+    tangent_varying_ViewSpace = tangent_ViewSpace;
+    position_varying_ViewSpace = posViewSpace;
+    texCoord_varying = TexCoord;
+    
+    // Position of Vertex
+    gl_Position = ProjectionMatrix*posViewSpace;
 }
+

@@ -1,6 +1,7 @@
 #include "RenderProject.h"
 #include "Terrain.h"
 #include "Skybox.h"
+#include "Player.h"
 
 /* Initialize the Project */
 void RenderProject::init()
@@ -31,6 +32,9 @@ void RenderProject::initFunction()
 	_cameraSpeed = 40.0f;
 	_running = false; _lastStateSpaceKey = bRenderer::INPUT_UNDEFINED;
 	_viewMatrixHUD = Camera::lookAt(vmml::Vector3f(0.0f, 0.0f, 0.25f), vmml::Vector3f::ZERO, vmml::Vector3f::UP);
+    _animation_forward = true;
+    _animation = 0.0;
+    _animationSpeed = 20.0;
 
 	// set shader versions (optional)
 	bRenderer().getObjects()->setShaderVersionDesktop("#version 120");
@@ -38,39 +42,38 @@ void RenderProject::initFunction()
 
 	// SHADERS
 	ShaderPtr basicShader = bRenderer().getObjects()->loadShaderFile("basic", 1, false, true, true, true, false);
-	ShaderPtr skyboxShader = bRenderer().getObjects()->loadShaderFile("skybox", 1, false, true, true, true, false);
 	ShaderPtr terrainShader = bRenderer().getObjects()->loadShaderFile("terrain", 1, false, true, true, true, false);
+    ShaderPtr skyboxShader = bRenderer().getObjects()->loadShaderFile("skybox", 1, false, true, true, true, false);
 
 	// PROPERTIES FOR THE MODELS
-	PropertiesPtr treeProperties = bRenderer().getObjects()->createProperties("treeProperties");
-	PropertiesPtr sunProperties = bRenderer().getObjects()->createProperties("sunProperties");
-	PropertiesPtr procTerrainProperties = bRenderer().getObjects()->createProperties("procTerrainProperties");
-	PropertiesPtr skyboxProperties = bRenderer().getObjects()->createProperties("skyboxProperties");
+    PropertiesPtr treeProperties = bRenderer().getObjects()->createProperties("treeProperties");
+    PropertiesPtr sunProperties = bRenderer().getObjects()->createProperties("sunProperties");
+    PropertiesPtr skyboxProperties = bRenderer().getObjects()->createProperties("skyboxProperties");
 
 	// BLENDER MODELS (.obj)
-	bRenderer().getObjects()->loadObjModel("tree.obj", false, true, basicShader, treeProperties);
-	//bRenderer().getObjects()->loadObjModel("sun.obj", false, true, basicShader, sunProperties);
+    bRenderer().getObjects()->loadObjModel("tree.obj", false, true, basicShader, treeProperties);
+    bRenderer().getObjects()->loadObjModel("sun.obj", false, true, basicShader, sunProperties);
+    
+    // SKYBOX (with CubeMap)
+    //    TextureData left = TextureData("left.png");
+    //    TextureData right = TextureData("right.png");
+    //    TextureData bottom = TextureData("bottom.png");
+    //    TextureData top = TextureData("top.png");
+    //    TextureData front = TextureData("front.png");
+    //    TextureData back = TextureData("back.png");
+    //    CubeMapPtr skyBoxCubeMapPtr = bRenderer().getObjects()->createCubeMap("skyBoxCubeMap", std::vector<TextureData>{left, right, bottom, top, front, back});
+    MaterialPtr skyboxMaterial = bRenderer().getObjects()->loadObjMaterial("skybox.mtl", "skybox", skyboxShader);
+    Skybox skybox = Skybox(skyboxMaterial, skyboxProperties);
+    ModelPtr skyBoxModel = skybox.generate();
+    bRenderer().getObjects()->addModel("skybox", skyBoxModel);
+    //    bRenderer().getObjects()->addCubeMap("skyBoxCubeMap", skyBoxCubeMapPtr);
+    
+    // create Player object
+    _player = PlayerPtr(new Player("sun.obj", "sun", "sunProperties", basicShader, getProjectRenderer(), vmml::Vector3f(0.0, 0.0, 0.0), 0.0, 0.0, 0.0, 1.0));
 
-	// PROCEDURAL TERRAIN
-	MaterialPtr terrainMaterial = bRenderer().getObjects()->loadObjMaterial("terrain.mtl", "terrain", terrainShader);
-	Terrain terrain = Terrain(terrainMaterial, procTerrainProperties);
-	ModelPtr terrainModel = terrain.generate();
-	bRenderer().getObjects()->addModel("proceduralTerrain", terrainModel);
-
-	// SKYBOX (with CubeMap)
-	/*TextureData left = TextureData("left.png");
-	TextureData right = TextureData("right.png");
-	TextureData bottom = TextureData("bottom.png");
-	TextureData top = TextureData("top.png");
-	TextureData front = TextureData("front.png");
-	TextureData back = TextureData("back.png");
-	CubeMapPtr skyBoxCubeMapPtr = bRenderer().getObjects()->createCubeMap("skyBoxCubeMap", std::vector<TextureData>{left, right, bottom, top, front, back});
-	MaterialPtr skyboxMaterial = bRenderer().getObjects()->loadObjMaterial("terrain.mtl", "skybox", skyboxShader);
-	Skybox skybox = Skybox(skyboxMaterial, skyboxProperties);
-	ModelPtr skyBoxModel = skybox.generate();
-	bRenderer().getObjects()->addModel("skybox", skyBoxModel);
-	bRenderer().getObjects()->addCubeMap("skyBoxCubeMap", skyBoxCubeMapPtr);*/
-
+    // PROCEDURAL TERRAIN
+    _terrain = TerrainPtr(new Terrain("terrain", "terrain.mtl", "terrain", "terrainProperties", terrainShader, getProjectRenderer(), vmml::Vector3f(0.0), 0.0, 0.0, 0.0, 1.0));
+    
 	// create sprites
 	bRenderer().getObjects()->createSprite("sparks", "sparks.png");										// create a sprite displaying sparks as a texture
 	bRenderer().getObjects()->createSprite("bTitle", "basicTitle_light.png");							// create a sprite displaying the title as a texture
@@ -86,7 +89,7 @@ void RenderProject::initFunction()
 	bRenderer().getObjects()->createCamera("camera", vmml::Vector3f(50.0, -30.0f, 0.0), vmml::Vector3f(0.f, -M_PI_F / 2, 0.f));
 
 	// create lights
-	bRenderer().getObjects()->createLight("sun", vmml::Vector3f(200.0, 200.0, -200.0), vmml::Vector3f(1.0f), vmml::Vector3f(1.0f), 1.0f, 0.5f, 100.0f);
+	bRenderer().getObjects()->createLight("sun", vmml::Vector3f(0.0, 200.0, 0.0), vmml::Vector3f(1.0f), vmml::Vector3f(1.0f), 1.0f, 0.5f, 100.0f);
 
 	// postprocessing
 	bRenderer().getObjects()->createFramebuffer("fbo");					// create framebuffer object
@@ -184,46 +187,65 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
 	vmml::Matrix4f modelMatrix;
 	vmml::Matrix3f normalMatrix;
 	ShaderPtr skybox;
+    
+    // Move Light to see changes in Colors/Lighting
+    // float lightPosition = bRenderer().getObjects()->getLight("sun")->getPosition().z();
+    if(_animation_forward)
+    {
+        if(_animation > 300.0)
+        {
+            _animation_forward = false;
+        } else
+        {
+            _animation += deltaTime * _animationSpeed;
+        }
+    } else {
+        if(_animation < 0.0)
+        {
+            _animation_forward = true;
+        }
+        else
+        {
+            _animation -= deltaTime * _animationSpeed;
+        }
+    }
+    
+    bRenderer().getObjects()->getLight("sun")->setPosition(vmml::Vector3f(_animation, 240.0, _animation));
+    
+    /// SUN ///
+    modelMatrix =
+    vmml::create_translation(vmml::Vector3f(_animation, 240.0, _animation)) *
+    vmml::create_rotation((float)elapsedTime * M_PI_F/10, vmml::Vector3f::UNIT_Y) *
+    vmml::create_scaling(vmml::Vector3f(0.5f));
+    // set ambient color
+    bRenderer().getObjects()->setAmbientColor(vmml::Vector3f(0.5f));
+    // draw model
+    bRenderer().getModelRenderer()->drawModel("sun", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
+
+    _player->process("camera", deltaTime, _terrain);
+    _terrain->process("camera", deltaTime);
 
 	/// TREE ///
-	modelMatrix = 
-		vmml::create_translation(vmml::Vector3f(0.0, 0.0, -10.0)) * 
-		vmml::create_rotation((float)elapsedTime * M_PI_F/10, vmml::Vector3f::UNIT_Y) *
-		vmml::create_scaling(vmml::Vector3f(1.0f));
-	// set ambient color
-	bRenderer().getObjects()->setAmbientColor(vmml::Vector3f(0.5f));
-	// draw model
-	bRenderer().getModelRenderer()->drawModel("tree", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
+    modelMatrix =
+        vmml::create_translation(vmml::Vector3f(50.0, 0.0, 0.0)) *
+        vmml::create_rotation((float)elapsedTime * M_PI_F/10, vmml::Vector3f::UNIT_Y) *
+        vmml::create_scaling(vmml::Vector3f(1.0f));
+    // set ambient color
+    bRenderer().getObjects()->setAmbientColor(vmml::Vector3f(0.5f));
+    // draw model
+    bRenderer().getModelRenderer()->drawModel("tree", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
 
-	/// SUN ///
-	//modelMatrix = 
-	//	vmml::create_translation(vmml::Vector3f(200., 200.0, -200.0)) * 
-	//	vmml::create_scaling(vmml::Vector3f(1.0f));
-	//// set ambient color
-	//bRenderer().getObjects()->setAmbientColor(vmml::Vector3f(0.5f));
-	//// draw model
-	//bRenderer().getModelRenderer()->drawModel("sun", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
-
-	/// Procedural Terrain ///
-	modelMatrix = 
-		vmml::create_translation(vmml::Vector3f(-75.0, 0.0, 75.0)) * 
-		vmml::create_scaling(vmml::Vector3f(5.0f));
-	// set ambient color
-	bRenderer().getObjects()->setAmbientColor(vmml::Vector3f(0.5f));
-	// draw model
-	bRenderer().getModelRenderer()->drawModel("proceduralTerrain", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
-
-	/// Skybox ///
-	//modelMatrix = 
-	//	vmml::create_translation(vmml::Vector3f(0.0, 30.0, 0.0)) * 
-	//	vmml::create_scaling(vmml::Vector3f(1.0));
-	//// set CubeMap for skybox texturing
-	//skybox = bRenderer().getObjects()->getShader("skybox");
-	//skybox->setUniform("CubeMap", bRenderer().getObjects()->getCubeMap("skyBoxCubeMap"));
-	//// set ambient color
-	//bRenderer().getObjects()->setAmbientColor(vmml::Vector3f(0.5f));
-	//// draw model
-	//bRenderer().getModelRenderer()->drawModel("skybox", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
+    /// Skybox ///
+    modelMatrix =
+        vmml::create_translation(vmml::Vector3f(150.0, 100.0, 150.0)) *
+        vmml::create_scaling(vmml::Vector3f(2.0));
+    // set CubeMap for skybox texturing
+    // skybox = bRenderer().getObjects()->getShader("skybox");
+    // skybox->setUniform("CubeMap", bRenderer().getObjects()->getCubeMap("skyBoxCubeMap"));
+    // set ambient color
+    bRenderer().getObjects()->setAmbientColor(vmml::Vector3f(0.5f));
+    // draw model
+    bRenderer().getModelRenderer()->drawModel("skybox", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
 }
 
 /* Camera movement */
@@ -254,8 +276,8 @@ void RenderProject::updateCamera(const std::string &camera, const double &deltaT
 				Touch touch = t->second;
 				// If touch is in left half of the view: move around
 				if (touch.startPositionX < bRenderer().getView()->getWidth() / 2){
-					cameraForward = -(touch.currentPositionY - touch.startPositionY) / 100;
-					cameraSideward = (touch.currentPositionX - touch.startPositionX) / 100;
+					cameraForward = -(touch.currentPositionY - touch.startPositionY) / 50;
+					cameraSideward = (touch.currentPositionX - touch.startPositionX) / 50;
 
 				}
 				// if touch is in right half of the view: look around
