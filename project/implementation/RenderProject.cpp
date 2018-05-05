@@ -69,28 +69,32 @@ void RenderProject::initFunction()
     //    bRenderer().getObjects()->addCubeMap("skyBoxCubeMap", skyBoxCubeMapPtr);
     
     // create Player object
-    _player = PlayerPtr(new Player("sun.obj", "sun", "sunProperties", basicShader, getProjectRenderer(), vmml::Vector3f(0.0, 0.0, 0.0), 0.0, 0.0, 0.0, 1.0));
+    _player = PlayerPtr(new Player("sun.obj", "sun", "sunProperties", basicShader, getProjectRenderer(), vmml::Vector3f(30.0, 0.0, 0.0), 0.0, 0.0, 0.0, 1.0));
 
     // PROCEDURAL TERRAIN
     _terrain = TerrainPtr(new Terrain("terrain", "terrain.mtl", "terrain", "terrainProperties", terrainShader, getProjectRenderer(), vmml::Vector3f(0.0), 0.0, 0.0, 0.0, 1.0));
+    
+    
     
 	// create sprites
 	bRenderer().getObjects()->createSprite("sparks", "sparks.png");										// create a sprite displaying sparks as a texture
 	bRenderer().getObjects()->createSprite("bTitle", "basicTitle_light.png");							// create a sprite displaying the title as a texture
 
-	// create text sprites
-	FontPtr font = bRenderer().getObjects()->loadFont("KozGoPro-ExtraLight.otf", 50);
-	if (Input::isTouchDevice())
-		bRenderer().getObjects()->createTextSprite("instructions", vmml::Vector3f(1.f, 1.f, 1.f), "Double tap to start", font);
-	else
-		bRenderer().getObjects()->createTextSprite("instructions", vmml::Vector3f(1.f, 1.f, 1.f), "Press space to start", font);
-
 	// create camera
-	bRenderer().getObjects()->createCamera("camera", vmml::Vector3f(50.0, -30.0f, 0.0), vmml::Vector3f(0.f, -M_PI_F / 2, 0.f));
+	bRenderer().getObjects()->createCamera("camera", vmml::Vector3f(0.0f, -150.0, 0.0), vmml::Vector3f(0.f, 0.0f, 0.f));
+    bRenderer().getObjects()->getCamera("camera")->rotateCamera(M_PI_F/4, M_PI_F/4, 0);
 
 	// create lights
 	bRenderer().getObjects()->createLight("sun", vmml::Vector3f(0.0, 200.0, 0.0), vmml::Vector3f(1.0f), vmml::Vector3f(1.0f), 1.0f, 0.5f, 100.0f);
 
+    // create text sprites
+    FontPtr font = bRenderer().getObjects()->loadFont("KozGoPro-ExtraLight.otf", 50);
+    if (Input::isTouchDevice())
+        bRenderer().getObjects()->createTextSprite("instructions", vmml::Vector3f(1.f, 1.f, 1.f), "Double tap to start", font);
+    else
+        bRenderer().getObjects()->createTextSprite("instructions", vmml::Vector3f(1.f, 1.f, 1.f), "Press space to start", font);
+
+    
 	// postprocessing
 	bRenderer().getObjects()->createFramebuffer("fbo");					// create framebuffer object
 	bRenderer().getObjects()->createTexture("fbo_texture1", 0.f, 0.f);	// create texture to bind to the fbo
@@ -166,6 +170,9 @@ void RenderProject::loopFunction(const double &deltaTime, const double &elapsedT
 	
 	/// Update render queue ///
 	updateRenderQueue("camera", deltaTime);
+    
+    /// Update camera position according to player's position ///
+    updatePlayerCamera("camera", _player, deltaTime);
 
 	// Quit renderer when escape is pressed
 	if (bRenderer().getInput()->getKeyState(bRenderer::KEY_ESCAPE) == bRenderer::INPUT_PRESS)
@@ -246,6 +253,17 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
     bRenderer().getObjects()->setAmbientColor(vmml::Vector3f(0.5f));
     // draw model
     bRenderer().getModelRenderer()->drawModel("skybox", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
+}
+
+// Update camera position according to the players position
+void RenderProject::updatePlayerCamera(const std::string &camera, PlayerPtr player, const double &deltaTime)
+{
+    vmml::Vector3f currentPlayerPosition = player->getPosition();
+    bRenderer().getObjects()->getCamera("camera")->setPosition(
+                                                               vmml::Vector3f(-currentPlayerPosition.x(),
+                                                                              -currentPlayerPosition.y() - 20.0,
+                                                                              -currentPlayerPosition.z() + 20.0));
+    // TODO: camera should follow player more fluently etc.
 }
 
 /* Camera movement */

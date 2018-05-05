@@ -54,6 +54,9 @@ private:
 
 	/* Camera movement */
 	void updateCamera(const std::string &camera, const double &deltaTime);
+    
+    /* Update Player Camera */
+    void updatePlayerCamera(const std::string &camera, PlayerPtr _player, const double &deltaTime);
 
 	/* Helper Functions */
 	GLfloat randomNumber(GLfloat min, GLfloat max);

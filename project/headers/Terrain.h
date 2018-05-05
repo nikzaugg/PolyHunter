@@ -15,6 +15,7 @@ public:
     void render(std::string cameraName);
 	double noise(double x, double y);
     float getHeightOfTerrain(float worldX, float worldZ);
+    float ** getTerrainHeights();
     float barryCentric(vmml::Vector3f p1, vmml::Vector3f p2, vmml::Vector3f p3, vmml::Vector2f pos);
 	ModelData::GroupMap generate();
     void generateHeights();

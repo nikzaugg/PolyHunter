@@ -7,7 +7,6 @@
 #include "noise.h"
 #include "iostream"
 
-float ** _heights;
 using namespace noise;
 module::Perlin perlin;
 
@@ -76,6 +75,11 @@ float Terrain::getHeightOfTerrain(float worldX, float worldZ){
     return result;
 }
 
+float ** Terrain::getTerrainHeights()
+{
+    return _heights;
+}
+
 ModelData::GroupMap Terrain::generate()
 {
     generateHeights();
@@ -119,10 +123,8 @@ void Terrain::generateHeights()
 
 void Terrain::generateVertices()
 {
-    // 0 1 2 3
     for (int i = 0; i < _VERTEX_COUNT-1; i++)
     {
-        // 0 1 2 3
         for (int j = 0; j < _VERTEX_COUNT-1; j++)
         {
             float xTopLeft = ((float)i / ((float)_VERTEX_COUNT - 1)) * _TERRAIN_SIZE;
