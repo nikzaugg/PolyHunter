@@ -81,8 +81,8 @@ void RenderProject::initFunction()
 	bRenderer().getObjects()->createSprite("bTitle", "basicTitle_light.png");							// create a sprite displaying the title as a texture
 
 	// create camera
-	bRenderer().getObjects()->createCamera("camera", vmml::Vector3f(0.0f, -150.0, 0.0), vmml::Vector3f(0.f, 0.0f, 0.f));
-    bRenderer().getObjects()->getCamera("camera")->rotateCamera(M_PI_F/4, M_PI_F/4, 0);
+	bRenderer().getObjects()->createCamera("camera", vmml::Vector3f(0.0f, -300.0, 0.0), vmml::Vector3f(0.f, 0.0f, 0.f));
+    bRenderer().getObjects()->getCamera("camera")->rotateCamera(M_PI_F/4, 0, 0);
 
 	// create lights
 	bRenderer().getObjects()->createLight("sun", vmml::Vector3f(0.0, 200.0, 0.0), vmml::Vector3f(1.0f), vmml::Vector3f(1.0f), 1.0f, 0.5f, 100.0f);
@@ -276,94 +276,99 @@ void RenderProject::updateCamera(const std::string &camera, const double &deltaT
 	double deltaCameraX = 0.0;
 	double cameraForward = 0.0;
 	double cameraSideward = 0.0;
+    
+    // pause using double tap
+    if (bRenderer().getInput()->doubleTapRecognized()){
+        _running = !_running;
+    }
 
 	/* iOS: control movement using touch screen */
-	if (Input::isTouchDevice()){
-
-		// pause using double tap
-		if (bRenderer().getInput()->doubleTapRecognized()){
-			_running = !_running;
-		}
-
-		if (_running){
-			// control using touch
-			TouchMap touchMap = bRenderer().getInput()->getTouches();
-			int i = 0;
-			for (auto t = touchMap.begin(); t != touchMap.end(); ++t)
-			{
-				Touch touch = t->second;
-				// If touch is in left half of the view: move around
-				if (touch.startPositionX < bRenderer().getView()->getWidth() / 2){
-					cameraForward = -(touch.currentPositionY - touch.startPositionY) / 50;
-					cameraSideward = (touch.currentPositionX - touch.startPositionX) / 50;
-
-				}
-				// if touch is in right half of the view: look around
-				else
-				{
-					deltaCameraY = (touch.currentPositionX - touch.startPositionX) / 2000;
-					deltaCameraX = (touch.currentPositionY - touch.startPositionY) / 2000;
-				}
-				if (++i > 2)
-					break;
-			}
-		}
-
-	}
-	/* Windows: control movement using mouse and keyboard */
-	else{
-		// use space to pause and unpause
-		GLint currentStateSpaceKey = bRenderer().getInput()->getKeyState(bRenderer::KEY_SPACE);
-		if (currentStateSpaceKey != _lastStateSpaceKey)
-		{
-			_lastStateSpaceKey = currentStateSpaceKey;
-			if (currentStateSpaceKey == bRenderer::INPUT_PRESS){
-				_running = !_running;
-				bRenderer().getInput()->setCursorEnabled(!_running);
-			}
-		}
-
-		// mouse look
-		double xpos, ypos; bool hasCursor = false;
-		bRenderer().getInput()->getCursorPosition(&xpos, &ypos, &hasCursor);
-
-		deltaCameraY = (xpos - _mouseX) / 1000;
-		_mouseX = xpos;
-		deltaCameraX = (ypos - _mouseY) / 1000;
-		_mouseY = ypos;
-
-		if (_running){
-			// movement using wasd keys
-			if (bRenderer().getInput()->getKeyState(bRenderer::KEY_W) == bRenderer::INPUT_PRESS)
-				if (bRenderer().getInput()->getKeyState(bRenderer::KEY_LEFT_SHIFT) == bRenderer::INPUT_PRESS) 			cameraForward = 2.0;
-				else			cameraForward = 1.0;
-			else if (bRenderer().getInput()->getKeyState(bRenderer::KEY_S) == bRenderer::INPUT_PRESS)
-				if (bRenderer().getInput()->getKeyState(bRenderer::KEY_LEFT_SHIFT) == bRenderer::INPUT_PRESS) 			cameraForward = -2.0;
-				else			cameraForward = -1.0;
-			else
-				cameraForward = 0.0;
-
-			if (bRenderer().getInput()->getKeyState(bRenderer::KEY_A) == bRenderer::INPUT_PRESS)
-				cameraSideward = -1.0;
-			else if (bRenderer().getInput()->getKeyState(bRenderer::KEY_D) == bRenderer::INPUT_PRESS)
-				cameraSideward = 1.0;
-			if (bRenderer().getInput()->getKeyState(bRenderer::KEY_UP) == bRenderer::INPUT_PRESS)
-				bRenderer().getObjects()->getCamera(camera)->moveCameraUpward(_cameraSpeed*deltaTime);
-			else if (bRenderer().getInput()->getKeyState(bRenderer::KEY_DOWN) == bRenderer::INPUT_PRESS)
-				bRenderer().getObjects()->getCamera(camera)->moveCameraUpward(-_cameraSpeed*deltaTime);
-			if (bRenderer().getInput()->getKeyState(bRenderer::KEY_LEFT) == bRenderer::INPUT_PRESS)
-				bRenderer().getObjects()->getCamera(camera)->rotateCamera(0.0f, 0.0f, 0.03f*_cameraSpeed*deltaTime);
-			else if (bRenderer().getInput()->getKeyState(bRenderer::KEY_RIGHT) == bRenderer::INPUT_PRESS)
-				bRenderer().getObjects()->getCamera(camera)->rotateCamera(0.0f, 0.0f, -0.03f*_cameraSpeed*deltaTime);
-		}
-	}
-
-	//// Update camera ////
-	if (_running){
-		bRenderer().getObjects()->getCamera(camera)->moveCameraForward(cameraForward*_cameraSpeed*deltaTime);
-		bRenderer().getObjects()->getCamera(camera)->rotateCamera(deltaCameraX, deltaCameraY, 0.0f);
-		bRenderer().getObjects()->getCamera(camera)->moveCameraSideward(cameraSideward*_cameraSpeed*deltaTime);
-	}	
+//    if (Input::isTouchDevice()){
+//
+//        // pause using double tap
+//        if (bRenderer().getInput()->doubleTapRecognized()){
+//            _running = !_running;
+//        }
+//
+//        if (_running){
+//            // control using touch
+//            TouchMap touchMap = bRenderer().getInput()->getTouches();
+//            int i = 0;
+//            for (auto t = touchMap.begin(); t != touchMap.end(); ++t)
+//            {
+//                Touch touch = t->second;
+//                // If touch is in left half of the view: move around
+//                if (touch.startPositionX < bRenderer().getView()->getWidth() / 2){
+//                    cameraForward = -(touch.currentPositionY - touch.startPositionY) / 50;
+//                    cameraSideward = (touch.currentPositionX - touch.startPositionX) / 50;
+//
+//                }
+//                // if touch is in right half of the view: look around
+//                else
+//                {
+//                    deltaCameraY = (touch.currentPositionX - touch.startPositionX) / 2000;
+//                    deltaCameraX = (touch.currentPositionY - touch.startPositionY) / 2000;
+//                }
+//                if (++i > 2)
+//                    break;
+//            }
+//        }
+//
+//    }
+//    /* Windows: control movement using mouse and keyboard */
+//    else{
+//        // use space to pause and unpause
+//        GLint currentStateSpaceKey = bRenderer().getInput()->getKeyState(bRenderer::KEY_SPACE);
+//        if (currentStateSpaceKey != _lastStateSpaceKey)
+//        {
+//            _lastStateSpaceKey = currentStateSpaceKey;
+//            if (currentStateSpaceKey == bRenderer::INPUT_PRESS){
+//                _running = !_running;
+//                bRenderer().getInput()->setCursorEnabled(!_running);
+//            }
+//        }
+//
+//        // mouse look
+//        double xpos, ypos; bool hasCursor = false;
+//        bRenderer().getInput()->getCursorPosition(&xpos, &ypos, &hasCursor);
+//
+//        deltaCameraY = (xpos - _mouseX) / 1000;
+//        _mouseX = xpos;
+//        deltaCameraX = (ypos - _mouseY) / 1000;
+//        _mouseY = ypos;
+//
+//        if (_running){
+//            // movement using wasd keys
+//            if (bRenderer().getInput()->getKeyState(bRenderer::KEY_W) == bRenderer::INPUT_PRESS)
+//                if (bRenderer().getInput()->getKeyState(bRenderer::KEY_LEFT_SHIFT) == bRenderer::INPUT_PRESS)             cameraForward = 2.0;
+//                else            cameraForward = 1.0;
+//            else if (bRenderer().getInput()->getKeyState(bRenderer::KEY_S) == bRenderer::INPUT_PRESS)
+//                if (bRenderer().getInput()->getKeyState(bRenderer::KEY_LEFT_SHIFT) == bRenderer::INPUT_PRESS)             cameraForward = -2.0;
+//                else            cameraForward = -1.0;
+//            else
+//                cameraForward = 0.0;
+//
+//            if (bRenderer().getInput()->getKeyState(bRenderer::KEY_A) == bRenderer::INPUT_PRESS)
+//                cameraSideward = -1.0;
+//            else if (bRenderer().getInput()->getKeyState(bRenderer::KEY_D) == bRenderer::INPUT_PRESS)
+//                cameraSideward = 1.0;
+//            if (bRenderer().getInput()->getKeyState(bRenderer::KEY_UP) == bRenderer::INPUT_PRESS)
+//                bRenderer().getObjects()->getCamera(camera)->moveCameraUpward(_cameraSpeed*deltaTime);
+//            else if (bRenderer().getInput()->getKeyState(bRenderer::KEY_DOWN) == bRenderer::INPUT_PRESS)
+//                bRenderer().getObjects()->getCamera(camera)->moveCameraUpward(-_cameraSpeed*deltaTime);
+//            if (bRenderer().getInput()->getKeyState(bRenderer::KEY_LEFT) == bRenderer::INPUT_PRESS)
+//                bRenderer().getObjects()->getCamera(camera)->rotateCamera(0.0f, 0.0f, 0.03f*_cameraSpeed*deltaTime);
+//            else if (bRenderer().getInput()->getKeyState(bRenderer::KEY_RIGHT) == bRenderer::INPUT_PRESS)
+//                bRenderer().getObjects()->getCamera(camera)->rotateCamera(0.0f, 0.0f, -0.03f*_cameraSpeed*deltaTime);
+//        }
+//    }
+//
+//    //// Update camera ////
+//    if (_running){
+//        bRenderer().getObjects()->getCamera(camera)->moveCameraForward(cameraForward*_cameraSpeed*deltaTime);
+//        bRenderer().getObjects()->getCamera(camera)->rotateCamera(deltaCameraX, deltaCameraY, 0.0f);
+//        bRenderer().getObjects()->getCamera(camera)->moveCameraSideward(cameraSideward*_cameraSpeed*deltaTime);
+//    }
 }
 
 /* For iOS only: Handle device rotation */

@@ -29,7 +29,7 @@ private:
     float _currentSpeed = 0.0;
     float _currentTurnSpeed = 0.0;
     
-    const float GRAVITY = -1.0;
+    const float GRAVITY = -50.0;
     const float JUMP_POWER = 30;
     float _upwardsSpeed = 0.0;
     
