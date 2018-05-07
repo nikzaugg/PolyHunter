@@ -69,6 +69,7 @@ private:
 	double elapsedTime = 0.0;
     PlayerPtr _player;
     TerrainPtr _terrain;
+    std::vector<TerrainPtr> terrains;
     
     bool _animation_forward;
     float _animation;

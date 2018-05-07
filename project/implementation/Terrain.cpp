@@ -29,9 +29,32 @@ Terrain::Terrain(std::string modelName, std::string materialFile, std::string ma
     _objLoader = ProceduralOBJLoader();
 }
 
+Terrain::Terrain(std::string modelName, std::string materialFile, std::string materialName, std::string propName, ShaderPtr shader, Renderer & renderer, int gridX, int gridZ ,vmml::Vector3f pos, float rotX, float rotY, float rotZ, float scale)
+: Entity(modelName, materialFile, materialName, propName, shader, renderer, pos, rotX, rotY, rotZ, scale)
+{
+    std::cout << "TERRAIN WORKS!!!" << std::endl;
+    _gridX = gridX;
+    _gridZ = gridZ;
+    _amplitude = 70;
+    _exponent = 4.18;
+    _maxHeight = 0.0f;
+    _TERRAIN_SIZE = 50;
+    _VERTEX_COUNT = 11;
+    
+    this->_offsetX = gridX * _TERRAIN_SIZE;
+    this->_offsetZ = gridZ * _TERRAIN_SIZE;
+    
+    _data = generate();
+    
+    ModelPtr terrainModel = ModelPtr(new Model(_data, getMaterial(), getProperties()));
+    SetModel(terrainModel);
+    renderer.getObjects()->addModel(getModelName(), terrainModel);
+    _objLoader = ProceduralOBJLoader();
+}
+
 double Terrain::noise(double nx, double ny) {
     // Rescale from -1.0:+1.0 to 0.0:1.0
-    return perlin.GetValue(nx, ny, 0) / 2.0 + 0.5;
+    return perlin.GetValue(nx, ny, 0.0) / 2.0 + 0.5;
 }
 
 float Terrain::barryCentric(vmml::Vector3f p1, vmml::Vector3f p2, vmml::Vector3f p3, vmml::Vector2f pos) {
@@ -97,17 +120,9 @@ void Terrain::generateHeights()
         _heights[i] = new float[_VERTEX_COUNT];
         for (int j = 0; j < _VERTEX_COUNT; j++)
         {
-            float nx = ((float)j / ((float)_VERTEX_COUNT)) - 0.5;
-            float nz = ((float)i / ((float)_VERTEX_COUNT)) - 0.5;
-            
             perlin.SetSeed(549);
-            float height = 1 * noise(1 * nx, 1 * nz)
-            + 0.5 * noise(2 * nx, 2 * nz)
-            + 0.25 * noise(4 * nx, 4 * nz);
-            
-            height = pow(height, _exponent);
-            
-            _heights[i][j] = height * _amplitude;
+        
+            _heights[i][j] = 0.0;
             
             if (_maxHeight < _heights[i][j])
             {
@@ -126,33 +141,44 @@ void Terrain::generateVertices()
         for (int j = 0; j < _VERTEX_COUNT-1; j++)
         {
             float xTopLeft = ((float)i / ((float)_VERTEX_COUNT - 1)) * _TERRAIN_SIZE;
+            xTopLeft += _offsetX;
             float zTopLeft = ((float)j / ((float)_VERTEX_COUNT - 1)) * _TERRAIN_SIZE;
+            zTopLeft += _offsetZ;
             
             // std::cout << "TopLeft: "<< xTopLeft << " | " << zTopLeft << std::endl;
             
             float xTopRight = ((float)(i) / ((float)_VERTEX_COUNT - 1)) * _TERRAIN_SIZE;
+            xTopRight += _offsetX;
             float zTopRight = ((float)(j+1) / ((float)_VERTEX_COUNT - 1)) * _TERRAIN_SIZE;
+            zTopRight += _offsetZ;
             
             // std::cout << "TopRight: "<< xTopRight << " | " << zTopRight << std::endl;
             
             float xBottomLeft = ((float)(i+1) / ((float)_VERTEX_COUNT - 1)) * _TERRAIN_SIZE;
+            xBottomLeft += _offsetX;
             float zBottomLeft = ((float)(j) / ((float)_VERTEX_COUNT - 1)) * _TERRAIN_SIZE;
+            zBottomLeft += _offsetZ;
             
             // std::cout << "BottomLeft: "<< xBottomLeft << " | " << zBottomLeft << std::endl;
             
             float xBottomRight = ((float)(i + 1) / ((float)_VERTEX_COUNT - 1)) * _TERRAIN_SIZE;
+            xBottomRight += _offsetX;
             float zBottomRight = ((float)(j + 1) / ((float)_VERTEX_COUNT - 1)) * _TERRAIN_SIZE;
+            zBottomRight += _offsetZ;
             
             // std::cout << "BottomRight: "<< xBottomRight << " | " << zBottomRight << std::endl;
             // std::cout << " ---------------------" << std::endl;
+            perlin.SetSeed(549);
             
-            _objLoader.addVertex(xTopLeft, _heights[j][i], zTopLeft);
-            _objLoader.addVertex(xBottomLeft, _heights[j][i+1], zBottomLeft);
-            _objLoader.addVertex(xTopRight, _heights[j+1][i], zTopRight);
+            // std::cout << noise(xTopLeft, zTopLeft) << std::endl;
             
-            _objLoader.addVertex(xTopRight, _heights[j+1][i], zTopRight);
-            _objLoader.addVertex(xBottomLeft, _heights[j][i+1], zBottomLeft);
-            _objLoader.addVertex(xBottomRight, _heights[j+1][i+1], zBottomRight);
+            _objLoader.addVertex(xTopLeft, noise(xTopLeft, zTopLeft), zTopLeft);
+            _objLoader.addVertex(xBottomLeft, noise(xBottomLeft, zBottomLeft), zBottomLeft);
+            _objLoader.addVertex(xTopRight, noise(xTopRight, zTopRight), zTopRight);
+            
+            _objLoader.addVertex(xTopRight, noise(xTopRight, zTopRight), zTopRight);
+            _objLoader.addVertex(xBottomLeft, noise(xBottomLeft, zBottomLeft), zBottomLeft);
+            _objLoader.addVertex(xBottomRight, noise(xBottomRight, zBottomRight), zBottomRight);
         }
     }
 }
@@ -196,5 +222,5 @@ void Terrain::render(std::string camera)
     getShader()->setUniform("heightPercent", _maxHeight / 100);
     renderer().getObjects()->setAmbientColor(vmml::Vector3f(0.3f));
     // draw model
-    renderer().getModelRenderer()->drawModel("terrain", camera, computeTransformationMatrix(), std::vector<std::string>({ "sun" }), true, true);
+    renderer().getModelRenderer()->drawModel(getModelName(), camera, computeTransformationMatrix(), std::vector<std::string>({ "sun" }), true, true);
 }

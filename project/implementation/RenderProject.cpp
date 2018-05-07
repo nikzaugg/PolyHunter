@@ -71,8 +71,11 @@ void RenderProject::initFunction()
     // create Player object
     _player = PlayerPtr(new Player("sun.obj", "sun", "sunProperties", basicShader, getProjectRenderer(), vmml::Vector3f(0.0, 0.0, 0.0), 0.0, 0.0, 0.0, 1.0));
 
-    // PROCEDURAL TERRAIN
-    _terrain = TerrainPtr(new Terrain("terrain", "terrain.mtl", "terrain", "terrainProperties", terrainShader, getProjectRenderer(), vmml::Vector3f(0.0), 0.0, 0.0, 0.0, 1.0));
+    // PROCEDURAL TERRAIN TILES
+    TerrainPtr terrain0 = TerrainPtr(new Terrain("terrain0", "terrain.mtl", "terrain", "terrainProperties", terrainShader, getProjectRenderer(), 0, 0,vmml::Vector3f(0.0), 0.0, 0.0, 0.0, 1.0));
+    TerrainPtr terrain1 = TerrainPtr(new Terrain("terrain1", "terrain.mtl", "terrain", "terrainProperties", terrainShader, getProjectRenderer(), 0, 1, vmml::Vector3f(0.0), 0.0, 0.0, 0.0, 1.0));
+    terrains.push_back(terrain0);
+    terrains.push_back(terrain1);
     
 	// create sprites
 	bRenderer().getObjects()->createSprite("sparks", "sparks.png");										// create a sprite displaying sparks as a texture
@@ -222,8 +225,12 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
     // draw model
     bRenderer().getModelRenderer()->drawModel("sun", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
 
-    _player->process("camera", deltaTime, _terrain);
-    _terrain->process("camera", deltaTime);
+    // _player->process("camera", deltaTime, _terrain);
+    
+    for(TerrainPtr terrain:terrains)
+    {
+        terrain->render("camera");
+    }
 
 	/// TREE ///
     modelMatrix =
