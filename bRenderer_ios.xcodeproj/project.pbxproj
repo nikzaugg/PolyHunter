@@ -16,6 +16,7 @@
 		3136FA2F209A5D4D008436CF /* right.png in Resources */ = {isa = PBXBuildFile; fileRef = 3136FA29209A5D4C008436CF /* right.png */; };
 		3136FA30209A5D4D008436CF /* top.png in Resources */ = {isa = PBXBuildFile; fileRef = 3136FA2A209A5D4C008436CF /* top.png */; };
 		3136FA34209A60C6008436CF /* skybox.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 3136FA33209A60C5008436CF /* skybox.mtl */; };
+		3180C99F209FAFF600EC2AF9 /* PlayerCamera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3180C99E209FAFF600EC2AF9 /* PlayerCamera.cpp */; };
 		318C88E8208FBE6000B218B1 /* Skybox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 318C88E7208FBE6000B218B1 /* Skybox.cpp */; };
 		318C88F1208FBEFC00B218B1 /* libnoise.m in Sources */ = {isa = PBXBuildFile; fileRef = 318C88F0208FBEFC00B218B1 /* libnoise.m */; };
 		318C88F2208FBEFC00B218B1 /* libnoise.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 318C88EF208FBEFC00B218B1 /* libnoise.h */; };
@@ -235,6 +236,8 @@
 		3136FA29209A5D4C008436CF /* right.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = right.png; sourceTree = "<group>"; };
 		3136FA2A209A5D4C008436CF /* top.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = top.png; sourceTree = "<group>"; };
 		3136FA33209A60C5008436CF /* skybox.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = skybox.mtl; sourceTree = "<group>"; };
+		3180C99E209FAFF600EC2AF9 /* PlayerCamera.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = PlayerCamera.cpp; sourceTree = "<group>"; };
+		3180C9A0209FB01A00EC2AF9 /* PlayerCamera.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlayerCamera.h; sourceTree = "<group>"; };
 		318C88E6208FBE4E00B218B1 /* Skybox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Skybox.h; sourceTree = "<group>"; };
 		318C88E7208FBE6000B218B1 /* Skybox.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Skybox.cpp; sourceTree = "<group>"; };
 		318C88ED208FBEFC00B218B1 /* liblibnoise.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = liblibnoise.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -706,6 +709,7 @@
 				B44186941BA331E300604D7F /* RenderProject.h */,
 				31B0FD7A2097A21D00601F21 /* Entity.h */,
 				31B0FD7B2097A22F00601F21 /* Player.h */,
+				3180C9A0209FB01A00EC2AF9 /* PlayerCamera.h */,
 			);
 			path = headers;
 			sourceTree = "<group>";
@@ -721,6 +725,7 @@
 				31F377FD2089512400EBEC30 /* PerlinNoise2D.cpp */,
 				31A71EEB20865D8800A2D46A /* ProceduralOBJLoader.cpp */,
 				B44186961BA331E300604D7F /* RenderProject.cpp */,
+				3180C99E209FAFF600EC2AF9 /* PlayerCamera.cpp */,
 			);
 			path = implementation;
 			sourceTree = "<group>";
@@ -1230,6 +1235,7 @@
 				B4794A501BA6743D00B5E9DC /* TextureData_desktop.cpp in Sources */,
 				B4794A2E1BA6743D00B5E9DC /* vector.c in Sources */,
 				B47AD7011B82808E00AFC632 /* ftlzw.c in Sources */,
+				3180C99F209FAFF600EC2AF9 /* PlayerCamera.cpp in Sources */,
 				B47AD6CD1B827E5E00AFC632 /* fttype1.c in Sources */,
 				B4794A3F1BA6743D00B5E9DC /* ModelData.cpp in Sources */,
 				B47AD6F31B82800400AFC632 /* ftcache.c in Sources */,
