@@ -38,8 +38,8 @@ Terrain::Terrain(std::string modelName, std::string materialFile, std::string ma
     _amplitude = 70;
     _exponent = 4.18;
     _maxHeight = 0.0f;
-    _TERRAIN_SIZE = 50;
-    _VERTEX_COUNT = 11;
+    _TERRAIN_SIZE = 100;
+    _VERTEX_COUNT = 30;
     
     this->_offsetX = gridX * _TERRAIN_SIZE;
     this->_offsetZ = gridZ * _TERRAIN_SIZE;
@@ -52,9 +52,15 @@ Terrain::Terrain(std::string modelName, std::string materialFile, std::string ma
     _objLoader = ProceduralOBJLoader();
 }
 
-double Terrain::noise(double nx, double ny) {
+double Terrain::noise(double nx, double nz) {
     // Rescale from -1.0:+1.0 to 0.0:1.0
-    return perlin.GetValue(nx, ny, 0.0) / 2.0 + 0.5;
+    double inputX, inputZ;
+    inputX = nx / (float)_TERRAIN_SIZE;
+    inputZ = nz / (float)_TERRAIN_SIZE;
+    float res = perlin.GetValue(inputX, inputZ, 0.0) / 2.0 + 0.5;
+    res = pow(res, _exponent);
+    res *= _amplitude;
+    return res;
 }
 
 float Terrain::barryCentric(vmml::Vector3f p1, vmml::Vector3f p2, vmml::Vector3f p3, vmml::Vector2f pos) {
@@ -170,7 +176,7 @@ void Terrain::generateVertices()
             // std::cout << " ---------------------" << std::endl;
             perlin.SetSeed(549);
             
-            // std::cout << noise(xTopLeft, zTopLeft) << std::endl;
+            std::cout << noise(xTopLeft, zTopLeft) << std::endl;
             
             _objLoader.addVertex(xTopLeft, noise(xTopLeft, zTopLeft), zTopLeft);
             _objLoader.addVertex(xBottomLeft, noise(xBottomLeft, zBottomLeft), zBottomLeft);

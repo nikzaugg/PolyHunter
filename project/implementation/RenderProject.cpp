@@ -74,8 +74,12 @@ void RenderProject::initFunction()
     // PROCEDURAL TERRAIN TILES
     TerrainPtr terrain0 = TerrainPtr(new Terrain("terrain0", "terrain.mtl", "terrain", "terrainProperties", terrainShader, getProjectRenderer(), 0, 0,vmml::Vector3f(0.0), 0.0, 0.0, 0.0, 1.0));
     TerrainPtr terrain1 = TerrainPtr(new Terrain("terrain1", "terrain.mtl", "terrain", "terrainProperties", terrainShader, getProjectRenderer(), 0, 1, vmml::Vector3f(0.0), 0.0, 0.0, 0.0, 1.0));
+    TerrainPtr terrain2 = TerrainPtr(new Terrain("terrain2", "terrain.mtl", "terrain", "terrainProperties", terrainShader, getProjectRenderer(), 1, 0, vmml::Vector3f(0.0), 0.0, 0.0, 0.0, 1.0));
+        TerrainPtr terrain3 = TerrainPtr(new Terrain("terrain3", "terrain.mtl", "terrain", "terrainProperties", terrainShader, getProjectRenderer(), 1, 1, vmml::Vector3f(0.0), 0.0, 0.0, 0.0, 1.0));
     terrains.push_back(terrain0);
     terrains.push_back(terrain1);
+    terrains.push_back(terrain2);
+    terrains.push_back(terrain3);
     
 	// create sprites
 	bRenderer().getObjects()->createSprite("sparks", "sparks.png");										// create a sprite displaying sparks as a texture
