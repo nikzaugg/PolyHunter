@@ -4,12 +4,9 @@
 #include "PerlinNoise.h"
 #include "PerlinNoise2D.h"
 #include "math.h"
-#include "noise.h"
 #include "iostream"
 
 float ** _heights;
-using namespace noise;
-module::Perlin perlin;
 
 Terrain::Terrain(std::string modelName, std::string materialFile, std::string materialName, std::string propName, ShaderPtr shader, Renderer & renderer, vmml::Vector3f pos, float rotX, float rotY, float rotZ, float scale)
 : Entity(modelName, materialFile, materialName, propName, shader, renderer, pos, rotX, rotY, rotZ, scale)
@@ -52,19 +49,6 @@ Terrain::Terrain(std::string modelName, std::string materialFile, std::string ma
     _objLoader = ProceduralOBJLoader();
 }
 
-double Terrain::noise(double nx, double nz) {
-    // Rescale from -1.0:+1.0 to 0.0:1.0
-    double inputX, inputZ;
-    inputX = nx / (float)_TERRAIN_SIZE;
-    inputZ = nz / (float)_TERRAIN_SIZE;
-    float res = perlin.GetValue(inputX, inputZ, 0.0) / 2.0 + 0.5;
-
-	//std::cout << res << std::endl;
-    //res = pow(res, _exponent);
-    res *= _amplitude;
-    return res;
-}
-
 float Terrain::barryCentric(vmml::Vector3f p1, vmml::Vector3f p2, vmml::Vector3f p3, vmml::Vector2f pos) {
     float det = (p2.z() - p3.z()) * (p1.x() - p3.x()) + (p3.x() - p2.x()) * (p1.z() - p3.z());
     float l1 = ((p2.z() - p3.z()) * (pos.x() - p3.x()) + (p3.x() - p2.x()) * (pos.y() - p3.z())) / det;
@@ -73,39 +57,39 @@ float Terrain::barryCentric(vmml::Vector3f p1, vmml::Vector3f p2, vmml::Vector3f
     return l1 * p1.y() + l2 * p2.y() + l3 * p3.y();
 }
 
-float Terrain::getHeightOfTerrain(float worldX, float worldZ){
-    float terrainX = worldX - getPosition().x();
-    float terrainZ = worldZ - getPosition().z();
-    int sizeHeights = (_VERTEX_COUNT) - 1;
-    //    std::cout << "size of heights: " << sizeHeights << std::endl;
-    float gridSquareSize = _TERRAIN_SIZE / (float) sizeHeights;
-    int gridX = floor(terrainX / gridSquareSize);
-    int gridZ = floor(terrainZ / gridSquareSize);
-    //    std::cout << "gridX: " << gridX << std::endl;
-    //    std::cout << "gridZ: " << gridZ << std::endl;
-    if (gridX >= sizeHeights || gridZ >= sizeHeights || gridX < 0 || gridZ < 0) {
-        return 0.0;
-    }
-    float xCoord = remainderf(terrainX, gridSquareSize) / gridSquareSize;
-    float zCoord = remainderf(terrainZ, gridSquareSize) / gridSquareSize;
-    float result;
-    if (xCoord <= (1-zCoord)) {
-        result = barryCentric(
-                              vmml::Vector3f(0, _heights[gridX][gridZ], 0),
-                              vmml::Vector3f(1, _heights[gridX + 1][gridZ], 0),
-                              vmml::Vector3f(0, _heights[gridX][gridZ + 1], 1),
-                              vmml::Vector2f(xCoord, zCoord)
-                              );
-    } else {
-        result = barryCentric(
-                              vmml::Vector3f(1, _heights[gridX + 1][gridZ], 0),
-                              vmml::Vector3f(1,_heights[gridX + 1][gridZ + 1], 1),
-                              vmml::Vector3f(0,_heights[gridX][gridZ + 1], 1),
-                              vmml::Vector2f(xCoord, zCoord)
-                              );
-    }
-    return result;
-}
+//static float Terrain::getHeightOfTerrain(float worldX, float worldZ){
+//    float terrainX = worldX - getPosition().x();
+//    float terrainZ = worldZ - getPosition().z();
+//    int sizeHeights = (_VERTEX_COUNT) - 1;
+//    //    std::cout << "size of heights: " << sizeHeights << std::endl;
+//    float gridSquareSize = _TERRAIN_SIZE / (float) sizeHeights;
+//    int gridX = floor(terrainX / gridSquareSize);
+//    int gridZ = floor(terrainZ / gridSquareSize);
+//    //    std::cout << "gridX: " << gridX << std::endl;
+//    //    std::cout << "gridZ: " << gridZ << std::endl;
+//    if (gridX >= sizeHeights || gridZ >= sizeHeights || gridX < 0 || gridZ < 0) {
+//        return 0.0;
+//    }
+//    float xCoord = remainderf(terrainX, gridSquareSize) / gridSquareSize;
+//    float zCoord = remainderf(terrainZ, gridSquareSize) / gridSquareSize;
+//    float result;
+//    if (xCoord <= (1-zCoord)) {
+//        result = barryCentric(
+//                              vmml::Vector3f(0, _heights[gridX][gridZ], 0),
+//                              vmml::Vector3f(1, _heights[gridX + 1][gridZ], 0),
+//                              vmml::Vector3f(0, _heights[gridX][gridZ + 1], 1),
+//                              vmml::Vector2f(xCoord, zCoord)
+//                              );
+//    } else {
+//        result = barryCentric(
+//                              vmml::Vector3f(1, _heights[gridX + 1][gridZ], 0),
+//                              vmml::Vector3f(1,_heights[gridX + 1][gridZ + 1], 1),
+//                              vmml::Vector3f(0,_heights[gridX][gridZ + 1], 1),
+//                              vmml::Vector2f(xCoord, zCoord)
+//                              );
+//    }
+//    return result;
+//}
 
 ModelData::GroupMap Terrain::generate()
 {
@@ -128,7 +112,6 @@ void Terrain::generateHeights()
         _heights[i] = new float[_VERTEX_COUNT];
         for (int j = 0; j < _VERTEX_COUNT; j++)
         {
-            perlin.SetSeed(549);
         
             _heights[i][j] = 0.0;
             
@@ -176,9 +159,8 @@ void Terrain::generateVertices()
             
             // std::cout << "BottomRight: "<< xBottomRight << " | " << zBottomRight << std::endl;
             // std::cout << " ---------------------" << std::endl;
-            perlin.SetSeed(549);
             
-            //std::cout << noise(xTopLeft, zTopLeft) << std::endl;
+            //std::cout << getHeightFromNoise(xTopLeft, zTopLeft) << std::endl;
 
 			if (!Input::isTouchDevice()) {
 				zTopLeft *= -1;
@@ -187,16 +169,22 @@ void Terrain::generateVertices()
 				zBottomRight *= -1;
 			}
             
-            _objLoader.addVertex(xTopLeft, noise(xTopLeft, zTopLeft), zTopLeft);
-            _objLoader.addVertex(xBottomLeft, noise(xBottomLeft, zBottomLeft), zBottomLeft);
-            _objLoader.addVertex(xTopRight, noise(xTopRight, zTopRight), zTopRight);
+            _objLoader.addVertex(xTopLeft, getHeightFromNoise(getNoiseInput(xTopLeft), getNoiseInput(zTopLeft)), zTopLeft);
+            _objLoader.addVertex(xBottomLeft, getHeightFromNoise(getNoiseInput(xBottomLeft),getNoiseInput(zBottomLeft)), zBottomLeft);
+            _objLoader.addVertex(xTopRight, getHeightFromNoise(getNoiseInput(xTopRight), getNoiseInput(zTopRight)), zTopRight);
             
-            _objLoader.addVertex(xTopRight, noise(xTopRight, zTopRight), zTopRight);
-            _objLoader.addVertex(xBottomLeft, noise(xBottomLeft, zBottomLeft), zBottomLeft);
-            _objLoader.addVertex(xBottomRight, noise(xBottomRight, zBottomRight), zBottomRight);
+            _objLoader.addVertex(xTopRight, getHeightFromNoise(getNoiseInput(xTopRight), getNoiseInput(zTopRight)), zTopRight);
+            _objLoader.addVertex(xBottomLeft, getHeightFromNoise(getNoiseInput(xBottomLeft), getNoiseInput(zBottomLeft)), zBottomLeft);
+            _objLoader.addVertex(xBottomRight, getHeightFromNoise(getNoiseInput(xBottomRight), getNoiseInput(zBottomRight)), zBottomRight);
         }
     }
 }
+
+double Terrain::getNoiseInput(float coord)
+{
+    return coord / (float)_TERRAIN_SIZE;
+}
+
 
 void Terrain::generateIdices()
 {
@@ -204,7 +192,6 @@ void Terrain::generateIdices()
     
     for (int i = 0; i<_VERTEX_COUNT-1; i++) {
         for (int j = 0; j < _VERTEX_COUNT-1 ; j++) {
-            
             
             IndexData d1, d2, d3;
             d1.vertexIndex = counter++;

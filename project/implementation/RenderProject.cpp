@@ -223,7 +223,7 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
     // draw model
     bRenderer().getModelRenderer()->drawModel("sun", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
 
-    // _player->process("camera", deltaTime, _terrain);
+    _player->process("camera", deltaTime);
     _terrainLoader->renderTerrains("camera");
 	/// TREE ///
     modelMatrix =

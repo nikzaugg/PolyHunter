@@ -16,7 +16,8 @@ public:
 	void process(std::string cameraName, const double &deltaTime);
     void render(std::string cameraName);
 	double noise(double x, double y);
-    float getHeightOfTerrain(float worldX, float worldZ);
+    double getNoiseInput(float coord);
+    static float getHeightOfTerrain(float worldX, float worldZ);
     float barryCentric(vmml::Vector3f p1, vmml::Vector3f p2, vmml::Vector3f p3, vmml::Vector2f pos);
 	
     ModelData::GroupMap generate();
@@ -24,6 +25,9 @@ public:
     void generateHeights();
     void generateVertices();
     void generateIdices();
+    
+    int _TERRAIN_SIZE;
+    int _VERTEX_COUNT;
 
 private:
     int _gridX;
@@ -36,10 +40,7 @@ private:
     float _maxHeight;
 
 	float _exponent;
-	float _amplitude;
-    
-    int _TERRAIN_SIZE;
-    int _VERTEX_COUNT;
+    float _amplitude;
 
 	int _numFaces;
 

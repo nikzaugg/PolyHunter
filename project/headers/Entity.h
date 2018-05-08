@@ -32,6 +32,7 @@ public:
     float getRotZ();
     void setScale(float scale);
     float getScale();
+    float getHeightFromNoise(double nx, double nz);
     Renderer renderer() { return _renderer; };
     vmml::Matrix4f computeTransformationMatrix();
     typedef std::unordered_map< std::string, GeometryPtr > GroupMap;

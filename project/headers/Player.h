@@ -16,9 +16,9 @@ public:
     void render(std::string camera);
     typedef std::unordered_map< std::string, GeometryPtr > GroupMap;
     void test();
-    void process(std::string cameraName, const double &deltaTime, TerrainPtr terrain);
+    void process(std::string cameraName, const double &deltaTime);
     float degreeToRadians(float degree);
-    
+    double getNoiseInput(float coord);
     void checkInputs();
     
 private:

@@ -1,5 +1,7 @@
 #include "Entity.h"
 #include "bRenderer.h"
+#include "noise.h"
+
 
 Entity::Entity()
 {
@@ -139,6 +141,18 @@ void Entity::setScale(float scale)
 float Entity::getScale()
 {
     return _scale;
+}
+
+float Entity::getHeightFromNoise(double nx, double nz)
+{
+    noise::module::Perlin perlin;
+    perlin.SetSeed(549);
+    // Rescale from -1.0:+1.0 to 0.0:1.0
+    float res = perlin.GetValue(nx, nz, 0.0) / 2.0 + 0.5;
+    //std::cout << res << std::endl;
+    //res = pow(res, _exponent);
+    res *= 70;
+    return res;
 }
 
 vmml::Matrix4f Entity::computeTransformationMatrix()

@@ -6,7 +6,7 @@ void Player::test() {
     std::cout << "<------- Player called ---------->" << std::endl;
 }
 
-void Player::process(std::string cameraName, const double &deltaTime, TerrainPtr terrain)
+void Player::process(std::string cameraName, const double &deltaTime)
 {
     // check for inputs
     checkInputs();
@@ -19,7 +19,7 @@ void Player::process(std::string cameraName, const double &deltaTime, TerrainPtr
 
     _upwardsSpeed += GRAVITY * deltaTime;
     increasePosition(0.0, _upwardsSpeed * deltaTime, 0.0);
-    float terrainHeight = terrain->getHeightOfTerrain(getPosition().z(), getPosition().x());
+    float terrainHeight = getHeightFromNoise(getNoiseInput(getPosition().x()), getNoiseInput(getPosition().z()));
     // std::cout << terrainHeight << std::endl;
     if (getPosition().y() < terrainHeight)
     {
@@ -31,6 +31,10 @@ void Player::process(std::string cameraName, const double &deltaTime, TerrainPtr
     render(cameraName);
 }
 
+double Player::getNoiseInput(float coord)
+{
+    return coord / (float)100.0;
+}
 
 float Player::degreeToRadians(float degree) {
     return degree * M_PI/180.0;
