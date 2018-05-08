@@ -58,7 +58,9 @@ double Terrain::noise(double nx, double nz) {
     inputX = nx / (float)_TERRAIN_SIZE;
     inputZ = nz / (float)_TERRAIN_SIZE;
     float res = perlin.GetValue(inputX, inputZ, 0.0) / 2.0 + 0.5;
-    res = pow(res, _exponent);
+
+	//std::cout << res << std::endl;
+    //res = pow(res, _exponent);
     res *= _amplitude;
     return res;
 }
@@ -176,7 +178,7 @@ void Terrain::generateVertices()
             // std::cout << " ---------------------" << std::endl;
             perlin.SetSeed(549);
             
-            std::cout << noise(xTopLeft, zTopLeft) << std::endl;
+            //std::cout << noise(xTopLeft, zTopLeft) << std::endl;
 
 			if (!Input::isTouchDevice()) {
 				zTopLeft *= -1;
@@ -232,7 +234,6 @@ void Terrain::process(std::string cameraName, const double &deltaTime)
 void Terrain::render(std::string camera)
 {
     getShader()->setUniform("amplitude", _amplitude);
-    getShader()->setUniform("heightPercent", _maxHeight / 100);
     renderer().getObjects()->setAmbientColor(vmml::Vector3f(0.3f));
     // draw model
     renderer().getModelRenderer()->drawModel(getModelName(), camera, computeTransformationMatrix(), std::vector<std::string>({ "sun" }), true, true);

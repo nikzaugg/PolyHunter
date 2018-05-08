@@ -22,7 +22,6 @@ uniform vec3 lightSpecularColor_0;
 uniform vec4 lightPositionViewSpace_0;
 
 uniform float amplitude;
-uniform float heightPercent;
 
 attribute vec4 Position;
 attribute vec3 Normal;
@@ -42,12 +41,13 @@ vec4 biome()
 {
     // Slope doesn't work well with split terrain
     mediump float slope = 1.0 - normal_varying_ViewSpace.y;
+	mediump float normHeight = Position.y / amplitude;
 
-    if (Position.y > heightPercent * 50.0)
+    if (normHeight > 0.8)
     {
         return vec4(0.36, 0.37, 0.36, 1.0);
     }
-    else if (Position.y < heightPercent * 5.0)
+    else if (normHeight > 0.5)
     {
         return vec4(0.48, 0.32, 0.19, 1.0);
     }
