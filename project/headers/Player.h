@@ -25,7 +25,7 @@ private:
     int _numFaces;
     
     const float RUN_SPEED = 20.0;
-    const float TURN_SPEED = 3.0;
+    const float TURN_SPEED = 50.0;
     float _currentSpeed = 0.0;
     float _currentTurnSpeed = 0.0;
     

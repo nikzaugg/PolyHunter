@@ -712,11 +712,8 @@
 				B44186941BA331E300604D7F /* RenderProject.h */,
 				31B0FD7A2097A21D00601F21 /* Entity.h */,
 				31B0FD7B2097A22F00601F21 /* Player.h */,
-<<<<<<< HEAD
 				3180C9A0209FB01A00EC2AF9 /* PlayerCamera.h */,
-=======
 				312A838220A1936900621562 /* TerrainLoader.h */,
->>>>>>> origin/procedural_terrain
 			);
 			path = headers;
 			sourceTree = "<group>";
@@ -732,11 +729,9 @@
 				31F377FD2089512400EBEC30 /* PerlinNoise2D.cpp */,
 				31A71EEB20865D8800A2D46A /* ProceduralOBJLoader.cpp */,
 				B44186961BA331E300604D7F /* RenderProject.cpp */,
-<<<<<<< HEAD
 				3180C99E209FAFF600EC2AF9 /* PlayerCamera.cpp */,
-=======
 				312A838320A1937900621562 /* TerrainLoader.cpp */,
->>>>>>> origin/procedural_terrain
+
 			);
 			path = implementation;
 			sourceTree = "<group>";

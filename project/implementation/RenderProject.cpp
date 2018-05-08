@@ -3,6 +3,7 @@
 #include "TerrainLoader.h"
 #include "Skybox.h"
 #include "Player.h"
+#include "PlayerCamera.h"
 
 /* Initialize the Project */
 void RenderProject::init()
@@ -75,15 +76,13 @@ void RenderProject::initFunction()
     // PROCEDURAL TERRAIN TILES
     _terrainLoader = TerrainLoaderPtr(new TerrainLoader(getProjectRenderer(), terrainShader, _player));
 
-
-
 	// create sprites
 	bRenderer().getObjects()->createSprite("sparks", "sparks.png");										// create a sprite displaying sparks as a texture
 	bRenderer().getObjects()->createSprite("bTitle", "basicTitle_light.png");							// create a sprite displaying the title as a texture
 
 	// create camera
-	bRenderer().getObjects()->createCamera("camera", vmml::Vector3f(0.0f, -300.0, 0.0), vmml::Vector3f(0.f, 0.0f, 0.f));
-    bRenderer().getObjects()->getCamera("camera")->rotateCamera(M_PI_F/4, 0, 0);
+    bRenderer().getObjects()->createCamera("camera", vmml::Vector3f(0.0f, -300.0, 0.0), vmml::Vector3f(0.f, 0.0f, 0.f));
+    _playerCamera = PlayerCameraPtr(new PlayerCamera("camera", _player, getProjectRenderer()));
 
 	// create lights
 	bRenderer().getObjects()->createLight("sun", vmml::Vector3f(0.0, 200.0, 0.0), vmml::Vector3f(1.0f), vmml::Vector3f(1.0f), 1.0f, 0.5f, 100.0f);
@@ -94,7 +93,6 @@ void RenderProject::initFunction()
         bRenderer().getObjects()->createTextSprite("instructions", vmml::Vector3f(1.f, 1.f, 1.f), "Double tap to start", font);
     else
         bRenderer().getObjects()->createTextSprite("instructions", vmml::Vector3f(1.f, 1.f, 1.f), "Press space to start", font);
-
 
 	// postprocessing
 	bRenderer().getObjects()->createFramebuffer("fbo");					// create framebuffer object
@@ -173,7 +171,8 @@ void RenderProject::loopFunction(const double &deltaTime, const double &elapsedT
 	updateRenderQueue("camera", deltaTime);
 
     /// Update camera position according to player's position ///
-    updatePlayerCamera("camera", _player, deltaTime);
+    //updatePlayerCamera("camera", _player, deltaTime);
+    _playerCamera->move();
 
 	// Quit renderer when escape is pressed
 	if (bRenderer().getInput()->getKeyState(bRenderer::KEY_ESCAPE) == bRenderer::INPUT_PRESS)
@@ -219,7 +218,9 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
     }
 
     bRenderer().getObjects()->getLight("sun")->setPosition(vmml::Vector3f(_animation, 240.0, _animation));
-
+    _player->process("camera", deltaTime);
+    _terrainLoader->process();
+    
     /// SUN ///
     modelMatrix =
     vmml::create_translation(vmml::Vector3f(0.0, 50.0, 0.0)) *
@@ -230,8 +231,8 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
     // draw model
     bRenderer().getModelRenderer()->drawModel("sun", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
 
-    _player->process("camera", deltaTime);
-    _terrainLoader->process();
+
+    
 	/// TREE ///
     modelMatrix =
         vmml::create_translation(vmml::Vector3f(20.0, 50.0, 0.0)) *

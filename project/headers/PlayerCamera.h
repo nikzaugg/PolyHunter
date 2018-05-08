@@ -8,7 +8,7 @@ class PlayerCamera
 {
 public:
     PlayerCamera();
-    PlayerCamera(std::string cameraName, PlayerPtr player);
+    PlayerCamera(std::string cameraName, PlayerPtr player, Renderer &renderer);
     
     void move();
     vmml::Vector3f getPosition();
@@ -17,24 +17,27 @@ public:
     float getRoll();
     
 private:
-    CameraPtr camera;
-    PlayerPtr player;
+    CameraPtr _camera;
+    PlayerPtr _player;
+    Renderer _renderer;
     
-    vmml::Vector3f position = vmml::Vector3f(0.0);
+    vmml::Vector3f _position = vmml::Vector3f(0.0);
     
     void calculateZoom(); // calculate distance from player
     void calculateAngleAroundPlayer(); // angle around player
     
     float calculateHorizontalDistance(); // return distanceFromPlayer * cos(radians(pitch));
     float calculateVerticalDistance(); // return distanceFromPlayer * sin(radians(pitch));
-    void calculateCamerPosition(float horizDistance, float verticDistance);
+    void calculateCameraPosition(float horizDistance, float verticDistance);
     
-    float distanceFromPlayer = 100.0;
-    float angleAroundPlayer = 0.0;
+    float degreeToRadians(float degree);
     
-    float pitch = M_PI_F/4;
-    float yaw;
-    float roll;
+    float _distanceFromPlayer = 100.0;
+    float _angleAroundPlayer = 0.0;
+    
+    float _pitch = M_PI_F/2.0;
+    float _yaw;
+    float _roll;
 };
 typedef std::shared_ptr< PlayerCamera >  PlayerCameraPtr;
 #endif /* defined(B_PLAYERCAMERA_H) */
