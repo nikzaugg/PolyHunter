@@ -177,6 +177,13 @@ void Terrain::generateVertices()
             perlin.SetSeed(549);
             
             std::cout << noise(xTopLeft, zTopLeft) << std::endl;
+
+			if (!Input::isTouchDevice()) {
+				zTopLeft *= -1;
+				zBottomLeft *= -1;
+				zTopRight *= -1;
+				zBottomRight *= -1;
+			}
             
             _objLoader.addVertex(xTopLeft, noise(xTopLeft, zTopLeft), zTopLeft);
             _objLoader.addVertex(xBottomLeft, noise(xBottomLeft, zBottomLeft), zBottomLeft);

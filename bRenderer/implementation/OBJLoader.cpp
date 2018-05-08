@@ -2,6 +2,7 @@
 #include "headers/Configuration.h"
 #include "headers/Logger.h"
 #include "headers/FileHandler.h"
+#include "headers/Input.h"
 
 void OBJLoader::info_callback(const std::string& filename, std::size_t line_number, const std::string& message)
 {
@@ -499,7 +500,14 @@ void OBJLoader::createFaceNormals()
 		vmml::Vector3f f = p3 - p1;
 
 		// calculate normal for this face
-		vmml::Vector3f normal = e.cross(f);
+		vmml::Vector3f normal = vmml::Vector3f(0.0f);
+		if (Input::isTouchDevice()) {
+			normal = e.cross(f);
+		}
+		else {
+			normal = f.cross(e);
+		}
+		
 		//invert z Axis
 		normal.set(normal.x(), normal.y(), (-1.0f)*normal.z());
 

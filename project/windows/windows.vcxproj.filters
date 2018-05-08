@@ -303,6 +303,12 @@
     <ClCompile Include="..\implementation\Skybox.cpp">
       <Filter>project\implementation</Filter>
     </ClCompile>
+    <ClCompile Include="..\implementation\Entity.cpp">
+      <Filter>project\implementation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\implementation\Player.cpp">
+      <Filter>project\implementation</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\bRenderer\bRenderer.h">
@@ -474,6 +480,12 @@
       <Filter>project\headers</Filter>
     </ClInclude>
     <ClInclude Include="..\headers\Skybox.h">
+      <Filter>project\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\headers\Entity.h">
+      <Filter>project\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\headers\Player.h">
       <Filter>project\headers</Filter>
     </ClInclude>
   </ItemGroup>
