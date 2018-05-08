@@ -4,6 +4,7 @@
 #include "bRenderer.h"
 #include "Player.h"
 #include "Terrain.h"
+#include "TerrainLoader.h"
 
 class RenderProject : public IRenderProject
 {
@@ -67,6 +68,7 @@ private:
 	GLint _lastStateSpaceKey = 0;
 	vmml::Matrix4f _viewMatrixHUD;
 	double elapsedTime = 0.0;
+    TerrainLoaderPtr _terrainLoader;
     PlayerPtr _player;
     TerrainPtr _terrain;
     std::vector<TerrainPtr> terrains;

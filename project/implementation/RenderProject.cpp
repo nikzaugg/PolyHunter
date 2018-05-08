@@ -1,5 +1,6 @@
 #include "RenderProject.h"
 #include "Terrain.h"
+#include "TerrainLoader.h"
 #include "Skybox.h"
 #include "Player.h"
 
@@ -72,14 +73,7 @@ void RenderProject::initFunction()
     _player = PlayerPtr(new Player("sun.obj", "sun", "sunProperties", basicShader, getProjectRenderer(), vmml::Vector3f(0.0, 0.0, 0.0), 0.0, 0.0, 0.0, 1.0));
 
     // PROCEDURAL TERRAIN TILES
-    TerrainPtr terrain0 = TerrainPtr(new Terrain("terrain0", "terrain.mtl", "terrain", "terrainProperties", terrainShader, getProjectRenderer(), 0, 0,vmml::Vector3f(0.0), 0.0, 0.0, 0.0, 1.0));
-    TerrainPtr terrain1 = TerrainPtr(new Terrain("terrain1", "terrain.mtl", "terrain", "terrainProperties", terrainShader, getProjectRenderer(), 0, 1, vmml::Vector3f(0.0), 0.0, 0.0, 0.0, 1.0));
-    TerrainPtr terrain2 = TerrainPtr(new Terrain("terrain2", "terrain.mtl", "terrain", "terrainProperties", terrainShader, getProjectRenderer(), 1, 0, vmml::Vector3f(0.0), 0.0, 0.0, 0.0, 1.0));
-        TerrainPtr terrain3 = TerrainPtr(new Terrain("terrain3", "terrain.mtl", "terrain", "terrainProperties", terrainShader, getProjectRenderer(), 1, 1, vmml::Vector3f(0.0), 0.0, 0.0, 0.0, 1.0));
-    terrains.push_back(terrain0);
-    terrains.push_back(terrain1);
-    terrains.push_back(terrain2);
-    terrains.push_back(terrain3);
+    _terrainLoader = TerrainLoaderPtr(new TerrainLoader(getProjectRenderer(), terrainShader));
     
 	// create sprites
 	bRenderer().getObjects()->createSprite("sparks", "sparks.png");										// create a sprite displaying sparks as a texture
@@ -230,12 +224,7 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
     bRenderer().getModelRenderer()->drawModel("sun", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
 
     // _player->process("camera", deltaTime, _terrain);
-    
-    for(TerrainPtr terrain:terrains)
-    {
-        terrain->render("camera");
-    }
-
+    _terrainLoader->renderTerrains("camera");
 	/// TREE ///
     modelMatrix =
         vmml::create_translation(vmml::Vector3f(50.0, 0.0, 0.0)) *
