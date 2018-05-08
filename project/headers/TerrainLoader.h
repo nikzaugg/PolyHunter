@@ -3,23 +3,28 @@
 
 #include "bRenderer.h"
 #include "Terrain.h"
+#include "Player.h"
 
 class TerrainLoader {
     
 public:
-    TerrainLoader(Renderer & renderer, ShaderPtr shader);
+    TerrainLoader(Renderer & renderer, ShaderPtr shader, PlayerPtr player);
     void renderTerrains(std::string camera);
-    
+    void process();
 private:
     TerrainPtr generateTerrain(int gridX, int gridZ);
     
     typedef std::unordered_map< std::string, TerrainPtr > TerrainMap;
     
     TerrainMap _terrains;
+    PlayerPtr _player;
     ShaderPtr _shader;
     Renderer _renderer;
     int _nrOfTerrains;
     vmml::Vector3f _centerPoint;
+    
+    int _TERRAIN_SIZE = 50;
+    int _VERTEX_COUNT = 20;
     
 };
 typedef std::shared_ptr< TerrainLoader >  TerrainLoaderPtr;

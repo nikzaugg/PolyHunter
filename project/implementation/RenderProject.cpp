@@ -70,10 +70,10 @@ void RenderProject::initFunction()
     //    bRenderer().getObjects()->addCubeMap("skyBoxCubeMap", skyBoxCubeMapPtr);
     
     // create Player object
-    _player = PlayerPtr(new Player("sun.obj", "sun", "sunProperties", basicShader, getProjectRenderer(), vmml::Vector3f(0.0, 0.0, 0.0), 0.0, 0.0, 0.0, 1.0));
+    _player = PlayerPtr(new Player("sun.obj", "sun", "sunProperties", basicShader, getProjectRenderer(), vmml::Vector3f(25.0, 50.0, 25.0), 0.0, 0.0, 0.0, 1.0));
 
     // PROCEDURAL TERRAIN TILES
-    _terrainLoader = TerrainLoaderPtr(new TerrainLoader(getProjectRenderer(), terrainShader));
+    _terrainLoader = TerrainLoaderPtr(new TerrainLoader(getProjectRenderer(), terrainShader, _player));
     
 	// create sprites
 	bRenderer().getObjects()->createSprite("sparks", "sparks.png");										// create a sprite displaying sparks as a texture
@@ -215,7 +215,7 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
     
     /// SUN ///
     modelMatrix =
-    vmml::create_translation(vmml::Vector3f(_animation, 240.0, _animation)) *
+    vmml::create_translation(vmml::Vector3f(0.0, 50.0, 0.0)) *
     vmml::create_rotation((float)elapsedTime * M_PI_F/10, vmml::Vector3f::UNIT_Y) *
     vmml::create_scaling(vmml::Vector3f(0.5f));
     // set ambient color
@@ -224,12 +224,12 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
     bRenderer().getModelRenderer()->drawModel("sun", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
 
     _player->process("camera", deltaTime);
-    _terrainLoader->renderTerrains("camera");
+    _terrainLoader->process();
 	/// TREE ///
     modelMatrix =
-        vmml::create_translation(vmml::Vector3f(50.0, 0.0, 0.0)) *
+        vmml::create_translation(vmml::Vector3f(20.0, 50.0, 0.0)) *
         vmml::create_rotation((float)elapsedTime * M_PI_F/10, vmml::Vector3f::UNIT_Y) *
-        vmml::create_scaling(vmml::Vector3f(1.0f));
+        vmml::create_scaling(vmml::Vector3f(0.5f));
     // set ambient color
     bRenderer().getObjects()->setAmbientColor(vmml::Vector3f(0.5f));
     // draw model

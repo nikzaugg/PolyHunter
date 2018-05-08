@@ -26,7 +26,7 @@ Terrain::Terrain(std::string modelName, std::string materialFile, std::string ma
     _objLoader = ProceduralOBJLoader();
 }
 
-Terrain::Terrain(std::string modelName, std::string materialFile, std::string materialName, std::string propName, ShaderPtr shader, Renderer & renderer, int gridX, int gridZ ,vmml::Vector3f pos, float rotX, float rotY, float rotZ, float scale)
+Terrain::Terrain(std::string modelName, std::string materialFile, std::string materialName, std::string propName, ShaderPtr shader, Renderer & renderer, int gridX, int gridZ ,int terrain_size, int vertex_count, vmml::Vector3f pos, float rotX, float rotY, float rotZ, float scale)
 : Entity(modelName, materialFile, materialName, propName, shader, renderer, pos, rotX, rotY, rotZ, scale)
 {
     std::cout << "TERRAIN WORKS!!!" << std::endl;
@@ -35,8 +35,8 @@ Terrain::Terrain(std::string modelName, std::string materialFile, std::string ma
     _amplitude = 70;
     _exponent = 4.18;
     _maxHeight = 0.0f;
-    _TERRAIN_SIZE = 100;
-    _VERTEX_COUNT = 30;
+    _TERRAIN_SIZE = terrain_size;
+    _VERTEX_COUNT = vertex_count;
     
     this->_offsetX = gridX * _TERRAIN_SIZE;
     this->_offsetZ = gridZ * _TERRAIN_SIZE;
