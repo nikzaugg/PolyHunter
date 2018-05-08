@@ -6,10 +6,17 @@ TerrainLoader::TerrainLoader(Renderer & renderer, ShaderPtr shader)
 {
     this->_renderer = renderer;
     this-> _shader = shader;
+    
+    // generate initial terrains
     generateTerrain(0, 0);
     generateTerrain(0, 1);
     generateTerrain(1, 0);
     generateTerrain(1, 1);
+    generateTerrain(-1, 1);
+    generateTerrain(-1, 0);
+    generateTerrain(-1, -1);
+    generateTerrain(0, -1);
+    generateTerrain(1, -1);
     
 }
 
