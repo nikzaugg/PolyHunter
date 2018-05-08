@@ -2,49 +2,43 @@
 #include "Terrain.h"
 #include "bRenderer.h"
 
-void Player::test() {
-    std::cout << "<------- Player called ---------->" << std::endl;
-}
-
-void Player::process(std::string cameraName, const double &deltaTime, TerrainPtr terrain)
+void Player::process(std::string cameraName, const double &deltaTime)
 {
     // check for inputs and move player accordingly
     checkInputs();
-    
+
     increaseRotation(0.0, (float)deltaTime * _currentTurnSpeed, 0.0);
     float distance = _currentSpeed * deltaTime;
-    float dx = (float)(distance * sin(getRotY()));
-    float dz = (float)(distance * cos(getRotY()));
-    for (int i = 0; i < 10; i++) {
-        increasePosition(dx/10.0, 0.0, dz/10.0);
-    }
-    
-    // std::cout << getPosition() << std::endl;
+    //std::cout << "distance: "<< distance << std::endl;
+    float dx = (float)(distance * cos(getRotY()));
+    //std::cout << "dx: "<< dx << std::endl;
+    float dz = (float)(distance * sin(getRotY()));
+    //std::cout << "dz: "<< dz << std::endl;
+    increasePosition(dx, 0.0, dz);
+    //std::cout << "Position after: " << getPosition() << std::endl;
 
     _upwardsSpeed += GRAVITY * deltaTime;
     increasePosition(0.0, _upwardsSpeed * deltaTime, 0.0);
-    float terrainHeight = terrain->getHeightOfTerrain(getPosition().z(), getPosition().x());
-    // std::cout << terrainHeight << std::endl;
-    if (getPosition().y() < terrainHeight)
-    {
-        _upwardsSpeed = 0.0;
-        _isInAir = false;
-        setYPosition(terrainHeight);
-    }
-    // draw
+    float terrainHeight = getHeightFromNoise(getNoiseInput(getPosition().x()), getNoiseInput(getPosition().z()));
+    setYPosition(terrainHeight);
     render(cameraName);
 }
 
+double Player::getNoiseInput(float coord)
+{
+    // FIXME: instead of 100.0, add _TERRAIN_SIZE
+    return coord / (float)150.0;
+}
 
 float Player::degreeToRadians(float degree) {
     return degree * M_PI/180.0;
 }
 
 void Player::checkInputs() {
-    
+
     //// Adjust aspect ratio ////
     renderer().getObjects()->getCamera("camera")->setAspectRatio(renderer().getView()->getAspectRatio());
-    
+
     if (!Input::isTouchDevice()) {
         if (renderer().getInput()->getKeyState(bRenderer::KEY_I) == bRenderer::INPUT_PRESS) {
             _currentSpeed = RUN_SPEED;
@@ -55,7 +49,7 @@ void Player::checkInputs() {
         else {
             _currentSpeed = 2.0;
         }
-        
+
         if (renderer().getInput()->getKeyState(bRenderer::KEY_J) == bRenderer::INPUT_PRESS) {
             _currentTurnSpeed = -TURN_SPEED;
         }
@@ -65,7 +59,7 @@ void Player::checkInputs() {
         else {
             _currentTurnSpeed = 0.0;
         }
-        
+
         if (renderer().getInput()->getKeyState(bRenderer::KEY_G) == bRenderer::INPUT_PRESS) {
             if (!_isInAir)
             {
@@ -95,7 +89,7 @@ void Player::checkInputs() {
             {
                 _currentTurnSpeed = 0.0;
             }
-            
+
             if (touch.startPositionX > renderer().getView()->getWidth() / 2) {
                 _currentTurnSpeed = TURN_SPEED * (touch.currentPositionX - touch.startPositionX) / 500;
             } else {
@@ -113,4 +107,8 @@ void Player::render(std::string camera)
     renderer().getObjects()->setAmbientColor(vmml::Vector3f(0.5f));
     // draw model
     renderer().getModelRenderer()->drawModel(getModelName(), camera, computeTransformationMatrix(), std::vector<std::string>({ "sun" }), true, true);
+}
+
+void Player::test() {
+    std::cout << "<------- Player called ---------->" << std::endl;
 }

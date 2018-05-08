@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		312A838420A1937900621562 /* TerrainLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 312A838320A1937900621562 /* TerrainLoader.cpp */; };
 		3136FA23209A1D76008436CF /* skybox.frag in Resources */ = {isa = PBXBuildFile; fileRef = 3136FA21209A1D75008436CF /* skybox.frag */; };
 		3136FA24209A1D76008436CF /* skybox.vert in Resources */ = {isa = PBXBuildFile; fileRef = 3136FA22209A1D75008436CF /* skybox.vert */; };
 		3136FA2B209A5D4D008436CF /* back.png in Resources */ = {isa = PBXBuildFile; fileRef = 3136FA25209A5D4A008436CF /* back.png */; };
@@ -227,6 +228,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		312A838220A1936900621562 /* TerrainLoader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TerrainLoader.h; sourceTree = "<group>"; };
+		312A838320A1937900621562 /* TerrainLoader.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TerrainLoader.cpp; sourceTree = "<group>"; };
 		3136FA21209A1D75008436CF /* skybox.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = skybox.frag; sourceTree = "<group>"; };
 		3136FA22209A1D75008436CF /* skybox.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = skybox.vert; sourceTree = "<group>"; };
 		3136FA25209A5D4A008436CF /* back.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = back.png; sourceTree = "<group>"; };
@@ -709,7 +712,11 @@
 				B44186941BA331E300604D7F /* RenderProject.h */,
 				31B0FD7A2097A21D00601F21 /* Entity.h */,
 				31B0FD7B2097A22F00601F21 /* Player.h */,
+<<<<<<< HEAD
 				3180C9A0209FB01A00EC2AF9 /* PlayerCamera.h */,
+=======
+				312A838220A1936900621562 /* TerrainLoader.h */,
+>>>>>>> origin/procedural_terrain
 			);
 			path = headers;
 			sourceTree = "<group>";
@@ -725,7 +732,11 @@
 				31F377FD2089512400EBEC30 /* PerlinNoise2D.cpp */,
 				31A71EEB20865D8800A2D46A /* ProceduralOBJLoader.cpp */,
 				B44186961BA331E300604D7F /* RenderProject.cpp */,
+<<<<<<< HEAD
 				3180C99E209FAFF600EC2AF9 /* PlayerCamera.cpp */,
+=======
+				312A838320A1937900621562 /* TerrainLoader.cpp */,
+>>>>>>> origin/procedural_terrain
 			);
 			path = implementation;
 			sourceTree = "<group>";
@@ -1239,6 +1250,7 @@
 				B47AD6CD1B827E5E00AFC632 /* fttype1.c in Sources */,
 				B4794A3F1BA6743D00B5E9DC /* ModelData.cpp in Sources */,
 				B47AD6F31B82800400AFC632 /* ftcache.c in Sources */,
+				312A838420A1937900621562 /* TerrainLoader.cpp in Sources */,
 				B47AD6FD1B82806900AFC632 /* ftgzip.c in Sources */,
 				B47AD6CF1B827E7100AFC632 /* ftwinfnt.c in Sources */,
 				B44186971BA331E300604D7F /* RenderProject.cpp in Sources */,

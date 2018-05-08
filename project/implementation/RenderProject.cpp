@@ -1,5 +1,6 @@
 #include "RenderProject.h"
 #include "Terrain.h"
+#include "TerrainLoader.h"
 #include "Skybox.h"
 #include "Player.h"
 
@@ -15,7 +16,7 @@ void RenderProject::init()
 		bRenderer().initRenderer(1920, 1080, false, "PolyHunter");		// windowed mode on desktop
 		//bRenderer().initRenderer(View::getScreenWidth(), View::getScreenHeight(), true);		// full screen using full width and height of the screen
 
-	// start main loop 
+	// start main loop
 	bRenderer().runRenderer();
 }
 
@@ -53,7 +54,7 @@ void RenderProject::initFunction()
 	// BLENDER MODELS (.obj)
     bRenderer().getObjects()->loadObjModel("tree.obj", false, true, basicShader, treeProperties);
     bRenderer().getObjects()->loadObjModel("sun.obj", false, true, basicShader, sunProperties);
-    
+
     // SKYBOX (with CubeMap)
     //    TextureData left = TextureData("left.png");
     //    TextureData right = TextureData("right.png");
@@ -67,15 +68,15 @@ void RenderProject::initFunction()
     ModelPtr skyBoxModel = skybox.generate();
     bRenderer().getObjects()->addModel("skybox", skyBoxModel);
     //    bRenderer().getObjects()->addCubeMap("skyBoxCubeMap", skyBoxCubeMapPtr);
-    
-    // create Player object
-    _player = PlayerPtr(new Player("sun.obj", "sun", "sunProperties", basicShader, getProjectRenderer(), vmml::Vector3f(30.0, 0.0, 0.0), 0.0, 0.0, 0.0, 1.0));
 
-    // PROCEDURAL TERRAIN
-    _terrain = TerrainPtr(new Terrain("terrain", "terrain.mtl", "terrain", "terrainProperties", terrainShader, getProjectRenderer(), vmml::Vector3f(0.0), 0.0, 0.0, 0.0, 1.0));
-    
-    
-    
+    // create Player object
+    _player = PlayerPtr(new Player("sun.obj", "sun", "sunProperties", basicShader, getProjectRenderer(), vmml::Vector3f(25.0, 50.0, 25.0), 0.0, 0.0, 0.0, 1.0));
+
+    // PROCEDURAL TERRAIN TILES
+    _terrainLoader = TerrainLoaderPtr(new TerrainLoader(getProjectRenderer(), terrainShader, _player));
+
+
+
 	// create sprites
 	bRenderer().getObjects()->createSprite("sparks", "sparks.png");										// create a sprite displaying sparks as a texture
 	bRenderer().getObjects()->createSprite("bTitle", "basicTitle_light.png");							// create a sprite displaying the title as a texture
@@ -94,7 +95,7 @@ void RenderProject::initFunction()
     else
         bRenderer().getObjects()->createTextSprite("instructions", vmml::Vector3f(1.f, 1.f, 1.f), "Press space to start", font);
 
-    
+
 	// postprocessing
 	bRenderer().getObjects()->createFramebuffer("fbo");					// create framebuffer object
 	bRenderer().getObjects()->createTexture("fbo_texture1", 0.f, 0.f);	// create texture to bind to the fbo
@@ -123,13 +124,13 @@ void RenderProject::loopFunction(const double &deltaTime, const double &elapsedT
 		bRenderer().getObjects()->getFramebuffer("fbo")->bindTexture(bRenderer().getObjects()->getTexture("fbo_texture1"), false);	// bind the fbo
 	}
 
-	/// Draw scene ///	
-	
+	/// Draw scene ///
+
 	bRenderer().getModelRenderer()->drawQueue(/*GL_LINES*/);
 	bRenderer().getModelRenderer()->clearQueue();
-	
+
 	if (!_running){
-		/// End post processing ///		
+		/// End post processing ///
         /*** Blur ***/
 		// translate
 		vmml::Matrix4f modelMatrix = vmml::create_translation(vmml::Vector3f(0.0f, 0.0f, -0.5));
@@ -148,9 +149,9 @@ void RenderProject::loopFunction(const double &deltaTime, const double &elapsedT
 			bRenderer().getModelRenderer()->drawModel(bRenderer().getObjects()->getModel("blurSprite"), modelMatrix, _viewMatrixHUD, vmml::Matrix4f::IDENTITY, std::vector<std::string>({}), false);
 			b = !b;
 		}
-	
+
         /*** Title ***/
-        // translate and scale 
+        // translate and scale
         GLfloat titleScale = 0.5f;
         vmml::Matrix4f scaling = vmml::create_scaling(vmml::Vector3f(titleScale / bRenderer().getView()->getAspectRatio(), titleScale, titleScale));
 		modelMatrix = vmml::create_translation(vmml::Vector3f(-0.4f, 0.0f, -0.65f)) * scaling;
@@ -167,10 +168,10 @@ void RenderProject::loopFunction(const double &deltaTime, const double &elapsedT
 
 	//// Camera Movement ////
 	updateCamera("camera", deltaTime);
-	
+
 	/// Update render queue ///
 	updateRenderQueue("camera", deltaTime);
-    
+
     /// Update camera position according to player's position ///
     updatePlayerCamera("camera", _player, deltaTime);
 
@@ -194,7 +195,7 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
 	vmml::Matrix4f modelMatrix;
 	vmml::Matrix3f normalMatrix;
 	ShaderPtr skybox;
-    
+
     // Move Light to see changes in Colors/Lighting
     // float lightPosition = bRenderer().getObjects()->getLight("sun")->getPosition().z();
     if(_animation_forward)
@@ -216,12 +217,12 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
             _animation -= deltaTime * _animationSpeed;
         }
     }
-    
+
     bRenderer().getObjects()->getLight("sun")->setPosition(vmml::Vector3f(_animation, 240.0, _animation));
-    
+
     /// SUN ///
     modelMatrix =
-    vmml::create_translation(vmml::Vector3f(_animation, 240.0, _animation)) *
+    vmml::create_translation(vmml::Vector3f(0.0, 50.0, 0.0)) *
     vmml::create_rotation((float)elapsedTime * M_PI_F/10, vmml::Vector3f::UNIT_Y) *
     vmml::create_scaling(vmml::Vector3f(0.5f));
     // set ambient color
@@ -229,14 +230,13 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
     // draw model
     bRenderer().getModelRenderer()->drawModel("sun", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
 
-    _player->process("camera", deltaTime, _terrain);
-    _terrain->process("camera", deltaTime);
-
+    _player->process("camera", deltaTime);
+    _terrainLoader->process();
 	/// TREE ///
     modelMatrix =
-        vmml::create_translation(vmml::Vector3f(50.0, 0.0, 0.0)) *
+        vmml::create_translation(vmml::Vector3f(20.0, 50.0, 0.0)) *
         vmml::create_rotation((float)elapsedTime * M_PI_F/10, vmml::Vector3f::UNIT_Y) *
-        vmml::create_scaling(vmml::Vector3f(1.0f));
+        vmml::create_scaling(vmml::Vector3f(0.5f));
     // set ambient color
     bRenderer().getObjects()->setAmbientColor(vmml::Vector3f(0.5f));
     // draw model
@@ -276,7 +276,7 @@ void RenderProject::updateCamera(const std::string &camera, const double &deltaT
 	double deltaCameraX = 0.0;
 	double cameraForward = 0.0;
 	double cameraSideward = 0.0;
-    
+
     // pause using double tap
     if (bRenderer().getInput()->doubleTapRecognized()){
         _running = !_running;
