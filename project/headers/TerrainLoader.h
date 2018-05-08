@@ -13,6 +13,7 @@ public:
     void process();
 private:
     TerrainPtr generateTerrain(int gridX, int gridZ);
+    void refreshTerrainTiles();
     
     typedef std::unordered_map< std::string, TerrainPtr > TerrainMap;
     
@@ -25,6 +26,9 @@ private:
     
     int _TERRAIN_SIZE = 50;
     int _VERTEX_COUNT = 20;
+    
+    int _terrainXPlayer;
+    int _terrainZPlayer;
     
 };
 typedef std::shared_ptr< TerrainLoader >  TerrainLoaderPtr;
