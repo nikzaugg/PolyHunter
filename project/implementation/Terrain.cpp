@@ -6,35 +6,14 @@
 #include "math.h"
 #include "iostream"
 
-float ** _heights;
-
-Terrain::Terrain(std::string modelName, std::string materialFile, std::string materialName, std::string propName, ShaderPtr shader, Renderer & renderer, vmml::Vector3f pos, float rotX, float rotY, float rotZ, float scale)
-: Entity(modelName, materialFile, materialName, propName, shader, renderer, pos, rotX, rotY, rotZ, scale)
-{
-    std::cout << "TERRAIN WORKS!!!" << std::endl;
-    _amplitude = 70;
-    _exponent = 4.18;
-    _maxHeight = 0.0f;
-    _TERRAIN_SIZE = 300;
-    _VERTEX_COUNT = 97;
-    
-    _data = generate();
-    
-    ModelPtr terrainModel = ModelPtr(new Model(_data, getMaterial(), getProperties()));
-    SetModel(terrainModel);
-    renderer.getObjects()->addModel("terrain", terrainModel);
-    _objLoader = ProceduralOBJLoader();
-}
-
 Terrain::Terrain(std::string modelName, std::string materialFile, std::string materialName, std::string propName, ShaderPtr shader, Renderer & renderer, int gridX, int gridZ ,int terrain_size, int vertex_count, vmml::Vector3f pos, float rotX, float rotY, float rotZ, float scale)
 : Entity(modelName, materialFile, materialName, propName, shader, renderer, pos, rotX, rotY, rotZ, scale)
 {
     std::cout << "TERRAIN WORKS!!!" << std::endl;
     _gridX = gridX;
     _gridZ = gridZ;
-    _amplitude = 70;
+    _amplitude = 30;
     _exponent = 4.18;
-    _maxHeight = 0.0f;
     _TERRAIN_SIZE = terrain_size;
     _VERTEX_COUNT = vertex_count;
     
@@ -57,43 +36,8 @@ float Terrain::barryCentric(vmml::Vector3f p1, vmml::Vector3f p2, vmml::Vector3f
     return l1 * p1.y() + l2 * p2.y() + l3 * p3.y();
 }
 
-//static float Terrain::getHeightOfTerrain(float worldX, float worldZ){
-//    float terrainX = worldX - getPosition().x();
-//    float terrainZ = worldZ - getPosition().z();
-//    int sizeHeights = (_VERTEX_COUNT) - 1;
-//    //    std::cout << "size of heights: " << sizeHeights << std::endl;
-//    float gridSquareSize = _TERRAIN_SIZE / (float) sizeHeights;
-//    int gridX = floor(terrainX / gridSquareSize);
-//    int gridZ = floor(terrainZ / gridSquareSize);
-//    //    std::cout << "gridX: " << gridX << std::endl;
-//    //    std::cout << "gridZ: " << gridZ << std::endl;
-//    if (gridX >= sizeHeights || gridZ >= sizeHeights || gridX < 0 || gridZ < 0) {
-//        return 0.0;
-//    }
-//    float xCoord = remainderf(terrainX, gridSquareSize) / gridSquareSize;
-//    float zCoord = remainderf(terrainZ, gridSquareSize) / gridSquareSize;
-//    float result;
-//    if (xCoord <= (1-zCoord)) {
-//        result = barryCentric(
-//                              vmml::Vector3f(0, _heights[gridX][gridZ], 0),
-//                              vmml::Vector3f(1, _heights[gridX + 1][gridZ], 0),
-//                              vmml::Vector3f(0, _heights[gridX][gridZ + 1], 1),
-//                              vmml::Vector2f(xCoord, zCoord)
-//                              );
-//    } else {
-//        result = barryCentric(
-//                              vmml::Vector3f(1, _heights[gridX + 1][gridZ], 0),
-//                              vmml::Vector3f(1,_heights[gridX + 1][gridZ + 1], 1),
-//                              vmml::Vector3f(0,_heights[gridX][gridZ + 1], 1),
-//                              vmml::Vector2f(xCoord, zCoord)
-//                              );
-//    }
-//    return result;
-//}
-
 ModelData::GroupMap Terrain::generate()
 {
-    generateHeights();
     generateVertices();
     generateIdices();
     
@@ -101,26 +45,6 @@ ModelData::GroupMap Terrain::generate()
     
     ModelData::GroupMap data = _objLoader.getData();
     return data;
-}
-
-void Terrain::generateHeights()
-{
-    _heights = new float*[_VERTEX_COUNT];
-    // noise generation
-    for (int  i = 0; i < _VERTEX_COUNT; i++)
-    {
-        _heights[i] = new float[_VERTEX_COUNT];
-        for (int j = 0; j < _VERTEX_COUNT; j++)
-        {
-        
-            _heights[i][j] = 0.0;
-            
-            if (_maxHeight < _heights[i][j])
-            {
-                _maxHeight = _heights[i][j];
-            }
-        }
-    }
 }
 
 void Terrain::generateVertices()
@@ -162,6 +86,7 @@ void Terrain::generateVertices()
             
             //std::cout << getHeightFromNoise(xTopLeft, zTopLeft) << std::endl;
 
+            // flip z-coords if windows-device
 			if (!Input::isTouchDevice()) {
 				zTopLeft *= -1;
 				zBottomLeft *= -1;

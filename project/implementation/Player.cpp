@@ -8,33 +8,25 @@ void Player::process(std::string cameraName, const double &deltaTime)
     checkInputs();
     increaseRotation(0.0, (float)deltaTime * _currentTurnSpeed, 0.0);
     float distance = _currentSpeed * deltaTime;
-    std::cout << "distance: "<< distance << std::endl;
+    //std::cout << "distance: "<< distance << std::endl;
     float dx = (float)(distance * cos(getRotY()));
-    std::cout << "dx: "<< dx << std::endl;
+    //std::cout << "dx: "<< dx << std::endl;
     float dz = (float)(distance * sin(getRotY()));
-    std::cout << "dz: "<< dz << std::endl;
+    //std::cout << "dz: "<< dz << std::endl;
     increasePosition(dx, 0.0, dz);
-    std::cout << "Position after: " << getPosition() << std::endl;
+    //std::cout << "Position after: " << getPosition() << std::endl;
 
     _upwardsSpeed += GRAVITY * deltaTime;
     increasePosition(0.0, _upwardsSpeed * deltaTime, 0.0);
     float terrainHeight = getHeightFromNoise(getNoiseInput(getPosition().x()), getNoiseInput(getPosition().z()));
     setYPosition(terrainHeight);
-    // std::cout << terrainHeight << std::endl;
-//    if (getPosition().y() < terrainHeight)
-//    {
-//        _upwardsSpeed = 0.0;
-//        _isInAir = false;
-//        setYPosition(terrainHeight);
-//    }
-    // draw
     render(cameraName);
 }
 
 double Player::getNoiseInput(float coord)
 {
     // FIXME: instead of 100.0, add _TERRAIN_SIZE
-    return coord / (float)100.0;
+    return coord / (float)150.0;
 }
 
 float Player::degreeToRadians(float degree) {
@@ -49,7 +41,7 @@ void Player::checkInputs() {
         _currentSpeed = -RUN_SPEED;
     }
     else {
-        _currentSpeed = 3.0;
+        _currentSpeed = 10.0;
     }
     
     if (renderer().getInput()->getKeyState(bRenderer::KEY_J) == bRenderer::INPUT_PRESS) {

@@ -8,8 +8,6 @@
 class Terrain : public Entity
 {
 public:
-    Terrain(std::string modelName, std::string materialFile, std::string materialName, std::string propName, ShaderPtr shader, Renderer & renderer, vmml::Vector3f pos, float rotX, float rotY, float rotZ, float scale);
-    
     Terrain(std::string modelName, std::string materialFile, std::string materialName, std::string propName, ShaderPtr shader, Renderer & renderer, int gridX, int gridZ, int terrain_size, int vertex_count ,vmml::Vector3f pos, float rotX, float rotY, float rotZ, float scale);
     
     typedef std::unordered_map< std::string, GeometryPtr > GroupMap;
@@ -35,9 +33,6 @@ private:
     
     float _offsetX;
     float _offsetZ;
-    
-    float ** _heights;
-    float _maxHeight;
 
 	float _exponent;
     float _amplitude;
