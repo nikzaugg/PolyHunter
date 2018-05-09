@@ -35,7 +35,7 @@ private:
     float _distanceFromPlayer = 100.0;
     float _angleAroundPlayer = 0.0;
     
-    float _pitch = M_PI_F/2.0;
+    float _pitch = -M_PI_F/4.0;
     float _yaw;
     float _roll;
 };
