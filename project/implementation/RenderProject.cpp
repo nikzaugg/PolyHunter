@@ -51,6 +51,7 @@ void RenderProject::initFunction()
     PropertiesPtr treeProperties = bRenderer().getObjects()->createProperties("treeProperties");
     PropertiesPtr sunProperties = bRenderer().getObjects()->createProperties("sunProperties");
     PropertiesPtr skyboxProperties = bRenderer().getObjects()->createProperties("skyboxProperties");
+    PropertiesPtr guyProperties = bRenderer().getObjects()->createProperties("guyProperties");
 
 	// BLENDER MODELS (.obj)
     bRenderer().getObjects()->loadObjModel("tree.obj", false, true, basicShader, treeProperties);
@@ -71,7 +72,7 @@ void RenderProject::initFunction()
     //    bRenderer().getObjects()->addCubeMap("skyBoxCubeMap", skyBoxCubeMapPtr);
 
     // create Player object
-    _player = PlayerPtr(new Player("sun.obj", "sun", "sunProperties", basicShader, getProjectRenderer(), vmml::Vector3f(25.0, 50.0, 25.0), 0.0, 0.0, 0.0, 1.0));
+    _player = PlayerPtr(new Player("guy.obj", "guy", "guyProperties", basicShader, getProjectRenderer(), vmml::Vector3f(5.0, 50.0, 5.0), 0.0, -90.0, 0.0, 2.0));
 
     // PROCEDURAL TERRAIN TILES
     _terrainLoader = TerrainLoaderPtr(new TerrainLoader(getProjectRenderer(), terrainShader, _player));
@@ -81,7 +82,7 @@ void RenderProject::initFunction()
 	bRenderer().getObjects()->createSprite("bTitle", "basicTitle_light.png");							// create a sprite displaying the title as a texture
 
 	// create camera
-    bRenderer().getObjects()->createCamera("camera", vmml::Vector3f(0.0f, -300.0, 0.0), vmml::Vector3f(0.f, 0.0f, 0.f));
+    bRenderer().getObjects()->createCamera("camera", vmml::Vector3f(0.0f, -100.0, 0.0), vmml::Vector3f(0.f, -M_PI_F/2.0, 0.f));
     _playerCamera = PlayerCameraPtr(new PlayerCamera("camera", _player, getProjectRenderer()));
 
 	// create lights
@@ -230,8 +231,6 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
     bRenderer().getObjects()->setAmbientColor(vmml::Vector3f(0.5f));
     // draw model
     bRenderer().getModelRenderer()->drawModel("sun", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
-
-
     
 	/// TREE ///
     modelMatrix =

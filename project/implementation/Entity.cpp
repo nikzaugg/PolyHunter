@@ -155,13 +155,17 @@ float Entity::getHeightFromNoise(double nx, double nz)
     return res;
 }
 
+float Entity::degreeToRadians(float degree) {
+    return degree * M_PI/180.0;
+}
+
 vmml::Matrix4f Entity::computeTransformationMatrix()
 {
     vmml::Matrix4f modelMatrix;
     modelMatrix *= vmml::create_translation(vmml::Vector3f(_position[0], _position[1], _position[2]));
-    modelMatrix *= vmml::create_rotation(_rotX, vmml::Vector3f::UNIT_X);
-    modelMatrix *= vmml::create_rotation(_rotY, vmml::Vector3f::UNIT_Y);
-    modelMatrix *= vmml::create_rotation(_rotZ, vmml::Vector3f::UNIT_Z);
+    modelMatrix *= vmml::create_rotation(degreeToRadians(_rotX), vmml::Vector3f::UNIT_X);
+    modelMatrix *= vmml::create_rotation(degreeToRadians(_rotY), vmml::Vector3f::UNIT_Y);
+    modelMatrix *= vmml::create_rotation(degreeToRadians(_rotZ), vmml::Vector3f::UNIT_Z);
     modelMatrix *= vmml::create_scaling(vmml::Vector3f(_scale));
     return modelMatrix;
 }

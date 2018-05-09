@@ -33,6 +33,7 @@ public:
     void setScale(float scale);
     float getScale();
     float getHeightFromNoise(double nx, double nz);
+    float degreeToRadians(float degree);
     Renderer renderer() { return _renderer; };
     vmml::Matrix4f computeTransformationMatrix();
     typedef std::unordered_map< std::string, GeometryPtr > GroupMap;

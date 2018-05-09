@@ -17,7 +17,6 @@ public:
     typedef std::unordered_map< std::string, GeometryPtr > GroupMap;
     void test();
     void process(std::string cameraName, const double &deltaTime);
-    float degreeToRadians(float degree);
     double getNoiseInput(float coord);
     void checkInputs();
     
@@ -25,7 +24,7 @@ private:
     int _numFaces;
     
     const float RUN_SPEED = 20.0;
-    const float TURN_SPEED = 50.0;
+    const float TURN_SPEED = 60.0;
     float _currentSpeed = 0.0;
     float _currentTurnSpeed = 0.0;
     

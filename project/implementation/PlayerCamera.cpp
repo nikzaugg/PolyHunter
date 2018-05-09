@@ -6,6 +6,9 @@ PlayerCamera::PlayerCamera(std::string cameraName, PlayerPtr player, Renderer &r
     _player = player;
     _renderer = renderer;
     _camera = renderer.getObjects()->getCamera(cameraName);
+    
+    _camera->setPosition(vmml::Vector3f(-25.0, -_player->getPosition().y()-100.0, -25.0));
+    _camera->setRotation(vmml::Vector3f(-M_PI_F/2.0, -M_PI_F/2.0 ,0.0));
 }
 
 float PlayerCamera::getPitch()
@@ -26,8 +29,10 @@ void PlayerCamera::move(){
 //    _camera->setPosition(vmml::Vector3f(_position.x(), _position.y(), _position.z()));
 //    _camera->setRotation(vmml::Vector3f(_pitch, -_yaw, 0.0));
     
-    _camera->setPosition(vmml::Vector3f(-_player->getPosition().x(), (-1.0)*(_player->getPosition().y() + 50.0), -_player->getPosition().z() + 30.0));
-    _camera->setRotation(vmml::Vector3f(-_pitch/2.0, -_yaw, 0.0));
+//    _camera->setPosition(vmml::Vector3f(-_player->getPosition().x(), (-1.0)*(_player->getPosition().y() + 50.0), -_player->getPosition().z() + 30.0));
+//    _camera->setRotation(vmml::Vector3f(-_pitch/2.0, -_yaw, 0.0));
+    
+    _camera->setPosition(vmml::Vector3f(-_player->getPosition().x()-25.0, -_player->getPosition().y()-100.0, -_player->getPosition().z()-25.0));
 }
 
 
