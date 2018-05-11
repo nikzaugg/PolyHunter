@@ -82,7 +82,7 @@ void RenderProject::initFunction()
 	bRenderer().getObjects()->createSprite("bTitle", "basicTitle_light.png");							// create a sprite displaying the title as a texture
 
 	// create camera
-    bRenderer().getObjects()->createCamera("camera", vmml::Vector3f(0.0f, -100.0, 0.0), vmml::Vector3f(0.f, -M_PI_F/2.0, 0.f));
+    bRenderer().getObjects()->createCamera("camera");
     _playerCamera = PlayerCameraPtr(new PlayerCamera("camera", _player, getProjectRenderer()));
 
 	// create lights
