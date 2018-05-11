@@ -36,80 +36,51 @@ float PlayerCamera::getPitch()
 void PlayerCamera::move(){
     calculateZoom();
     calculateAngleAroundPlayer();
+    
+    // calculate distances between player and camera
     float horizontalDistance = calculateHorizontalDistance();
     float verticalDistance = calculateVerticalDistance();
+    
+    // save position and yaw before calculating new position of camera
     vmml::Vector3f currentPosition = _camera->getPosition();
     float currentYaw = _yaw;
-//    std::cout << "horzontalDistance: " << horizontalDistance << std::endl;
-//    std::cout << "verticalDistance: " << verticalDistance << std::endl;
+    
+    // calculate new camera position (target position)
     calculateCameraPosition(horizontalDistance, verticalDistance);
+    
+    // calculate target yaw
     float targetYaw = 180.0 - (-1.0)*(_player->getRotY()+ 90.0 + _angleAroundPlayer);
     targetYaw = degreeToRadians(targetYaw);
-//    std::cout << _yaw << std::endl;
-//    std::cout << "PlayerPosition: " << _player->getPosition() << std::endl;
-//    std::cout << "CameraPosition: " << _position.x() << " | " << _position.y() << " | " << _position.z() << std::endl;
-    
-    std::cout << "CurrentCameraPosition: " << _camera->getPosition() << std::endl;
+
+    // asymptotic averaging of current position and target position with a lazy-factor
     vmml::Vector3f nextPosition;
     vmml::Vector3f targetPosition = vmml::Vector3f(-_position.x(), _position.y(), -_position.z());
+    nextPosition.x() = (_lazy * currentPosition.x()) + ((1.0-_lazy) * targetPosition.x());
+    nextPosition.y() = (_lazy * currentPosition.y()) + ((1.0-_lazy) * targetPosition.y());
+    nextPosition.z() = (_lazy * currentPosition.z()) + ((1.0-_lazy) * targetPosition.z());
     
-    float deltaX = -_position.x() - currentPosition.x();
-    float deltaY = _position.y() - currentPosition.y();
-    float deltaZ = -_position.z() - currentPosition.z();
+    // asymptotic averaging of current yaw and target yaw with a lazy-factorß
+    _yaw = (_lazy * currentYaw) + ((1.0-_lazy) * targetYaw);
     
-    std::cout << "deltaX: "<< deltaX <<std::endl;
-    std::cout << "deltaY: "<< deltaY <<std::endl;
-    std::cout << "deltaZ: "<< deltaZ <<std::endl;
-    
-    // if moving
-//        std::cout << "queue size: " << cameraQueue.size() << std::endl;
-//     if (deltaY > 0.0 ||deltaY > 0.0 ||deltaZ > 0.0) {
-//        for (int i = 2; i>0; i--) {
-//            CameraFrame frame = CameraFrame();
-//            frame.position = currentPosition;
-//            frame.position[0] += deltaX/(float)i;
-//            frame.position[1] += deltaY/(float)i;
-//            frame.position[2] += deltaZ/(float)i;
-//            std::cout << "FramePosition: " << frame.position << std::endl;
-//            cameraQueue.push(frame);
-//        }
-//        CameraFrame nextFrame = cameraQueue.front();
-//        std::cout << "nextFrame: " << nextFrame.position << std::endl;
-//        nextPosition = vmml::Vector3f(nextFrame.position.x(), nextFrame.position.y(), nextFrame.position.z());
-//        cameraQueue.pop();
-//    }else { // not moving
-//        nextPosition = vmml::Vector3f(-_position.x(), _position.y(), -_position.z());
-//        if(cameraQueue.size() > 0){
-//            CameraFrame nextFrame = cameraQueue.front();
-//            std::cout << "nextFrame: " << nextFrame.position << std::endl;
-//            nextPosition = vmml::Vector3f(nextFrame.position.x(), nextFrame.position.y(), nextFrame.position.z());
-//            cameraQueue.pop();
-//            cameraQueue.pop();
-//        }
-//
-//    }
-    float lazy = 0.95;
-    _yaw = (lazy * currentYaw) + ((1.0-lazy) * targetYaw);
-    nextPosition.x() = (lazy * currentPosition.x()) + ((1.0-lazy) * targetPosition.x());
-    nextPosition.y() = (lazy * currentPosition.y()) + ((1.0-lazy) * targetPosition.y());
-    nextPosition.z() = (lazy * currentPosition.z()) + ((1.0-lazy) * targetPosition.z());
-    
-    // nextPosition = vmml::Vector3f(-_position.x(), _position.y(), -_position.z());
-    std::cout << "nextPosition: " << nextPosition << std::endl;
+    // set camera's position & it's yaw
     _camera->setPosition(nextPosition);
     _camera->setRotation(vmml::Vector3f(_pitch, M_PI_F/2.0 - _yaw, 0.f));
 }
 
 void PlayerCamera::calculateCameraPosition(float horizDistance, float verticDistance){
-//    std::cout << "horiz: " << horizDistance << " | " << "vertical: " << verticDistance << std::endl;
+    // std::cout << "horiz: " << horizDistance << " | " << "vertical: " << verticDistance << std::endl;
+    
+    // Calculate the angle the player has on the Y-Axis (+90.0 as player model was loaded with a angle to face the correct direction)
     float theta = (-1.0)*(_player->getRotY() + 90.0 + _angleAroundPlayer);
-//    std::cout << "theta in radians: "<< degreeToRadians(theta) << std::endl;
+    // std::cout << "theta in radians: "<< degreeToRadians(theta) << std::endl;
+    
+    // Calculate the offset in X and Z direction of the camera using basic trigonometry
     float offsetX = (float)horizDistance * cos(degreeToRadians(theta));
     float offsetZ = (float)horizDistance * sin(degreeToRadians(theta));
     _position.x() = _player->getPosition().x() - offsetX;
     _position.y() = (-1.0)*(_player->getPosition().y() + verticDistance);
     _position.z() = _player->getPosition().z() - offsetZ;
-//    std::cout << "offsetX: " << offsetX << " | " << "offsetZ: " << offsetZ << std::endl;
+    // std::cout << "offsetX: " << offsetX << " | " << "offsetZ: " << offsetZ << std::endl;
 }
 
 void PlayerCamera::calculateZoom()

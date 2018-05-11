@@ -40,6 +40,7 @@ private:
     float _pitch = -M_PI_F/4.0;
     float _yaw;
     float _roll;
+    float _lazy = 0.95;
 };
 typedef std::shared_ptr< PlayerCamera >  PlayerCameraPtr;
 #endif /* defined(B_PLAYERCAMERA_H) */
