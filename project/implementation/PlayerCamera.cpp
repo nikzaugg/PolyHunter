@@ -14,6 +14,8 @@ PlayerCamera::PlayerCamera(std::string cameraName, PlayerPtr player, Renderer &r
     _player = player;
     _renderer = renderer;
     _camera = renderer.getObjects()->getCamera(cameraName);
+    
+    // initialize the camera to be behind the player when the camera is created
     float horizontalDistance = calculateHorizontalDistance();
     float verticalDistance = calculateVerticalDistance();
     calculateCameraPosition(horizontalDistance, verticalDistance);
@@ -23,9 +25,6 @@ PlayerCamera::PlayerCamera(std::string cameraName, PlayerPtr player, Renderer &r
     _yaw = degreeToRadians(_yaw);
     _camera->setPosition(initialPosition);
     _camera->setRotation(vmml::Vector3f(_pitch, M_PI_F/2.0 - _yaw, 0.f));
-    
-//    _camera->setPosition(vmml::Vector3f(-25.0, -_player->getPosition().y()-100.0, -25.0));
-//    _camera->setRotation(vmml::Vector3f(-M_PI_F/2.0, -M_PI_F/2.0 ,0.0));
 }
 
 float PlayerCamera::getPitch()
@@ -59,7 +58,7 @@ void PlayerCamera::move(){
     nextPosition.y() = (_lazy * currentPosition.y()) + ((1.0-_lazy) * targetPosition.y());
     nextPosition.z() = (_lazy * currentPosition.z()) + ((1.0-_lazy) * targetPosition.z());
     
-    // asymptotic averaging of current yaw and target yaw with a lazy-factorß
+    // asymptotic averaging of current yaw and target yaw with a lazy-factor
     _yaw = (_lazy * currentYaw) + ((1.0-_lazy) * targetYaw);
     
     // set camera's position & it's yaw
