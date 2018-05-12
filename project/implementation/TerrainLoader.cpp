@@ -24,7 +24,6 @@ TerrainLoader::TerrainLoader(Renderer & renderer, ShaderPtr shader, PlayerPtr pl
     generateTerrain(-1, -1);
     generateTerrain(0, -1);
     generateTerrain(1, -1);
-    
 }
 
 TerrainPtr TerrainLoader::generateTerrain(int gridX, int gridZ)
@@ -52,7 +51,7 @@ void TerrainLoader::process()
         refreshTerrainTiles();
     }
     // std::cout << _player->getPosition().x() << " | " << _player->getPosition().z() << std::endl;
-    std::cout <<  " gridX: "<<gridX << " | " << "gridZ: "<< gridZ << std::endl;
+    // std::cout <<  " gridX: "<<gridX << " | " << "gridZ: "<< gridZ << std::endl;
 
     renderTerrains("camera");
 }
@@ -145,7 +144,7 @@ void TerrainLoader::refreshTerrainTiles()
     // compare and rearrange current terrain map and decide which new terrains should be rendered
     for (int i = 0; i<9; i++) {
         if(_terrains.find(newTerrainKeys[i]) == _terrains.end()){
-            // DOES not exist already (create TerrainPtr and add it)
+            // DOES NOT exist already (create TerrainPtr and add it)
             std::cout << "have to generate tile: " << newTerrainKeys[i] << std::endl;
             std::string terrainName = "terrain" + newTerrainKeys[i];
             std::tuple<int, int> indexTuple = terrainIndexPairs[i];
@@ -155,8 +154,7 @@ void TerrainLoader::refreshTerrainTiles()
             newTerrainMap.insert(TerrainMap::value_type(newTerrainKeys[i] , terrain));
             
         } else {
-            // DOES exist already (add existing pointer to new map)
-            std::string terrainName = "terrain" + newTerrainKeys[i];
+            // DOES EXIST already (add existing pointer to new map)
             newTerrainMap[newTerrainKeys[i]] = _terrains[newTerrainKeys[i]];
         }
     }
