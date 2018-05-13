@@ -84,7 +84,23 @@ void PlayerCamera::calculateCameraPosition(float horizDistance, float verticDist
 
 void PlayerCamera::calculateZoom()
 {
-    
+    if (Input::isTouchDevice())
+    {
+        // control using touch
+        TouchMap touchMap = _renderer.getInput()->getTouches();
+        for (auto t = touchMap.begin(); t != touchMap.end(); ++t)
+        {
+            Touch touch = t->second;
+            // Touch is is right side of view
+            if (touch.startPositionX > _renderer.getView()->getWidth() / 2)
+            {
+                // consider touch position delta in y to control zoom of camera
+                float zoom;
+                zoom = (touch.currentPositionY - touch.startPositionY) / 300;
+                _distanceFromPlayer += zoom;
+            }
+        }
+    }
 }
 
 float PlayerCamera::calculateVerticalDistance()
