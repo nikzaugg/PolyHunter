@@ -72,10 +72,10 @@ void RenderProject::initFunction()
     bRenderer().getObjects()->addModel("skybox", skyBoxModel);
     //    bRenderer().getObjects()->addCubeMap("skyBoxCubeMap", skyBoxCubeMapPtr);
 
-    // create Player object
+    // PLAYER //
     _player = PlayerPtr(new Player("guy.obj", "guy", "guyProperties", playerShader, getProjectRenderer(), vmml::Vector3f(100.0, 0.0, 100.0), 0.0, -90.0, 0.0, 2.0));
 
-    // PROCEDURAL TERRAIN TILES
+    // TERRAIN LOADER //
     _terrainLoader = TerrainLoaderPtr(new TerrainLoader(getProjectRenderer(), terrainShader, _player));
 
 	// create sprites
