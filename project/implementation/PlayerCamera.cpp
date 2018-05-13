@@ -34,6 +34,7 @@ float PlayerCamera::getPitch()
 
 void PlayerCamera::move(){
     calculateZoom();
+    calculatePitch();
     calculateAngleAroundPlayer();
     
     // calculate distances between player and camera
@@ -91,8 +92,8 @@ void PlayerCamera::calculateZoom()
         for (auto t = touchMap.begin(); t != touchMap.end(); ++t)
         {
             Touch touch = t->second;
-            // Touch is is right side of view
-            if (touch.startPositionX > _renderer.getView()->getWidth() / 2)
+            // Touch is is left side of view
+            if ((touch.startPositionX < _renderer.getView()->getWidth() / 2) && (touch.startPositionY < _renderer.getView()->getHeight() / 2))
             {
                 // consider touch position delta in y to control zoom of camera
                 float zoom;
@@ -116,6 +117,27 @@ float PlayerCamera::calculateHorizontalDistance()
 void PlayerCamera::calculateAngleAroundPlayer()
 {
     _angleAroundPlayer =  0.0;
+}
+
+void PlayerCamera::calculatePitch()
+{
+    if (Input::isTouchDevice())
+    {
+        // control using touch
+        TouchMap touchMap = _renderer.getInput()->getTouches();
+        for (auto t = touchMap.begin(); t != touchMap.end(); ++t)
+        {
+            Touch touch = t->second;
+            // Touch is is right side of view
+            if ((touch.startPositionX > _renderer.getView()->getWidth() / 2) && (touch.startPositionY < _renderer.getView()->getHeight() / 2))
+            {
+                // consider touch position delta in x to control pitch of camera
+                float pitch;
+                pitch = (touch.currentPositionY - touch.startPositionY) / 300;
+                _pitch += degreeToRadians(pitch);
+            }
+        }
+    }
 }
 
 float PlayerCamera::degreeToRadians(float degree) {

@@ -25,6 +25,7 @@ private:
     
     void calculateZoom(); // calculate distance from player
     void calculateAngleAroundPlayer(); // angle around player
+    void calculatePitch();
     
     float calculateHorizontalDistance(); // return distanceFromPlayer * cos(radians(pitch));
     float calculateVerticalDistance(); // return distanceFromPlayer * sin(radians(pitch));
@@ -37,10 +38,10 @@ private:
     
     bool _moved = false;
     
-    float _pitch = -M_PI_F/4.0;
+    float _pitch = -M_PI_F/6.0;
     float _yaw;
     float _roll;
-    float _lazy = 0.95;
+    float _lazy = 0.90;
 };
 typedef std::shared_ptr< PlayerCamera >  PlayerCameraPtr;
 #endif /* defined(B_PLAYERCAMERA_H) */

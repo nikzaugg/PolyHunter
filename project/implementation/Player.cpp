@@ -27,7 +27,7 @@ void Player::process(std::string cameraName, const double &deltaTime)
 double Player::getNoiseInput(float coord)
 {
     // FIXME: instead of 100.0, add _TERRAIN_SIZE
-    return coord / (float)150.0;
+    return coord / (float)400.0;
 }
 
 void Player::checkInputs() {
@@ -70,29 +70,25 @@ void Player::checkInputs() {
         for (auto t = touchMap.begin(); t != touchMap.end(); ++t)
         {
             Touch touch = t->second;
-            // If touch is in left half of the view: move around
-            if (touch.startPositionX < renderer().getView()->getWidth() / 2){
-                _currentSpeed = RUN_SPEED * (touch.currentPositionY - touch.startPositionY) / 100;
-                if(_currentSpeed > RUN_SPEED){
-                    _currentSpeed = RUN_SPEED;
+            // If touch is in lower half of screen
+            if(touch.startPositionY > renderer().getView()->getHeight() / 2) {
+                // If touch is in left portion of screen
+                if (touch.startPositionX < renderer().getView()->getWidth() / 2) {
+                    _currentSpeed = RUN_SPEED * (touch.currentPositionY - touch.startPositionY) / 100;
+                    if(_currentSpeed > RUN_SPEED){
+                        _currentSpeed = RUN_SPEED;
+                    }
+                    if(_currentSpeed < -RUN_SPEED){
+                        _currentSpeed = -RUN_SPEED;
+                    }
+                // If touch is in right portion of screen
+                } else {
+                    _currentTurnSpeed = TURN_SPEED * (touch.currentPositionX - touch.startPositionX) / 300;
                 }
-                if(_currentSpeed < -RUN_SPEED){
-                    _currentSpeed = -RUN_SPEED;
-                }
-            }
-            // if touch is in right half of the view: look around
-            else
-            {
-                _currentTurnSpeed = 0.0;
-            }
-
-            if (touch.startPositionX > renderer().getView()->getWidth() / 2) {
-                _currentTurnSpeed = TURN_SPEED * (touch.currentPositionX - touch.startPositionX) / 300;
-            } else {
-                _currentTurnSpeed = 0.0;
-            }
+        
             if (++i > 2)
                 break;
+            }
         }
     }
 }

@@ -68,6 +68,7 @@ void TerrainLoader::refreshTerrainTiles()
     typedef std::vector<std::tuple<int, int>> TerrainIndexPairs;
     TerrainIndexPairs terrainIndexPairs;
     
+    // find out which indices should exist
     // create names and indices of the 9 terrain tiles that should exist in the next frame
     // CENTER (where player is right now)
     int xNegative = _terrainXPlayer < 0 ? 1 : 0;
@@ -77,7 +78,6 @@ void TerrainLoader::refreshTerrainTiles()
     auto t = std::make_tuple(_terrainXPlayer, _terrainZPlayer);
     terrainIndexPairs.push_back(t);
     
-    // find out which indices should exist
     // UP
     xNegative = _terrainXPlayer < 0 ? 1 : 0;
     zNegative = _terrainZPlayer+1 < 0 ? 1 : 0;

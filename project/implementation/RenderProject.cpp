@@ -73,7 +73,7 @@ void RenderProject::initFunction()
     //    bRenderer().getObjects()->addCubeMap("skyBoxCubeMap", skyBoxCubeMapPtr);
 
     // PLAYER //
-    _player = PlayerPtr(new Player("guy.obj", "guy", "guyProperties", playerShader, getProjectRenderer(), vmml::Vector3f(100.0, 0.0, 100.0), 0.0, -90.0, 0.0, 2.0));
+    _player = PlayerPtr(new Player("guy.obj", "guy", "guyProperties", playerShader, getProjectRenderer(), vmml::Vector3f(200.0, 0.0, 200.0), 0.0, -90.0, 0.0, 2.0));
 
     // TERRAIN LOADER //
     _terrainLoader = TerrainLoaderPtr(new TerrainLoader(getProjectRenderer(), terrainShader, _player));
@@ -245,8 +245,8 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
 
     /// Skybox ///
     modelMatrix =
-        vmml::create_translation(vmml::Vector3f(150.0, 100.0, 150.0)) *
-        vmml::create_scaling(vmml::Vector3f(2.0));
+        vmml::create_translation(vmml::Vector3f(_player->getPosition().x(), 0.0, _player->getPosition().z())) *
+        vmml::create_scaling(vmml::Vector3f(1.0));
     // set CubeMap for skybox texturing
     // skybox = bRenderer().getObjects()->getShader("skybox");
     // skybox->setUniform("CubeMap", bRenderer().getObjects()->getCubeMap("skyBoxCubeMap"));
