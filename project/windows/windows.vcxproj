@@ -167,6 +167,7 @@
     <ClCompile Include="..\implementation\Skybox.cpp" />
     <ClCompile Include="..\implementation\Terrain.cpp" />
     <ClCompile Include="..\implementation\TerrainLoader.cpp" />
+    <ClCompile Include="..\implementation\Tree.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\bRenderer\bRenderer.h" />
@@ -229,6 +230,7 @@
     <ClInclude Include="..\headers\Skybox.h" />
     <ClInclude Include="..\headers\Terrain.h" />
     <ClInclude Include="..\headers\TerrainLoader.h" />
+    <ClInclude Include="..\headers\Tree.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\bRenderer\os_specific\ios\BView.mm" />

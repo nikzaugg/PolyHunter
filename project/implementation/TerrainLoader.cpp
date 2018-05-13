@@ -50,8 +50,6 @@ void TerrainLoader::process()
         _terrainZPlayer = gridZ;
         refreshTerrainTiles();
     }
-    // std::cout << _player->getPosition().x() << " | " << _player->getPosition().z() << std::endl;
-    // std::cout <<  " gridX: "<<gridX << " | " << "gridZ: "<< gridZ << std::endl;
 
     renderTerrains("camera");
 }
@@ -170,4 +168,9 @@ void TerrainLoader::renderTerrains(std::string camera)
     for (auto const& x: _terrains) {
         x.second->render(camera);
     }
+}
+
+TerrainLoader::TerrainMap TerrainLoader::getTerrainMap()
+{
+	return this->_terrains;
 }

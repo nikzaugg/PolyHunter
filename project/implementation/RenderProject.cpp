@@ -225,23 +225,14 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
 
     _player->process("camera", deltaTime);
     _terrainLoader->process();
-	/// TREE ///
-    modelMatrix =
-        vmml::create_translation(vmml::Vector3f(20.0, 50.0, 0.0)) *
-        vmml::create_rotation((float)elapsedTime * M_PI_F/10, vmml::Vector3f::UNIT_Y) *
-        vmml::create_scaling(vmml::Vector3f(0.5f));
-    // set ambient color
-    bRenderer().getObjects()->setAmbientColor(vmml::Vector3f(0.5f));
-    // draw model
-    bRenderer().getModelRenderer()->drawModel("tree", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
 
-    /// Skybox ///
+    ///// Skybox ///
     modelMatrix =
         vmml::create_translation(vmml::Vector3f(150.0, 100.0, 150.0)) *
         vmml::create_scaling(vmml::Vector3f(2.0));
     // set CubeMap for skybox texturing
-    // skybox = bRenderer().getObjects()->getShader("skybox");
-    // skybox->setUniform("CubeMap", bRenderer().getObjects()->getCubeMap("skyBoxCubeMap"));
+    skybox = bRenderer().getObjects()->getShader("skybox");
+    skybox->setUniform("CubeMap", bRenderer().getObjects()->getCubeMap("skyBoxCubeMap"));
     // set ambient color
     bRenderer().getObjects()->setAmbientColor(vmml::Vector3f(0.5f));
     // draw model

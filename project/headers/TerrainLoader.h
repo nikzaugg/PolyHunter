@@ -8,14 +8,14 @@
 class TerrainLoader {
     
 public:
+	typedef std::unordered_map< std::string, TerrainPtr > TerrainMap;
     TerrainLoader(Renderer & renderer, ShaderPtr shader, PlayerPtr player);
     void renderTerrains(std::string camera);
+	TerrainLoader::TerrainMap getTerrainMap();
     void process();
 private:
     TerrainPtr generateTerrain(int gridX, int gridZ);
     void refreshTerrainTiles();
-    
-    typedef std::unordered_map< std::string, TerrainPtr > TerrainMap;
     
     TerrainMap _terrains;
     PlayerPtr _player;

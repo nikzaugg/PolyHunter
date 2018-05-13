@@ -312,6 +312,9 @@
     <ClCompile Include="..\implementation\TerrainLoader.cpp">
       <Filter>project\implementation</Filter>
     </ClCompile>
+    <ClCompile Include="..\implementation\Tree.cpp">
+      <Filter>project\implementation</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\bRenderer\bRenderer.h">
@@ -492,6 +495,9 @@
       <Filter>project\headers</Filter>
     </ClInclude>
     <ClInclude Include="..\headers\TerrainLoader.h">
+      <Filter>project\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\headers\Tree.h">
       <Filter>project\headers</Filter>
     </ClInclude>
   </ItemGroup>
