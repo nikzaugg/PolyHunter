@@ -75,6 +75,9 @@
 		31A71EEA20865D6F00A2D46A /* basic.frag in Resources */ = {isa = PBXBuildFile; fileRef = 31A71EDD20865D6E00A2D46A /* basic.frag */; };
 		31A71EED20865D8800A2D46A /* ProceduralOBJLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 31A71EEB20865D8800A2D46A /* ProceduralOBJLoader.cpp */; };
 		31A71EEE20865D8800A2D46A /* Terrain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 31A71EEC20865D8800A2D46A /* Terrain.cpp */; };
+		31AF850E20A8552B0048FBF6 /* player.vert in Resources */ = {isa = PBXBuildFile; fileRef = 31AF850D20A8552B0048FBF6 /* player.vert */; };
+		31AF851020A8553D0048FBF6 /* player.frag in Resources */ = {isa = PBXBuildFile; fileRef = 31AF850F20A8553D0048FBF6 /* player.frag */; };
+		31AF851420A861140048FBF6 /* diffuse.png in Resources */ = {isa = PBXBuildFile; fileRef = 31AF851320A861130048FBF6 /* diffuse.png */; };
 		31B0FD772097A1D600601F21 /* Player.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 31B0FD752097A1D600601F21 /* Player.cpp */; };
 		31B0FD792097A20200601F21 /* Entity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 31B0FD782097A20200601F21 /* Entity.cpp */; };
 		31F377FF2089512500EBEC30 /* PerlinNoise2D.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 31F377FD2089512400EBEC30 /* PerlinNoise2D.cpp */; };
@@ -347,6 +350,9 @@
 		31A71EEC20865D8800A2D46A /* Terrain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Terrain.cpp; sourceTree = "<group>"; };
 		31A71EEF20865D9200A2D46A /* ProceduralOBJLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProceduralOBJLoader.h; sourceTree = "<group>"; };
 		31A71EF020865D9300A2D46A /* Terrain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Terrain.h; sourceTree = "<group>"; };
+		31AF850D20A8552B0048FBF6 /* player.vert */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = player.vert; sourceTree = "<group>"; };
+		31AF850F20A8553D0048FBF6 /* player.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = player.frag; sourceTree = "<group>"; };
+		31AF851320A861130048FBF6 /* diffuse.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = diffuse.png; sourceTree = "<group>"; };
 		31B0FD752097A1D600601F21 /* Player.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Player.cpp; sourceTree = "<group>"; };
 		31B0FD782097A20200601F21 /* Entity.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Entity.cpp; sourceTree = "<group>"; };
 		31B0FD7A2097A21D00601F21 /* Entity.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Entity.h; sourceTree = "<group>"; };
@@ -742,6 +748,7 @@
 		B47949841BA6742B00B5E9DC /* data */ = {
 			isa = PBXGroup;
 			children = (
+				31AF851320A861130048FBF6 /* diffuse.png */,
 				315E0D9520A2D4340085984D /* guy.mtl */,
 				315E0D9620A2D4340085984D /* guy.obj */,
 				3136FA33209A60C5008436CF /* skybox.mtl */,
@@ -795,6 +802,8 @@
 				B479499F1BA6742B00B5E9DC /* torch.mtl */,
 				B47949A01BA6742B00B5E9DC /* torch.obj */,
 				B47949A11BA6742B00B5E9DC /* torchSurface_Color.png */,
+				31AF850D20A8552B0048FBF6 /* player.vert */,
+				31AF850F20A8553D0048FBF6 /* player.frag */,
 			);
 			path = data;
 			sourceTree = "<group>";
@@ -1144,6 +1153,7 @@
 				B47949BB1BA6742B00B5E9DC /* sparks.png in Resources */,
 				31A71EE520865D6F00A2D46A /* sun.png in Resources */,
 				B47949A21BA6742B00B5E9DC /* arial.ttf in Resources */,
+				31AF851420A861140048FBF6 /* diffuse.png in Resources */,
 				3136FA2F209A5D4D008436CF /* right.png in Resources */,
 				B47949B21BA6742B00B5E9DC /* crystal_d.png in Resources */,
 				B47949AD1BA6742B00B5E9DC /* cave_stream.vert in Resources */,
@@ -1179,8 +1189,10 @@
 				B47949BE1BA6742B00B5E9DC /* torchSurface_Color.png in Resources */,
 				B47949AC1BA6742B00B5E9DC /* cave_stream.obj in Resources */,
 				3136FA34209A60C6008436CF /* skybox.mtl in Resources */,
+				31AF850E20A8552B0048FBF6 /* player.vert in Resources */,
 				B47949B41BA6742B00B5E9DC /* crystal_s.png in Resources */,
 				31A71EE320865D6F00A2D46A /* terrain.mtl in Resources */,
+				31AF851020A8553D0048FBF6 /* player.frag in Resources */,
 				B47949B71BA6742B00B5E9DC /* flame.obj in Resources */,
 				B47949B91BA6742B00B5E9DC /* flame.vert in Resources */,
 				3136FA2D209A5D4D008436CF /* front.png in Resources */,

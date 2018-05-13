@@ -46,6 +46,7 @@ void RenderProject::initFunction()
 	ShaderPtr basicShader = bRenderer().getObjects()->loadShaderFile("basic", 1, false, true, true, true, false);
 	ShaderPtr terrainShader = bRenderer().getObjects()->loadShaderFile("terrain", 1, false, true, true, true, false);
     ShaderPtr skyboxShader = bRenderer().getObjects()->loadShaderFile("skybox", 1, false, true, true, true, false);
+    ShaderPtr playerShader = bRenderer().getObjects()->loadShaderFile("player", 1, false, true, true, true, false);
 
 	// PROPERTIES FOR THE MODELS
     PropertiesPtr treeProperties = bRenderer().getObjects()->createProperties("treeProperties");
@@ -72,7 +73,7 @@ void RenderProject::initFunction()
     //    bRenderer().getObjects()->addCubeMap("skyBoxCubeMap", skyBoxCubeMapPtr);
 
     // create Player object
-    _player = PlayerPtr(new Player("guy.obj", "guy", "guyProperties", basicShader, getProjectRenderer(), vmml::Vector3f(100.0, 0.0, 100.0), 0.0, -90.0, 0.0, 2.0));
+    _player = PlayerPtr(new Player("guy.obj", "guy", "guyProperties", playerShader, getProjectRenderer(), vmml::Vector3f(100.0, 0.0, 100.0), 0.0, -90.0, 0.0, 2.0));
 
     // PROCEDURAL TERRAIN TILES
     _terrainLoader = TerrainLoaderPtr(new TerrainLoader(getProjectRenderer(), terrainShader, _player));

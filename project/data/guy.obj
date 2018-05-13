@@ -1,5 +1,6 @@
 # Blender v2.69 (sub 0) OBJ File: 'game muscle guy.blend'
 # www.blender.org
+mtllib guy.mtl
 o mouth_bottom_shape_Circle.001
 v -0.029118 3.288905 0.489686
 v -0.077775 3.288905 0.487293
