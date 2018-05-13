@@ -52,6 +52,8 @@ public:
 	*/
 	virtual void drawInstance(const std::string &instanceName, GLenum mode = GL_TRIANGLES) override;
 
+	void drawInstanced(GLenum mode = GL_TRIANGLES);
+
 	/**	@brief Creates an instance of this geometry
 	*	@param[in] instanceName	Name of the instance
 	*/

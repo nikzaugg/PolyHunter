@@ -14,6 +14,8 @@ public:
 		_treeName = treeName;
 	};
 
+	void add();
+
 	void render(std::string camera);
 
 private:

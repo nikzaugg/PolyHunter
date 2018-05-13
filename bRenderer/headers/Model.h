@@ -80,6 +80,8 @@ public:
 	*/
 	virtual void drawInstance(const std::string &instanceName, GLenum mode = GL_TRIANGLES) override;
 
+	void drawInstanced(const std::string & instanceName, GLenum mode);
+
 	/**	@brief Creates an instance of this model and associated geometry
 	*
 	*	All geometry that belong to this model get additional properties

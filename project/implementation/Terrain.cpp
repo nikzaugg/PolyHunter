@@ -164,7 +164,7 @@ void Terrain::placeTrees()
 
 	ridgedMulti.SetSeed(100);
 
-
+	int treeCount = 0;
 	for (int i = 0; i < _VERTEX_COUNT; i++) 
 	{
 		for (int j = 0; j < _VERTEX_COUNT; j++)
@@ -173,20 +173,24 @@ void Terrain::placeTrees()
 
 			// Rescale from -1.0:+1.0 to 0.0:1.0
 			float value = ridgedMulti.GetValue((float)i, treeHeight, (float)j);
-			std::cout << value << std::endl;
 			if (value > 1.4f)
 			{
+				TreePtr tree = TreePtr(new Tree(getModelName() + std::to_string(i), "tree.obj", "tree", "treeProperties", basicShader, renderer(), vmml::Vector3f((float)i, treeHeight, (float)j), 0.0f, 0.0f, 0.0f, 1.0f));
+				tree->add();
 				_trees.insert(
 					TreeMap::value_type(
 						getModelName() + std::to_string(i),
-						TreePtr(new Tree(getModelName() + std::to_string(i), "tree.obj", "tree", "treeProperties", basicShader, renderer(), vmml::Vector3f((float)i, treeHeight, 0.0f), 0.0f, 0.0f, 0.0f, 1.0f))
+						tree
 					)
 				);
+				treeCount++;
 			}
 
 		}
 		
 	}
+
+
 }
 
 Terrain::TreeMap Terrain::getTreeMap()
@@ -196,8 +200,11 @@ Terrain::TreeMap Terrain::getTreeMap()
 
 void Terrain::renderTrees(std::string camera)
 {
-	TreeMap::iterator it;
-	for (auto const& x : _trees) {
-		x.second->render(camera);
-	}
+	//TreeMap::iterator it;
+	//int instance = 0;
+	//for (auto const& x : _trees) {
+	//	x.second->render(camera);
+	//}
+
+
 }

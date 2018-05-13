@@ -222,6 +222,7 @@
     <ClInclude Include="..\..\bRenderer\headers\View.h" />
     <ClInclude Include="..\..\bRenderer\os_specific\ios\BView.h" />
     <ClInclude Include="..\headers\Entity.h" />
+    <ClInclude Include="..\headers\glcorearb.h" />
     <ClInclude Include="..\headers\PerlinNoise.h" />
     <ClInclude Include="..\headers\PerlinNoise2D.h" />
     <ClInclude Include="..\headers\Player.h" />
@@ -258,6 +259,8 @@
     <None Include="..\data\terrain.geom" />
     <None Include="..\data\terrain.vert" />
     <None Include="..\data\torch.mtl" />
+    <None Include="..\data\tree.frag" />
+    <None Include="..\data\tree.vert" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\data\basicTitle_light.png" />

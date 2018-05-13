@@ -67,6 +67,10 @@ public:
 	*/
 	virtual void drawModel(ModelPtr model, const vmml::Matrix4f &modelMatrix, const vmml::Matrix4f &viewMatrix, const vmml::Matrix4f &projectionMatrix, const std::vector<std::string> &lightNames, bool doFrustumCulling = true, bool cullIndividualGeometry = false);
 
+	void drawModelInstanced(const std::string & modelName, const std::string & cameraName, const vmml::Matrix4f & modelMatrix, const std::vector<std::string>& lightNames, bool doFrustumCulling, bool cullIndividualGeometry);
+
+	void drawModelInstanced(ModelPtr model, const vmml::Matrix4f & modelMatrix, const vmml::Matrix4f & viewMatrix, const vmml::Matrix4f & projectionMatrix, const std::vector<std::string>& lightNames, bool doFrustumCulling, bool cullIndividualGeometry);
+
 	/**	@brief Queue specified model into the render queue
 	*	@param[in] modelName Name of the model
 	*	@param[in] instanceName The name of the model instance to be queued (instance is created automatically if not present)
