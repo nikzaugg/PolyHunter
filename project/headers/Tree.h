@@ -13,12 +13,6 @@ public:
     {
         _treeName = treeName;
     };
-    
-//        Tree(std::string treeName, std::string objName, std::string modelName, std::string propName, ShaderPtr shader, Renderer & renderer, vmml::Vector3f pos, float rotX, float rotY, float rotZ, float scale){
-//            _treeName = treeName;
-//        };
-
-	void add();
 
 	void render(std::string camera);
 
