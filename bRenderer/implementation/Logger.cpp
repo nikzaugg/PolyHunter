@@ -1,6 +1,7 @@
 #include "headers/Logger.h"
 #include "headers/Configuration.h"
 
+
 namespace bRenderer
 {
 	std::string getTag(LogMode mode)
@@ -22,17 +23,23 @@ namespace bRenderer
 
 	void log(const std::string &msg, LogMode mode)
 	{
+	#ifndef NO_LOGGING
 		std::cout << getTag(mode) << ": " << msg << std::endl;
+	#endif
 	}
 
 	void log(const GLubyte *arg, LogMode mode)
 	{
-		log("", arg, mode);
+	#ifndef NO_LOGGING
+			log("", arg, mode);
+	#endif
 	}
 
 	void log(const std::string &msg, const GLubyte *arg, LogMode mode)
 	{	
-		std::cout << getTag(mode) << ": " << msg << arg << std::endl;
+	#ifndef NO_LOGGING
+			std::cout << getTag(mode) << ": " << msg << arg << std::endl;
+	#endif
 	}
 
 } // namespace bRenderer

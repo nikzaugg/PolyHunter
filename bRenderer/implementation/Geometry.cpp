@@ -1,5 +1,4 @@
 #include "headers/Geometry.h"
-#include "glcorearb.h";
 
 /* Public functions */
 
@@ -52,22 +51,6 @@ void Geometry::drawInstance(const std::string &instanceName, GLenum mode)
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 }
-
-void Geometry::drawInstanced(GLenum mode)
-{
-	glBindBuffer(GL_ARRAY_BUFFER, _vertexBuffer);
-
-	if (_material)
-		_material->bind();
-
-	if (_properties)
-		_properties->passToShader(_material->getShader());
-
-	glDrawElementsInstancedEXT(mode, _nIndices, GL_UNSIGNED_SHORT, _indexData.get(), 50);
-
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-}
-
 
 PropertiesPtr Geometry::addInstance(const std::string &instanceName)
 {

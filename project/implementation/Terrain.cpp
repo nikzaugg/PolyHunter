@@ -165,17 +165,33 @@ void Terrain::placeTrees()
 	ridgedMulti.SetSeed(100);
 
 	int treeCount = 0;
-	for (int i = 0; i < _VERTEX_COUNT; i++) 
+	for (int i = 0; i < _VERTEX_COUNT - 1; i++) 
 	{
-		for (int j = 0; j < _VERTEX_COUNT; j++)
+		for (int j = 0; j < _VERTEX_COUNT - 1; j++)
 		{
-			float treeHeight = getHeightFromNoise(getNoiseInput((float)i), getNoiseInput((float)j));
+			
 
 			// Rescale from -1.0:+1.0 to 0.0:1.0
-			float value = ridgedMulti.GetValue((float)i, treeHeight, (float)j);
-			if (value > 1.4f)
+			
+			
+			float xPos = ((float)i / ((float)_VERTEX_COUNT - 1)) * _TERRAIN_SIZE;
+			xPos += _offsetX;
+
+			float zPos = ((float)j / ((float)_VERTEX_COUNT - 1)) * _TERRAIN_SIZE;
+			zPos += _offsetZ;
+
+			float treeHeight = getHeightFromNoise(getNoiseInput(xPos), getNoiseInput(zPos));
+			float value = ridgedMulti.GetValue(xPos, treeHeight, zPos);
+
+			// flip z-coords if windows-device
+			if (!Input::isTouchDevice()) {
+				xPos *= -1;
+				zPos *= -1;
+			}
+			if (value > 1.0f)
 			{
-				TreePtr tree = TreePtr(new Tree(getModelName() + std::to_string(i), "tree.obj", "tree", "treeProperties", basicShader, renderer(), vmml::Vector3f((float)i, treeHeight, (float)j), 0.0f, 0.0f, 0.0f, 1.0f));
+				TreePtr tree = TreePtr(new Tree(getModelName() + std::to_string(i), "tree.obj", "tree", "treeProperties", basicShader, renderer(), vmml::Vector3f(xPos, treeHeight, zPos), 0.0f, 0.0f, 0.0f, 1.0f));
+				tree->setYPosition(treeHeight);
 				tree->add();
 				_trees.insert(
 					TreeMap::value_type(
@@ -183,6 +199,7 @@ void Terrain::placeTrees()
 						tree
 					)
 				);
+				
 				treeCount++;
 			}
 
@@ -200,11 +217,9 @@ Terrain::TreeMap Terrain::getTreeMap()
 
 void Terrain::renderTrees(std::string camera)
 {
-	//TreeMap::iterator it;
-	//int instance = 0;
-	//for (auto const& x : _trees) {
-	//	x.second->render(camera);
-	//}
-
-
+	TreeMap::iterator it;
+	int instance = 0;
+	for (auto const& x : _trees) {
+		x.second->render(camera);
+	}
 }

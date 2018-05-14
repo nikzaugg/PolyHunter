@@ -101,14 +101,6 @@ void Model::drawInstance(const std::string &instanceName, GLenum mode)
 	}
 }
 
-void Model::drawInstanced(const std::string &instanceName, GLenum mode)
-{
-	for (auto i = _groups.begin(); i != _groups.end(); ++i)
-	{
-		i->second->drawInstanced(mode);
-	}
-}
-
 Model::InstanceMapPtr Model::addInstance(const std::string &instanceName)
 {
 	// add instance in model

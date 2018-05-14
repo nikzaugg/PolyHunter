@@ -54,7 +54,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(SolutionDir)\externalLibraries\libnoise\include\noise;$(SolutionDir)\externalLibraries\vmmlib-library;$(SolutionDir)\externalLibraries\boost-library;$(SolutionDir)\externalLibraries\glew-1.13.0\include;$(SolutionDir)\externalLibraries\FreeImage3170;$(SolutionDir)\externalLibraries\glfw-3.1.1\include;$(SolutionDir)\externalLibraries\freetype-2.6\include;$(SolutionDir)\project\headers;$(SolutionDir)\bRenderer;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>FT2_BUILD_LIBRARY;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>FT2_BUILD_LIBRARY;_CRT_NONSTDC_NO_DEPRECATE;NO_LOGGING;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
