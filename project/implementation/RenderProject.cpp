@@ -112,8 +112,8 @@ void RenderProject::initFunction()
 /* Draw your scene here */
 void RenderProject::loopFunction(const double &deltaTime, const double &elapsedTime)
 {
-	bRenderer::log("FPS: " + std::to_string(1 / deltaTime));	// write number of frames per second to the console every frame
-
+	// bRenderer::log("FPS: " + std::to_string(1 / deltaTime));	// write number of frames per second to the console every frame
+    // std::cout << "FPS: " << std::to_string(1 / deltaTime) << std::endl;
 	//// Draw Scene and do post processing ////
 
 	/// Begin post processing ///

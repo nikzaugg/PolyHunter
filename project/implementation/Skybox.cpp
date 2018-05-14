@@ -9,7 +9,7 @@ Skybox::Skybox(MaterialPtr material, PropertiesPtr properties)
 	_material = material;
 	_properties = properties;
 
-	std::cout << "Skybox loaded!!!" << std::endl;
+	// std::cout << "Skybox loaded!!!" << std::endl;
 }
 
 ModelPtr Skybox::generate()

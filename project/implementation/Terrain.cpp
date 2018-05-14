@@ -11,7 +11,7 @@
 Terrain::Terrain(std::string modelName, std::string materialFile, std::string materialName, std::string propName, ShaderPtr shader, Renderer & renderer, int gridX, int gridZ ,int terrain_size, int vertex_count, vmml::Vector3f pos, float rotX, float rotY, float rotZ, float scale)
 : Entity(modelName, materialFile, materialName, propName, shader, renderer, pos, rotX, rotY, rotZ, scale)
 {
-    std::cout << "TERRAIN WORKS!!!" << std::endl;
+    // std::cout << "TERRAIN WORKS!!!" << std::endl;
     _gridX = gridX;
     _gridZ = gridZ;
     _amplitude = 30;
