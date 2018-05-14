@@ -37,7 +37,7 @@ TerrainPtr TerrainLoader::generateTerrain(int gridX, int gridZ)
     return terrain;
 }
 
-void TerrainLoader::process()
+void TerrainLoader::process(std::string camera, const double &deltaTime)
 {
     // check in which tile the player is
     int gridX = floor(_player->getPosition().x()/_TERRAIN_SIZE);
@@ -51,13 +51,14 @@ void TerrainLoader::process()
         refreshTerrainTiles();
     }
 
-    renderTerrains("camera");
+    renderTerrains(camera, deltaTime);
 }
 
 void TerrainLoader::refreshTerrainTiles()
 {
     // generate new map
     TerrainMap newTerrainMap;
+    newTerrainMap.clear();
     // new terrain keys (string identifiers)
     std::vector<std::string> newTerrainKeys;
     
@@ -160,13 +161,14 @@ void TerrainLoader::refreshTerrainTiles()
     // delete old map which only contains terrain tiles that are not needed anymore
     // reassign new map to old map variable
     _terrains = newTerrainMap;
+    std::cout << _terrains.size() << std::endl;
 }
 
-void TerrainLoader::renderTerrains(std::string camera)
+void TerrainLoader::renderTerrains(std::string camera, const double &deltaTime)
 {
     TerrainMap::iterator it;
     for (auto const& x: _terrains) {
-        x.second->render(camera);
+        x.second->process(camera, deltaTime);
     }
 }
 

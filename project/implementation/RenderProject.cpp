@@ -73,7 +73,7 @@ void RenderProject::initFunction()
     //    bRenderer().getObjects()->addCubeMap("skyBoxCubeMap", skyBoxCubeMapPtr);
 
     // PLAYER //
-    _player = PlayerPtr(new Player("guy.obj", "guy", "guyProperties", playerShader, getProjectRenderer(), vmml::Vector3f(200.0, 0.0, 200.0), 0.0, -90.0, 0.0, 2.0));
+    _player = PlayerPtr(new Player("guy.obj", "guy", "guyProperties", playerShader, getProjectRenderer(), vmml::Vector3f(10.0, 0.0, 10.0), 0.0, -90.0, 0.0, 2.0));
 
     // TERRAIN LOADER //
     _terrainLoader = TerrainLoaderPtr(new TerrainLoader(getProjectRenderer(), terrainShader, _player));
@@ -221,7 +221,7 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
 
     bRenderer().getObjects()->getLight("sun")->setPosition(vmml::Vector3f(_animation, 240.0, _animation));
     _player->process("camera", deltaTime);
-    _terrainLoader->process();
+    _terrainLoader->process("camera", deltaTime);
     
     /// SUN ///
     modelMatrix =

@@ -23,7 +23,6 @@ Terrain::Terrain(std::string modelName, std::string materialFile, std::string ma
     this->_offsetZ = gridZ * _TERRAIN_SIZE;
 
     _data = generate();
-
     ModelPtr terrainModel = ModelPtr(new Model(_data, getMaterial(), getProperties()));
     SetModel(terrainModel);
     renderer.getObjects()->addModel(getModelName(), terrainModel);
@@ -88,12 +87,12 @@ void Terrain::generateVertices()
             //std::cout << getHeightFromNoise(xTopLeft, zTopLeft) << std::endl;
 
             // flip z-coords if windows-device
-			if (!Input::isTouchDevice()) {
-				zTopLeft *= -1;
-				zBottomLeft *= -1;
-				zTopRight *= -1;
-				zBottomRight *= -1;
-			}
+            if (!Input::isTouchDevice()) {
+                zTopLeft *= -1;
+                zBottomLeft *= -1;
+                zTopRight *= -1;
+                zBottomRight *= -1;
+            }
 
             _objLoader.addVertex(xTopLeft, getHeightFromNoise(getNoiseInput(xTopLeft), getNoiseInput(zTopLeft)), zTopLeft);
             _objLoader.addVertex(xBottomLeft, getHeightFromNoise(getNoiseInput(xBottomLeft),getNoiseInput(zBottomLeft)), zBottomLeft);
@@ -141,6 +140,7 @@ void Terrain::generateIdices()
 
 void Terrain::process(std::string cameraName, const double &deltaTime)
 {
+    renderTrees(cameraName);
     render(cameraName);
 }
 
@@ -150,7 +150,6 @@ void Terrain::render(std::string camera)
     renderer().getObjects()->setAmbientColor(vmml::Vector3f(0.3f));
     // draw model
     renderer().getModelRenderer()->drawModel(getModelName(), camera, computeTransformationMatrix(), std::vector<std::string>({ "sun" }), true, true);
-	renderTrees(camera);
 }
 
 void Terrain::placeTrees()
@@ -167,11 +166,7 @@ void Terrain::placeTrees()
 	{
 		for (int j = 0; j < _VERTEX_COUNT - 1; j++)
 		{
-			
-
 			// Rescale from -1.0:+1.0 to 0.0:1.0
-			
-			
 			float xPos = ((float)i / ((float)_VERTEX_COUNT - 1)) * _TERRAIN_SIZE;
 			xPos += _offsetX;
 
@@ -188,8 +183,6 @@ void Terrain::placeTrees()
 			}
 			if (value > 1.0f)
 			{
-//                    Tree(std::string treeName, std::string objName, std::string modelName, std::string propName, ShaderPtr shader, Renderer & renderer, vmml::Vector3f pos, float rotX, float rotY, float rotZ, float scale)
-                
                 TreePtr tree = TreePtr(new Tree(getModelName() + std::to_string(i), "tree.obj", "tree", "treeProperties", basicShader, renderer(), vmml::Vector3f(xPos, treeHeight, zPos), 0.0f, 0.0f, 0.0f, 1.0f));
 				tree->setYPosition(treeHeight);
 				// tree->add();
@@ -199,15 +192,10 @@ void Terrain::placeTrees()
 						tree
 					)
 				);
-				
 				treeCount++;
 			}
-
 		}
-		
 	}
-
-
 }
 
 Terrain::TreeMap Terrain::getTreeMap()
@@ -218,7 +206,6 @@ Terrain::TreeMap Terrain::getTreeMap()
 void Terrain::renderTrees(std::string camera)
 {
 	TreeMap::iterator it;
-	int instance = 0;
 	for (auto const& x : _trees) {
 		x.second->render(camera);
 	}

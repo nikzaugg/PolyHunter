@@ -10,9 +10,9 @@ class TerrainLoader {
 public:
 	typedef std::unordered_map< std::string, TerrainPtr > TerrainMap;
     TerrainLoader(Renderer & renderer, ShaderPtr shader, PlayerPtr player);
-    void renderTerrains(std::string camera);
+    void renderTerrains(std::string camera, const double &deltaTime);
 	TerrainLoader::TerrainMap getTerrainMap();
-    void process();
+    void process(std::string camera, const double &deltaTime);
 private:
     TerrainPtr generateTerrain(int gridX, int gridZ);
     void refreshTerrainTiles();
@@ -24,7 +24,7 @@ private:
     vmml::Vector3f _centerPoint;
     
     int _TERRAIN_SIZE = 150;
-    int _VERTEX_COUNT = 30;
+    int _VERTEX_COUNT = 15;
     
     int _terrainXPlayer;
     int _terrainZPlayer;
