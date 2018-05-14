@@ -3,8 +3,10 @@
 #include "ProceduralOBJLoader.h"
 #include "PerlinNoise.h"
 #include "PerlinNoise2D.h"
+#include "Tree.h"
 #include "math.h"
 #include "iostream"
+#include "noise.h"
 
 Terrain::Terrain(std::string modelName, std::string materialFile, std::string materialName, std::string propName, ShaderPtr shader, Renderer & renderer, int gridX, int gridZ ,int terrain_size, int vertex_count, vmml::Vector3f pos, float rotX, float rotY, float rotZ, float scale)
 : Entity(modelName, materialFile, materialName, propName, shader, renderer, pos, rotX, rotY, rotZ, scale)
@@ -26,6 +28,7 @@ Terrain::Terrain(std::string modelName, std::string materialFile, std::string ma
     SetModel(terrainModel);
     renderer.getObjects()->addModel(getModelName(), terrainModel);
     _objLoader = ProceduralOBJLoader();
+	placeTrees();
 }
 
 float Terrain::barryCentric(vmml::Vector3f p1, vmml::Vector3f p2, vmml::Vector3f p3, vmml::Vector2f pos) {
@@ -147,4 +150,76 @@ void Terrain::render(std::string camera)
     renderer().getObjects()->setAmbientColor(vmml::Vector3f(0.3f));
     // draw model
     renderer().getModelRenderer()->drawModel(getModelName(), camera, computeTransformationMatrix(), std::vector<std::string>({ "sun" }), true, true);
+	renderTrees(camera);
+}
+
+void Terrain::placeTrees()
+{
+	ShaderPtr basicShader = renderer().getObjects()->loadShaderFile("basic", 1, false, true, true, true, false);
+	PropertiesPtr treeProperties = renderer().getObjects()->createProperties("treeProperties");
+
+	noise::module::RidgedMulti ridgedMulti;
+
+	ridgedMulti.SetSeed(100);
+
+	int treeCount = 0;
+	for (int i = 0; i < _VERTEX_COUNT - 1; i++) 
+	{
+		for (int j = 0; j < _VERTEX_COUNT - 1; j++)
+		{
+			
+
+			// Rescale from -1.0:+1.0 to 0.0:1.0
+			
+			
+			float xPos = ((float)i / ((float)_VERTEX_COUNT - 1)) * _TERRAIN_SIZE;
+			xPos += _offsetX;
+
+			float zPos = ((float)j / ((float)_VERTEX_COUNT - 1)) * _TERRAIN_SIZE;
+			zPos += _offsetZ;
+
+			float treeHeight = getHeightFromNoise(getNoiseInput(xPos), getNoiseInput(zPos));
+			float value = ridgedMulti.GetValue(xPos, treeHeight, zPos);
+
+			// flip z-coords if windows-device
+			if (!Input::isTouchDevice()) {
+				xPos *= -1;
+				zPos *= -1;
+			}
+			if (value > 1.0f)
+			{
+//                    Tree(std::string treeName, std::string objName, std::string modelName, std::string propName, ShaderPtr shader, Renderer & renderer, vmml::Vector3f pos, float rotX, float rotY, float rotZ, float scale)
+                
+                TreePtr tree = TreePtr(new Tree(getModelName() + std::to_string(i), "tree.obj", "tree", "treeProperties", basicShader, renderer(), vmml::Vector3f(xPos, treeHeight, zPos), 0.0f, 0.0f, 0.0f, 1.0f));
+				tree->setYPosition(treeHeight);
+				// tree->add();
+				_trees.insert(
+					TreeMap::value_type(
+						getModelName() + std::to_string(i),
+						tree
+					)
+				);
+				
+				treeCount++;
+			}
+
+		}
+		
+	}
+
+
+}
+
+Terrain::TreeMap Terrain::getTreeMap()
+{
+	return _trees;
+}
+
+void Terrain::renderTrees(std::string camera)
+{
+	TreeMap::iterator it;
+	int instance = 0;
+	for (auto const& x : _trees) {
+		x.second->render(camera);
+	}
 }

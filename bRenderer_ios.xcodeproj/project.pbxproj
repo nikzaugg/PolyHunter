@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3115F1F020A9E16F0051FBEF /* Tree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3115F1EF20A9E16F0051FBEF /* Tree.cpp */; };
 		312A838420A1937900621562 /* TerrainLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 312A838320A1937900621562 /* TerrainLoader.cpp */; };
 		3136FA23209A1D76008436CF /* skybox.frag in Resources */ = {isa = PBXBuildFile; fileRef = 3136FA21209A1D75008436CF /* skybox.frag */; };
 		3136FA24209A1D76008436CF /* skybox.vert in Resources */ = {isa = PBXBuildFile; fileRef = 3136FA22209A1D75008436CF /* skybox.vert */; };
@@ -233,6 +234,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		3115F1EE20A9E1630051FBEF /* Tree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Tree.h; sourceTree = "<group>"; };
+		3115F1EF20A9E16F0051FBEF /* Tree.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Tree.cpp; sourceTree = "<group>"; };
 		312A838220A1936900621562 /* TerrainLoader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TerrainLoader.h; sourceTree = "<group>"; };
 		312A838320A1937900621562 /* TerrainLoader.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TerrainLoader.cpp; sourceTree = "<group>"; };
 		3136FA21209A1D75008436CF /* skybox.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = skybox.frag; sourceTree = "<group>"; };
@@ -714,6 +717,7 @@
 		B44186931BA331E300604D7F /* headers */ = {
 			isa = PBXGroup;
 			children = (
+				3115F1EE20A9E1630051FBEF /* Tree.h */,
 				318C88E6208FBE4E00B218B1 /* Skybox.h */,
 				31F377FB2089511D00EBEC30 /* PerlinNoise.h */,
 				31F377FC2089511E00EBEC30 /* PerlinNoise2D.h */,
@@ -731,6 +735,7 @@
 		B44186951BA331E300604D7F /* implementation */ = {
 			isa = PBXGroup;
 			children = (
+				3115F1EF20A9E16F0051FBEF /* Tree.cpp */,
 				31A71EEC20865D8800A2D46A /* Terrain.cpp */,
 				31B0FD782097A20200601F21 /* Entity.cpp */,
 				31B0FD752097A1D600601F21 /* Player.cpp */,
@@ -1224,6 +1229,7 @@
 				B4794A2D1BA6743D00B5E9DC /* texture-font.c in Sources */,
 				B4794A2C1BA6743D00B5E9DC /* texture-atlas.c in Sources */,
 				B47AD6BF1B827DCD00AFC632 /* ftgxval.c in Sources */,
+				3115F1F020A9E16F0051FBEF /* Tree.cpp in Sources */,
 				B4CB8CD11B72E43300FE041B /* ViewController.mm in Sources */,
 				B47AD6C91B827E3E00AFC632 /* ftpfr.c in Sources */,
 				B47AD6F71B82802900AFC632 /* ftfstype.c in Sources */,

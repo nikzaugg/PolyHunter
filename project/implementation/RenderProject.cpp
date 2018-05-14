@@ -112,7 +112,7 @@ void RenderProject::initFunction()
 /* Draw your scene here */
 void RenderProject::loopFunction(const double &deltaTime, const double &elapsedTime)
 {
-//	bRenderer::log("FPS: " + std::to_string(1 / deltaTime));	// write number of frames per second to the console every frame
+	bRenderer::log("FPS: " + std::to_string(1 / deltaTime));	// write number of frames per second to the console every frame
 
 	//// Draw Scene and do post processing ////
 
@@ -243,13 +243,55 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
     // draw model
     bRenderer().getModelRenderer()->drawModel("tree", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
 
-    /// Skybox ///
+	//modelMatrix =
+	//	vmml::create_translation(vmml::Vector3f(20.0f, 50.0f, 0.0))
+	//	* vmml::create_rotation((float)elapsedTime * M_PI_F / 10, vmml::Vector3f::UNIT_Y)
+	//	* vmml::create_scaling(vmml::Vector3f(0.5f));
+	//bRenderer().getModelRenderer()->queueModelInstance("tree", "tree1", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
+
+	//modelMatrix =
+	//	vmml::create_translation(vmml::Vector3f(30.0f, 50.0f, 0.0))
+	//	* vmml::create_rotation((float)elapsedTime * M_PI_F / 10, vmml::Vector3f::UNIT_Y)
+	//	* vmml::create_scaling(vmml::Vector3f(0.5f));
+	//bRenderer().getModelRenderer()->queueModelInstance("tree", "tree2", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
+
+	//modelMatrix =
+	//	vmml::create_translation(vmml::Vector3f(40.0f, 50.0f, 0.0))
+	//	* vmml::create_rotation((float)elapsedTime * M_PI_F / 10, vmml::Vector3f::UNIT_Y)
+	//	* vmml::create_scaling(vmml::Vector3f(0.5f));
+	//bRenderer().getModelRenderer()->queueModelInstance("tree", "tree3", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
+
+
+	//modelMatrix =
+	//	vmml::create_translation(vmml::Vector3f(50.0f, 50.0f, 0.0))
+	//	* vmml::create_rotation((float)elapsedTime * M_PI_F / 10, vmml::Vector3f::UNIT_Y)
+	//	* vmml::create_scaling(vmml::Vector3f(0.5f));
+	//bRenderer().getModelRenderer()->queueModelInstance("tree", "tree4", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
+
+	//modelMatrix =
+	//	vmml::create_translation(vmml::Vector3f(60.0f, 50.0f, 0.0))
+	//	* vmml::create_rotation((float)elapsedTime * M_PI_F / 10, vmml::Vector3f::UNIT_Y)
+	//	* vmml::create_scaling(vmml::Vector3f(0.5f));
+	//bRenderer().getModelRenderer()->queueModelInstance("tree", "tree5", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
+
+	//modelMatrix =
+	//	vmml::create_translation(vmml::Vector3f(150.0, 100.0, 150.0)) *
+	//	vmml::create_scaling(vmml::Vector3f(2.0));
+	//// set CubeMap for skybox texturing
+	//skybox = bRenderer().getObjects()->getShader("");
+	//skybox->setUniform("CubeMap", bRenderer().getObjects()->getCubeMap("skyBoxCubeMap"));
+	//// set ambient color
+	//bRenderer().getObjects()->setAmbientColor(vmml::Vector3f(0.5f));
+	//// draw model
+	//bRenderer().getModelRenderer()->drawModel("skybox", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
+
+    ///// Skybox ///
     modelMatrix =
         vmml::create_translation(vmml::Vector3f(_player->getPosition().x(), 0.0, _player->getPosition().z())) *
         vmml::create_scaling(vmml::Vector3f(1.0));
     // set CubeMap for skybox texturing
-    // skybox = bRenderer().getObjects()->getShader("skybox");
-    // skybox->setUniform("CubeMap", bRenderer().getObjects()->getCubeMap("skyBoxCubeMap"));
+    skybox = bRenderer().getObjects()->getShader("skybox");
+    skybox->setUniform("CubeMap", bRenderer().getObjects()->getCubeMap("skyBoxCubeMap"));
     // set ambient color
     bRenderer().getObjects()->setAmbientColor(vmml::Vector3f(0.5f));
     // draw model

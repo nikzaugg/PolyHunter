@@ -312,6 +312,9 @@
     <ClCompile Include="..\implementation\TerrainLoader.cpp">
       <Filter>project\implementation</Filter>
     </ClCompile>
+    <ClCompile Include="..\implementation\Tree.cpp">
+      <Filter>project\implementation</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\bRenderer\bRenderer.h">
@@ -494,6 +497,12 @@
     <ClInclude Include="..\headers\TerrainLoader.h">
       <Filter>project\headers</Filter>
     </ClInclude>
+    <ClInclude Include="..\headers\Tree.h">
+      <Filter>project\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\headers\glcorearb.h">
+      <Filter>project\headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\bRenderer\os_specific\ios\FileHandler_ios.mm">
@@ -569,6 +578,12 @@
       <Filter>project\data</Filter>
     </None>
     <None Include="..\data\terrain.geom">
+      <Filter>project\data</Filter>
+    </None>
+    <None Include="..\data\tree.frag">
+      <Filter>project\data</Filter>
+    </None>
+    <None Include="..\data\tree.vert">
       <Filter>project\data</Filter>
     </None>
   </ItemGroup>

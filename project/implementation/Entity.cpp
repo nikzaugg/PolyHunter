@@ -7,7 +7,7 @@ Entity::Entity()
 {
 }
 
-Entity::Entity(std::string objName, std::string modelName, std::string propName, ShaderPtr shader, Renderer & renderer, vmml::Vector3f pos, float rotX, float rotY, float rotZ, float scale)
+Entity::Entity(std::string objName, std::string modelName, std::string propName, ShaderPtr shader, Renderer& renderer, vmml::Vector3f pos, float rotX, float rotY, float rotZ, float scale)
 {
     _renderer = renderer;
     _modelName = modelName;

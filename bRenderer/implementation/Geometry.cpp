@@ -25,6 +25,7 @@ void Geometry::draw(GLenum mode)
 	if (_properties)
 		_properties->passToShader(_material->getShader());
 
+	
 	glDrawElements(mode, _nIndices, GL_UNSIGNED_SHORT, _indexData.get());
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -50,7 +51,6 @@ void Geometry::drawInstance(const std::string &instanceName, GLenum mode)
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 }
-
 
 PropertiesPtr Geometry::addInstance(const std::string &instanceName)
 {
