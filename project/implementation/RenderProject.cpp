@@ -55,8 +55,10 @@ void RenderProject::initFunction()
     PropertiesPtr guyProperties = bRenderer().getObjects()->createProperties("guyProperties");
 
 	// BLENDER MODELS (.obj)
+    // bRenderer().getObjects()->loadObjModel("Crystal.obj", false, true, basicShader, nullptr);
     bRenderer().getObjects()->loadObjModel("tree.obj", false, true, basicShader, treeProperties);
     bRenderer().getObjects()->loadObjModel("sun.obj", false, true, basicShader, sunProperties);
+
 
     // SKYBOX (with CubeMap)
     //    TextureData left = TextureData("left.png");
@@ -119,10 +121,12 @@ void RenderProject::loopFunction(const double &deltaTime, const double &elapsedT
     
     /***************
      * DRAW SCENE  *
-     *
      * everything that gets rendered will be saved
      * inside the texture attachment of the new framebuffer
      **************/
+    
+    
+    
     bRenderer().getModelRenderer()->drawQueue(/*GL_LINES*/);
     bRenderer().getModelRenderer()->clearQueue();
     
@@ -137,6 +141,7 @@ void RenderProject::loopFunction(const double &deltaTime, const double &elapsedT
     
     /******************************
      * RENDER TO NEW FRAMEBUFFER  *
+     * The scene above is drawn to a sprite using the texture attachment
      *****************************/
     vmml::Matrix4f modelMatrix = vmml::create_translation(vmml::Vector3f(0.0f, 0.0f, -0.5));
     bRenderer().getObjects()->getFramebuffer("bloomFBO")->bindTexture(bRenderer().getObjects()->getTexture("bloomTexture"), false);
@@ -147,6 +152,7 @@ void RenderProject::loopFunction(const double &deltaTime, const double &elapsedT
 
     /**********************************
      * RENDER TO DEFAULT FRAMEBUFFER  *
+     * Switch to detault framebuffer (the screen) and draw the created sprite
      *********************************/
     bRenderer().getObjects()->getFramebuffer("bloomFBO")->unbind(defaultFBO); //unbind (original fbo will be bound)
     bRenderer().getView()->setViewportSize(bRenderer().getView()->getWidth(), bRenderer().getView()->getHeight());
@@ -173,6 +179,13 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
 	vmml::Matrix4f modelMatrix;
 	vmml::Matrix3f normalMatrix;
 	ShaderPtr skybox;
+    
+    /// LOW POLY CRYSTAL ///
+//    modelMatrix =
+//    vmml::create_translation(vmml::Vector3f(0.0, 20.0, 0.0)) *
+//    vmml::create_scaling(vmml::Vector3f(5.0f));
+//    // draw model
+//    bRenderer().getModelRenderer()->drawModel("Crystal", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
 
     // Move Light to see changes in Colors/Lighting
     // float lightPosition = bRenderer().getObjects()->getLight("sun")->getPosition().z();
@@ -199,6 +212,7 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
     bRenderer().getObjects()->getLight("sun")->setPosition(vmml::Vector3f(_animation, 240.0, _animation));
     _player->process("camera", deltaTime);
     _terrainLoader->process("camera", deltaTime);
+
     
     /// SUN ///
     modelMatrix =
