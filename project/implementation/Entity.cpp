@@ -20,6 +20,7 @@ Entity::Entity(std::string objName, std::string modelName, std::string propName,
     this->_rotY = rotY;
     this->_rotZ = rotZ; 
     this->_scale = scale;
+    computeTransformationMatrix();
 }
 
 Entity::Entity(std::string modelName, std::string materialFile, std::string materialName, std::string propName, ShaderPtr shader, Renderer & renderer, vmml::Vector3f pos, float rotX, float rotY, float rotZ, float scale)
@@ -38,6 +39,7 @@ Entity::Entity(std::string modelName, std::string materialFile, std::string mate
     this->_rotY = rotY;
     this->_rotZ = rotZ;
     this->_scale = scale;
+    computeTransformationMatrix();
 }
 
 void Entity::increasePosition(float dx, float dy, float dz)
@@ -101,6 +103,11 @@ void Entity::setPosition(vmml::Vector3f pos)
 void Entity::setYPosition(float y)
 {
     _position[1] = y;
+}
+
+vmml::Matrix4f Entity::getModelMatrix()
+{
+    return _modelMatrix;
 }
 
 void Entity::setRotX(float rotX)
@@ -175,5 +182,6 @@ vmml::Matrix4f Entity::computeTransformationMatrix()
     modelMatrix *= vmml::create_rotation(degreeToRadians(_rotY), vmml::Vector3f::UNIT_Y);
     modelMatrix *= vmml::create_rotation(degreeToRadians(_rotZ), vmml::Vector3f::UNIT_Z);
     modelMatrix *= vmml::create_scaling(vmml::Vector3f(_scale));
+    this->_modelMatrix = modelMatrix;
     return modelMatrix;
 }

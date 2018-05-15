@@ -24,6 +24,7 @@ public:
     vmml::Vector3f getPosition();
     void setPosition(vmml::Vector3f);
     void setYPosition(float y);
+    vmml::Matrix4f getModelMatrix();
     void setRotX(float rotX);
     float getRotX();
     void setRotY(float rotY);

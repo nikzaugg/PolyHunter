@@ -7,5 +7,5 @@ void Tree::render(std::string camera)
 	renderer().getObjects()->setAmbientColor(vmml::Vector3f(0.5f));
 
 	// draw model instance
-	renderer().getModelRenderer()->queueModelInstance(getModelName(), _treeName, camera, computeTransformationMatrix(), std::vector<std::string>({ "sun" }), true, true);
+	renderer().getModelRenderer()->queueModelInstance(getModelName(), _treeName, camera, getModelMatrix(), std::vector<std::string>({ "sun" }), true, true);
 }
