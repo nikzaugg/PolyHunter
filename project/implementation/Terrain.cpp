@@ -154,8 +154,6 @@ void Terrain::render(std::string camera)
 
 void Terrain::placeTrees()
 {
-	ShaderPtr basicShader = renderer().getObjects()->loadShaderFile("basic", 1, false, true, true, true, false);
-	PropertiesPtr treeProperties = renderer().getObjects()->createProperties("treeProperties");
 
 	noise::module::RidgedMulti ridgedMulti;
 
@@ -184,11 +182,10 @@ void Terrain::placeTrees()
 			}
 
 			float value = ridgedMulti.GetValue(xPos, treeHeight, zPos);
-
 			
 			if (value > 1.0f)
 			{
-                TreePtr tree = TreePtr(new Tree(getModelName() + std::to_string(i), "tree.obj", "tree", "treeProperties", basicShader, renderer(), vmml::Vector3f(xPos, treeHeight, zPos), 0.0f, 0.0f, 0.0f, 1.0f));
+                TreePtr tree = TreePtr(new Tree(getModelName() + std::to_string(i), "tree.obj", "tree", "treeProperties", renderer().getObjects()->getShader("basic"), renderer(), vmml::Vector3f(xPos, treeHeight, zPos), 0.0f, 0.0f, 0.0f, 1.0f));
 				tree->setYPosition(treeHeight);
 				// tree->add();
 				_trees.insert(

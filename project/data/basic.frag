@@ -22,12 +22,16 @@ uniform vec3 lightDiffuseColor_0;
 uniform vec3 lightSpecularColor_0;
 uniform vec4 lightPositionViewSpace_0;
 
+uniform vec3 skyColor;
+
 varying lowp vec4 vertexColor_varying;
 varying lowp vec4 texCoord_varying;
 // Everything in View Space
 varying mediump vec4 position_varying_ViewSpace;
 varying mediump vec3 normal_varying_ViewSpace;
 varying mediump vec3 tangent_varying_ViewSpace;
+
+varying mediump float visibility;
 
 void main()
 {
@@ -46,7 +50,9 @@ void main()
     
     vec4 color = texture2D(DiffuseMap, texCoord_varying.st);
     
-    gl_FragColor = (ambientPart + diffusePart) * color;
+    vec4 outColor = (ambientPart + diffusePart) * color;
+    gl_FragColor = mix(vec4(skyColor, 1.0),  outColor, visibility);
+    // gl_FragColor = vec4(visibility);
     
     // Color according to normals
 //     vec3 normal_test = normal/2.0 + vec3(0.5);

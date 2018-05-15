@@ -20,6 +20,8 @@ uniform vec3 lightDiffuseColor_0;
 uniform vec3 lightSpecularColor_0;
 uniform vec4 lightPositionViewSpace_0;
 
+uniform vec3 skyColor;
+
 varying lowp vec4 vertexColor_varying;
 varying lowp vec4 texCoord_varying;
 varying mediump vec3 normal_ModelSpace;
@@ -27,6 +29,8 @@ varying mediump vec3 normal_ModelSpace;
 varying mediump vec4 position_varying_ViewSpace;
 varying mediump vec3 normal_varying_ViewSpace;
 varying mediump vec3 tangent_varying_ViewSpace;
+
+varying mediump float visibility;
 
 void main()
 {
@@ -45,7 +49,11 @@ void main()
     vec3 diffuseTerm = Kd * clamp(intensityFactor, 0.0, 1.0) * lightDiffuseColor_0;
     vec4 diffusePart = vec4(clamp(diffuseTerm, 0.0, 1.0), 1.0);
     
-    gl_FragColor = (ambientPart + diffusePart) * vertexColor_varying;
+    // gl_FragColor = (ambientPart + diffusePart) * vertexColor_varying;
+
+     vec4 outColor = (ambientPart + diffusePart) * vertexColor_varying;
+    gl_FragColor = mix(vec4(skyColor, 1.0), outColor, visibility);
+    // gl_FragColor = vec4(visibility);
     
     // Color according to normals
     // vec3 normal_test = normal/2.0 + vec3(0.5);
