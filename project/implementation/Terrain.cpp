@@ -107,7 +107,7 @@ void Terrain::generateVertices()
 
 double Terrain::getNoiseInput(float coord)
 {
-    return coord / (float)_TERRAIN_SIZE;
+    return coord / (float)(_TERRAIN_SIZE * 3);
 }
 
 

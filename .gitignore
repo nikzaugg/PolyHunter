@@ -1,3 +1,4 @@
 *.vs
 Debug
 project/windows/Debug
+project/windows/Release

@@ -33,6 +33,7 @@ public:
     float getRotZ();
     void setScale(float scale);
     float getScale();
+	double noise(double nx, double nz);
     float getHeightFromNoise(double nx, double nz);
     float degreeToRadians(float degree);
     Renderer renderer() {
