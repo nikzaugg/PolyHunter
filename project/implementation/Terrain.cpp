@@ -179,8 +179,8 @@ void Terrain::placeTrees()
 				treeHeight = getHeightFromNoise(getNoiseInput(xPos), getNoiseInput(zPos));
 			}
 			else {
-				zPos *= -1;
-				treeHeight = getHeightFromNoise(getNoiseInput(xPos), -getNoiseInput(zPos));
+				//zPos *= -1;
+				treeHeight = getHeightFromNoise(getNoiseInput(xPos), getNoiseInput(-zPos));
 			}
 
 			float value = ridgedMulti.GetValue(xPos, treeHeight, zPos);
