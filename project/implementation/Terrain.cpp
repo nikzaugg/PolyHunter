@@ -149,7 +149,7 @@ void Terrain::render(std::string camera)
     getShader()->setUniform("amplitude", _amplitude);
     renderer().getObjects()->setAmbientColor(vmml::Vector3f(0.3f));
     // draw model
-    renderer().getModelRenderer()->drawModel(getModelName(), camera, computeTransformationMatrix(), std::vector<std::string>({ "sun" }), true, true);
+    renderer().getModelRenderer()->queueModelInstance(getModelName(), "terrain", camera, computeTransformationMatrix(), std::vector<std::string>({ "sun" }), true, true);
 }
 
 void Terrain::placeTrees()
