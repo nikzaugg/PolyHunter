@@ -315,6 +315,9 @@
     <ClCompile Include="..\implementation\Tree.cpp">
       <Filter>project\implementation</Filter>
     </ClCompile>
+    <ClCompile Include="..\implementation\PlayerCamera.cpp">
+      <Filter>project\implementation</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\bRenderer\bRenderer.h">
@@ -501,6 +504,9 @@
       <Filter>project\headers</Filter>
     </ClInclude>
     <ClInclude Include="..\headers\glcorearb.h">
+      <Filter>project\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\headers\PlayerCamera.h">
       <Filter>project\headers</Filter>
     </ClInclude>
   </ItemGroup>
