@@ -20,6 +20,11 @@ void Player::process(std::string cameraName, const double &deltaTime)
     _upwardsSpeed += GRAVITY * deltaTime;
     increasePosition(0.0, _upwardsSpeed * deltaTime, 0.0);
     float terrainHeight = getHeightFromNoise(getNoiseInput(getPosition().x()), getNoiseInput(getPosition().z()));
+	if (!Input::isTouchDevice())
+	{
+		terrainHeight = getHeightFromNoise(getNoiseInput(getPosition().x()), -getNoiseInput(getPosition().z()));
+	}
+
     setYPosition(terrainHeight);
     render(cameraName);
 }
@@ -36,20 +41,20 @@ void Player::checkInputs() {
     renderer().getObjects()->getCamera("camera")->setAspectRatio(renderer().getView()->getAspectRatio());
 
     if (!Input::isTouchDevice()) {
-        if (renderer().getInput()->getKeyState(bRenderer::KEY_I) == bRenderer::INPUT_PRESS) {
-            _currentSpeed = RUN_SPEED;
-        }
-        else if (renderer().getInput()->getKeyState(bRenderer::KEY_K) == bRenderer::INPUT_PRESS) {
+        if (renderer().getInput()->getKeyState(bRenderer::KEY_W) == bRenderer::INPUT_PRESS) {
             _currentSpeed = -RUN_SPEED;
         }
+        else if (renderer().getInput()->getKeyState(bRenderer::KEY_S) == bRenderer::INPUT_PRESS) {
+            _currentSpeed = RUN_SPEED;
+        }
         else {
-            _currentSpeed = 2.0;
+            _currentSpeed = 0.0;
         }
 
-        if (renderer().getInput()->getKeyState(bRenderer::KEY_J) == bRenderer::INPUT_PRESS) {
+        if (renderer().getInput()->getKeyState(bRenderer::KEY_A) == bRenderer::INPUT_PRESS) {
             _currentTurnSpeed = -TURN_SPEED;
         }
-        else if (renderer().getInput()->getKeyState(bRenderer::KEY_L) == bRenderer::INPUT_PRESS) {
+        else if (renderer().getInput()->getKeyState(bRenderer::KEY_D) == bRenderer::INPUT_PRESS) {
             _currentTurnSpeed = TURN_SPEED;
         }
         else {

@@ -321,9 +321,23 @@ void RenderProject::updateCamera(const std::string &camera, const double &deltaT
 	double cameraSideward = 0.0;
 
     // pause using double tap
-    if (bRenderer().getInput()->doubleTapRecognized()){
-        _running = !_running;
-    }
+	if (Input::isTouchDevice()) {
+		if (bRenderer().getInput()->doubleTapRecognized()) {
+			_running = !_running;
+		}
+	}
+	else {
+		GLint currentStateSpaceKey = bRenderer().getInput()->getKeyState(bRenderer::KEY_SPACE);
+		if (currentStateSpaceKey != _lastStateSpaceKey)
+		{
+		    _lastStateSpaceKey = currentStateSpaceKey;
+		    if (currentStateSpaceKey == bRenderer::INPUT_PRESS){
+		        _running = !_running;
+		        bRenderer().getInput()->setCursorEnabled(!_running);
+		    }
+		}
+	}
+    
 
 	/* iOS: control movement using touch screen */
 //    if (Input::isTouchDevice()){
