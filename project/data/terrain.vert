@@ -23,7 +23,7 @@ uniform vec4 lightPositionViewSpace_0;
 
 uniform float amplitude;
 
-attribute vec4 Position;
+attribute highp vec4 Position;
 attribute vec3 Normal;
 attribute vec3 Tangent;
 attribute vec3 Bitangent;
