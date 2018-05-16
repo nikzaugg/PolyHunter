@@ -14,34 +14,24 @@ Terrain::Terrain(std::string modelName, std::string materialFile, std::string ma
     // std::cout << "TERRAIN WORKS!!!" << std::endl;
     _gridX = gridX;
     _gridZ = gridZ;
-    _amplitude = 30;
-    _exponent = 4.18;
     _TERRAIN_SIZE = terrain_size;
     _VERTEX_COUNT = vertex_count;
+    
+    _amplitude = 70;
 
     this->_offsetX = gridX * _TERRAIN_SIZE;
     this->_offsetZ = gridZ * _TERRAIN_SIZE;
 
-    _data = generate();
+    _data = generateTerrain();
     ModelPtr terrainModel = ModelPtr(new Model(_data, getMaterial(), getProperties()));
     SetModel(terrainModel);
     renderer.getObjects()->addModel(getModelName(), terrainModel);
     _objLoader = ProceduralOBJLoader();
-	placeTrees();
 }
 
-float Terrain::barryCentric(vmml::Vector3f p1, vmml::Vector3f p2, vmml::Vector3f p3, vmml::Vector2f pos) {
-    float det = (p2.z() - p3.z()) * (p1.x() - p3.x()) + (p3.x() - p2.x()) * (p1.z() - p3.z());
-    float l1 = ((p2.z() - p3.z()) * (pos.x() - p3.x()) + (p3.x() - p2.x()) * (pos.y() - p3.z())) / det;
-    float l2 = ((p3.z() - p1.z()) * (pos.x() - p3.x()) + (p1.x() - p3.x()) * (pos.y() - p3.z())) / det;
-    float l3 = 1.0f - l1 - l2;
-    return l1 * p1.y() + l2 * p2.y() + l3 * p3.y();
-}
-
-ModelData::GroupMap Terrain::generate()
+ModelData::GroupMap Terrain::generateTerrain()
 {
-    generateVertices();
-    generateIdices();
+    generateTerrainGeometry();
 
     _objLoader.load();
 
@@ -49,12 +39,16 @@ ModelData::GroupMap Terrain::generate()
     return data;
 }
 
-void Terrain::generateVertices()
+void Terrain::generateTerrainGeometry()
 {
+    int counter = 0;
     for (int i = 0; i < _VERTEX_COUNT-1; i++)
     {
         for (int j = 0; j < _VERTEX_COUNT-1; j++)
         {
+            /***************************
+             CALCULATE VERTEX POSITIONS
+             **************************/
             float xTopLeft = ((float)i / ((float)_VERTEX_COUNT - 1)) * _TERRAIN_SIZE;
             xTopLeft += _offsetX;
             float zTopLeft = ((float)j / ((float)_VERTEX_COUNT - 1)) * _TERRAIN_SIZE;
@@ -93,7 +87,9 @@ void Terrain::generateVertices()
                 zTopRight *= -1;
                 zBottomRight *= -1;
             }
-
+            /*********************
+             ADD CREATED VERTICES
+             ********************/
             _objLoader.addVertex(xTopLeft, getHeightFromNoise(getNoiseInput(xTopLeft), getNoiseInput(zTopLeft)), zTopLeft);
             _objLoader.addVertex(xBottomLeft, getHeightFromNoise(getNoiseInput(xBottomLeft),getNoiseInput(zBottomLeft)), zBottomLeft);
             _objLoader.addVertex(xTopRight, getHeightFromNoise(getNoiseInput(xTopRight), getNoiseInput(zTopRight)), zTopRight);
@@ -101,7 +97,63 @@ void Terrain::generateVertices()
             _objLoader.addVertex(xTopRight, getHeightFromNoise(getNoiseInput(xTopRight), getNoiseInput(zTopRight)), zTopRight);
             _objLoader.addVertex(xBottomLeft, getHeightFromNoise(getNoiseInput(xBottomLeft), getNoiseInput(zBottomLeft)), zBottomLeft);
             _objLoader.addVertex(xBottomRight, getHeightFromNoise(getNoiseInput(xBottomRight), getNoiseInput(zBottomRight)), zBottomRight);
+            
+            /*********************
+             CREATE & ADD INDICES
+             ********************/
+            IndexData d1, d2, d3;
+            d1.vertexIndex = counter++;
+            d2.vertexIndex = counter++;
+            d3.vertexIndex = counter++;
+            
+            _objLoader.addFaceNoTex(d1, d2, d3);
+            
+            IndexData d4, d5, d6;
+            d4.vertexIndex = counter++;
+            d5.vertexIndex = counter++;
+            d6.vertexIndex = counter++;
+            
+            _objLoader.addFaceNoTex(d4, d5, d6);
+            
+            /******************
+             CREATE TREES
+             *****************/
+            placeTree(i, j);
         }
+    }
+}
+
+void Terrain::placeTree(int i, int j)
+{
+    noise::module::RidgedMulti ridgedMulti;
+    ridgedMulti.SetSeed(100);
+    
+    // Rescale from -1.0:+1.0 to 0.0:1.0
+    float xPos = ((float)i / ((float)_VERTEX_COUNT - 1)) * _TERRAIN_SIZE;
+    xPos += _offsetX;
+    
+    float zPos = ((float)j / ((float)_VERTEX_COUNT - 1)) * _TERRAIN_SIZE;
+    zPos += _offsetZ;
+    
+    // flip z-coords if windows-device
+    float treeHeight;
+    if (Input::isTouchDevice()) {
+        treeHeight = getHeightFromNoise(getNoiseInput(xPos), getNoiseInput(zPos));
+    } else {
+        //zPos *= -1;
+        treeHeight = getHeightFromNoise(getNoiseInput(xPos), getNoiseInput(-zPos));
+    }
+    
+    float value = ridgedMulti.GetValue(xPos, treeHeight, zPos);
+    if (value > 1.0f)
+    {
+        TreePtr tree = TreePtr(new Tree(getModelName() + std::to_string(i), "tree.obj", "tree", "treeProperties", renderer().getObjects()->loadShaderFile("basic", 1, false, true, true, true, false), renderer(), vmml::Vector3f(xPos, treeHeight, zPos), 0.0f, 0.0f, 0.0f, 1.0f));
+        tree->setYPosition(treeHeight);
+        // tree->add();
+        _trees.insert(
+                      TreeMap::value_type( getModelName() + std::to_string(i), tree)
+                      );
+        _treeCount++;
     }
 }
 
@@ -110,41 +162,21 @@ double Terrain::getNoiseInput(float coord)
     return coord / (float)(_TERRAIN_SIZE * 3);
 }
 
-
-void Terrain::generateIdices()
-{
-    int counter = 0;
-
-    for (int i = 0; i<_VERTEX_COUNT-1; i++) {
-        for (int j = 0; j < _VERTEX_COUNT-1 ; j++) {
-
-            IndexData d1, d2, d3;
-            d1.vertexIndex = counter++;
-            d2.vertexIndex = counter++;
-            d3.vertexIndex = counter++;
-
-            _objLoader.addFaceNoTex(d1, d2, d3);
-
-            IndexData d4, d5, d6;
-            d4.vertexIndex = counter++;
-            d5.vertexIndex = counter++;
-            d6.vertexIndex = counter++;
-
-            _objLoader.addFaceNoTex(d4, d5, d6);
-        }
-    }
-
-    std::cout << "Nr of Indices created: "<< counter << std::endl;
-
-}
-
 void Terrain::process(std::string cameraName, const double &deltaTime)
 {
-    renderTrees(cameraName);
-    render(cameraName);
+    processTrees(cameraName);
+    renderTerrain(cameraName);
 }
 
-void Terrain::render(std::string camera)
+void Terrain::processTrees(std::string camera)
+{
+    TreeMap::iterator it;
+    for (auto const& x : _trees) {
+        x.second->render(camera);
+    }
+}
+
+void Terrain::renderTerrain(std::string camera)
 {
     getShader()->setUniform("amplitude", _amplitude);
     renderer().getObjects()->setAmbientColor(vmml::Vector3f(0.3f));
@@ -152,66 +184,15 @@ void Terrain::render(std::string camera)
     renderer().getModelRenderer()->queueModelInstance(getModelName(), "terrain", camera, computeTransformationMatrix(), std::vector<std::string>({ "sun" }), true, true);
 }
 
-void Terrain::placeTrees()
-{
-	ShaderPtr basicShader = renderer().getObjects()->loadShaderFile("basic", 1, false, true, true, true, false);
-	PropertiesPtr treeProperties = renderer().getObjects()->createProperties("treeProperties");
-
-	noise::module::RidgedMulti ridgedMulti;
-
-	ridgedMulti.SetSeed(100);
-
-	int treeCount = 0;
-	for (int i = 0; i < _VERTEX_COUNT - 1; i++) 
-	{
-		for (int j = 0; j < _VERTEX_COUNT - 1; j++)
-		{
-			// Rescale from -1.0:+1.0 to 0.0:1.0
-			float xPos = ((float)i / ((float)_VERTEX_COUNT - 1)) * _TERRAIN_SIZE;
-			xPos += _offsetX;
-
-			float zPos = ((float)j / ((float)_VERTEX_COUNT - 1)) * _TERRAIN_SIZE;
-			zPos += _offsetZ;
-
-			// flip z-coords if windows-device
-			float treeHeight;
-			if (Input::isTouchDevice()) {
-				treeHeight = getHeightFromNoise(getNoiseInput(xPos), getNoiseInput(zPos));
-			}
-			else {
-				//zPos *= -1;
-				treeHeight = getHeightFromNoise(getNoiseInput(xPos), getNoiseInput(-zPos));
-			}
-
-			float value = ridgedMulti.GetValue(xPos, treeHeight, zPos);
-
-			
-			if (value > 1.0f)
-			{
-                TreePtr tree = TreePtr(new Tree(getModelName() + std::to_string(i), "tree.obj", "tree", "treeProperties", basicShader, renderer(), vmml::Vector3f(xPos, treeHeight, zPos), 0.0f, 0.0f, 0.0f, 1.0f));
-				tree->setYPosition(treeHeight);
-				// tree->add();
-				_trees.insert(
-					TreeMap::value_type(
-						getModelName() + std::to_string(i),
-						tree
-					)
-				);
-				treeCount++;
-			}
-		}
-	}
-}
-
 Terrain::TreeMap Terrain::getTreeMap()
 {
 	return _trees;
 }
 
-void Terrain::renderTrees(std::string camera)
-{
-	TreeMap::iterator it;
-	for (auto const& x : _trees) {
-		x.second->render(camera);
-	}
+float Terrain::barryCentric(vmml::Vector3f p1, vmml::Vector3f p2, vmml::Vector3f p3, vmml::Vector2f pos) {
+    float det = (p2.z() - p3.z()) * (p1.x() - p3.x()) + (p3.x() - p2.x()) * (p1.z() - p3.z());
+    float l1 = ((p2.z() - p3.z()) * (pos.x() - p3.x()) + (p3.x() - p2.x()) * (pos.y() - p3.z())) / det;
+    float l2 = ((p3.z() - p1.z()) * (pos.x() - p3.x()) + (p1.x() - p3.x()) * (pos.y() - p3.z())) / det;
+    float l3 = 1.0f - l1 - l2;
+    return l1 * p1.y() + l2 * p2.y() + l3 * p3.y();
 }

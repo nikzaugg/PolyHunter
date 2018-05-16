@@ -55,7 +55,7 @@ void RenderProject::initFunction()
     PropertiesPtr guyProperties = bRenderer().getObjects()->createProperties("guyProperties");
 
 	// BLENDER MODELS (.obj)
-    bRenderer().getObjects()->loadObjModel("Crystal.obj", false, true, basicShader, nullptr);
+    // bRenderer().getObjects()->loadObjModel("Crystal.obj", false, true, basicShader, nullptr);
     bRenderer().getObjects()->loadObjModel("tree.obj", false, true, basicShader, treeProperties);
     bRenderer().getObjects()->loadObjModel("sun.obj", false, true, basicShader, sunProperties);
 
@@ -210,10 +210,10 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
     }
 
     bRenderer().getObjects()->getLight("sun")->setPosition(vmml::Vector3f(_animation, 240.0, _animation));
+    
     _player->process("camera", deltaTime);
     _terrainLoader->process("camera", deltaTime);
 
-    
     /// SUN ///
     modelMatrix =
     vmml::create_translation(vmml::Vector3f(0.0, 50.0, 0.0)) *
