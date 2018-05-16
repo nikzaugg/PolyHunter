@@ -14,53 +14,51 @@ Skybox::Skybox(MaterialPtr material, PropertiesPtr properties)
 
 ModelPtr Skybox::generate()
 {
-	ProceduralOBJLoader objLoader;
-    
     IndexData d1, d2, d3;
     
-    objLoader.addVertex(-SIZE,  SIZE, -SIZE);
-    objLoader.addVertex(-SIZE, -SIZE, -SIZE);
-    objLoader.addVertex(SIZE, -SIZE, -SIZE);
+    _objLoader.addVertex(-SIZE,  SIZE, -SIZE);
+    _objLoader.addVertex(-SIZE, -SIZE, -SIZE);
+    _objLoader.addVertex(SIZE, -SIZE, -SIZE);
     
-    objLoader.addVertex(SIZE, -SIZE, -SIZE);
-    objLoader.addVertex(SIZE,  SIZE, -SIZE);
-    objLoader.addVertex(-SIZE,  SIZE, -SIZE);
+    _objLoader.addVertex(SIZE, -SIZE, -SIZE);
+    _objLoader.addVertex(SIZE,  SIZE, -SIZE);
+    _objLoader.addVertex(-SIZE,  SIZE, -SIZE);
 
     
-    objLoader.addVertex(-SIZE, -SIZE,  SIZE);
-    objLoader.addVertex(-SIZE, -SIZE, -SIZE);
-    objLoader.addVertex(-SIZE,  SIZE, -SIZE);
-    objLoader.addVertex(-SIZE,  SIZE, -SIZE);
-    objLoader.addVertex(-SIZE,  SIZE,  SIZE);
-    objLoader.addVertex(-SIZE, -SIZE,  SIZE);
+    _objLoader.addVertex(-SIZE, -SIZE,  SIZE);
+    _objLoader.addVertex(-SIZE, -SIZE, -SIZE);
+    _objLoader.addVertex(-SIZE,  SIZE, -SIZE);
+    _objLoader.addVertex(-SIZE,  SIZE, -SIZE);
+    _objLoader.addVertex(-SIZE,  SIZE,  SIZE);
+    _objLoader.addVertex(-SIZE, -SIZE,  SIZE);
     
-    objLoader.addVertex(SIZE, -SIZE, -SIZE);
-    objLoader.addVertex(SIZE, -SIZE,  SIZE);
-    objLoader.addVertex(SIZE,  SIZE,  SIZE);
-    objLoader.addVertex(SIZE,  SIZE,  SIZE);
-    objLoader.addVertex(SIZE,  SIZE, -SIZE);
-    objLoader.addVertex(SIZE, -SIZE, -SIZE);
+    _objLoader.addVertex(SIZE, -SIZE, -SIZE);
+    _objLoader.addVertex(SIZE, -SIZE,  SIZE);
+    _objLoader.addVertex(SIZE,  SIZE,  SIZE);
+    _objLoader.addVertex(SIZE,  SIZE,  SIZE);
+    _objLoader.addVertex(SIZE,  SIZE, -SIZE);
+    _objLoader.addVertex(SIZE, -SIZE, -SIZE);
     
-    objLoader.addVertex(-SIZE, -SIZE,  SIZE);
-    objLoader.addVertex(-SIZE,  SIZE,  SIZE);
-    objLoader.addVertex(SIZE,  SIZE,  SIZE);
-    objLoader.addVertex(SIZE,  SIZE,  SIZE);
-    objLoader.addVertex(SIZE, -SIZE,  SIZE);
-    objLoader.addVertex(-SIZE, -SIZE,  SIZE);
+    _objLoader.addVertex(-SIZE, -SIZE,  SIZE);
+    _objLoader.addVertex(-SIZE,  SIZE,  SIZE);
+    _objLoader.addVertex(SIZE,  SIZE,  SIZE);
+    _objLoader.addVertex(SIZE,  SIZE,  SIZE);
+    _objLoader.addVertex(SIZE, -SIZE,  SIZE);
+    _objLoader.addVertex(-SIZE, -SIZE,  SIZE);
     
-    objLoader.addVertex(-SIZE,  SIZE, -SIZE);
-    objLoader.addVertex(SIZE,  SIZE, -SIZE);
-    objLoader.addVertex(SIZE,  SIZE,  SIZE);
-    objLoader.addVertex(SIZE,  SIZE,  SIZE);
-    objLoader.addVertex(-SIZE,  SIZE,  SIZE);
-    objLoader.addVertex(-SIZE,  SIZE, -SIZE);
+    _objLoader.addVertex(-SIZE,  SIZE, -SIZE);
+    _objLoader.addVertex(SIZE,  SIZE, -SIZE);
+    _objLoader.addVertex(SIZE,  SIZE,  SIZE);
+    _objLoader.addVertex(SIZE,  SIZE,  SIZE);
+    _objLoader.addVertex(-SIZE,  SIZE,  SIZE);
+    _objLoader.addVertex(-SIZE,  SIZE, -SIZE);
     
-    objLoader.addVertex(-SIZE, -SIZE, -SIZE);
-    objLoader.addVertex(-SIZE, -SIZE,  SIZE);
-    objLoader.addVertex(SIZE, -SIZE, -SIZE);
-    objLoader.addVertex(SIZE, -SIZE, -SIZE);
-    objLoader.addVertex(-SIZE, -SIZE,  SIZE);
-    objLoader.addVertex(SIZE, -SIZE,  SIZE);
+    _objLoader.addVertex(-SIZE, -SIZE, -SIZE);
+    _objLoader.addVertex(-SIZE, -SIZE,  SIZE);
+    _objLoader.addVertex(SIZE, -SIZE, -SIZE);
+    _objLoader.addVertex(SIZE, -SIZE, -SIZE);
+    _objLoader.addVertex(-SIZE, -SIZE,  SIZE);
+    _objLoader.addVertex(SIZE, -SIZE,  SIZE);
     
     int counter = 0;
     for (int i = 0; i<12; i++) {
@@ -68,18 +66,18 @@ ModelPtr Skybox::generate()
         d2.vertexIndex = counter++;
         d1.vertexIndex = counter++;
 		if (Input::isTouchDevice()) {
-			objLoader.addFaceNoTex(d3, d2, d1);
+			_objLoader.addFaceNoTex(d1, d2, d3);
 		}
 		else {
-			objLoader.addFaceNoTex(d3, d2, d1);
+			_objLoader.addFaceNoTex(d3, d2, d1);
 		}
        
     }
 
 
-	objLoader.load();
+	_objLoader.load();
 
-	ModelData::GroupMap data = objLoader.getData();
+	ModelData::GroupMap data = _objLoader.getData();
 	ModelPtr skyboxModel = ModelPtr(new Model(data, _material, _properties));
 	return skyboxModel;
 }

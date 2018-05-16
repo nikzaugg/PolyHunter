@@ -5,9 +5,7 @@ ProceduralOBJLoader::ProceduralOBJLoader()
 				obj::obj_parser::triangulate_faces |
 				obj::obj_parser::translate_negative_indices)
 {
-	// std::cout << "PROCEDURAL OBJ LOADER WORKS!!!" << std::endl;
-    ModelData dataPtr = ModelData(false, true);
-    _data = &dataPtr;
+    _data = new ModelData(false, false);
 	createGroup(bRenderer::DEFAULT_GROUP_NAME());
 	//createGroup("terrain");
 	_numFaces = 0;

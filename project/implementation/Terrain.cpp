@@ -21,12 +21,11 @@ Terrain::Terrain(std::string modelName, std::string materialFile, std::string ma
 
     this->_offsetX = gridX * _TERRAIN_SIZE;
     this->_offsetZ = gridZ * _TERRAIN_SIZE;
-
+    
     _data = generateTerrain();
     ModelPtr terrainModel = ModelPtr(new Model(_data, getMaterial(), getProperties()));
     SetModel(terrainModel);
     renderer.getObjects()->addModel(getModelName(), terrainModel);
-    _objLoader = ProceduralOBJLoader();
 }
 
 ModelData::GroupMap Terrain::generateTerrain()

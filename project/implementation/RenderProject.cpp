@@ -55,9 +55,10 @@ void RenderProject::initFunction()
     PropertiesPtr guyProperties = bRenderer().getObjects()->createProperties("guyProperties");
 
 	// BLENDER MODELS (.obj)
-    // bRenderer().getObjects()->loadObjModel("Crystal.obj", false, true, basicShader, nullptr);
+
     bRenderer().getObjects()->loadObjModel("tree.obj", false, true, basicShader, treeProperties);
     bRenderer().getObjects()->loadObjModel("sun.obj", false, true, basicShader, sunProperties);
+    bRenderer().getObjects()->loadObjModel("Crystal.obj", false, true, basicShader, nullptr);
 
 
     // SKYBOX (with CubeMap)
@@ -181,11 +182,11 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
 	ShaderPtr skybox;
     
     /// LOW POLY CRYSTAL ///
-//    modelMatrix =
-//    vmml::create_translation(vmml::Vector3f(0.0, 20.0, 0.0)) *
-//    vmml::create_scaling(vmml::Vector3f(5.0f));
-//    // draw model
-//    bRenderer().getModelRenderer()->drawModel("Crystal", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
+    modelMatrix =
+    vmml::create_translation(vmml::Vector3f(0.0, 20.0, 0.0)) *
+    vmml::create_scaling(vmml::Vector3f(5.0f));
+    // draw model
+    bRenderer().getModelRenderer()->drawModel("Crystal", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
 
     // Move Light to see changes in Colors/Lighting
     // float lightPosition = bRenderer().getObjects()->getLight("sun")->getPosition().z();
