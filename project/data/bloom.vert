@@ -13,8 +13,6 @@ varying vec4 texCoordVarying;
 
 uniform float isVertical;
 
-varying vec2 texCoord;
-
 void main()
 {
     texCoordVarying = TexCoord;

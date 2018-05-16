@@ -6,7 +6,6 @@ precision lowp float;
 uniform sampler2D fbo_texture;
 
 varying vec4 texCoordVarying;
-varying vec2 v_blurTexCoords[14];
 
 void main()
 {

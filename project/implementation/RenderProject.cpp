@@ -93,7 +93,7 @@ void RenderProject::initFunction()
      *****************/
     bRenderer().getObjects()->createFramebuffer("bloomFBO");                    // create framebuffer object
     bRenderer().getObjects()->createTexture("bloomTexture", 0.f, 0.f);    // create texture to bind to the fbo
-    bRenderer().getObjects()->createTexture("bloomTexture2", 0.f, 0.f);    // create texture to bind to the fbo
+    //bRenderer().getObjects()->createTexture("bloomTexture2", 0.f, 0.f);    // create texture to bind to the fbo
     // load shader that blurs the texture
     ShaderPtr bloomShader = bRenderer().getObjects()->loadShaderFile_o("bloom", 0);
     MaterialPtr bloomMaterial = bRenderer().getObjects()->createMaterial("bloomMaterial", bloomShader);
@@ -128,8 +128,8 @@ void RenderProject::loopFunction(const double &deltaTime, const double &elapsedT
     
     
     
-    bRenderer().getModelRenderer()->drawQueue(/*GL_LINES*/);
-    bRenderer().getModelRenderer()->clearQueue();
+    //bRenderer().getModelRenderer()->drawQueue(/*GL_LINES*/);
+    //bRenderer().getModelRenderer()->clearQueue();
     
     /// Update render queue ///
     updateRenderQueue("camera", deltaTime);
@@ -147,7 +147,7 @@ void RenderProject::loopFunction(const double &deltaTime, const double &elapsedT
     vmml::Matrix4f modelMatrix = vmml::create_translation(vmml::Vector3f(0.0f, 0.0f, -0.5));
     bRenderer().getObjects()->getFramebuffer("bloomFBO")->bindTexture(bRenderer().getObjects()->getTexture("bloomTexture"), false);
     bRenderer().getObjects()->getMaterial("bloomMaterial")->setTexture("fbo_texture", bRenderer().getObjects()->getTexture("bloomTexture"));
-    bRenderer().getObjects()->getMaterial("bloomMaterial")->setScalar("isVertical", static_cast<GLfloat>(false));
+    bRenderer().getObjects()->getMaterial("bloomMaterial")->setScalar("isVertical", static_cast<GLfloat>(true));
     // draw currently active framebuffer
     bRenderer().getModelRenderer()->drawModel(bRenderer().getObjects()->getModel("bloomSprite"), modelMatrix, _viewMatrixHUD, vmml::Matrix4f::IDENTITY, std::vector<std::string>({}), false);
 

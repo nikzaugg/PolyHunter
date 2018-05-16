@@ -65,13 +65,7 @@ ModelPtr Skybox::generate()
         d3.vertexIndex = counter++;
         d2.vertexIndex = counter++;
         d1.vertexIndex = counter++;
-		if (Input::isTouchDevice()) {
-			_objLoader.addFaceNoTex(d1, d2, d3);
-		}
-		else {
-			_objLoader.addFaceNoTex(d3, d2, d1);
-		}
-       
+		_objLoader.addFaceNoTex(d1, d2, d3);
     }
 
 

@@ -79,13 +79,6 @@ void Terrain::generateTerrainGeometry()
 
             //std::cout << getHeightFromNoise(xTopLeft, zTopLeft) << std::endl;
 
-            // flip z-coords if windows-device
-            if (!Input::isTouchDevice()) {
-                zTopLeft *= -1;
-                zBottomLeft *= -1;
-                zTopRight *= -1;
-                zBottomRight *= -1;
-            }
             /*********************
              ADD CREATED VERTICES
              ********************/
@@ -136,12 +129,7 @@ void Terrain::placeTree(int i, int j)
     
     // flip z-coords if windows-device
     float treeHeight;
-    if (Input::isTouchDevice()) {
-        treeHeight = getHeightFromNoise(getNoiseInput(xPos), getNoiseInput(zPos));
-    } else {
-        //zPos *= -1;
-        treeHeight = getHeightFromNoise(getNoiseInput(xPos), getNoiseInput(-zPos));
-    }
+    treeHeight = getHeightFromNoise(getNoiseInput(xPos), getNoiseInput(zPos));
     
     float value = ridgedMulti.GetValue(xPos, treeHeight, zPos);
     if (value > 1.0f)

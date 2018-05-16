@@ -244,6 +244,8 @@
     <None Include="..\..\bRenderer\os_specific\ios\View_ios.mm" />
     <None Include="..\data\basic.frag" />
     <None Include="..\data\basic.vert" />
+    <None Include="..\data\bloom.frag" />
+    <None Include="..\data\bloom.vert" />
     <None Include="..\data\blurShader.frag" />
     <None Include="..\data\blurShader.vert" />
     <None Include="..\data\cave.mtl" />
@@ -269,6 +271,7 @@
     <Image Include="..\data\cave_d.png" />
     <Image Include="..\data\cave_n.png" />
     <Image Include="..\data\cave_stream_n.png" />
+    <Image Include="..\data\crystal.png" />
     <Image Include="..\data\crystal_d.png" />
     <Image Include="..\data\crystal_n.png" />
     <Image Include="..\data\crystal_s.png" />

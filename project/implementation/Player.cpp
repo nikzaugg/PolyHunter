@@ -20,10 +20,6 @@ void Player::process(std::string cameraName, const double &deltaTime)
     _upwardsSpeed += GRAVITY * deltaTime;
     increasePosition(0.0, _upwardsSpeed * deltaTime, 0.0);
     float terrainHeight = getHeightFromNoise(getNoiseInput(getPosition().x()), getNoiseInput(getPosition().z()));
-	if (!Input::isTouchDevice())
-	{
-		terrainHeight = getHeightFromNoise(getNoiseInput(getPosition().x()), -getNoiseInput(getPosition().z()));
-	}
 
     setYPosition(terrainHeight);
     render(cameraName);
