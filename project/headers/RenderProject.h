@@ -62,6 +62,9 @@ private:
 
 	/* Helper Functions */
 	GLfloat randomNumber(GLfloat min, GLfloat max);
+    
+    /* Do Postprocessing operations */
+    void doPostProcessingBloom(const double &deltaTime, const double &elapsedTime);
 
 	/* Variables */
 	GLfloat _randomOffset;

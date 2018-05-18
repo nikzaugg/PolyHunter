@@ -21,8 +21,8 @@
 		3136FA2F209A5D4D008436CF /* right.png in Resources */ = {isa = PBXBuildFile; fileRef = 3136FA29209A5D4C008436CF /* right.png */; };
 		3136FA30209A5D4D008436CF /* top.png in Resources */ = {isa = PBXBuildFile; fileRef = 3136FA2A209A5D4C008436CF /* top.png */; };
 		3136FA34209A60C6008436CF /* skybox.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 3136FA33209A60C5008436CF /* skybox.mtl */; };
-		313CE36820AB19C20062614A /* bloom.vert in Resources */ = {isa = PBXBuildFile; fileRef = 313CE36720AB19C20062614A /* bloom.vert */; };
-		313CE36A20AB19E00062614A /* bloom.frag in Resources */ = {isa = PBXBuildFile; fileRef = 313CE36920AB19E00062614A /* bloom.frag */; };
+		313CE36820AB19C20062614A /* brightShader.vert in Resources */ = {isa = PBXBuildFile; fileRef = 313CE36720AB19C20062614A /* brightShader.vert */; };
+		313CE36A20AB19E00062614A /* brightShader.frag in Resources */ = {isa = PBXBuildFile; fileRef = 313CE36920AB19E00062614A /* brightShader.frag */; };
 		315E0D9720A2D4340085984D /* guy.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 315E0D9520A2D4340085984D /* guy.mtl */; };
 		315E0D9820A2D4340085984D /* guy.obj in Resources */ = {isa = PBXBuildFile; fileRef = 315E0D9620A2D4340085984D /* guy.obj */; };
 		3180C99F209FAFF600EC2AF9 /* PlayerCamera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3180C99E209FAFF600EC2AF9 /* PlayerCamera.cpp */; };
@@ -86,6 +86,8 @@
 		31B0FD792097A20200601F21 /* Entity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 31B0FD782097A20200601F21 /* Entity.cpp */; };
 		31F377FF2089512500EBEC30 /* PerlinNoise2D.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 31F377FD2089512400EBEC30 /* PerlinNoise2D.cpp */; };
 		31F378002089512500EBEC30 /* PerlinNoise.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 31F377FE2089512400EBEC30 /* PerlinNoise.cpp */; };
+		31FEB34720AF57970033CD99 /* combineShader.vert in Resources */ = {isa = PBXBuildFile; fileRef = 31FEB34520AF57960033CD99 /* combineShader.vert */; };
+		31FEB34820AF57970033CD99 /* combineShader.frag in Resources */ = {isa = PBXBuildFile; fileRef = 31FEB34620AF57960033CD99 /* combineShader.frag */; };
 		B44186971BA331E300604D7F /* RenderProject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B44186961BA331E300604D7F /* RenderProject.cpp */; };
 		B47949A21BA6742B00B5E9DC /* arial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B47949851BA6742B00B5E9DC /* arial.ttf */; };
 		B47949A31BA6742B00B5E9DC /* basicTitle_light.png in Resources */ = {isa = PBXBuildFile; fileRef = B47949861BA6742B00B5E9DC /* basicTitle_light.png */; };
@@ -248,8 +250,8 @@
 		3136FA29209A5D4C008436CF /* right.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = right.png; sourceTree = "<group>"; };
 		3136FA2A209A5D4C008436CF /* top.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = top.png; sourceTree = "<group>"; };
 		3136FA33209A60C5008436CF /* skybox.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = skybox.mtl; sourceTree = "<group>"; };
-		313CE36720AB19C20062614A /* bloom.vert */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = bloom.vert; sourceTree = "<group>"; };
-		313CE36920AB19E00062614A /* bloom.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = bloom.frag; sourceTree = "<group>"; };
+		313CE36720AB19C20062614A /* brightShader.vert */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = brightShader.vert; sourceTree = "<group>"; };
+		313CE36920AB19E00062614A /* brightShader.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = brightShader.frag; sourceTree = "<group>"; };
 		315E0D9520A2D4340085984D /* guy.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = guy.mtl; sourceTree = "<group>"; };
 		315E0D9620A2D4340085984D /* guy.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = guy.obj; sourceTree = "<group>"; };
 		3180C99E209FAFF600EC2AF9 /* PlayerCamera.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = PlayerCamera.cpp; sourceTree = "<group>"; };
@@ -365,6 +367,8 @@
 		31F377FC2089511E00EBEC30 /* PerlinNoise2D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PerlinNoise2D.h; sourceTree = "<group>"; };
 		31F377FD2089512400EBEC30 /* PerlinNoise2D.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PerlinNoise2D.cpp; sourceTree = "<group>"; };
 		31F377FE2089512400EBEC30 /* PerlinNoise.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PerlinNoise.cpp; sourceTree = "<group>"; };
+		31FEB34520AF57960033CD99 /* combineShader.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = combineShader.vert; sourceTree = "<group>"; };
+		31FEB34620AF57960033CD99 /* combineShader.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = combineShader.frag; sourceTree = "<group>"; };
 		B44186941BA331E300604D7F /* RenderProject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RenderProject.h; sourceTree = "<group>"; };
 		B44186961BA331E300604D7F /* RenderProject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RenderProject.cpp; sourceTree = "<group>"; };
 		B47949851BA6742B00B5E9DC /* arial.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = arial.ttf; sourceTree = "<group>"; };
@@ -749,11 +753,15 @@
 		B47949841BA6742B00B5E9DC /* data */ = {
 			isa = PBXGroup;
 			children = (
+				313CE36720AB19C20062614A /* brightShader.vert */,
+				313CE36920AB19E00062614A /* brightShader.frag */,
+				B47949871BA6742B00B5E9DC /* blurShader.frag */,
+				B47949881BA6742B00B5E9DC /* blurShader.vert */,
+				31FEB34620AF57960033CD99 /* combineShader.frag */,
+				31FEB34520AF57960033CD99 /* combineShader.vert */,
 				3123226C20AB9064006702E7 /* Crystal.mtl */,
 				3123226E20AB9065006702E7 /* Crystal.obj */,
 				3123226D20AB9065006702E7 /* crystal.png */,
-				313CE36720AB19C20062614A /* bloom.vert */,
-				313CE36920AB19E00062614A /* bloom.frag */,
 				31AF851320A861130048FBF6 /* diffuse.png */,
 				315E0D9520A2D4340085984D /* guy.mtl */,
 				315E0D9620A2D4340085984D /* guy.obj */,
@@ -779,8 +787,6 @@
 				31A71ED320865D6C00A2D46A /* tree.png */,
 				B47949851BA6742B00B5E9DC /* arial.ttf */,
 				B47949861BA6742B00B5E9DC /* basicTitle_light.png */,
-				B47949871BA6742B00B5E9DC /* blurShader.frag */,
-				B47949881BA6742B00B5E9DC /* blurShader.vert */,
 				B47949891BA6742B00B5E9DC /* cave.mtl */,
 				B479498A1BA6742B00B5E9DC /* cave.obj */,
 				B479498B1BA6742B00B5E9DC /* cave_d.png */,
@@ -1148,10 +1154,12 @@
 				B47949A31BA6742B00B5E9DC /* basicTitle_light.png in Resources */,
 				B47949B81BA6742B00B5E9DC /* flame.png in Resources */,
 				B47949A51BA6742B00B5E9DC /* blurShader.vert in Resources */,
-				313CE36820AB19C20062614A /* bloom.vert in Resources */,
+				31FEB34820AF57970033CD99 /* combineShader.frag in Resources */,
+				313CE36820AB19C20062614A /* brightShader.vert in Resources */,
 				31A71EEA20865D6F00A2D46A /* basic.frag in Resources */,
 				B47949BB1BA6742B00B5E9DC /* sparks.png in Resources */,
 				31A71EE520865D6F00A2D46A /* sun.png in Resources */,
+				31FEB34720AF57970033CD99 /* combineShader.vert in Resources */,
 				B47949A21BA6742B00B5E9DC /* arial.ttf in Resources */,
 				31AF851420A861140048FBF6 /* diffuse.png in Resources */,
 				3136FA2F209A5D4D008436CF /* right.png in Resources */,
@@ -1195,7 +1203,7 @@
 				B4794A2A1BA6743D00B5E9DC /* LICENSE.txt in Resources */,
 				3136FA24209A1D76008436CF /* skybox.vert in Resources */,
 				B4794A301BA6743D00B5E9DC /* LICENSE.txt in Resources */,
-				313CE36A20AB19E00062614A /* bloom.frag in Resources */,
+				313CE36A20AB19E00062614A /* brightShader.frag in Resources */,
 				3136FA2C209A5D4D008436CF /* left.png in Resources */,
 				B4CB8CD01B72E43300FE041B /* Project-Info.plist in Resources */,
 				3136FA23209A1D76008436CF /* skybox.frag in Resources */,

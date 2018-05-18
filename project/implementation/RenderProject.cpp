@@ -91,15 +91,28 @@ void RenderProject::initFunction()
     /******************
      BLOOM FBO
      *****************/
+    // Create an FBO with 3 textures
     bRenderer().getObjects()->createFramebuffer("bloomFBO");                    // create framebuffer object
-    bRenderer().getObjects()->createTexture("bloomTexture", 0.f, 0.f);    // create texture to bind to the fbo
-    //bRenderer().getObjects()->createTexture("bloomTexture2", 0.f, 0.f);    // create texture to bind to the fbo
-    // load shader that blurs the texture
-    ShaderPtr bloomShader = bRenderer().getObjects()->loadShaderFile_o("bloom", 0);
-    MaterialPtr bloomMaterial = bRenderer().getObjects()->createMaterial("bloomMaterial", bloomShader);
-    // create an empty material to assign either texture1 or texture2 to
-    bRenderer().getObjects()->createSprite("bloomSprite", bloomMaterial);
-    // create a sprite using the material created above
+    bRenderer().getObjects()->createTexture("sceneTexture", 0.f, 0.f);    // create texture to bind to the fbo
+    bRenderer().getObjects()->createTexture("brightTexture", 0.f, 0.f);    // create texture to bind to the fbo
+    bRenderer().getObjects()->createTexture("horizBlurTexture", 0.f, 0.f);    // create texture to bind to the fbo
+    bRenderer().getObjects()->createTexture("vertBlurTexture", 0.f, 0.f);    // create texture to bind to the fbo
+    bRenderer().getObjects()->createTexture("combineTexture", 0.f, 0.f);    // create texture to bind to the fbo
+
+    // Create 3 different shaders for each processing step
+    ShaderPtr brightFilterShader = bRenderer().getObjects()->loadShaderFile_o("brightShader", 0);
+    ShaderPtr blurShader = bRenderer().getObjects()->loadShaderFile_o("blurShader", 0);
+    ShaderPtr combineShader = bRenderer().getObjects()->loadShaderFile_o("combineShader", 0);
+    
+    // Create Materials for each processing step, so that we can pass a texture to the shader
+    MaterialPtr brightMaterial = bRenderer().getObjects()->createMaterial("brightMaterial", brightFilterShader);
+    MaterialPtr blurMaterial = bRenderer().getObjects()->createMaterial("blurMaterial", blurShader);
+    MaterialPtr combineMaterial = bRenderer().getObjects()->createMaterial("combineMaterial", combineShader);
+
+    // Create 3 Sprites which are rendered to an FBO (thus creating the texture)
+    bRenderer().getObjects()->createSprite("brightSprite", brightMaterial);
+    bRenderer().getObjects()->createSprite("blurSprite", blurMaterial);
+    bRenderer().getObjects()->createSprite("combineSprite", combineMaterial);
     
 	// Update render queue
 	updateRenderQueue("camera", 0.0f);
@@ -110,46 +123,64 @@ void RenderProject::loopFunction(const double &deltaTime, const double &elapsedT
 {
 	// bRenderer::log("FPS: " + std::to_string(1 / deltaTime));	// write number of frames per second to the console every frame
     // std::cout << "FPS: " << std::to_string(1 / deltaTime) << std::endl;
-	//// Draw Scene and do post processing ////
-    GLint defaultFBO;
+	
+    doPostProcessingBloom(deltaTime, elapsedTime);
+    
+	// Quit renderer when escape is pressed
+	if (bRenderer().getInput()->getKeyState(bRenderer::KEY_ESCAPE) == bRenderer::INPUT_PRESS)
+		bRenderer().terminateRenderer();
+}
 
+void RenderProject::doPostProcessingBloom(const double &deltaTime, const double &elapsedTime){
+
+    GLint defaultFBO;
     /*************************
-     * BEGIN POSTPROCESSING  *
+     * BLOOM EFFECT BEGIN  *
      ************************/
+    // bind Bloom FBO
     bRenderer().getView()->setViewportSize(bRenderer().getView()->getWidth(), bRenderer().getView()->getHeight());        // reduce viewport size
     defaultFBO = Framebuffer::getCurrentFramebuffer();    // get current fbo to bind it again after drawing the scene
-    bRenderer().getObjects()->getFramebuffer("bloomFBO")->bindTexture(bRenderer().getObjects()->getTexture("bloomTexture"), false);    // bind the fbo
-    
-    /***************
-     * DRAW SCENE  *
-     * everything that gets rendered will be saved
-     * inside the texture attachment of the new framebuffer
-     **************/
-    
-    
-    
-    //bRenderer().getModelRenderer()->drawQueue(/*GL_LINES*/);
-    //bRenderer().getModelRenderer()->clearQueue();
-    
-    /// Update render queue ///
+    bRenderer().getObjects()->getFramebuffer("bloomFBO")->bindTexture(bRenderer().getObjects()->getTexture("sceneTexture"), false);    // bind the fbo
+
+    // render whole scene to an FBO (sceneTexture)
+    bRenderer().getModelRenderer()->drawQueue(/*GL_LINES*/);
+    bRenderer().getModelRenderer()->clearQueue();
     updateRenderQueue("camera", deltaTime);
-    
-    //// Camera Movement ////
     updateCamera("camera", deltaTime);
-    
-    /// Update camera position according to player's position ///
     _playerCamera->move();
     
-    /******************************
-     * RENDER TO NEW FRAMEBUFFER  *
-     * The scene above is drawn to a sprite using the texture attachment
-     *****************************/
+    // Render the created texture to another FBO, applying a bright filter (brightTexture)
     vmml::Matrix4f modelMatrix = vmml::create_translation(vmml::Vector3f(0.0f, 0.0f, -0.5));
-    bRenderer().getObjects()->getFramebuffer("bloomFBO")->bindTexture(bRenderer().getObjects()->getTexture("bloomTexture"), false);
-    bRenderer().getObjects()->getMaterial("bloomMaterial")->setTexture("fbo_texture", bRenderer().getObjects()->getTexture("bloomTexture"));
-    bRenderer().getObjects()->getMaterial("bloomMaterial")->setScalar("isVertical", static_cast<GLfloat>(true));
+    bRenderer().getObjects()->getFramebuffer("bloomFBO")->bindTexture(bRenderer().getObjects()->getTexture("brightTexture"), false);    // bind the fbo
+    bRenderer().getObjects()->getMaterial("brightMaterial")->setTexture("fbo_texture", bRenderer().getObjects()->getTexture("sceneTexture"));
+    // bRenderer().getObjects()->getMaterial("bloomMaterial")->setScalar("isVertical", static_cast<GLfloat>(true));
     // draw currently active framebuffer
-    bRenderer().getModelRenderer()->drawModel(bRenderer().getObjects()->getModel("bloomSprite"), modelMatrix, _viewMatrixHUD, vmml::Matrix4f::IDENTITY, std::vector<std::string>({}), false);
+    bRenderer().getModelRenderer()->drawModel(bRenderer().getObjects()->getModel("brightSprite"), modelMatrix, _viewMatrixHUD, vmml::Matrix4f::IDENTITY, std::vector<std::string>({}), false);
+    
+    // Render brightTexture to another FBO, applying Gaussian Blur  HORIZONTAL (blurredTexture)
+    modelMatrix = vmml::create_translation(vmml::Vector3f(0.0f, 0.0f, -0.5));
+    bRenderer().getObjects()->getFramebuffer("bloomFBO")->bindTexture(bRenderer().getObjects()->getTexture("horizBlurTexture"), false);    // bind the fbo
+    bRenderer().getObjects()->getMaterial("blurMaterial")->setTexture("fbo_texture", bRenderer().getObjects()->getTexture("brightTexture"));
+    bRenderer().getObjects()->getMaterial("blurMaterial")->setScalar("isVertical", static_cast<GLfloat>(true));
+    // draw currently active framebuffer
+    bRenderer().getModelRenderer()->drawModel(bRenderer().getObjects()->getModel("blurSprite"), modelMatrix, _viewMatrixHUD, vmml::Matrix4f::IDENTITY, std::vector<std::string>({}), false);
+    
+    // Render brightTexture to another FBO, applying Gaussian Blur VERTICAL (blurredTexture)
+    modelMatrix = vmml::create_translation(vmml::Vector3f(0.0f, 0.0f, -0.5));
+    bRenderer().getObjects()->getFramebuffer("bloomFBO")->bindTexture(bRenderer().getObjects()->getTexture("vertBlurTexture"), false);    // bind the fbo
+    bRenderer().getObjects()->getMaterial("blurMaterial")->setTexture("fbo_texture", bRenderer().getObjects()->getTexture("horizBlurTexture"));
+    bRenderer().getObjects()->getMaterial("blurMaterial")->setScalar("isVertical", static_cast<GLfloat>(false));
+    // draw currently active framebuffer
+    bRenderer().getModelRenderer()->drawModel(bRenderer().getObjects()->getModel("blurSprite"), modelMatrix, _viewMatrixHUD, vmml::Matrix4f::IDENTITY, std::vector<std::string>({}), false);
+    
+    
+    // Combine sceneTexture & blurredTexture and render to default FBO (screen)
+    modelMatrix = vmml::create_translation(vmml::Vector3f(0.0f, 0.0f, -0.5));
+    bRenderer().getObjects()->getFramebuffer("bloomFBO")->bindTexture(bRenderer().getObjects()->getTexture("combineTexture"), false);    // bind the fbo
+    bRenderer().getObjects()->getMaterial("combineMaterial")->setTexture("fbo_texture1", bRenderer().getObjects()->getTexture("sceneTexture"));
+    bRenderer().getObjects()->getMaterial("combineMaterial")->setTexture("fbo_texture2", bRenderer().getObjects()->getTexture("vertBlurTexture"));
+    // draw currently active framebuffer
+    bRenderer().getModelRenderer()->drawModel(bRenderer().getObjects()->getModel("combineSprite"), modelMatrix, _viewMatrixHUD, vmml::Matrix4f::IDENTITY, std::vector<std::string>({}), false);
 
     /**********************************
      * RENDER TO DEFAULT FRAMEBUFFER  *
@@ -158,11 +189,7 @@ void RenderProject::loopFunction(const double &deltaTime, const double &elapsedT
     bRenderer().getObjects()->getFramebuffer("bloomFBO")->unbind(defaultFBO); //unbind (original fbo will be bound)
     bRenderer().getView()->setViewportSize(bRenderer().getView()->getWidth(), bRenderer().getView()->getHeight());
     // draw draw currently active framebuffer
-    bRenderer().getModelRenderer()->drawModel(bRenderer().getObjects()->getModel("bloomSprite"), modelMatrix, _viewMatrixHUD, vmml::Matrix4f::IDENTITY, std::vector<std::string>({}), false);
-    
-	// Quit renderer when escape is pressed
-	if (bRenderer().getInput()->getKeyState(bRenderer::KEY_ESCAPE) == bRenderer::INPUT_PRESS)
-		bRenderer().terminateRenderer();
+    bRenderer().getModelRenderer()->drawModel(bRenderer().getObjects()->getModel("combineSprite"), modelMatrix, _viewMatrixHUD, vmml::Matrix4f::IDENTITY, std::vector<std::string>({}), false);
 }
 
 /* This function is executed when terminating the renderer */
