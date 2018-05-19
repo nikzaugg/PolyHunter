@@ -41,8 +41,8 @@ varying mediump vec3 tangent_varying_ViewSpace;
 
 varying mediump float visibility;
 
-const float density = 0.007;
-const float gradient = 1.5;
+const float density = 0.002;
+const float gradient = 0.9;
 
 vec4 biome()
 {
@@ -80,7 +80,7 @@ void main()
     float dist = length(posRelativeToPlayer.xyz);
 
     visibility = exp(-pow((dist * density), gradient));
-    
+
     // Position of Vertex
     gl_Position = ProjectionMatrix* posViewSpace;
 }

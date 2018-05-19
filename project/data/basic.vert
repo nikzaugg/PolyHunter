@@ -42,8 +42,8 @@ varying mediump vec3 tangent_varying_ViewSpace;
 varying mediump float visibility;
 
 
-const float density = 0.007;
-const float gradient = 1.5;
+const float density = 0.002;
+const float gradient = 0.9;
 
 void main()
 {
