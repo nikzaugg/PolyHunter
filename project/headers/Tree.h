@@ -15,6 +15,7 @@ public:
     };
 
 	void render(std::string camera);
+    void customRender(std::string camera, vmml::Matrix4f view ,vmml::Matrix4f proj);
 
 private:
 	std::string _treeName;

@@ -86,39 +86,21 @@ void RenderProject::initFunction()
     _shadowModelRenderer = ShadowModelRendererPtr(new ShadowModelRenderer(getProjectRenderer(), _player, _terrainLoader));
 
 	// create camera
-    bRenderer().getObjects()->createCamera("camera",
-                                           bRenderer::DEFAULT_FIELD_OF_VIEW(),
-                                           bRenderer::DEFAULT_ASPECT_RATIO(),
-                                           -1.0,
-                                           1.0
-                                           );
-//    bRenderer().getObjects()->createCamera("camera");
+    bRenderer().getObjects()->createCamera("camera");
+    
+    // create player camera
     _playerCamera = PlayerCameraPtr(new PlayerCamera("camera", _player, getProjectRenderer()));
-    std::cout << "ProjectionMatrix Camera" << std::endl;
-    std::cout << bRenderer().getObjects()->getCamera("camera")->getProjectionMatrix() << std::endl;
 
 	// create lights
-     bRenderer().getObjects()->createLight("sun", vmml::Vector3f(100, 100, 0.0), vmml::Vector3f(1.0f), vmml::Vector3f(1.0f), 0.8f, 1.0f, 100.f);
+     bRenderer().getObjects()->createLight("sun", vmml::Vector3f(1000, 1000, 1000), vmml::Vector3f(1.0f), vmml::Vector3f(1.0f), 0.8f, 1.0f, 100.f);
 
-//    /******************
-//     Depth FBO
-//     *****************/
-//    bRenderer().getObjects()->createFramebuffer("depthFBO");                    // create framebuffer object
-//    bRenderer().getObjects()->createDepthMap("depthMap", bRenderer().getView()->getWidth(), bRenderer().getView()->getHeight());
-//    ShaderPtr depthShader = bRenderer().getObjects()->loadShaderFile_o("depthShader", 0);
-//    MaterialPtr depthMaterial = bRenderer().getObjects()->createMaterial("depthMaterial", depthShader);
-//    bRenderer().getObjects()->createSprite("depthSprite", depthMaterial);
-//
-//    /******************
-//     SHADOW FBO
-//     *****************/
-    bRenderer().getObjects()->createFramebuffer("shadowFBO");                    // create framebuffer object
-    bRenderer().getObjects()->createTexture("shadowTexture", 0.f, 0.f);    // create texture to bind to the fbo
 
-    
     /******************
      FBO
      *****************/
+    bRenderer().getObjects()->createFramebuffer("shadowFBO");                    // create framebuffer object
+    bRenderer().getObjects()->createTexture("shadowTexture", 0.f, 0.f);    // create texture to bind to the fbo
+    
     // Create an FBO with textures
     bRenderer().getObjects()->createFramebuffer("bloomFBO");                    // create framebuffer object
     bRenderer().getObjects()->createTexture("sceneTexture", 0.f, 0.f);    // create texture to bind to the fbo

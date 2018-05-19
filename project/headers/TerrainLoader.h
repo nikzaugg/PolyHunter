@@ -11,8 +11,10 @@ public:
 	typedef std::unordered_map< std::string, TerrainPtr > TerrainMap;
     TerrainLoader(Renderer & renderer, ShaderPtr shader, PlayerPtr player);
     void renderTerrains(std::string camera, const double &deltaTime);
+    void customRenderTerrains(std::string camera, const double &deltaTime, vmml::Matrix4f view, vmml::Matrix4f proj);
 	TerrainLoader::TerrainMap getTerrainMap();
     void process(std::string camera, const double &deltaTime);
+    void customProcess(std::string camera, const double &deltaTime, vmml::Matrix4f view, vmml::Matrix4f proj);
 private:
     TerrainPtr generateTerrain(int gridX, int gridZ);
     void refreshTerrainTiles();

@@ -13,6 +13,7 @@ public:
         _renderer = renderer;
         _player = player;
         _terrainLoader = terrainLoader;
+        _depthCamera = _renderer.getObjects()->createCamera("depthCamera");
         _viewMatrixHUD = Camera::lookAt(vmml::Vector3f(0.0f, 0.0f, 0.25f), vmml::Vector3f::ZERO, vmml::Vector3f::UP);
     };
     
@@ -36,6 +37,7 @@ private:
     
     void drawShadowModel(std::string ModelName, vmml::Matrix4f  &modelMatrix, vmml::Matrix4f &ViewMatrix, vmml::Matrix4f &ProjectionMatrix, const std::vector<std::string> &lightNames, bool doFrustumCulling, bool cullIndividualGeometry);
     
+    CameraPtr _depthCamera;
     Renderer _renderer;
     ShaderPtr _depthShader;
     FramebufferPtr _depthFBO;

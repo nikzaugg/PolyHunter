@@ -14,9 +14,11 @@ public:
     Player(Renderer& renderer);
     
     void render(std::string camera);
+    void customRender(std::string camera, vmml::Matrix4f view, vmml::Matrix4f proj);
     typedef std::unordered_map< std::string, GeometryPtr > GroupMap;
     void test();
     void process(std::string cameraName, const double &deltaTime);
+    void customProcess(std::string cameraName, const double &deltaTime, vmml::Matrix4f view, vmml::Matrix4f proj);
     double getNoiseInput(float coord);
     void checkInputs(std::string cameraName);
     

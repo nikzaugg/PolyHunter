@@ -54,6 +54,23 @@ void TerrainLoader::process(std::string camera, const double &deltaTime)
     renderTerrains(camera, deltaTime);
 }
 
+void TerrainLoader::customProcess(std::string camera, const double &deltaTime, vmml::Matrix4f view, vmml::Matrix4f proj)
+{
+    // check in which tile the player is
+    int gridX = floor(_player->getPosition().x()/_TERRAIN_SIZE);
+    int gridZ = floor(_player->getPosition().z()/_TERRAIN_SIZE);
+    
+    // check if tile has changed
+    if((gridX != _terrainXPlayer) ||(gridZ != _terrainZPlayer)){
+        std::cout <<  "CHANGED TILES!!!!!!!!!!" << std::endl;
+        _terrainXPlayer = gridX;
+        _terrainZPlayer = gridZ;
+        refreshTerrainTiles();
+    }
+    
+    customRenderTerrains(camera, deltaTime, view, proj);
+}
+
 void TerrainLoader::refreshTerrainTiles()
 {
     // generate new map
@@ -169,6 +186,14 @@ void TerrainLoader::renderTerrains(std::string camera, const double &deltaTime)
     TerrainMap::iterator it;
     for (auto const& x: _terrains) {
         x.second->process(camera, deltaTime);
+    }
+}
+
+void TerrainLoader::customRenderTerrains(std::string camera, const double &deltaTime, vmml::Matrix4f view, vmml::Matrix4f proj)
+{
+    TerrainMap::iterator it;
+    for (auto const& x: _terrains) {
+        x.second->customProcess(camera, deltaTime, view, proj);
     }
 }
 

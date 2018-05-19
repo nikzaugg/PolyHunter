@@ -23,14 +23,67 @@ void ShadowModelRenderer::doShadowMapping(const double &deltaTime)
 // setup camera's view matrix (lookat)
 void ShadowModelRenderer::setupCameraConfiguration()
 {
-    _lightPosition = _renderer.getObjects()->getLight("sun")->getPosition();
+    _lightPosition = _renderer.getObjects()->getLight("sun")->getPosition(); // (1000, 1000, 0)
     _invLightPosition = vmml::Vector3f(-_lightPosition.x(), -_lightPosition.y(), -_lightPosition.z());
-    ortho(-10,10,-10,10,-10,20, _depthProjectionMatrix);
-    _depthViewMatrix = Camera::lookAt(_invLightPosition, vmml::Vector3f(0.0f), vmml::Vector3f::UP);
+    vmml::Vector3f playerPos = _player->getPosition();
+    // ortho(0.0f, _renderer.getView()->getWidth(), _renderer.getView()->getHeight(), 0.0f, -1.0f, 1.0f, _depthProjectionMatrix);
+    // void ShadowModelRenderer::ortho(const float &b, const float &t, const float &l, const float &r, const float &n, const float &f, vmml::Matrix4f &M)
+//    ortho(
+//          0.0, // bottom
+//          _renderer.getView()->getHeight(), // top
+//          0.0, // left
+//          _renderer.getView()->getWidth(), // right
+//          0.1, // near
+//          1000, // far
+//          _depthProjectionMatrix
+//          );
+    //_depthProjectionMatrix = _renderer.getObjects()->getCamera("camera")->getProjectionMatrix();
+//    std::cout << "Ortho Proj Matrix: " << std::endl;
+//    std::cout << _depthProjectionMatrix << std::endl;
+//    std::cout << "------------------" << std::endl;
     
-    _renderer.getObjects()->createCamera("depthCamera");
-    _renderer.getObjects()->getCamera("depthCamera")->setPosition(vmml::Vector3f(_player->getPosition().x(), -100.0, _player->getPosition().z()));
-    _renderer.getObjects()->getCamera("depthCamera")->setRotation(vmml::Vector3f(-M_PI_F/2.0, 0.0, 0.0));
+//    vmml::Matrix4f orthoMatrix = vmml::Matrix4f::IDENTITY;
+//    orthoMatrix.at(0, 0) = 2.0 / _renderer.getView()->getWidth();
+//    orthoMatrix.at(1, 1) = 2.0 / _renderer.getView()->getHeight();
+//    orthoMatrix.at(2, 2) = -2.0 / 100000.0;
+//    orthoMatrix.at(3, 3) = 1;
+//    _depthProjectionMatrix = orthoMatrix;
+    
+    vmml::Matrix4f orthoMatrix = vmml::Matrix4f::IDENTITY;
+    orthoMatrix.at(0, 0) = 2.0 / 300.0;
+    orthoMatrix.at(1, 1) = 2.0 / 300.0;
+    orthoMatrix.at(2, 2) = -2.0 / 1000.0;
+    orthoMatrix.at(3, 3) = 1;
+    _depthProjectionMatrix = orthoMatrix;
+    
+    vmml::Vector3f direction = vmml::Vector3f(-_lightPosition.x(), -_lightPosition.y(), -_lightPosition.z());
+    direction = normalize(direction);
+    vmml::Matrix4f lightViewMatrix = vmml::Matrix4f::IDENTITY;
+    vmml::Vector3f center = playerPos;
+    center = vmml::Vector3f(-playerPos.x(), -playerPos.y(), -playerPos.z());
+    float pitchVectorLenght = sqrt( pow(direction.x(), 2.0) + pow(direction.z(), 2.0) );
+    float pitch = (float)acos(pitchVectorLenght);
+    lightViewMatrix *= vmml::create_rotation(pitch, vmml::Vector3f::UNIT_X);
+    float yawRadians = (float)atan(direction.x()/direction.z());
+    float yaw = yawRadians * (180.0/3.141592653589793238463);
+    yaw = direction > 0 ? yaw - 180 : yaw;
+    lightViewMatrix *= vmml::create_rotation((float)-1.0*yawRadians, vmml::Vector3f::UNIT_Y);
+    lightViewMatrix *= vmml::create_translation(vmml::Vector3f(center));
+    std::cout << "lightViewMatrix: " << lightViewMatrix << std::endl;
+    _depthViewMatrix = lightViewMatrix;
+    
+//    _depthViewMatrix = Camera::lookAt(
+//                                      vmml::Vector3f(0.0, -10.0, 10.0),
+//                                      vmml::Vector3f(0.0),
+//                                      vmml::Vector3f::UNIT_Y
+//                                      );
+//    _depthViewMatrix *= vmml::create_translation(vmml::Vector3f(0.0, -200.0, 0.0));
+//    _depthViewMatrix *= vmml::create_rotation((float)(M_PI_F/2.0), vmml::Vector3f::UNIT_Y);
+    // _depthViewMatrix = _renderer.getObjects()->getCamera("camera")->getViewMatrix();
+    // _depthViewMatrix = _viewMatrixHUD;
+    // std::cout << "Depth View Matrix: " << _depthViewMatrix << std::endl;
+    
+    
 }
 
 // create simple shader that is used by all shadow objects
@@ -62,13 +115,16 @@ void ShadowModelRenderer::renderShadowScene(const double &deltaTime)
     _renderer.getObjects()->getFramebuffer("depthFBO")->bindDepthMap(_renderer.getObjects()->getDepthMap("depthMap"), false);
     _renderer.getObjects()->getFramebuffer("depthFBO")->bindTexture(_renderer.getObjects()->getTexture("sceneTexture"), false);
     
-    /**********************************
-     * RENDER OBJECTS TO DEPTH TEXTURE
-     *********************************/
-    _player->process("camera", deltaTime);
-    _terrainLoader->process("camera", deltaTime);
+    /********************************************
+     * RENDER TERRAIN AND PLAYER TO DEPTH TEXTURE
+     *******************************************/
+//    _renderer.getObjects()->getCamera("depthCamera")->setPosition(vmml::Vector3f(-_player->getPosition().x(), -30.0, _player->getPosition().z()));
+//    _renderer.getObjects()->getCamera("depthCamera")->setRotation(vmml::Vector3f(-M_PI_F/2.0, 0.0, 0.0));
+    _player->customProcess("camera", deltaTime, _depthViewMatrix, _depthProjectionMatrix);
+    _terrainLoader->customProcess("depthCamera", deltaTime, _depthViewMatrix, _depthProjectionMatrix);
     _renderer.getModelRenderer()->drawQueue(/*GL_LINES*/);
     _renderer.getModelRenderer()->clearQueue();
+    /**********************************/
 
     /**************************************
      * RENDER DEPTH-MAP ONTO A GUI-SPRITE
@@ -107,13 +163,8 @@ void ShadowModelRenderer::drawShadowModel(std::string ModelName, vmml::Matrix4f 
     drawModel(_renderer.getObjects()->getModel(ModelName), modelMatrix, ViewMatrix, ProjectionMatrix, lightNames, doFrustumCulling, cullIndividualGeometry);
 }
 
-
-
 // set the OpenGL orthographic projection matrix
-void ShadowModelRenderer::ortho(
-                          const float &b, const float &t, const float &l, const float &r,
-                          const float &n, const float &f,
-                          vmml::Matrix4f &M)
+void ShadowModelRenderer::ortho(const float &b, const float &t, const float &l, const float &r, const float &n, const float &f, vmml::Matrix4f &M)
 {
     // set OpenGL perspective projection matrix
     M[0][0] = 2 / (r - l);

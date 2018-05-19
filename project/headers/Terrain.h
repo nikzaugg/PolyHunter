@@ -15,6 +15,7 @@ public:
     typedef std::unordered_map< std::string, GeometryPtr > GroupMap;
     
 	void process(std::string cameraName, const double &deltaTime);
+    void customProcess(std::string cameraName, const double &deltaTime, vmml::Matrix4f view, vmml::Matrix4f proj);
     TreeMap getTreeMap();
 
     int _TERRAIN_SIZE;
@@ -25,7 +26,9 @@ private:
     void generateTerrainGeometry();
     void placeTree(int i, int j);
     void renderTerrain(std::string cameraName);
+    void customRenderTerrain(std::string camera, vmml::Matrix4f view, vmml::Matrix4f proj);
     void processTrees(std::string camera);
+    void customProcessTrees(std::string camera, vmml::Matrix4f view, vmml::Matrix4f proj);
     double getNoiseInput(float coord);
     
     float barryCentric(vmml::Vector3f p1, vmml::Vector3f p2, vmml::Vector3f p3, vmml::Vector2f pos);

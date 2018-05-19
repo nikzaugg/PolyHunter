@@ -25,6 +25,29 @@ void Player::process(std::string cameraName, const double &deltaTime)
     render(cameraName);
 }
 
+void Player::customProcess(std::string cameraName, const double &deltaTime, vmml::Matrix4f view, vmml::Matrix4f proj)
+{
+    // check for inputs and move player accordingly
+    checkInputs(cameraName);
+    
+    increaseRotation(0.0, (float)deltaTime * _currentTurnSpeed, 0.0);
+    float distance = _currentSpeed * deltaTime;
+    //std::cout << "getRotY: "<< getRotY() << std::endl;
+    float dx = (float)(distance * sin(degreeToRadians(getRotY())));
+    //std::cout << "dx: "<< dx << std::endl;
+    float dz = (float)(distance * cos(degreeToRadians(getRotY())));
+    //std::cout << "dz: "<< dz << std::endl;
+    increasePosition(dx, 0.0, dz);
+    //std::cout << "Position after: " << getPosition() << std::endl;
+    
+    _upwardsSpeed += GRAVITY * deltaTime;
+    increasePosition(0.0, _upwardsSpeed * deltaTime, 0.0);
+    float terrainHeight = getHeightFromNoise(getNoiseInput(getPosition().x()), getNoiseInput(getPosition().z()));
+    
+    setYPosition(terrainHeight);
+    customRender(cameraName, view, proj);
+}
+
 double Player::getNoiseInput(float coord)
 {
     // FIXME: instead of 100.0, add _TERRAIN_SIZE
@@ -98,8 +121,24 @@ void Player::render(std::string camera)
 {
     // set ambient color
     renderer().getObjects()->setAmbientColor(vmml::Vector3f(0.5f));
+    MaterialPtr playerMat = renderer().getObjects()->createMaterial("playerMaterial", renderer().getObjects()->getShader("player"));
+    
     // draw model
     renderer().getModelRenderer()->queueModelInstance(getModelName(), "player",camera, computeTransformationMatrix(), std::vector<std::string>({ "sun" }), true, true);
+}
+
+void Player::customRender(std::string camera, vmml::Matrix4f view, vmml::Matrix4f proj)
+{
+    // set ambient color
+    renderer().getObjects()->setAmbientColor(vmml::Vector3f(0.5f));
+    MaterialPtr playerShadowMat = renderer().getObjects()->createMaterial("playerShadowMaterial", renderer().getObjects()->getShader("depthShader"));
+    // renderer().getObjects()->getModel("player")->setMaterial(playerShadowMat);
+
+    // draw model
+    renderer().getModelRenderer()->drawModel(renderer().getObjects()->getModel(getModelName()), computeTransformationMatrix(), view, proj, std::vector<std::string>({}), false);
+    
+    
+
 }
 
 void Player::test() {
