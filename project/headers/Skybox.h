@@ -2,6 +2,7 @@
 #define B_SKYBOX_H
 
 #include "bRenderer.h"
+#include "ProceduralOBJLoader.h"
 
 class Skybox
 {
@@ -17,7 +18,10 @@ private:
 	PropertiesPtr _properties;
 
 	int _numFaces;
-	const int SIZE = 300;
+
+	const int SIZE = 900;
+    
+    ProceduralOBJLoader _objLoader;
 
 	GroupMap        _groups;
 	vmml::AABBf		_boundingBox;

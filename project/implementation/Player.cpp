@@ -20,10 +20,6 @@ void Player::process(std::string cameraName, const double &deltaTime)
     _upwardsSpeed += GRAVITY * deltaTime;
     increasePosition(0.0, _upwardsSpeed * deltaTime, 0.0);
     float terrainHeight = getHeightFromNoise(getNoiseInput(getPosition().x()), getNoiseInput(getPosition().z()));
-	if (!Input::isTouchDevice())
-	{
-		terrainHeight = getHeightFromNoise(getNoiseInput(getPosition().x()), -getNoiseInput(getPosition().z()));
-	}
 
     setYPosition(terrainHeight);
     render(cameraName);
@@ -32,7 +28,7 @@ void Player::process(std::string cameraName, const double &deltaTime)
 double Player::getNoiseInput(float coord)
 {
     // FIXME: instead of 100.0, add _TERRAIN_SIZE
-    return coord / (float)450;
+    return coord / (float)900;
 }
 
 void Player::checkInputs() {

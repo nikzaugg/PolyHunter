@@ -2,4 +2,84 @@
 <Bucket
    type = "1"
    version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "bRenderer/implementation/OBJLoader.cpp"
+            timestampString = "548168916.982149"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "47"
+            endingLineNumber = "47"
+            landmarkName = "OBJLoader::genVertex(const IndexData &amp;d)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "void OBJLoader::genVertex&lt;true, false, false&gt;(IndexData const&amp;)"
+                  moduleName = "bRenderer_ios"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/nikzaugg/Desktop/PolyHunter/bRenderer/implementation/OBJLoader.cpp"
+                  timestampString = "548168395.233016"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "47"
+                  endingLineNumber = "47"
+                  offsetFromSymbolStart = "248">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "void OBJLoader::genVertex&lt;true, true, false&gt;(IndexData const&amp;)"
+                  moduleName = "bRenderer_ios"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/nikzaugg/Desktop/PolyHunter/bRenderer/implementation/OBJLoader.cpp"
+                  timestampString = "548168395.238462"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "47"
+                  endingLineNumber = "47"
+                  offsetFromSymbolStart = "248">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "void OBJLoader::genVertex&lt;true, false, true&gt;(IndexData const&amp;)"
+                  moduleName = "bRenderer_ios"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/nikzaugg/Desktop/PolyHunter/bRenderer/implementation/OBJLoader.cpp"
+                  timestampString = "548168395.243158"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "47"
+                  endingLineNumber = "47"
+                  offsetFromSymbolStart = "248">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "void OBJLoader::genVertex&lt;true, true, true&gt;(IndexData const&amp;)"
+                  moduleName = "bRenderer_ios"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/nikzaugg/Desktop/PolyHunter/bRenderer/implementation/OBJLoader.cpp"
+                  timestampString = "548168395.248108"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "47"
+                  endingLineNumber = "47"
+                  offsetFromSymbolStart = "248">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
 </Bucket>
