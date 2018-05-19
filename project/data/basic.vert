@@ -53,7 +53,6 @@ void main()
     vec3 tangent_ViewSpace = mat3(ModelViewMatrix) * Tangent;
     vec3 bitangent_ViewSpace = mat3(ModelViewMatrix) * Bitangent;
     vec4 posViewSpace = ModelViewMatrix * Position;
-    vec3 posRelativetoCam =  vec3(ModelViewMatrix * Position);
     vec3 posRelativeToPlayer = playerPos - vec3(ModelViewMatrix * Position);
     
     // Outputs to Fragment Shader
@@ -64,8 +63,7 @@ void main()
 
     float dist = length(posRelativeToPlayer.xyz);
 
-    // visibility = exp(-pow((dist * density), gradient));
-    visibility = (300 - dist) / (300 - 50);
+    visibility = exp(-pow((dist * density), gradient));
     
     // Position of Vertex
     gl_Position = ProjectionMatrix*posViewSpace;

@@ -44,7 +44,7 @@ void RenderProject::initFunction()
 
 	// SHADERS
 	ShaderPtr basicShader = bRenderer().getObjects()->loadShaderFile("basic", 1, false, true, true, true, false);
-	basicShader->setUniform("skyColor", vmml::Vector3f(0.5f, 0.5f, 0.5f));
+	basicShader->setUniform("skyColor", vmml::Vector3f(0.53f, 0.807f, 0.98f));
 	ShaderPtr terrainShader = bRenderer().getObjects()->loadShaderFile("terrain", 1, false, true, true, true, false);
     ShaderPtr skyboxShader = bRenderer().getObjects()->loadShaderFile("skybox", 1, false, true, true, true, false);
     ShaderPtr playerShader = bRenderer().getObjects()->loadShaderFile("player", 1, false, true, true, true, false);
@@ -227,6 +227,7 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
 	vmml::Matrix4f playerView = bRenderer().getObjects()->getCamera("camera")->getViewMatrix();
 	vmml::Matrix4f playerModelView = playerView * playerModel;
 	bRenderer().getObjects()->getShader("basic")->setUniform("playerPos", playerView* _player->getPosition());
+	bRenderer().getObjects()->getShader("terrain")->setUniform("playerPos", playerView* _player->getPosition());
 
     _terrainLoader->process("camera", deltaTime);
     
@@ -251,16 +252,16 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
     bRenderer().getModelRenderer()->drawModel("tree", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
 
     /////// Skybox ///
-    //modelMatrix =
-    //    vmml::create_translation(vmml::Vector3f(_player->getPosition().x(), 0.0, _player->getPosition().z())) *
-    //    vmml::create_scaling(vmml::Vector3f(1.0));
-    //// set CubeMap for skybox texturing
-    //skybox = bRenderer().getObjects()->getShader("skybox");
-    //skybox->setUniform("CubeMap", bRenderer().getObjects()->getCubeMap("skyBoxCubeMap"));
-    //// set ambient color
-    //bRenderer().getObjects()->setAmbientColor(vmml::Vector3f(0.5f));
-    //// draw model
-    //bRenderer().getModelRenderer()->drawModel("skybox", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
+    modelMatrix =
+        vmml::create_translation(vmml::Vector3f(_player->getPosition().x(), 0.0, _player->getPosition().z())) *
+        vmml::create_scaling(vmml::Vector3f(1.0));
+    // set CubeMap for skybox texturing
+    skybox = bRenderer().getObjects()->getShader("skybox");
+    skybox->setUniform("CubeMap", bRenderer().getObjects()->getCubeMap("skyBoxCubeMap"));
+    // set ambient color
+    bRenderer().getObjects()->setAmbientColor(vmml::Vector3f(0.5f));
+    // draw model
+    bRenderer().getModelRenderer()->drawModel("skybox", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
 }
 
 // Update camera position according to the players position

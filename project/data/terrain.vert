@@ -23,6 +23,7 @@ uniform vec4 lightPositionViewSpace_0;
 
 uniform float amplitude;
 uniform vec3 skyColor;
+uniform vec3 playerPos;
 
 attribute highp vec4 Position;
 attribute vec3 Normal;
@@ -40,8 +41,8 @@ varying mediump vec3 tangent_varying_ViewSpace;
 
 varying mediump float visibility;
 
-const float density = 10;
-const float gradient = 10;
+const float density = 0.007;
+const float gradient = 1.5;
 
 vec4 biome()
 {
@@ -67,7 +68,7 @@ void main()
     vec3 tangent_ViewSpace = mat3(ModelViewMatrix) * Tangent;
     vec3 bitangent_ViewSpace = mat3(ModelViewMatrix) * Bitangent;
 	vec4 posViewSpace = ModelViewMatrix * Position;
-    vec4 posRelativetoCam = ViewMatrix * Position;
+    vec3 posRelativeToPlayer = playerPos - vec3(ModelViewMatrix * Position);
     
     // Outputs to Fragment Shader
     normal_varying_ViewSpace = normal_ViewSpace;
@@ -76,10 +77,9 @@ void main()
     texCoord_varying = TexCoord;
     vertexColor_varying = biome();
 
-    float dist = length(posRelativetoCam.xyz);
+    float dist = length(posRelativeToPlayer.xyz);
 
-    // visibility = exp(-pow((dist * density), gradient));
-    visibility = 0.3;
+    visibility = exp(-pow((dist * density), gradient));
     
     // Position of Vertex
     gl_Position = ProjectionMatrix* posViewSpace;

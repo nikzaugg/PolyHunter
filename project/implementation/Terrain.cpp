@@ -187,7 +187,6 @@ void Terrain::placeTrees()
 			{
                 TreePtr tree = TreePtr(new Tree(getModelName() + std::to_string(i), "tree.obj", "tree", "treeProperties", renderer().getObjects()->getShader("basic"), renderer(), vmml::Vector3f(xPos, treeHeight, zPos), 0.0f, 0.0f, 0.0f, 1.0f));
 				tree->setYPosition(treeHeight);
-				// tree->add();
 				_trees.insert(
 					TreeMap::value_type(
 						getModelName() + std::to_string(i),
