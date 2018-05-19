@@ -65,7 +65,12 @@ private:
     
     /* Do Postprocessing operations */
     void doPostProcessingBloom(const double &deltaTime, const double &elapsedTime);
-
+    
+    /* Do Shadow Mapping */
+    void doShadowMapping(const double &deltaTime, const double &elapsedTime);
+    
+    void ortho(const float &b, const float &t, const float &l, const float &r, const float &n, const float &f, vmml::Matrix4f &M);
+    
 	/* Variables */
 	GLfloat _randomOffset;
 	GLfloat _offset;

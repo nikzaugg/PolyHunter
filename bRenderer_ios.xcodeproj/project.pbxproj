@@ -88,6 +88,8 @@
 		31F378002089512500EBEC30 /* PerlinNoise.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 31F377FE2089512400EBEC30 /* PerlinNoise.cpp */; };
 		31FEB34720AF57970033CD99 /* combineShader.vert in Resources */ = {isa = PBXBuildFile; fileRef = 31FEB34520AF57960033CD99 /* combineShader.vert */; };
 		31FEB34820AF57970033CD99 /* combineShader.frag in Resources */ = {isa = PBXBuildFile; fileRef = 31FEB34620AF57960033CD99 /* combineShader.frag */; };
+		31FEB34B20AF81580033CD99 /* shadowShader.vert in Resources */ = {isa = PBXBuildFile; fileRef = 31FEB34920AF81560033CD99 /* shadowShader.vert */; };
+		31FEB34C20AF81580033CD99 /* shadowShader.frag in Resources */ = {isa = PBXBuildFile; fileRef = 31FEB34A20AF81570033CD99 /* shadowShader.frag */; };
 		B44186971BA331E300604D7F /* RenderProject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B44186961BA331E300604D7F /* RenderProject.cpp */; };
 		B47949A21BA6742B00B5E9DC /* arial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B47949851BA6742B00B5E9DC /* arial.ttf */; };
 		B47949A31BA6742B00B5E9DC /* basicTitle_light.png in Resources */ = {isa = PBXBuildFile; fileRef = B47949861BA6742B00B5E9DC /* basicTitle_light.png */; };
@@ -369,6 +371,8 @@
 		31F377FE2089512400EBEC30 /* PerlinNoise.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PerlinNoise.cpp; sourceTree = "<group>"; };
 		31FEB34520AF57960033CD99 /* combineShader.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = combineShader.vert; sourceTree = "<group>"; };
 		31FEB34620AF57960033CD99 /* combineShader.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = combineShader.frag; sourceTree = "<group>"; };
+		31FEB34920AF81560033CD99 /* shadowShader.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = shadowShader.vert; sourceTree = "<group>"; };
+		31FEB34A20AF81570033CD99 /* shadowShader.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = shadowShader.frag; sourceTree = "<group>"; };
 		B44186941BA331E300604D7F /* RenderProject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RenderProject.h; sourceTree = "<group>"; };
 		B44186961BA331E300604D7F /* RenderProject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RenderProject.cpp; sourceTree = "<group>"; };
 		B47949851BA6742B00B5E9DC /* arial.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = arial.ttf; sourceTree = "<group>"; };
@@ -753,6 +757,8 @@
 		B47949841BA6742B00B5E9DC /* data */ = {
 			isa = PBXGroup;
 			children = (
+				31FEB34A20AF81570033CD99 /* shadowShader.frag */,
+				31FEB34920AF81560033CD99 /* shadowShader.vert */,
 				313CE36720AB19C20062614A /* brightShader.vert */,
 				313CE36920AB19E00062614A /* brightShader.frag */,
 				B47949871BA6742B00B5E9DC /* blurShader.frag */,
@@ -1200,7 +1206,9 @@
 				B47949B91BA6742B00B5E9DC /* flame.vert in Resources */,
 				3136FA2D209A5D4D008436CF /* front.png in Resources */,
 				B4794A311BA6743D00B5E9DC /* LICENSE.txt in Resources */,
+				31FEB34B20AF81580033CD99 /* shadowShader.vert in Resources */,
 				B4794A2A1BA6743D00B5E9DC /* LICENSE.txt in Resources */,
+				31FEB34C20AF81580033CD99 /* shadowShader.frag in Resources */,
 				3136FA24209A1D76008436CF /* skybox.vert in Resources */,
 				B4794A301BA6743D00B5E9DC /* LICENSE.txt in Resources */,
 				313CE36A20AB19E00062614A /* brightShader.frag in Resources */,
