@@ -5,8 +5,6 @@ precision mediump float;
 
 uniform mat4 ModelViewMatrix;
 uniform mat4 ProjectionMatrix;
-uniform mat4 depthMVP;
-
 
 attribute vec4 Position;
 attribute vec4 TexCoord;

@@ -4,6 +4,7 @@
 #include "Skybox.h"
 #include "Player.h"
 #include "PlayerCamera.h"
+#include "ShadowModelRenderer.h"
 
 /* Initialize the Project */
 void RenderProject::init()
@@ -96,23 +97,24 @@ void RenderProject::initFunction()
 	// create lights
      bRenderer().getObjects()->createLight("sun", vmml::Vector3f(100, 100, 0.0), vmml::Vector3f(1.0f), vmml::Vector3f(1.0f), 0.8f, 1.0f, 100.f);
 
-    /******************
-     Depth FBO
-     *****************/
-    bRenderer().getObjects()->createFramebuffer("depthFBO");                    // create framebuffer object
-    
-    /******************
-     SHADOW FBO
-     *****************/
+//    /******************
+//     Depth FBO
+//     *****************/
+//    bRenderer().getObjects()->createFramebuffer("depthFBO");                    // create framebuffer object
+//    bRenderer().getObjects()->createDepthMap("depthMap", bRenderer().getView()->getWidth(), bRenderer().getView()->getHeight());
+//    ShaderPtr depthShader = bRenderer().getObjects()->loadShaderFile_o("depthShader", 0);
+//    MaterialPtr depthMaterial = bRenderer().getObjects()->createMaterial("depthMaterial", depthShader);
+//    bRenderer().getObjects()->createSprite("depthSprite", depthMaterial);
+//
+//    /******************
+//     SHADOW FBO
+//     *****************/
     bRenderer().getObjects()->createFramebuffer("shadowFBO");                    // create framebuffer object
     bRenderer().getObjects()->createTexture("shadowTexture", 0.f, 0.f);    // create texture to bind to the fbo
-    bRenderer().getObjects()->createDepthMap("shadowDepth", bRenderer().getView()->getWidth(), bRenderer().getView()->getHeight());
-    ShaderPtr shadowShader = bRenderer().getObjects()->loadShaderFile_o("shadowShader", 0);
-    MaterialPtr shadowMaterial = bRenderer().getObjects()->createMaterial("shadowMaterial", shadowShader);
-    bRenderer().getObjects()->createSprite("shadowSprite", shadowMaterial);
+
     
     /******************
-     BLOOM FBO
+     FBO
      *****************/
     // Create an FBO with textures
     bRenderer().getObjects()->createFramebuffer("bloomFBO");                    // create framebuffer object
@@ -138,6 +140,7 @@ void RenderProject::initFunction()
     MaterialPtr combineMaterial = bRenderer().getObjects()->createMaterial("combineMaterial", combineShader);
 
     // Create 3 Sprites which are rendered to an FBO (thus creating the texture)
+    bRenderer().getObjects()->createSprite("sceneSprite", brightMaterial);
     bRenderer().getObjects()->createSprite("brightSprite", brightMaterial);
     bRenderer().getObjects()->createSprite("blurSprite", blurMaterial);
     bRenderer().getObjects()->createSprite("combineSprite", combineMaterial);
@@ -152,7 +155,13 @@ void RenderProject::loopFunction(const double &deltaTime, const double &elapsedT
 	// bRenderer::log("FPS: " + std::to_string(1 / deltaTime));	// write number of frames per second to the console every frame
     // std::cout << "FPS: " << std::to_string(1 / deltaTime) << std::endl;
     doShadowMapping(deltaTime, elapsedTime);
-    //doPostProcessingBloom(deltaTime, elapsedTime);
+    // doPostProcessingBloom(deltaTime, elapsedTime);
+    _playerCamera->move();
+    updateRenderQueue("camera", deltaTime);
+    bRenderer().getModelRenderer()->drawQueue(/*GL_LINES*/);
+    bRenderer().getModelRenderer()->clearQueue();
+
+    // updateCamera("camera", deltaTime);
     
 	// Quit renderer when escape is pressed
 	if (bRenderer().getInput()->getKeyState(bRenderer::KEY_ESCAPE) == bRenderer::INPUT_PRESS)
@@ -160,64 +169,10 @@ void RenderProject::loopFunction(const double &deltaTime, const double &elapsedT
 }
 
 void RenderProject::doShadowMapping(const double &deltaTime, const double &elapsedTime){
-//    float near_plane = 1.0f, far_plane = 100.0f;
-//    vmml::Matrix4f lightProjection;
-//    ortho(-100.0f, 100.0f, -100.0f, 100.0f, near_plane, far_plane, lightProjection);
-//
-//    vmml::Matrix4f lightView = Camera::lookAt(vmml::Vector3f(100.0f, 100.0f, 0.0f),
-//                                      vmml::Vector3f( 0.0f, 0.0f,  0.0f),
-//                                      vmml::Vector3f( 0.0f, 1.0f,  0.0f));
-//    vmml::Matrix4f lightSpaceMatrix = lightProjection * lightView;
-//    std::cout << "lightSpaceMatrix: " <<lightSpaceMatrix << std::endl;
-//    bRenderer().getObjects()->getShader("shadowShader")->setUniform("lightSpaceMatrix", lightSpaceMatrix);
     
-    bRenderer().getView()->setViewportSize(bRenderer().getView()->getWidth(), bRenderer().getView()->getHeight());
-    GLint defaultFBO = Framebuffer::getCurrentFramebuffer();
-    bRenderer().getObjects()->getFramebuffer("depthFBO")->bindDepthMap(bRenderer().getObjects()->getDepthMap("shadowDepth"), false);
-
-    /// DRAW STUFF FOR SHADOW MAP
-    bRenderer().getModelRenderer()->drawQueue(/*GL_LINES*/);
-    bRenderer().getModelRenderer()->clearQueue();
-    updateRenderQueue("camera", deltaTime);
-    updateCamera("camera", deltaTime);
-    _playerCamera->move();
-    /// END
+    ShadowModelRendererPtr shadowModelRenderer = ShadowModelRendererPtr(new ShadowModelRenderer(getProjectRenderer(), _player));
+    shadowModelRenderer->doShadowMapping();
     
-    bRenderer().getObjects()->getFramebuffer("shadowFBO")->bindTexture(bRenderer().getObjects()->getTexture("sceneTexture"), false);
-
-    /// DRAW STUFF FOR SHADOW TEXTURE
-    bRenderer().getModelRenderer()->drawQueue(/*GL_LINES*/);
-    bRenderer().getModelRenderer()->clearQueue();
-    updateRenderQueue("camera", deltaTime);
-    updateCamera("camera", deltaTime);
-    _playerCamera->move();
-    /// END
-    
-    // DRAW SPRITE USING A FBO TEXTURE
-    bRenderer().getObjects()->getFramebuffer("shadowFBO")->bindTexture(bRenderer().getObjects()->getTexture("shadowTexture"), false);
-    vmml::Matrix4f modelMatrix = vmml::create_translation(vmml::Vector3f(0.0f, 0.0f, -0.5));
-    bRenderer().getObjects()->getMaterial("brightMaterial")->setTexture("fbo_texture", bRenderer().getObjects()->getTexture("sceneTexture"));
-    bRenderer().getModelRenderer()->drawModel(bRenderer().getObjects()->getModel("brightSprite"), modelMatrix, _viewMatrixHUD, vmml::Matrix4f::IDENTITY, std::vector<std::string>({}), false);
-    
-    // DRAW SECOND SPRITE USING A FBO TEXTURE
-    bRenderer().getObjects()->getFramebuffer("shadowFBO")->bindTexture(bRenderer().getObjects()->getTexture("shadowTexture"), false);
-    modelMatrix = vmml::create_translation(vmml::Vector3f(0.0f, 0.0f, -0.5));
-    bRenderer().getObjects()->getMaterial("shadowMaterial")->setTexture("shadowMap", bRenderer().getObjects()->getDepthMap("shadowDepth"));
-    bRenderer().getModelRenderer()->drawModel(bRenderer().getObjects()->getModel("shadowSprite"), modelMatrix, _viewMatrixHUD, vmml::Matrix4f::IDENTITY, std::vector<std::string>({}), false);
-    
-    /**********************************
-     * RENDER TO DEFAULT FRAMEBUFFER  *
-     * Switch to detault framebuffer (the screen) and draw the created sprite
-     *********************************/
-    bRenderer().getObjects()->getFramebuffer("shadowFBO")->unbind(defaultFBO); //unbind (original fbo will be bound)
-    bRenderer().getView()->setViewportSize(bRenderer().getView()->getWidth(), bRenderer().getView()->getHeight());
-    
-    bRenderer().getModelRenderer()->drawModel(bRenderer().getObjects()->getModel("brightSprite"), modelMatrix, _viewMatrixHUD, vmml::Matrix4f::IDENTITY, std::vector<std::string>({}), false);
-    
-    // draw GUI element to show postprocessing
-    modelMatrix = vmml::create_translation(vmml::Vector3f(-.75f, 0.75f, -0.5)) *
-    vmml::create_scaling(vmml::Vector3f(0.25));
-    bRenderer().getModelRenderer()->drawModel(bRenderer().getObjects()->getModel("shadowSprite"), modelMatrix, _viewMatrixHUD, vmml::Matrix4f::IDENTITY, std::vector<std::string>({}), false);
 }
 
 void RenderProject::doPostProcessingBloom(const double &deltaTime, const double &elapsedTime){
@@ -328,37 +283,11 @@ void RenderProject::terminateFunction()
 void RenderProject::updateRenderQueue(const std::string &camera, const double &deltaTime)
 {
 	elapsedTime += deltaTime;
-
 	vmml::Matrix4f modelMatrix;
-	vmml::Matrix3f normalMatrix;
 	ShaderPtr skybox;
-
-    // Move Light to see changes in Colors/Lighting
-    // float lightPosition = bRenderer().getObjects()->getLight("sun")->getPosition().z();
-//    if(_animation_forward)
-//    {
-//        if(_animation > 300.0)
-//        {
-//            _animation_forward = false;
-//        } else
-//        {
-//            _animation += deltaTime * _animationSpeed;
-//        }
-//    } else {
-//        if(_animation < 0.0)
-//        {
-//            _animation_forward = true;
-//        }
-//        else
-//        {
-//            _animation -= deltaTime * _animationSpeed;
-//        }
-//    }
-//
-//    bRenderer().getObjects()->getLight("sun")->setPosition(vmml::Vector3f(_animation, 240.0, _animation));
     
-    _player->process("camera", deltaTime);
-    _terrainLoader->process("camera", deltaTime);
+    _player->process(camera, deltaTime);
+    _terrainLoader->process(camera, deltaTime);
 
     /// LOW POLY CRYSTAL ///
     modelMatrix =
@@ -467,30 +396,3 @@ GLfloat RenderProject::randomNumber(GLfloat min, GLfloat max){
 	return min + static_cast <GLfloat> (rand()) / (static_cast <GLfloat> (RAND_MAX / (max - min)));
 }
 
-// set the OpenGL orthographic projection matrix
-void RenderProject::ortho(
-             const float &b, const float &t, const float &l, const float &r,
-             const float &n, const float &f,
-                            vmml::Matrix4f &M)
-{
-    // set OpenGL perspective projection matrix
-    M[0][0] = 2 / (r - l);
-    M[0][1] = 0;
-    M[0][2] = 0;
-    M[0][3] = 0;
-    
-    M[1][0] = 0;
-    M[1][1] = 2 / (t - b);
-    M[1][2] = 0;
-    M[1][3] = 0;
-    
-    M[2][0] = 0;
-    M[2][1] = 0;
-    M[2][2] = -2 / (f - n);
-    M[2][3] = 0;
-    
-    M[3][0] = -(r + l) / (r - l);
-    M[3][1] = -(t + b) / (t - b);
-    M[3][2] = -(f + n) / (f - n);
-    M[3][3] = 1;
-}

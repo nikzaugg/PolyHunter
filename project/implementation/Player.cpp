@@ -5,7 +5,7 @@
 void Player::process(std::string cameraName, const double &deltaTime)
 {
     // check for inputs and move player accordingly
-    checkInputs();
+    checkInputs(cameraName);
 
     increaseRotation(0.0, (float)deltaTime * _currentTurnSpeed, 0.0);
     float distance = _currentSpeed * deltaTime;
@@ -31,10 +31,10 @@ double Player::getNoiseInput(float coord)
     return coord / (float)450;
 }
 
-void Player::checkInputs() {
+void Player::checkInputs(std::string cameraName) {
 
     //// Adjust aspect ratio ////
-    renderer().getObjects()->getCamera("camera")->setAspectRatio(renderer().getView()->getAspectRatio());
+    renderer().getObjects()->getCamera(cameraName)->setAspectRatio(renderer().getView()->getAspectRatio());
 
     if (!Input::isTouchDevice()) {
         if (renderer().getInput()->getKeyState(bRenderer::KEY_W) == bRenderer::INPUT_PRESS) {

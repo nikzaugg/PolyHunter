@@ -6,6 +6,7 @@
 #include "Terrain.h"
 #include "TerrainLoader.h"
 #include "PlayerCamera.h"
+#include "ShadowModelRenderer.h"
 
 class RenderProject : public IRenderProject
 {
@@ -68,8 +69,6 @@ private:
     
     /* Do Shadow Mapping */
     void doShadowMapping(const double &deltaTime, const double &elapsedTime);
-    
-    void ortho(const float &b, const float &t, const float &l, const float &r, const float &n, const float &f, vmml::Matrix4f &M);
     
 	/* Variables */
 	GLfloat _randomOffset;

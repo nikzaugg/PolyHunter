@@ -18,7 +18,7 @@ public:
     void test();
     void process(std::string cameraName, const double &deltaTime);
     double getNoiseInput(float coord);
-    void checkInputs();
+    void checkInputs(std::string cameraName);
     
 private:
     int _numFaces;
