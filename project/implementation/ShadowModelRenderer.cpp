@@ -1,8 +1,9 @@
 # include "ShadowModelRenderer.h"
 #include "Player.h"
+#include "TerrainLoader.h"
 
 // entry point of the ShadowModelRenderer
-void ShadowModelRenderer::doShadowMapping()
+void ShadowModelRenderer::doShadowMapping(const double &deltaTime)
 {
     // setup new camera with orthogonal projection matrix
     // setup camera's view matrix (lookat)
@@ -15,7 +16,7 @@ void ShadowModelRenderer::doShadowMapping()
     setupShadowFBO();
     
     // render scene with objects that cast shadows
-    renderShadowScene();
+    renderShadowScene(deltaTime);
 }
 
 // setup new camera with orthogonal projection matrix
@@ -51,7 +52,7 @@ void ShadowModelRenderer::setupShadowFBO()
 }
 
 // render scene with objects that cast shadows
-void ShadowModelRenderer::renderShadowScene()
+void ShadowModelRenderer::renderShadowScene(const double &deltaTime)
 {
     /**************************
      * BIND DEPTH-FBO
@@ -64,29 +65,17 @@ void ShadowModelRenderer::renderShadowScene()
     /**********************************
      * RENDER OBJECTS TO DEPTH TEXTURE
      *********************************/
-    vmml::Matrix4f modelMatrix =
-    vmml::create_translation(vmml::Vector3f(0.0, 0.0, 0.0)) *
-    vmml::create_scaling(vmml::Vector3f(0.5f));
-    CameraPtr depthCam = _renderer.getObjects()->getCamera("depthCamera");
-    CameraPtr cam = _renderer.getObjects()->getCamera("camera");
-    _renderer.getModelRenderer()->drawModel(_renderer.getObjects()->getModel("sun"), modelMatrix, depthCam->getViewMatrix(), depthCam->getProjectionMatrix(), std::vector<std::string>({}), true, true);
-    
-    modelMatrix =
-    vmml::create_translation(vmml::Vector3f(5.0, 0.0, 5.0)) *
-    vmml::create_scaling(vmml::Vector3f(0.5f));
-    _renderer.getModelRenderer()->drawModel(_renderer.getObjects()->getModel("sun"), modelMatrix, depthCam->getViewMatrix(), depthCam->getProjectionMatrix(), std::vector<std::string>({}), true, true);
-    
-    modelMatrix =
-    vmml::create_translation(vmml::Vector3f(10.0, 0.0, 10.0)) *
-    vmml::create_scaling(vmml::Vector3f(0.5f));
-    _renderer.getModelRenderer()->drawModel(_renderer.getObjects()->getModel("sun"), modelMatrix, depthCam->getViewMatrix(), depthCam->getProjectionMatrix(), std::vector<std::string>({}), true, true);
+    _player->process("camera", deltaTime);
+    _terrainLoader->process("camera", deltaTime);
+    _renderer.getModelRenderer()->drawQueue(/*GL_LINES*/);
+    _renderer.getModelRenderer()->clearQueue();
 
     /**************************************
      * RENDER DEPTH-MAP ONTO A GUI-SPRITE
      * to see it on screen
      *************************************/
     _renderer.getObjects()->getFramebuffer("shadowFBO")->bindTexture(_renderer.getObjects()->getTexture("shadowTexture"), false);
-    modelMatrix = vmml::create_translation(vmml::Vector3f(0.0f, 0.0f, -0.5));
+    vmml::Matrix4f modelMatrix = vmml::create_translation(vmml::Vector3f(0.0f, 0.0f, -0.5));
     _renderer.getObjects()->getMaterial("depthMaterial")->setTexture("depthMap", _renderer.getObjects()->getDepthMap("depthMap"));
     _renderer.getModelRenderer()->drawModel(_renderer.getObjects()->getModel("depthSprite"), modelMatrix, _viewMatrixHUD, vmml::Matrix4f::IDENTITY, std::vector<std::string>({}), false);
     
@@ -98,9 +87,6 @@ void ShadowModelRenderer::renderShadowScene()
     _renderer.getObjects()->getMaterial("brightMaterial")->setTexture("fbo_texture", _renderer.getObjects()->getTexture("sceneTexture"));
     _renderer.getModelRenderer()->drawModel(_renderer.getObjects()->getModel("sceneSprite"), modelMatrix, _viewMatrixHUD, vmml::Matrix4f::IDENTITY, std::vector<std::string>({}), false);
     
-    // pass shadowTexture to next Shader
-    // pass sceneTexture to next Shader
-    
     /**********************************
      * RENDER TO DEFAULT FRAMEBUFFER  *
      * Switch to detault framebuffer (the screen) and draw the created spriteS
@@ -109,12 +95,13 @@ void ShadowModelRenderer::renderShadowScene()
     _renderer.getView()->setViewportSize(_renderer.getView()->getWidth(), _renderer.getView()->getHeight());
     
 //    _renderer.getModelRenderer()->drawModel(_renderer.getObjects()->getModel("sceneSprite"), modelMatrix, _viewMatrixHUD, vmml::Matrix4f::IDENTITY, std::vector<std::string>({}), false);
-//
+
     modelMatrix = vmml::create_translation(vmml::Vector3f(-.75f, 0.75f, -0.5)) *
     vmml::create_scaling(vmml::Vector3f(0.25));
     _renderer.getModelRenderer()->drawModel(_renderer.getObjects()->getModel("depthSprite"), modelMatrix, _viewMatrixHUD, vmml::Matrix4f::IDENTITY, std::vector<std::string>({}), false);
 }
 
+// draws a model onto the shadow map
 void ShadowModelRenderer::drawShadowModel(std::string ModelName, vmml::Matrix4f  &modelMatrix, vmml::Matrix4f &ViewMatrix, vmml::Matrix4f &ProjectionMatrix, const std::vector<std::string> &lightNames, bool doFrustumCulling, bool cullIndividualGeometry)
 {
     drawModel(_renderer.getObjects()->getModel(ModelName), modelMatrix, ViewMatrix, ProjectionMatrix, lightNames, doFrustumCulling, cullIndividualGeometry);

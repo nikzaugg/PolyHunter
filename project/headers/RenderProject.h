@@ -54,6 +54,9 @@ private:
     
 	/* Update render queue */
 	void updateRenderQueue(const std::string &camera, const double &deltaTime);
+    
+    /* Update shadow render queue */
+    void updateShadowRenderQueue(const std::string &camera, const double &deltaTime);
 
 	/* Camera movement */
 	void updateCamera(const std::string &camera, const double &deltaTime);
@@ -83,6 +86,7 @@ private:
     PlayerPtr _player;
     TerrainPtr _terrain;
     PlayerCameraPtr _playerCamera;
+    ShadowModelRendererPtr _shadowModelRenderer;
     std::vector<TerrainPtr> terrains;
     
     bool _animation_forward;

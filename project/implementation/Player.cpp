@@ -99,7 +99,7 @@ void Player::render(std::string camera)
     // set ambient color
     renderer().getObjects()->setAmbientColor(vmml::Vector3f(0.5f));
     // draw model
-    renderer().getModelRenderer()->drawModel(getModelName(), camera, computeTransformationMatrix(), std::vector<std::string>({ "sun" }), true, true);
+    renderer().getModelRenderer()->queueModelInstance(getModelName(), "player",camera, computeTransformationMatrix(), std::vector<std::string>({ "sun" }), true, true);
 }
 
 void Player::test() {

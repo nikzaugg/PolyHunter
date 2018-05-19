@@ -81,6 +81,9 @@ void RenderProject::initFunction()
 
     // TERRAIN LOADER //
     _terrainLoader = TerrainLoaderPtr(new TerrainLoader(getProjectRenderer(), terrainShader, _player));
+    
+    // SHADOWMODELRENDERER
+    _shadowModelRenderer = ShadowModelRendererPtr(new ShadowModelRenderer(getProjectRenderer(), _player, _terrainLoader));
 
 	// create camera
     bRenderer().getObjects()->createCamera("camera",
@@ -154,13 +157,15 @@ void RenderProject::loopFunction(const double &deltaTime, const double &elapsedT
 {
 	// bRenderer::log("FPS: " + std::to_string(1 / deltaTime));	// write number of frames per second to the console every frame
     // std::cout << "FPS: " << std::to_string(1 / deltaTime) << std::endl;
-    doShadowMapping(deltaTime, elapsedTime);
+    
     // doPostProcessingBloom(deltaTime, elapsedTime);
+    doShadowMapping(deltaTime, elapsedTime);
     _playerCamera->move();
     updateRenderQueue("camera", deltaTime);
     bRenderer().getModelRenderer()->drawQueue(/*GL_LINES*/);
     bRenderer().getModelRenderer()->clearQueue();
-
+    
+    
     // updateCamera("camera", deltaTime);
     
 	// Quit renderer when escape is pressed
@@ -170,8 +175,7 @@ void RenderProject::loopFunction(const double &deltaTime, const double &elapsedT
 
 void RenderProject::doShadowMapping(const double &deltaTime, const double &elapsedTime){
     
-    ShadowModelRendererPtr shadowModelRenderer = ShadowModelRendererPtr(new ShadowModelRenderer(getProjectRenderer(), _player));
-    shadowModelRenderer->doShadowMapping();
+    _shadowModelRenderer->doShadowMapping(deltaTime);
     
 }
 
@@ -278,6 +282,19 @@ void RenderProject::terminateFunction()
 	bRenderer::log("I totally terminated this Renderer :-)");
 }
 
+void RenderProject::updateShadowRenderQueue(const std::string &camera, const double &deltaTime)
+{
+    /**************
+     RENDER PLAYER
+     *************/
+    _player->process(camera, deltaTime);
+    
+    /**************
+     RENDER TERRAIN
+     *************/
+    _terrainLoader->process(camera, deltaTime);
+}
+
 
 /* Update render queue */
 void RenderProject::updateRenderQueue(const std::string &camera, const double &deltaTime)
@@ -286,8 +303,15 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
 	vmml::Matrix4f modelMatrix;
 	ShaderPtr skybox;
     
+    /**************
+     RENDER PLAYER
+     *************/
     _player->process(camera, deltaTime);
-    _terrainLoader->process(camera, deltaTime);
+    
+    /**************
+     RENDER TERRAIN
+     *************/
+     _terrainLoader->process(camera, deltaTime);
 
     /// LOW POLY CRYSTAL ///
     modelMatrix =
@@ -295,7 +319,7 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
     vmml::create_scaling(vmml::Vector3f(5.0f));
     // draw model
     bRenderer().getModelRenderer()->drawModel("Crystal", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
-    
+
     /// SUN ///
     modelMatrix =
     vmml::create_translation(vmml::Vector3f(0.0, 50.0, 0.0)) *
@@ -305,8 +329,8 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
     bRenderer().getObjects()->setAmbientColor(vmml::Vector3f(0.5f));
     // draw model
     bRenderer().getModelRenderer()->drawModel("sun", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
-    
-	/// TREE ///
+
+    /// TREE ///
     modelMatrix =
         vmml::create_translation(vmml::Vector3f(20.0, 50.0, 0.0)) *
         vmml::create_rotation((float)elapsedTime * M_PI_F/10, vmml::Vector3f::UNIT_Y) *

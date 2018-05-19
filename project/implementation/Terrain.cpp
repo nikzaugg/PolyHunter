@@ -127,7 +127,6 @@ void Terrain::placeTree(int i, int j)
     float zPos = ((float)j / ((float)_VERTEX_COUNT - 1)) * _TERRAIN_SIZE;
     zPos += _offsetZ;
     
-    // flip z-coords if windows-device
     float treeHeight;
     treeHeight = getHeightFromNoise(getNoiseInput(xPos), getNoiseInput(zPos));
     
