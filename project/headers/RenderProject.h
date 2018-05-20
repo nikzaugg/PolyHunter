@@ -6,6 +6,7 @@
 #include "Terrain.h"
 #include "TerrainLoader.h"
 #include "PlayerCamera.h"
+#include "Sun.h"
 
 class RenderProject : public IRenderProject
 {
@@ -76,6 +77,7 @@ private:
     PlayerPtr _player;
     TerrainPtr _terrain;
     PlayerCameraPtr _playerCamera;
+	SunPtr _sun;
     std::vector<TerrainPtr> terrains;
     
     bool _animation_forward;

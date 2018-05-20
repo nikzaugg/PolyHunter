@@ -2,14 +2,19 @@
 #include "ProceduralOBJLoader.h"
 #include "RenderProject.h"
 #include "iostream"
+#include "Sun.h"
 
 
-Skybox::Skybox(MaterialPtr material, PropertiesPtr properties)
+Skybox::Skybox(MaterialPtr material, PropertiesPtr properties, Renderer & renderer)
 {
 	_material = material;
 	_properties = properties;
+	_renderer = renderer;
 
 	// std::cout << "Skybox loaded!!!" << std::endl;
+	//Entity(std::string objName, std::string modelName, std::string propName, ShaderPtr shader, Renderer & renderer, vmml::Vector3f pos, float rotX, float rotY, float rotZ, float scale);
+	ModelPtr skyBoxModel = generate();
+	_renderer.getObjects()->addModel("skybox", skyBoxModel);
 }
 
 ModelPtr Skybox::generate()

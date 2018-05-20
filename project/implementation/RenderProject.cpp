@@ -2,6 +2,7 @@
 #include "Terrain.h"
 #include "TerrainLoader.h"
 #include "Skybox.h"
+#include "Sun.h"
 #include "Player.h"
 #include "PlayerCamera.h"
 
@@ -48,6 +49,7 @@ void RenderProject::initFunction()
 	ShaderPtr terrainShader = bRenderer().getObjects()->loadShaderFile("terrain", 1, false, true, true, true, false);
     ShaderPtr skyboxShader = bRenderer().getObjects()->loadShaderFile("skybox", 1, false, true, true, true, false);
     ShaderPtr playerShader = bRenderer().getObjects()->loadShaderFile("player", 1, false, true, true, true, false);
+	ShaderPtr sunShader = bRenderer().getObjects()->loadShaderFile("sun", 1, false, true, true, true, false);
 
 	// PROPERTIES FOR THE MODELS
     PropertiesPtr treeProperties = bRenderer().getObjects()->createProperties("treeProperties");
@@ -58,22 +60,18 @@ void RenderProject::initFunction()
 	// BLENDER MODELS (.obj)
 
     bRenderer().getObjects()->loadObjModel("tree.obj", false, true, basicShader, treeProperties);
-    bRenderer().getObjects()->loadObjModel("sun.obj", false, true, basicShader, sunProperties);
     bRenderer().getObjects()->loadObjModel("Crystal.obj", false, true, basicShader, nullptr);
 
 
-    // SKYBOX (with CubeMap)
-    //    TextureData left = TextureData("left.png");
-    //    TextureData right = TextureData("right.png");
-    //    TextureData bottom = TextureData("bottom.png");
-    //    TextureData top = TextureData("top.png");
-    //    TextureData front = TextureData("front.png");
-    //    TextureData back = TextureData("back.png");
-    //    CubeMapPtr skyBoxCubeMapPtr = bRenderer().getObjects()->createCubeMap("skyBoxCubeMap", std::vector<TextureData>{left, right, bottom, top, front, back});
+    // SKYBOX
     MaterialPtr skyboxMaterial = bRenderer().getObjects()->loadObjMaterial("skybox.mtl", "skybox", skyboxShader);
-    Skybox skybox = Skybox(skyboxMaterial, skyboxProperties);
-    ModelPtr skyBoxModel = skybox.generate();
-    bRenderer().getObjects()->addModel("skybox", skyBoxModel);
+    Skybox skybox = Skybox(skyboxMaterial, skyboxProperties, getProjectRenderer());
+	// Sun
+	//Sun(std::string objName, std::string modelName, std::string propName, ShaderPtr shader, Renderer & renderer, vmml::Vector3f pos, float rotX, float rotY, float rotZ, float scale);
+	_sun = SunPtr(new Sun("sun_instance", "sun", "sunProperties", sunShader, getProjectRenderer(), vmml::Vector3f(0.0f, 100.0f, 0.0f), 0.0f, 0.0f, 0.0f, 3.0f));
+	TexturePtr sunTexture = bRenderer().getObjects()->createTexture("sun_tex", TextureData("sun.png"));
+	bRenderer().getObjects()->addTexture("sun_tex", sunTexture);
+	
     //    bRenderer().getObjects()->addCubeMap("skyBoxCubeMap", skyBoxCubeMapPtr);
 
     // PLAYER //
@@ -222,14 +220,7 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
     _terrainLoader->process("camera", deltaTime);
 
     /// SUN ///
-    modelMatrix =
-    vmml::create_translation(vmml::Vector3f(0.0, 50.0, 0.0)) *
-    vmml::create_rotation((float)elapsedTime * M_PI_F/10, vmml::Vector3f::UNIT_Y) *
-    vmml::create_scaling(vmml::Vector3f(0.5f));
-    // set ambient color
-    bRenderer().getObjects()->setAmbientColor(vmml::Vector3f(0.5f));
-    // draw model
-    bRenderer().getModelRenderer()->drawModel("sun", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
+	_sun->render(camera, _player->getPosition());
     
 	/// TREE ///
     modelMatrix =

@@ -166,6 +166,7 @@
     <ClCompile Include="..\implementation\ProceduralOBJLoader.cpp" />
     <ClCompile Include="..\implementation\RenderProject.cpp" />
     <ClCompile Include="..\implementation\Skybox.cpp" />
+    <ClCompile Include="..\implementation\Sun.cpp" />
     <ClCompile Include="..\implementation\Terrain.cpp" />
     <ClCompile Include="..\implementation\TerrainLoader.cpp" />
     <ClCompile Include="..\implementation\Tree.cpp" />
@@ -231,6 +232,7 @@
     <ClInclude Include="..\headers\ProceduralOBJLoader.h" />
     <ClInclude Include="..\headers\RenderProject.h" />
     <ClInclude Include="..\headers\Skybox.h" />
+    <ClInclude Include="..\headers\Sun.h" />
     <ClInclude Include="..\headers\Terrain.h" />
     <ClInclude Include="..\headers\TerrainLoader.h" />
     <ClInclude Include="..\headers\Tree.h" />

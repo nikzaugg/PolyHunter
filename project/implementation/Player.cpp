@@ -28,7 +28,7 @@ void Player::process(std::string cameraName, const double &deltaTime)
 double Player::getNoiseInput(float coord)
 {
     // FIXME: instead of 100.0, add _TERRAIN_SIZE
-    return coord / (float)900;
+    return coord / (float)600;
 }
 
 void Player::checkInputs() {

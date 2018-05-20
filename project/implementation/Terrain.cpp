@@ -136,7 +136,6 @@ void Terrain::placeTree(int i, int j)
     {
         TreePtr tree = TreePtr(new Tree(getModelName() + std::to_string(i), "tree.obj", "tree", "treeProperties", renderer().getObjects()->loadShaderFile("basic", 1, false, true, true, true, false), renderer(), vmml::Vector3f(xPos, treeHeight, zPos), 0.0f, 0.0f, 0.0f, 1.0f));
         tree->setYPosition(treeHeight);
-        // tree->add();
         _trees.insert(
                       TreeMap::value_type( getModelName() + std::to_string(i), tree)
                       );
@@ -181,15 +180,7 @@ void Terrain::renderTerrain(std::string camera)
 			float zPos = ((float)j / ((float)_VERTEX_COUNT - 1)) * _TERRAIN_SIZE;
 			zPos += _offsetZ;
 
-			// flip z-coords if windows-device
-			float treeHeight;
-			if (Input::isTouchDevice()) {
-				treeHeight = getHeightFromNoise(getNoiseInput(xPos), getNoiseInput(zPos));
-			}
-			else {
-				//zPos *= -1;
-				treeHeight = getHeightFromNoise(getNoiseInput(xPos), getNoiseInput(-zPos));
-			}
+			float treeHeight = getHeightFromNoise(getNoiseInput(xPos), getNoiseInput(zPos));
 
 			float value = ridgedMulti.GetValue(xPos, treeHeight, zPos);
 			

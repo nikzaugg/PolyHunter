@@ -9,13 +9,14 @@ class Skybox
 public:
 	typedef std::unordered_map< std::string, GeometryPtr > GroupMap;
 	
-	Skybox(MaterialPtr material, PropertiesPtr properties);
+	Skybox(MaterialPtr material, PropertiesPtr properties, Renderer & renderer);
 
 	ModelPtr generate();
 
 private:
 	MaterialPtr _material;
 	PropertiesPtr _properties;
+	Renderer _renderer;
 
 	int _numFaces;
 

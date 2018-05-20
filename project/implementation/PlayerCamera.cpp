@@ -71,12 +71,12 @@ void PlayerCamera::calculateCameraPosition(float horizDistance, float verticDist
     // std::cout << "horiz: " << horizDistance << " | " << "vertical: " << verticDistance << std::endl;
     
     // Calculate the angle the player has on the Y-Axis (+90.0 as player model was loaded with a angle to face the correct direction)
-    float theta = (-1.0)*(_player->getRotY() + 90.0 + _angleAroundPlayer);
+    _theta = (-1.0)*(_player->getRotY() + 90.0 + _angleAroundPlayer);
     // std::cout << "theta in radians: "<< degreeToRadians(theta) << std::endl;
     
     // Calculate the offset in X and Z direction of the camera using basic trigonometry
-    float offsetX = (float)horizDistance * cos(degreeToRadians(theta));
-    float offsetZ = (float)horizDistance * sin(degreeToRadians(theta));
+    float offsetX = (float)horizDistance * cos(degreeToRadians(_theta));
+    float offsetZ = (float)horizDistance * sin(degreeToRadians(_theta));
     _position.x() = _player->getPosition().x() - offsetX;
     _position.y() = (-1.0)*(_player->getPosition().y() + verticDistance);
     _position.z() = _player->getPosition().z() - offsetZ;
@@ -142,4 +142,9 @@ void PlayerCamera::calculatePitch()
 
 float PlayerCamera::degreeToRadians(float degree) {
     return degree * M_PI/180.0;
+}
+
+float PlayerCamera::getAngle()
+{
+	return degreeToRadians(_theta);
 }
