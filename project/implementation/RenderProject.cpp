@@ -69,8 +69,6 @@ void RenderProject::initFunction()
 	// Sun
 	//Sun(std::string objName, std::string modelName, std::string propName, ShaderPtr shader, Renderer & renderer, vmml::Vector3f pos, float rotX, float rotY, float rotZ, float scale);
 	_sun = SunPtr(new Sun("sun_instance", "sun", "sunProperties", sunShader, getProjectRenderer(), vmml::Vector3f(0.0f, 100.0f, 0.0f), 0.0f, 0.0f, 0.0f, 3.0f));
-	TexturePtr sunTexture = bRenderer().getObjects()->createTexture("sun_tex", TextureData("sun.png"));
-	bRenderer().getObjects()->addTexture("sun_tex", sunTexture);
 	
     //    bRenderer().getObjects()->addCubeMap("skyBoxCubeMap", skyBoxCubeMapPtr);
 
@@ -219,8 +217,7 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
 
     _terrainLoader->process("camera", deltaTime);
 
-    /// SUN ///
-	_sun->render(camera, _player->getPosition());
+
     
 	/// TREE ///
     modelMatrix =
@@ -243,6 +240,9 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
     bRenderer().getObjects()->setAmbientColor(vmml::Vector3f(0.5f));
     // draw model
     bRenderer().getModelRenderer()->drawModel("skybox", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
+
+	/// SUN ///
+	_sun->render(camera, _player->getPosition());
 }
 
 /* Camera movement */

@@ -6,10 +6,14 @@
 Sun::Sun(std::string objName, std::string modelName, std::string propName, ShaderPtr shader, Renderer & renderer, vmml::Vector3f pos, float rotX, float rotY, float rotZ, float scale)
 	: Entity(objName, modelName, propName, shader, renderer, pos, rotX, rotY, rotZ, scale)
 {
-	_sunMaterial = renderer.getObjects()->loadObjMaterial("sun.mtl", "sun", shader);
-	_sunProperties = renderer.getObjects()->getProperties("sun");
+	//_sunMaterial = renderer.getObjects()->loadObjMaterial("sun.mtl", "sun", shader);
+	_sunProperties = renderer.getObjects()->createProperties("sun");
 	_renderer = renderer;
-	_renderer.getObjects()->createSprite("sun", _sunMaterial, false, _sunProperties);
+	//ModelPtr ObjectManager::createSprite(const std::string &name, const std::string &textureFileName, ShaderPtr shader, bool flipT, PropertiesPtr properties)
+	_renderer.getObjects()->createSprite("sun", "sun.png", shader, false ,_sunProperties);
+	//TexturePtr sunTexture = _renderer.getObjects()->createTexture("sun_tex", TextureData("sun.png"));
+	//_renderer.getObjects()->addModel("sun", generateGeometry());
+	
 }
 
 ModelPtr Sun::generateGeometry()
@@ -49,6 +53,6 @@ void Sun::render(std::string camera, vmml::Vector3f playerPos)
 	setScale(25.0f);
 	setRotY(90.0f);
 	vmml::Matrix4f modelMatrix = computeTransformationMatrix();
-
-	renderer().getModelRenderer()->queueModelInstance("sun", "sun_instance", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
+	ShaderPtr shader = _renderer.getObjects()->getShader("sun");
+	_renderer.getModelRenderer()->queueModelInstance("sun", "sun_instance", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
 }
