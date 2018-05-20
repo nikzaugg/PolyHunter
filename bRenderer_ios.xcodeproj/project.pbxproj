@@ -86,8 +86,8 @@
 		31B0FD792097A20200601F21 /* Entity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 31B0FD782097A20200601F21 /* Entity.cpp */; };
 		31E5CD6920B033AD005DC7D5 /* depthShader.vert in Resources */ = {isa = PBXBuildFile; fileRef = 31E5CD6720B033AD005DC7D5 /* depthShader.vert */; };
 		31E5CD6A20B033AD005DC7D5 /* depthShader.frag in Resources */ = {isa = PBXBuildFile; fileRef = 31E5CD6820B033AD005DC7D5 /* depthShader.frag */; };
-		31E5CD6D20B03883005DC7D5 /* shadowShader.frag in Resources */ = {isa = PBXBuildFile; fileRef = 31E5CD6B20B03883005DC7D5 /* shadowShader.frag */; };
-		31E5CD6E20B03883005DC7D5 /* shadowShader.vert in Resources */ = {isa = PBXBuildFile; fileRef = 31E5CD6C20B03883005DC7D5 /* shadowShader.vert */; };
+		31E5CD6D20B03883005DC7D5 /* simpleTexture.frag in Resources */ = {isa = PBXBuildFile; fileRef = 31E5CD6B20B03883005DC7D5 /* simpleTexture.frag */; };
+		31E5CD6E20B03883005DC7D5 /* simpleTexture.vert in Resources */ = {isa = PBXBuildFile; fileRef = 31E5CD6C20B03883005DC7D5 /* simpleTexture.vert */; };
 		31E5CD7020B052CB005DC7D5 /* ShadowModelRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 31E5CD6F20B052CB005DC7D5 /* ShadowModelRenderer.cpp */; };
 		31F377FF2089512500EBEC30 /* PerlinNoise2D.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 31F377FD2089512400EBEC30 /* PerlinNoise2D.cpp */; };
 		31F378002089512500EBEC30 /* PerlinNoise.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 31F377FE2089512400EBEC30 /* PerlinNoise.cpp */; };
@@ -370,8 +370,8 @@
 		31B0FD7B2097A22F00601F21 /* Player.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Player.h; sourceTree = "<group>"; };
 		31E5CD6720B033AD005DC7D5 /* depthShader.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = depthShader.vert; sourceTree = "<group>"; };
 		31E5CD6820B033AD005DC7D5 /* depthShader.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = depthShader.frag; sourceTree = "<group>"; };
-		31E5CD6B20B03883005DC7D5 /* shadowShader.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = shadowShader.frag; sourceTree = "<group>"; };
-		31E5CD6C20B03883005DC7D5 /* shadowShader.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = shadowShader.vert; sourceTree = "<group>"; };
+		31E5CD6B20B03883005DC7D5 /* simpleTexture.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = simpleTexture.frag; sourceTree = "<group>"; };
+		31E5CD6C20B03883005DC7D5 /* simpleTexture.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = simpleTexture.vert; sourceTree = "<group>"; };
 		31E5CD6F20B052CB005DC7D5 /* ShadowModelRenderer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ShadowModelRenderer.cpp; sourceTree = "<group>"; };
 		31E5CD7120B052E9005DC7D5 /* ShadowModelRenderer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ShadowModelRenderer.h; sourceTree = "<group>"; };
 		31F377FB2089511D00EBEC30 /* PerlinNoise.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PerlinNoise.h; sourceTree = "<group>"; };
@@ -766,8 +766,8 @@
 		B47949841BA6742B00B5E9DC /* data */ = {
 			isa = PBXGroup;
 			children = (
-				31E5CD6B20B03883005DC7D5 /* shadowShader.frag */,
-				31E5CD6C20B03883005DC7D5 /* shadowShader.vert */,
+				31E5CD6B20B03883005DC7D5 /* simpleTexture.frag */,
+				31E5CD6C20B03883005DC7D5 /* simpleTexture.vert */,
 				31E5CD6820B033AD005DC7D5 /* depthShader.frag */,
 				31E5CD6720B033AD005DC7D5 /* depthShader.vert */,
 				313CE36720AB19C20062614A /* brightShader.vert */,
@@ -1196,7 +1196,7 @@
 				315E0D9720A2D4340085984D /* guy.mtl in Resources */,
 				31A71EE820865D6F00A2D46A /* tree.obj in Resources */,
 				31A71EDE20865D6F00A2D46A /* basic.vert in Resources */,
-				31E5CD6E20B03883005DC7D5 /* shadowShader.vert in Resources */,
+				31E5CD6E20B03883005DC7D5 /* simpleTexture.vert in Resources */,
 				3136FA2B209A5D4D008436CF /* back.png in Resources */,
 				B47949AA1BA6742B00B5E9DC /* cave_stream.frag in Resources */,
 				31E5CD6920B033AD005DC7D5 /* depthShader.vert in Resources */,
@@ -1223,7 +1223,7 @@
 				B4794A2A1BA6743D00B5E9DC /* LICENSE.txt in Resources */,
 				3136FA24209A1D76008436CF /* skybox.vert in Resources */,
 				B4794A301BA6743D00B5E9DC /* LICENSE.txt in Resources */,
-				31E5CD6D20B03883005DC7D5 /* shadowShader.frag in Resources */,
+				31E5CD6D20B03883005DC7D5 /* simpleTexture.frag in Resources */,
 				313CE36A20AB19E00062614A /* brightShader.frag in Resources */,
 				3136FA2C209A5D4D008436CF /* left.png in Resources */,
 				B4CB8CD01B72E43300FE041B /* Project-Info.plist in Resources */,
@@ -1417,7 +1417,6 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"FT2_BUILD_LIBRARY=1",
 					DARWIN_NO_CARBON,
-					NO_LOGGING,
 				);
 				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
 				HEADER_SEARCH_PATHS = (
@@ -1459,7 +1458,6 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"FT2_BUILD_LIBRARY=1",
 					DARWIN_NO_CARBON,
-					NO_LOGGING,
 				);
 				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
 				HEADER_SEARCH_PATHS = (

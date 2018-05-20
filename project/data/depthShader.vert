@@ -7,13 +7,10 @@ uniform mat4 ModelViewMatrix;
 uniform mat4 ProjectionMatrix;
 
 attribute vec4 Position;
-attribute vec4 TexCoord;
 
-varying vec4 texCoordVarying;
+//varying vec4 texCoordVarying;
 
 void main()
 {
-    texCoordVarying = TexCoord;
-    // gl_Position = depthMVP * Position;
     gl_Position = ProjectionMatrix * ModelViewMatrix * Position;
 }

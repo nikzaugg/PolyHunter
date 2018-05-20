@@ -3,6 +3,12 @@ $B_SHADER_VERSION
 precision mediump float;
 #endif
 
+uniform mat4 depthMVP;
+uniform mat4 depthView;
+uniform mat4 depthProjection;
+uniform mat4 depthOffset;
+uniform sampler2D shadowMap;
+
 uniform mediump mat4 ViewMatrix;
 uniform mediump mat4 ModelMatrix;
 uniform mat4 ModelViewMatrix;
@@ -30,6 +36,7 @@ attribute vec3 Tangent;
 attribute vec3 Bitangent;
 attribute vec4 TexCoord;
 
+varying lowp vec4 shadowCoord_varying;
 varying lowp vec4 vertexColor_varying;
 varying lowp vec4 texCoord_varying;
 // Everything in View Space

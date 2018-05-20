@@ -92,7 +92,7 @@ void RenderProject::initFunction()
     _playerCamera = PlayerCameraPtr(new PlayerCamera("camera", _player, getProjectRenderer()));
 
 	// create lights
-     bRenderer().getObjects()->createLight("sun", vmml::Vector3f(1000, 1000, 1000), vmml::Vector3f(1.0f), vmml::Vector3f(1.0f), 0.8f, 1.0f, 100.f);
+     bRenderer().getObjects()->createLight("sun", vmml::Vector3f(10000, 10000, 10000), vmml::Vector3f(1.0f), vmml::Vector3f(1.0f), 0.8f, 1.0f, 100.f);
 
 
     /******************
@@ -131,7 +131,7 @@ void RenderProject::initFunction()
     bRenderer().getObjects()->createSprite("combineSprite", combineMaterial);
     
 	// Update render queue
-	updateRenderQueue("camera", 0.0f);
+    updateRenderQueue("camera", 0.0f);
 }
 
 /* Draw your scene here */
@@ -142,13 +142,23 @@ void RenderProject::loopFunction(const double &deltaTime, const double &elapsedT
     
     // doPostProcessingBloom(deltaTime, elapsedTime);
     doShadowMapping(deltaTime, elapsedTime);
+    
+    DepthMapPtr shadowDepthMap = bRenderer().getObjects()->getDepthMap("depthMap");
+    vmml::Matrix4f depthMVP = _shadowModelRenderer->getDepthMVP();
+    vmml::Matrix4f depthView = _shadowModelRenderer->getDepthView();
+    vmml::Matrix4f depthProjection = _shadowModelRenderer->getDepthProjection();
+    vmml::Matrix4f depthOffset = _shadowModelRenderer->getOffsetMatrix();
+
+    bRenderer().getObjects()->getShader("terrain")->setUniform("shadowMap", shadowDepthMap);
+    bRenderer().getObjects()->getShader("terrain")->setUniform("depthMVP", depthMVP);
+    bRenderer().getObjects()->getShader("terrain")->setUniform("depthView", depthView);
+    bRenderer().getObjects()->getShader("terrain")->setUniform("depthProjection", depthProjection);
+    bRenderer().getObjects()->getShader("terrain")->setUniform("depthOffset", depthOffset);
+
     _playerCamera->move();
     updateRenderQueue("camera", deltaTime);
     bRenderer().getModelRenderer()->drawQueue(/*GL_LINES*/);
     bRenderer().getModelRenderer()->clearQueue();
-    
-    
-    // updateCamera("camera", deltaTime);
     
 	// Quit renderer when escape is pressed
 	if (bRenderer().getInput()->getKeyState(bRenderer::KEY_ESCAPE) == bRenderer::INPUT_PRESS)

@@ -3,6 +3,12 @@ $B_SHADER_VERSION
 precision mediump float;
 #endif
 
+uniform mat4 depthMVP;
+uniform mat4 depthView;
+uniform mat4 depthProjection;
+uniform mat4 depthOffset;
+uniform sampler2D shadowMap;
+
 uniform mediump mat4 ViewMatrix;
 uniform mediump mat4 ModelMatrix;
 uniform mat4 ModelViewMatrix;
@@ -29,6 +35,7 @@ attribute vec3 Tangent;
 attribute vec3 Bitangent;
 attribute vec4 TexCoord;
 
+varying lowp vec4 shadowCoord_varying;
 varying lowp vec4 vertexColor_varying;
 varying lowp vec4 texCoord_varying;
 varying mediump vec3 normal_ModelSpace;
@@ -63,6 +70,7 @@ void main()
 	vec4 posViewSpace = ModelViewMatrix * Position;
     
     // Outputs to Fragment Shader
+    shadowCoord_varying = depthOffset * depthProjection * depthView * ModelMatrix * Position;
     normal_varying_ViewSpace = normal_ViewSpace;
     tangent_varying_ViewSpace = tangent_ViewSpace;
     position_varying_ViewSpace = posViewSpace;
@@ -70,5 +78,5 @@ void main()
     vertexColor_varying = biome();
     
     // Position of Vertex
-    gl_Position = ProjectionMatrix* posViewSpace;
+    gl_Position = ProjectionMatrix * posViewSpace;
 }

@@ -3,6 +3,12 @@ $B_SHADER_VERSION
 precision mediump float;
 #endif
 
+uniform mat4 depthMVP;
+uniform mat4 depthView;
+uniform mat4 depthProjection;
+uniform mat4 depthOffset;
+uniform sampler2D shadowMap;
+
 uniform mediump mat4 ViewMatrix;
 uniform mediump mat4 ModelMatrix;
 uniform mat4 ModelViewMatrix;

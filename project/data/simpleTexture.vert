@@ -5,8 +5,6 @@ precision mediump float;
 
 uniform mat4 ModelViewMatrix;
 uniform mat4 ProjectionMatrix;
-uniform mat4 depthMVP;
-
 
 attribute vec4 Position;
 attribute vec4 TexCoord;
@@ -16,6 +14,6 @@ varying vec4 texCoordVarying;
 void main()
 {
     texCoordVarying = TexCoord;
-    // gl_Position = depthMVP * Position;
-    gl_Position = ProjectionMatrix * ModelViewMatrix * Position;
+    vec4 posViewSpace = ModelViewMatrix * Position;
+    gl_Position = ProjectionMatrix*posViewSpace;
 }

@@ -73,7 +73,7 @@ void ModelRenderer::drawModel(ModelPtr model, const vmml::Matrix4f &modelMatrix,
 
 					// compute NormalMatrix and set in shader
 					vmml::compute_inverse(vmml::transpose(vmml::Matrix3f(modelMatrix)), normalMatrix);
-
+                    shader->setUniform("ViewMatrix", viewMatrix);
 					shader->setUniform("NormalMatrix", normalMatrix);
 					shader->setUniform(bRenderer::DEFAULT_SHADER_UNIFORM_PROJECTION_MATRIX(), projectionMatrix);
 					shader->setUniform(bRenderer::DEFAULT_SHADER_UNIFORM_MODEL_VIEW_MATRIX(), modelViewMatrix);
@@ -138,7 +138,7 @@ void ModelRenderer::queueModelInstance(ModelPtr model, const std::string &instan
 		{
 			ShaderPtr shader = i->first;
 			PropertiesPtr properties = i->second;
-
+            
 			properties->setMatrix(bRenderer::DEFAULT_SHADER_UNIFORM_PROJECTION_MATRIX(), projectionMatrix);
 			properties->setMatrix(bRenderer::DEFAULT_SHADER_UNIFORM_MODEL_VIEW_MATRIX(), modelViewMatrix);
 

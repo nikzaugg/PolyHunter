@@ -13,15 +13,17 @@ public:
         _renderer = renderer;
         _player = player;
         _terrainLoader = terrainLoader;
-        _depthCamera = _renderer.getObjects()->createCamera("depthCamera");
         _viewMatrixHUD = Camera::lookAt(vmml::Vector3f(0.0f, 0.0f, 0.25f), vmml::Vector3f::ZERO, vmml::Vector3f::UP);
     };
     
     void doShadowMapping(const double &deltaTime);
+    
+    vmml::Matrix4f getDepthMVP();
+    vmml::Matrix4f getDepthView();
+    vmml::Matrix4f getDepthProjection();
+    vmml::Matrix4f getOffsetMatrix();
 
 private:
-    void ortho(const float &b, const float &t, const float &l, const float &r,const float &n, const float &f,vmml::Matrix4f &M);
-    
     // setup new camera with orthogonal projection matrix
     // setup camera's view matrix (lookat)
     void setupCameraConfiguration();
@@ -35,9 +37,10 @@ private:
     // render scene with objects that cast shadows
     void renderShadowScene(const double &deltaTime);
     
-    void drawShadowModel(std::string ModelName, vmml::Matrix4f  &modelMatrix, vmml::Matrix4f &ViewMatrix, vmml::Matrix4f &ProjectionMatrix, const std::vector<std::string> &lightNames, bool doFrustumCulling, bool cullIndividualGeometry);
+    float toDegrees(float radian);
     
-    CameraPtr _depthCamera;
+    float toRadians(float degree);
+    
     Renderer _renderer;
     ShaderPtr _depthShader;
     FramebufferPtr _depthFBO;

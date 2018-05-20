@@ -131,7 +131,6 @@ void Player::customRender(std::string camera, vmml::Matrix4f view, vmml::Matrix4
 {
     // set ambient color
     renderer().getObjects()->setAmbientColor(vmml::Vector3f(0.5f));
-    MaterialPtr playerShadowMat = renderer().getObjects()->createMaterial("playerShadowMaterial", renderer().getObjects()->getShader("depthShader"));
     // renderer().getObjects()->getModel("player")->setMaterial(playerShadowMat);
 
     // draw model

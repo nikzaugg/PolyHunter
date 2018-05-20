@@ -3,6 +3,11 @@ $B_SHADER_VERSION
 precision mediump float;
 #endif
 
+uniform mat4 depthMVP;
+uniform mat4 depthView;
+uniform mat4 depthProjection;
+uniform sampler2D shadowMap;
+
 uniform mediump mat4 ViewMatrix;
 uniform mediump mat4 ModelMatrix;
 uniform mat4 ModelViewMatrix;
@@ -20,6 +25,7 @@ uniform vec3 lightDiffuseColor_0;
 uniform vec3 lightSpecularColor_0;
 uniform vec4 lightPositionViewSpace_0;
 
+varying lowp vec4 shadowCoord_varying;
 varying lowp vec4 vertexColor_varying;
 varying lowp vec4 texCoord_varying;
 varying mediump vec3 normal_ModelSpace;
@@ -30,6 +36,12 @@ varying mediump vec3 tangent_varying_ViewSpace;
 
 void main()
 {
+    float objectNearestLight = texture2D(shadowMap, shadowCoord_varying.xy).r;
+    float lightFactor = 1.0;
+    if (shadowCoord_varying.z > objectNearestLight) {
+        lightFactor = 1.0 - 0.4;
+    }
+    
     vec4 position = position_varying_ViewSpace;
     vec3 normal = normalize(normal_varying_ViewSpace);
     vec3 normal_modelSpace = normalize(normal_ModelSpace);
@@ -45,7 +57,11 @@ void main()
     vec3 diffuseTerm = Kd * clamp(intensityFactor, 0.0, 1.0) * lightDiffuseColor_0;
     vec4 diffusePart = vec4(clamp(diffuseTerm, 0.0, 1.0), 1.0);
     
+    diffusePart = diffusePart * lightFactor;
+    
     gl_FragColor = (ambientPart + diffusePart) * vertexColor_varying;
+    // vec4 shadow = normalize(shadowCoord_varying);
+//    gl_FragColor = vec4(vec3(lightFactor), 1.0);
     
     // Color according to normals
     // vec3 normal_test = normal/2.0 + vec3(0.5);
