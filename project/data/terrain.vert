@@ -9,6 +9,7 @@ uniform mat4 depthProjection;
 uniform mat4 depthOffset;
 uniform sampler2D shadowMap;
 
+uniform mediump mat4 InverseViewMatrix;
 uniform mediump mat4 ViewMatrix;
 uniform mediump mat4 ModelMatrix;
 uniform mat4 ModelViewMatrix;
@@ -70,7 +71,7 @@ void main()
 	vec4 posViewSpace = ModelViewMatrix * Position;
     
     // Outputs to Fragment Shader
-    shadowCoord_varying = depthOffset * depthProjection * depthView * ModelMatrix * Position;
+    shadowCoord_varying = depthOffset * depthProjection  * depthView * Position;
     normal_varying_ViewSpace = normal_ViewSpace;
     tangent_varying_ViewSpace = tangent_ViewSpace;
     position_varying_ViewSpace = posViewSpace;
@@ -78,5 +79,5 @@ void main()
     vertexColor_varying = biome();
     
     // Position of Vertex
-    gl_Position = ProjectionMatrix * posViewSpace;
+    gl_Position = ProjectionMatrix * ModelViewMatrix * Position;
 }

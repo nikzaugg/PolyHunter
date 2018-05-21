@@ -36,9 +36,11 @@ varying mediump vec3 tangent_varying_ViewSpace;
 
 void main()
 {
+    float bias = 0.005;
+
     float objectNearestLight = texture2D(shadowMap, shadowCoord_varying.xy).r;
     float lightFactor = 1.0;
-    if (shadowCoord_varying.z > objectNearestLight) {
+    if (shadowCoord_varying.z - bias > objectNearestLight) {
         lightFactor = 1.0 - 0.4;
     }
     
@@ -60,8 +62,8 @@ void main()
     diffusePart = diffusePart * lightFactor;
     
     gl_FragColor = (ambientPart + diffusePart) * vertexColor_varying;
-    // vec4 shadow = normalize(shadowCoord_varying);
-//    gl_FragColor = vec4(vec3(lightFactor), 1.0);
+    
+    // gl_FragColor = vec4(vec3(objectNearestLight), 1.0);
     
     // Color according to normals
     // vec3 normal_test = normal/2.0 + vec3(0.5);

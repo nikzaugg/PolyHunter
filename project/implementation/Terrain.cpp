@@ -179,6 +179,7 @@ void Terrain::customProcessTrees(std::string camera, vmml::Matrix4f view, vmml::
 void Terrain::renderTerrain(std::string camera)
 {
     getShader()->setUniform("amplitude", _amplitude);
+    getShader()->setUniform("ModelMatrix", computeTransformationMatrix());
     renderer().getObjects()->setAmbientColor(vmml::Vector3f(0.3f));
     // draw model
     renderer().getModelRenderer()->queueModelInstance(getModelName(), "terrain", camera, computeTransformationMatrix(), std::vector<std::string>({ "sun" }), true, true);

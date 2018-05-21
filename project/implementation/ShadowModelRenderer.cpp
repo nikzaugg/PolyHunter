@@ -25,17 +25,15 @@ void ShadowModelRenderer::setupCameraConfiguration()
 {
     // CREATE ORTHOGRAPHIC PROJECTION MATRIX
     vmml::Matrix4f orthoMatrix = vmml::Matrix4f::IDENTITY;
-    orthoMatrix.at(0, 0) = 2.0 / -300;
-    orthoMatrix.at(1, 1) = 2.0 / 300;
-    orthoMatrix.at(2, 2) = -2.0 / 1000;
+    orthoMatrix.at(0, 0) = 2.0 / -200;
+    orthoMatrix.at(1, 1) = 2.0 / 200;
+    orthoMatrix.at(2, 2) = -2.0 / 1000.0;
     orthoMatrix.at(3, 3) = 1;
     _depthProjectionMatrix = orthoMatrix;
     
-    
     // CREATE LIGHT VIEW MATRIX
-    
     vmml::Matrix4f lightViewMatrix = vmml::Matrix4f::IDENTITY;
-    _lightPosition = _renderer.getObjects()->getLight("sun")->getPosition(); // (1000, 1000, 1000)
+    _lightPosition = _renderer.getObjects()->getLight("sun")->getPosition(); 
     _lightPosition = _lightPosition;
     vmml::Vector3f direction = vmml::Vector3f(-_lightPosition.x(), -_lightPosition.y(), -_lightPosition.z());
     // vmml::Vector3f direction = vmml::Vector3f(_lightPosition);
@@ -43,6 +41,7 @@ void ShadowModelRenderer::setupCameraConfiguration()
 
     vmml::Vector3f playerPos = _player->getPosition();
     vmml::Vector3f center = vmml::Vector3f(-playerPos.x(), -playerPos.y(), -playerPos.z());
+    //vmml::Vector3f center = vmml::Vector3f(0.0);
 
     float pitchVectorLenght = sqrt( pow(direction.x(), 2.0) + pow(direction.z(), 2.0) );
     float pitch = (float)acos(pitchVectorLenght);
