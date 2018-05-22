@@ -26,6 +26,9 @@ uniform float heightPercent;
 uniform vec3 skyColor;
 uniform vec3 playerPos;
 
+uniform float fogDensity;
+uniform float fogGradient;
+
 attribute vec4 Position;
 attribute vec3 Normal;
 attribute vec3 Tangent;
@@ -40,10 +43,6 @@ varying mediump vec3 normal_varying_ViewSpace;
 varying mediump vec3 tangent_varying_ViewSpace;
 
 varying mediump float visibility;
-
-
-const float density = 0.002;
-const float gradient = 0.9;
 
 void main()
 {
@@ -63,7 +62,7 @@ void main()
 
     float dist = length(posRelativeToPlayer.xyz);
 
-    visibility = exp(-pow((dist * density), gradient));
+    visibility = exp(-pow((dist * fogDensity), fogGradient));
     
     // Position of Vertex
     gl_Position = ProjectionMatrix*posViewSpace;

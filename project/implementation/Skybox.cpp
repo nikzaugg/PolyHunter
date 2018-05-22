@@ -80,3 +80,14 @@ ModelPtr Skybox::generate()
 	ModelPtr skyboxModel = ModelPtr(new Model(data, _material, _properties));
 	return skyboxModel;
 }
+
+void Skybox::setSkyColor(vmml::Vector3f color)
+{
+	_skyColor = color;
+	_renderer.getObjects()->getShader("skybox")->setUniform("skyColor", color);
+}
+
+vmml::Vector3f Skybox::getSkyColor()
+{
+	return _skyColor;
+}

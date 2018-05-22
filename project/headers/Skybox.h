@@ -13,6 +13,10 @@ public:
 
 	ModelPtr generate();
 
+	void setSkyColor(vmml::Vector3f color);
+
+	vmml::Vector3f getSkyColor();
+
 private:
 	MaterialPtr _material;
 	PropertiesPtr _properties;
@@ -23,6 +27,8 @@ private:
 	const int SIZE = 900;
     
     ProceduralOBJLoader _objLoader;
+
+	vmml::Vector3f _skyColor;
 
 	GroupMap        _groups;
 	vmml::AABBf		_boundingBox;

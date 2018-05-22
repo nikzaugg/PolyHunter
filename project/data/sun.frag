@@ -50,11 +50,8 @@ void main()
     
     vec4 color = texture2D(DiffuseMap, texCoord_varying.st);
 
-	//if(color.a < 0.1)
-    //    discard;
     
     vec4 outColor = (ambientPart + diffusePart) * color;
-    // gl_FragColor = mix(vec4(skyColor, 1.0),  outColor, visibility);
     vec4 lightColor = vec4(1.0, 0.7, 1.0, 1.0);
     
 	gl_FragColor = vec4(ambientColor, 0.0) + lightColor * color;

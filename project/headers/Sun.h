@@ -11,11 +11,13 @@ class Sun : public Entity
 public:
 	Sun(std::string objName, std::string modelName, std::string propName, ShaderPtr shader, Renderer & renderer, vmml::Vector3f pos, float rotX, float rotY, float rotZ, float scale);
 
-	ModelPtr generateGeometry();
+	void setIntensity(float intensity);
+
+	void setPosition(vmml::Vector3f position);
+
+	float getVertexPos();
 
 	void render(std::string camera, vmml::Vector3f playerPos, vmml::Matrix4f viewMatrixHUD);
-
-	void render(std::string camera, vmml::Vector3f playerPos);
 
 private:
 	ProceduralOBJLoader _objLoader;
@@ -24,6 +26,13 @@ private:
 	Renderer _renderer;
 	MaterialPtr _sunMaterial;
 	PropertiesPtr _sunProperties;
+	ModelPtr _sunFragments;
+
+	ModelData::GroupMap Sun::createFragments();
+
+	void renderFragments(std::string camera, vmml::Vector3f pos);
+
+	void renderFragments(std::string camera);
 
 };
 typedef std::shared_ptr< Sun >  SunPtr;

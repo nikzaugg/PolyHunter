@@ -45,7 +45,6 @@ void RenderProject::initFunction()
 
 	// SHADERS
 	ShaderPtr basicShader = bRenderer().getObjects()->loadShaderFile("basic", 1, false, true, true, true, false);
-	basicShader->setUniform("skyColor", vmml::Vector3f(0.53f, 0.807f, 0.98f));
 	ShaderPtr terrainShader = bRenderer().getObjects()->loadShaderFile("terrain", 1, false, true, true, true, false);
     ShaderPtr skyboxShader = bRenderer().getObjects()->loadShaderFile("skybox", 1, false, true, true, true, false);
     ShaderPtr playerShader = bRenderer().getObjects()->loadShaderFile("player", 1, false, true, true, true, false);
@@ -63,15 +62,16 @@ void RenderProject::initFunction()
     bRenderer().getObjects()->loadObjModel("tree.obj", false, true, basicShader, treeProperties);
     bRenderer().getObjects()->loadObjModel("Crystal.obj", false, true, basicShader, nullptr);
 
-
     // SKYBOX
     MaterialPtr skyboxMaterial = bRenderer().getObjects()->loadObjMaterial("skybox.mtl", "skybox", skyboxShader);
     Skybox skybox = Skybox(skyboxMaterial, skyboxProperties, getProjectRenderer());
+	skybox.setSkyColor(vmml::Vector3f(0.14f, 0.16f, 0.22f));
+
+	basicShader->setUniform("skyColor", skybox.getSkyColor());
+	basicShader->setUniform("fogDensity", 0.007f);
+	basicShader->setUniform("fogGradient", 0.4f);
 	// Sun
-	//Sun(std::string objName, std::string modelName, std::string propName, ShaderPtr shader, Renderer & renderer, vmml::Vector3f pos, float rotX, float rotY, float rotZ, float scale);
 	_sun = SunPtr(new Sun("sun_instance", "sun", "sunProperties", sunShader, getProjectRenderer(), vmml::Vector3f(0.0f, 100.0f, 0.0f), 0.0f, 0.0f, 0.0f, 3.0f));
-	
-    //    bRenderer().getObjects()->addCubeMap("skyBoxCubeMap", skyBoxCubeMapPtr);
 
     // PLAYER //
     _player = PlayerPtr(new Player("guy.obj", "guy", "guyProperties", playerShader, getProjectRenderer(), vmml::Vector3f(10.0, 0.0, 10.0), 0.0, -90.0, 0.0, 2.0));
@@ -82,9 +82,6 @@ void RenderProject::initFunction()
 	// create camera
     bRenderer().getObjects()->createCamera("camera");
     _playerCamera = PlayerCameraPtr(new PlayerCamera("camera", _player, getProjectRenderer()));
-
-	// create lights
-	bRenderer().getObjects()->createLight("sun", vmml::Vector3f(0.0, 200.0, 0.0), vmml::Vector3f(1.0f), vmml::Vector3f(1.0f), 1.0f, 0.5f, 100.0f);
     
     /******************
      BLOOM FBO
@@ -206,8 +203,6 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
             _animation -= deltaTime * _animationSpeed;
         }
     }
-
-    bRenderer().getObjects()->getLight("sun")->setPosition(vmml::Vector3f(_animation, 240.0, _animation));
     
     _player->process("camera", deltaTime);
 	vmml::Matrix4f playerModel = _player->computeTransformationMatrix();
@@ -217,8 +212,6 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
 	bRenderer().getObjects()->getShader("terrain")->setUniform("playerPos", playerView* _player->getPosition());
 
     _terrainLoader->process("camera", deltaTime);
-
-
     
 	/// TREE ///
     modelMatrix =
