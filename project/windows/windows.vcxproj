@@ -261,6 +261,9 @@
     <None Include="..\data\flame.vert" />
     <None Include="..\data\skybox.frag" />
     <None Include="..\data\skybox.vert" />
+    <None Include="..\data\sun.frag" />
+    <None Include="..\data\sun.mtl" />
+    <None Include="..\data\sun.vert" />
     <None Include="..\data\terrain.frag" />
     <None Include="..\data\terrain.geom" />
     <None Include="..\data\terrain.vert" />
@@ -279,6 +282,7 @@
     <Image Include="..\data\crystal_s.png" />
     <Image Include="..\data\flame.png" />
     <Image Include="..\data\sparks.png" />
+    <Image Include="..\data\sun.png" />
     <Image Include="..\data\torchSurface_Color.png" />
   </ItemGroup>
   <ItemGroup>

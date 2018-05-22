@@ -604,6 +604,15 @@
     <None Include="..\data\bloom.vert">
       <Filter>project\data</Filter>
     </None>
+    <None Include="..\data\sun.frag">
+      <Filter>project\data</Filter>
+    </None>
+    <None Include="..\data\sun.mtl">
+      <Filter>project\data</Filter>
+    </None>
+    <None Include="..\data\sun.vert">
+      <Filter>project\data</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\data\flame.png">
@@ -637,6 +646,9 @@
       <Filter>project\data</Filter>
     </Image>
     <Image Include="..\data\crystal.png">
+      <Filter>project\data</Filter>
+    </Image>
+    <Image Include="..\data\sun.png">
       <Filter>project\data</Filter>
     </Image>
   </ItemGroup>

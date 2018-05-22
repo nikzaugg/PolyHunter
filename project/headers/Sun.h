@@ -13,6 +13,8 @@ public:
 
 	ModelPtr generateGeometry();
 
+	void render(std::string camera, vmml::Vector3f playerPos, vmml::Matrix4f viewMatrixHUD);
+
 	void render(std::string camera, vmml::Vector3f playerPos);
 
 private:

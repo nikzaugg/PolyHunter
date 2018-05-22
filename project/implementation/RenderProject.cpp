@@ -49,7 +49,8 @@ void RenderProject::initFunction()
 	ShaderPtr terrainShader = bRenderer().getObjects()->loadShaderFile("terrain", 1, false, true, true, true, false);
     ShaderPtr skyboxShader = bRenderer().getObjects()->loadShaderFile("skybox", 1, false, true, true, true, false);
     ShaderPtr playerShader = bRenderer().getObjects()->loadShaderFile("player", 1, false, true, true, true, false);
-	ShaderPtr sunShader = bRenderer().getObjects()->loadShaderFile("sun", 1, false, true, true, true, false);
+	ShaderPtr sunShader = bRenderer().getObjects()->loadShaderFile_o("sun", 0, AMBIENT_LIGHTING);
+	
 
 	// PROPERTIES FOR THE MODELS
     PropertiesPtr treeProperties = bRenderer().getObjects()->createProperties("treeProperties");
@@ -239,10 +240,10 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
     // set ambient color
     bRenderer().getObjects()->setAmbientColor(vmml::Vector3f(0.5f));
     // draw model
-    bRenderer().getModelRenderer()->drawModel("skybox", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
+    bRenderer().getModelRenderer()->queueModelInstance("skybox", "skybox_instance", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
 
 	/// SUN ///
-	_sun->render(camera, _player->getPosition());
+	_sun->render(camera, _player->getPosition(), _viewMatrixHUD);
 }
 
 /* Camera movement */
