@@ -84,8 +84,6 @@
 		31AF851420A861140048FBF6 /* diffuse.png in Resources */ = {isa = PBXBuildFile; fileRef = 31AF851320A861130048FBF6 /* diffuse.png */; };
 		31B0FD772097A1D600601F21 /* Player.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 31B0FD752097A1D600601F21 /* Player.cpp */; };
 		31B0FD792097A20200601F21 /* Entity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 31B0FD782097A20200601F21 /* Entity.cpp */; };
-		31E5CD6920B033AD005DC7D5 /* depthShader.vert in Resources */ = {isa = PBXBuildFile; fileRef = 31E5CD6720B033AD005DC7D5 /* depthShader.vert */; };
-		31E5CD6A20B033AD005DC7D5 /* depthShader.frag in Resources */ = {isa = PBXBuildFile; fileRef = 31E5CD6820B033AD005DC7D5 /* depthShader.frag */; };
 		31E5CD6D20B03883005DC7D5 /* simpleTexture.frag in Resources */ = {isa = PBXBuildFile; fileRef = 31E5CD6B20B03883005DC7D5 /* simpleTexture.frag */; };
 		31E5CD6E20B03883005DC7D5 /* simpleTexture.vert in Resources */ = {isa = PBXBuildFile; fileRef = 31E5CD6C20B03883005DC7D5 /* simpleTexture.vert */; };
 		31E5CD7020B052CB005DC7D5 /* ShadowModelRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 31E5CD6F20B052CB005DC7D5 /* ShadowModelRenderer.cpp */; };
@@ -368,8 +366,6 @@
 		31B0FD782097A20200601F21 /* Entity.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Entity.cpp; sourceTree = "<group>"; };
 		31B0FD7A2097A21D00601F21 /* Entity.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Entity.h; sourceTree = "<group>"; };
 		31B0FD7B2097A22F00601F21 /* Player.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Player.h; sourceTree = "<group>"; };
-		31E5CD6720B033AD005DC7D5 /* depthShader.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = depthShader.vert; sourceTree = "<group>"; };
-		31E5CD6820B033AD005DC7D5 /* depthShader.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = depthShader.frag; sourceTree = "<group>"; };
 		31E5CD6B20B03883005DC7D5 /* simpleTexture.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = simpleTexture.frag; sourceTree = "<group>"; };
 		31E5CD6C20B03883005DC7D5 /* simpleTexture.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = simpleTexture.vert; sourceTree = "<group>"; };
 		31E5CD6F20B052CB005DC7D5 /* ShadowModelRenderer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ShadowModelRenderer.cpp; sourceTree = "<group>"; };
@@ -768,8 +764,6 @@
 			children = (
 				31E5CD6B20B03883005DC7D5 /* simpleTexture.frag */,
 				31E5CD6C20B03883005DC7D5 /* simpleTexture.vert */,
-				31E5CD6820B033AD005DC7D5 /* depthShader.frag */,
-				31E5CD6720B033AD005DC7D5 /* depthShader.vert */,
 				313CE36720AB19C20062614A /* brightShader.vert */,
 				313CE36920AB19E00062614A /* brightShader.frag */,
 				B47949871BA6742B00B5E9DC /* blurShader.frag */,
@@ -1167,7 +1161,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				31E5CD6A20B033AD005DC7D5 /* depthShader.frag in Resources */,
 				31A71EE620865D6F00A2D46A /* sun.mtl in Resources */,
 				B47949A31BA6742B00B5E9DC /* basicTitle_light.png in Resources */,
 				B47949B81BA6742B00B5E9DC /* flame.png in Resources */,
@@ -1199,7 +1192,6 @@
 				31E5CD6E20B03883005DC7D5 /* simpleTexture.vert in Resources */,
 				3136FA2B209A5D4D008436CF /* back.png in Resources */,
 				B47949AA1BA6742B00B5E9DC /* cave_stream.frag in Resources */,
-				31E5CD6920B033AD005DC7D5 /* depthShader.vert in Resources */,
 				B47949BA1BA6742B00B5E9DC /* KozGoPro-ExtraLight.otf in Resources */,
 				31A71EE220865D6F00A2D46A /* sun.obj in Resources */,
 				31A71EDF20865D6F00A2D46A /* terrain.vert in Resources */,

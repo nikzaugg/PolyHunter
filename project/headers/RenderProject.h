@@ -70,9 +70,6 @@ private:
     /* Do Postprocessing operations */
     void doPostProcessingBloom(const double &deltaTime, const double &elapsedTime);
     
-    /* Do Shadow Mapping */
-    void doShadowMapping(const double &deltaTime, const double &elapsedTime);
-    
 	/* Variables */
 	GLfloat _randomOffset;
 	GLfloat _offset;

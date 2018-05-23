@@ -93,8 +93,7 @@ void RenderProject::initFunction()
 
 	// create lights
      bRenderer().getObjects()->createLight("sun", vmml::Vector3f(500, 1000, 500), vmml::Vector3f(1.0f), vmml::Vector3f(1.0f), 1.0f, 1.0f, 100.f);
-
-
+    
     /******************
      FBO
      *****************/
@@ -140,39 +139,18 @@ void RenderProject::loopFunction(const double &deltaTime, const double &elapsedT
 	// bRenderer::log("FPS: " + std::to_string(1 / deltaTime));	// write number of frames per second to the console every frame
     // std::cout << "FPS: " << std::to_string(1 / deltaTime) << std::endl;
 
-    doShadowMapping(deltaTime, elapsedTime);
-    
-    vmml::Matrix4f depthMVP = _shadowModelRenderer->getDepthMVP();
-    vmml::Matrix4f depthView = _shadowModelRenderer->getDepthView();
-    vmml::Matrix4f depthProjection = _shadowModelRenderer->getDepthProjection();
-    vmml::Matrix4f depthOffset = _shadowModelRenderer->getOffsetMatrix();
-    vmml::Matrix4f inverseViewMatrix = bRenderer().getObjects()->getCamera("camera")->getInverseViewMatrix();
-    float shadowBoxLength = _shadowModelRenderer->getShadowBoxLength();
-
-    bRenderer().getObjects()->getMaterial("terrain")->setTexture("shadowMap", bRenderer().getObjects()->getDepthMap("depthMap"));
-    bRenderer().getObjects()->getShader("terrain")->setUniform("depthMVP", depthMVP);
-    bRenderer().getObjects()->getShader("terrain")->setUniform("depthView", depthView);
-    bRenderer().getObjects()->getShader("terrain")->setUniform("depthProjection", depthProjection);
-    bRenderer().getObjects()->getShader("terrain")->setUniform("depthOffset", depthOffset);
-    bRenderer().getObjects()->getShader("terrain")->setUniform("InverseViewMatrix", inverseViewMatrix);
-    bRenderer().getObjects()->getShader("terrain")->setUniform("shadowDistance", shadowBoxLength);
+    _shadowModelRenderer->doShadowRenderPass("terrain", deltaTime, elapsedTime);
 
     _playerCamera->move();
     updateRenderQueue("camera", deltaTime);
     bRenderer().getModelRenderer()->drawQueue(/*GL_LINES*/);
     bRenderer().getModelRenderer()->clearQueue();
     
-    // doPostProcessingBloom(deltaTime, elapsedTime);
+    doPostProcessingBloom(deltaTime, elapsedTime);
     
 	// Quit renderer when escape is pressed
 	if (bRenderer().getInput()->getKeyState(bRenderer::KEY_ESCAPE) == bRenderer::INPUT_PRESS)
 		bRenderer().terminateRenderer();
-}
-
-void RenderProject::doShadowMapping(const double &deltaTime, const double &elapsedTime){
-    
-    _shadowModelRenderer->doShadowMapping(deltaTime);
-    
 }
 
 void RenderProject::doPostProcessingBloom(const double &deltaTime, const double &elapsedTime){

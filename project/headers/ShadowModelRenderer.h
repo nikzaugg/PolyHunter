@@ -14,10 +14,10 @@ public:
         _player = player;
         _terrainLoader = terrainLoader;
         _viewMatrixHUD = Camera::lookAt(vmml::Vector3f(0.0f, 0.0f, 0.25f), vmml::Vector3f::ZERO, vmml::Vector3f::UP);
+        setup();
     };
     
-    void doShadowMapping(const double &deltaTime);
-    
+    void doShadowRenderPass(std::string shaderToSendUniformsTo, const double &deltaTime, const double &elapsedTime, bool debug = false);
     float getShadowBoxLength();
     vmml::Matrix4f getDepthMVP();
     vmml::Matrix4f getDepthView();
@@ -25,21 +25,21 @@ public:
     vmml::Matrix4f getOffsetMatrix();
 
 private:
-    // setup new camera with orthogonal projection matrix
-    // setup camera's view matrix (lookat)
-    void setupCameraConfiguration();
+    void doShadowMapping(const double &deltaTime);
+    void doShadowMappingDebug(const double &deltaTime);
     
-    // create simple shader that is used by all shadow objects
+    void setup();
     void setupShadowShader();
-    
-    // setup FBO-Depth Map
     void setupShadowFBO();
+    void createOrthogonalProjectionMatrix();
+    void updateLightViewMatrix();
     
     // render scene with objects that cast shadows
-    void renderShadowScene(const double &deltaTime);
+    void drawToDepthMap(const double &deltaTime);
+    // render scene with objects that cast shadows and display depth map in a GUI
+    void drawToDepthMapDebug(const double &deltaTime);
     
     float toDegrees(float radian);
-    
     float toRadians(float degree);
     
     Renderer _renderer;

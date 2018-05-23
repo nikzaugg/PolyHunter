@@ -2,26 +2,62 @@
 #include "Player.h"
 #include "TerrainLoader.h"
 
+void ShadowModelRenderer::setup()
+{
+    createOrthogonalProjectionMatrix();
+    
+    setupShadowShader();
+    
+    setupShadowFBO();
+}
+
+void ShadowModelRenderer::doShadowRenderPass(std::string shaderToSendUniformsTo, const double &deltaTime, const double &elapsedTime, bool debug){
+    
+    if (debug == true) {
+         doShadowMappingDebug(deltaTime);
+    }else{
+        // creates the depthmap
+        doShadowMapping(deltaTime);
+    }
+
+    // shader and material for the model-renderer that has shadows on it
+    ShaderPtr shader = _renderer.getObjects()->getShader(shaderToSendUniformsTo);
+    MaterialPtr material = _renderer.getObjects()->getMaterial(shaderToSendUniformsTo);
+    
+    // uniforms needed in the shader for shadow-calculations
+    vmml::Matrix4f inverseViewMatrix = _renderer.getObjects()->getCamera("camera")->getInverseViewMatrix();
+
+    // set uniforms and depth map texture
+    material->setTexture("shadowMap", _renderer.getObjects()->getDepthMap("depthMap"));
+    shader->setUniform("depthMVP", _depthMVP);
+    shader->setUniform("depthView", _depthViewMatrix);
+    shader->setUniform("depthProjection", _depthProjectionMatrix);
+    shader->setUniform("depthOffset", getOffsetMatrix());
+    shader->setUniform("InverseViewMatrix", inverseViewMatrix);
+    shader->setUniform("shadowDistance", _shadowBoxLength);
+}
+
 // entry point of the ShadowModelRenderer
 void ShadowModelRenderer::doShadowMapping(const double &deltaTime)
 {
-    // setup new camera with orthogonal projection matrix
-    // setup camera's view matrix (lookat)
-    setupCameraConfiguration();
-    
-    // create simple shader that is used by all shadow objects
-    setupShadowShader();
-    
-    // setup FBO-Depth Map
-    setupShadowFBO();
+    // setup camera's view matrix
+    updateLightViewMatrix();
     
     // render scene with objects that cast shadows
-    renderShadowScene(deltaTime);
+    drawToDepthMap(deltaTime);
 }
 
-// setup new camera with orthogonal projection matrix
-// setup camera's view matrix (lookat)
-void ShadowModelRenderer::setupCameraConfiguration()
+// entry point of the ShadowModelRenderer
+void ShadowModelRenderer::doShadowMappingDebug(const double &deltaTime)
+{
+    // setup camera's view matrix
+    updateLightViewMatrix();
+    
+    // render scene with objects that cast shadows
+    drawToDepthMapDebug(deltaTime);
+}
+
+void ShadowModelRenderer::createOrthogonalProjectionMatrix()
 {
     // CREATE ORTHOGRAPHIC PROJECTION MATRIX
     vmml::Matrix4f orthoMatrix = vmml::Matrix4f::IDENTITY;
@@ -30,45 +66,10 @@ void ShadowModelRenderer::setupCameraConfiguration()
     orthoMatrix.at(2, 2) = -2.0 / _shadowBoxLength;
     orthoMatrix.at(3, 3) = 1;
     _depthProjectionMatrix = orthoMatrix;
-    
-    // CREATE LIGHT VIEW MATRIX
-    vmml::Matrix4f lightViewMatrix = vmml::Matrix4f::IDENTITY;
-    _lightPosition = _renderer.getObjects()->getLight("sun")->getPosition();
-    vmml::Vector3f direction = vmml::Vector3f(-_lightPosition.x(), -_lightPosition.y(), -_lightPosition.z());
-    // vmml::Vector3f direction = vmml::Vector3f(_lightPosition);
-    direction = normalize(direction);
-
-    vmml::Vector3f playerPos = _player->getPosition();
-    vmml::Vector3f center = vmml::Vector3f(-playerPos.x(), -playerPos.y(), -playerPos.z());
-    //vmml::Vector3f center = vmml::Vector3f(0.0);
-
-    float pitchVectorLenght = sqrt( pow(direction.x(), 2.0) + pow(direction.z(), 2.0) );
-    float pitch = (float)acos(pitchVectorLenght);
-    std::cout << "pitch: " << pitch << std::endl;
-    pitch = pitch;
-    lightViewMatrix *= vmml::create_rotation(pitch, vmml::Vector3f::UNIT_X);
-
-    float yaw = (float)toDegrees((float)atan(direction.x()/direction.z()));
-    yaw = direction.z() > 0 ? (yaw - 180) : yaw;
-    std::cout << "yaw: " << yaw << std::endl;
-    lightViewMatrix *= vmml::create_rotation((float)-1.0*toRadians(yaw), vmml::Vector3f::UNIT_Y);
-    // lightViewMatrix *= vmml::create_translation(vmml::Vector3f(center));
-    lightViewMatrix *= vmml::create_translation(vmml::Vector3f(center.x(), 0.0, center.z()));
-
-    _depthViewMatrix = lightViewMatrix;
-}
-
-float ShadowModelRenderer::toDegrees(float radian){
-    return ( radian * 180.0 ) / M_PI_F ;
-}
-
-float ShadowModelRenderer::toRadians(float degree){
-    return ( degree * M_PI_F ) / 180.0 ;
 }
 
 // create simple shader that is used by all shadow objects
 void ShadowModelRenderer::setupShadowShader(){
-    _depthShader = _renderer.getObjects()->loadShaderFile_o("depthShader", 0);
     _depthShader = _renderer.getObjects()->loadShaderFile_o("simpleTexture", 0);
 }
 
@@ -78,19 +79,67 @@ void ShadowModelRenderer::setupShadowFBO()
     /******************
      Depth FBO
      *****************/
-    _depthFBO = _renderer.getObjects()->createFramebuffer("depthFBO");                    // create framebuffer object
+    _depthFBO = _renderer.getObjects()->createFramebuffer("depthFBO");
     _depthMap = _renderer.getObjects()->createDepthMap("depthMap", _renderer.getView()->getWidth(), _renderer.getView()->getHeight());
-    std::cout << "width "<<_renderer.getView()->getWidth() <<std::endl;
-    std::cout << "height"<<_renderer.getView()->getHeight()<<std::endl;
-    
     _depthMaterial = _renderer.getObjects()->createMaterial("depthMaterial", _renderer.getObjects()->getShader("simpleTexture"));
     _renderer.getObjects()->createSprite("depthSprite", _depthMaterial);
     _renderer.getObjects()->createSprite("depthSceneSprite", _depthMaterial);
-    _renderer.getObjects()->createTexture("depthTexture", 0.f, 0.f);    // create texture to bind to the fbo
+    _renderer.getObjects()->createTexture("depthTexture", 0.f, 0.f);
+}
+
+void ShadowModelRenderer::updateLightViewMatrix()
+{
+    // CREATE LIGHT VIEW MATRIX
+    vmml::Matrix4f lightViewMatrix = vmml::Matrix4f::IDENTITY;
+    _lightPosition = _renderer.getObjects()->getLight("sun")->getPosition();
+    vmml::Vector3f direction = vmml::Vector3f(-_lightPosition.x(), -_lightPosition.y(), -_lightPosition.z());
+    // vmml::Vector3f direction = vmml::Vector3f(_lightPosition);
+    direction = normalize(direction);
+
+    vmml::Vector3f playerPos = _player->getPosition();
+    vmml::Vector3f center = vmml::Vector3f(-playerPos.x(), -playerPos.y(), -playerPos.z());
+
+    float pitchVectorLenght = sqrt( pow(direction.x(), 2.0) + pow(direction.z(), 2.0) );
+    float pitch = (float)acos(pitchVectorLenght);
+    pitch = pitch;
+    lightViewMatrix *= vmml::create_rotation(pitch, vmml::Vector3f::UNIT_X);
+
+    float yaw = (float)toDegrees((float)atan(direction.x()/direction.z()));
+    yaw = direction.z() > 0 ? (yaw - 180) : yaw;
+    lightViewMatrix *= vmml::create_rotation((float)-1.0*toRadians(yaw), vmml::Vector3f::UNIT_Y);
+    // lightViewMatrix *= vmml::create_translation(vmml::Vector3f(center));
+    lightViewMatrix *= vmml::create_translation(vmml::Vector3f(center.x(), 0.0, center.z()));
+
+    _depthViewMatrix = lightViewMatrix;
 }
 
 // render scene with objects that cast shadows
-void ShadowModelRenderer::renderShadowScene(const double &deltaTime)
+void ShadowModelRenderer::drawToDepthMap(const double &deltaTime)
+{
+    /**************************
+     * BIND DEPTH-FBO
+     *************************/
+    _renderer.getView()->setViewportSize(_renderer.getView()->getWidth(), _renderer.getView()->getHeight());
+    GLint defaultFBO = Framebuffer::getCurrentFramebuffer();
+    _renderer.getObjects()->getFramebuffer("depthFBO")->bindDepthMap(_renderer.getObjects()->getDepthMap("depthMap"), false);
+    //_renderer.getObjects()->getFramebuffer("depthFBO")->bindTexture(_renderer.getObjects()->getTexture("sceneTexture"), false);
+    
+    /********************************************
+     * RENDER TERRAIN AND PLAYER TO DEPTH TEXTURE
+     *******************************************/
+    _player->customProcess("camera", deltaTime, getDepthView(), getDepthProjection());
+    _terrainLoader->customProcess("camera", deltaTime, getDepthView(), getDepthProjection());
+    
+    /**********************************
+     * RENDER TO DEFAULT FRAMEBUFFER  *
+     * Switch to detault framebuffer
+     *********************************/
+    _renderer.getObjects()->getFramebuffer("shadowFBO")->unbind(defaultFBO); //unbind (original fbo will be bound)
+    _renderer.getView()->setViewportSize(_renderer.getView()->getWidth(), _renderer.getView()->getHeight());
+}
+
+// render scene with objects that cast shadows
+void ShadowModelRenderer::drawToDepthMapDebug(const double &deltaTime)
 {
     /**************************
      * BIND DEPTH-FBO
@@ -167,5 +216,13 @@ vmml::Matrix4f ShadowModelRenderer::getOffsetMatrix(){
     offset *= vmml::create_scaling(vmml::Vector3f(0.5));
     
     return offset;
+}
+
+float ShadowModelRenderer::toDegrees(float radian){
+    return ( radian * 180.0 ) / M_PI_F ;
+}
+
+float ShadowModelRenderer::toRadians(float degree){
+    return ( degree * M_PI_F ) / 180.0 ;
 }
 
