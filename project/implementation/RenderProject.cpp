@@ -92,7 +92,7 @@ void RenderProject::initFunction()
     _playerCamera = PlayerCameraPtr(new PlayerCamera("camera", _player, getProjectRenderer()));
 
 	// create lights
-     bRenderer().getObjects()->createLight("sun", vmml::Vector3f(1000, 1000, 1000), vmml::Vector3f(1.0f), vmml::Vector3f(1.0f), 0.8f, 1.0f, 100.f);
+     bRenderer().getObjects()->createLight("sun", vmml::Vector3f(500, 1000, 500), vmml::Vector3f(1.0f), vmml::Vector3f(1.0f), 1.0f, 1.0f, 100.f);
 
 
     /******************
@@ -139,8 +139,7 @@ void RenderProject::loopFunction(const double &deltaTime, const double &elapsedT
 {
 	// bRenderer::log("FPS: " + std::to_string(1 / deltaTime));	// write number of frames per second to the console every frame
     // std::cout << "FPS: " << std::to_string(1 / deltaTime) << std::endl;
-    
-    // doPostProcessingBloom(deltaTime, elapsedTime);
+
     doShadowMapping(deltaTime, elapsedTime);
     
     vmml::Matrix4f depthMVP = _shadowModelRenderer->getDepthMVP();
@@ -148,6 +147,7 @@ void RenderProject::loopFunction(const double &deltaTime, const double &elapsedT
     vmml::Matrix4f depthProjection = _shadowModelRenderer->getDepthProjection();
     vmml::Matrix4f depthOffset = _shadowModelRenderer->getOffsetMatrix();
     vmml::Matrix4f inverseViewMatrix = bRenderer().getObjects()->getCamera("camera")->getInverseViewMatrix();
+    float shadowBoxLength = _shadowModelRenderer->getShadowBoxLength();
 
     bRenderer().getObjects()->getMaterial("terrain")->setTexture("shadowMap", bRenderer().getObjects()->getDepthMap("depthMap"));
     bRenderer().getObjects()->getShader("terrain")->setUniform("depthMVP", depthMVP);
@@ -155,11 +155,14 @@ void RenderProject::loopFunction(const double &deltaTime, const double &elapsedT
     bRenderer().getObjects()->getShader("terrain")->setUniform("depthProjection", depthProjection);
     bRenderer().getObjects()->getShader("terrain")->setUniform("depthOffset", depthOffset);
     bRenderer().getObjects()->getShader("terrain")->setUniform("InverseViewMatrix", inverseViewMatrix);
+    bRenderer().getObjects()->getShader("terrain")->setUniform("shadowDistance", shadowBoxLength);
 
     _playerCamera->move();
     updateRenderQueue("camera", deltaTime);
     bRenderer().getModelRenderer()->drawQueue(/*GL_LINES*/);
     bRenderer().getModelRenderer()->clearQueue();
+    
+    // doPostProcessingBloom(deltaTime, elapsedTime);
     
 	// Quit renderer when escape is pressed
 	if (bRenderer().getInput()->getKeyState(bRenderer::KEY_ESCAPE) == bRenderer::INPUT_PRESS)
@@ -264,9 +267,9 @@ void RenderProject::doPostProcessingBloom(const double &deltaTime, const double 
     bRenderer().getModelRenderer()->drawModel(bRenderer().getObjects()->getModel("combineSprite"), modelMatrix, _viewMatrixHUD, vmml::Matrix4f::IDENTITY, std::vector<std::string>({}), false);
     
     // draw GUI element to show postprocessing 
-    modelMatrix = vmml::create_translation(vmml::Vector3f(-.75f, 0.75f, -0.5)) *
-    vmml::create_scaling(vmml::Vector3f(0.25));
-    bRenderer().getModelRenderer()->drawModel(bRenderer().getObjects()->getModel("blurSprite"), modelMatrix, _viewMatrixHUD, vmml::Matrix4f::IDENTITY, std::vector<std::string>({}), false);
+//    modelMatrix = vmml::create_translation(vmml::Vector3f(-.75f, 0.75f, -0.5)) *
+//    vmml::create_scaling(vmml::Vector3f(0.25));
+//    bRenderer().getModelRenderer()->drawModel(bRenderer().getObjects()->getModel("blurSprite"), modelMatrix, _viewMatrixHUD, vmml::Matrix4f::IDENTITY, std::vector<std::string>({}), false);
 }
 
 /* This function is executed when terminating the renderer */

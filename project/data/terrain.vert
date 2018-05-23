@@ -3,18 +3,18 @@ $B_SHADER_VERSION
 precision mediump float;
 #endif
 
-uniform mat4 depthMVP;
-uniform mat4 depthView;
-uniform mat4 depthProjection;
-uniform mat4 depthOffset;
+uniform highp mat4 depthMVP;
+uniform highp mat4 depthView;
+uniform highp mat4 depthProjection;
+uniform highp mat4 depthOffset;
 uniform sampler2D shadowMap;
 
-uniform mediump mat4 InverseViewMatrix;
-uniform mediump mat4 ViewMatrix;
-uniform mediump mat4 ModelMatrix;
-uniform mat4 ModelViewMatrix;
-uniform mat4 ProjectionMatrix;
-uniform mat3 NormalMatrix;
+uniform highp mat4 InverseViewMatrix;
+uniform highp mat4 ViewMatrix;
+uniform highp mat4 ModelMatrix;
+uniform highp mat4 ModelViewMatrix;
+uniform highp mat4 ProjectionMatrix;
+uniform highp mat3 NormalMatrix;
 
 uniform lowp vec3 Ka;   // ambient material coefficient
 uniform lowp vec3 Kd;   // diffuse material coefficient
@@ -28,6 +28,8 @@ uniform vec3 lightDiffuseColor_0;
 uniform vec3 lightSpecularColor_0;
 uniform vec4 lightPositionViewSpace_0;
 
+uniform vec4 lightPositionWorldSpace_0;
+
 uniform float amplitude;
 
 attribute highp vec4 Position;
@@ -39,11 +41,18 @@ attribute vec4 TexCoord;
 varying lowp vec4 shadowCoord_varying;
 varying lowp vec4 vertexColor_varying;
 varying lowp vec4 texCoord_varying;
-varying mediump vec3 normal_ModelSpace;
+
+// World Space
+varying mediump vec3 normal_varying_WorldSpace;
+varying mediump vec4 position_varying_WorldSpace;
+
 // Everything in View Space
 varying mediump vec4 position_varying_ViewSpace;
 varying mediump vec3 normal_varying_ViewSpace;
 varying mediump vec3 tangent_varying_ViewSpace;
+
+// Shadow variables
+uniform float shadowDistance;
 
 vec4 biome()
 {
@@ -64,7 +73,8 @@ vec4 biome()
 
 void main()
 {
-    normal_ModelSpace = normalize(NormalMatrix * (Normal * vec3(-1.0, -1.0, 1.0)));
+    vec3 normal_WorldSpace = normalize(NormalMatrix * (Normal * vec3(-1.0, -1.0, 1.0)));
+    vec4 position_WorldSpace = ModelMatrix * Position;
     vec3 normal_ViewSpace = normalize(mat3(ModelViewMatrix) * (Normal * vec3(-1.0, -1.0, 1.0)));
     vec3 tangent_ViewSpace = mat3(ModelViewMatrix) * Tangent;
     vec3 bitangent_ViewSpace = mat3(ModelViewMatrix) * Bitangent;
@@ -77,6 +87,8 @@ void main()
     position_varying_ViewSpace = posViewSpace;
     texCoord_varying = TexCoord;
     vertexColor_varying = biome();
+    normal_varying_WorldSpace = normal_WorldSpace;
+    position_varying_WorldSpace = position_WorldSpace;
     
     // Position of Vertex
     gl_Position = ProjectionMatrix * ModelViewMatrix * Position;

@@ -156,6 +156,7 @@ void ModelRenderer::queueModelInstance(ModelPtr model, const std::string &instan
 					std::string pos = std::to_string(i);
 					LightPtr l = _objectManager->getLight(lightNames[i]);
 					properties->setVector(bRenderer::DEFAULT_SHADER_UNIFORM_LIGHT_POSITION_VIEW_SPACE() + pos, (viewMatrix*l->getPosition()));
+                    properties->setVector("lightPositionWorldSpace_" + pos, (l->getPosition()));
 					if (shader->supportsDiffuseLighting())
 						properties->setVector(bRenderer::DEFAULT_SHADER_UNIFORM_DIFFUSE_LIGHT_COLOR() + pos, l->getDiffuseColor());
 					if (shader->supportsSpecularLighting())

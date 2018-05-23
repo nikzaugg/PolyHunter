@@ -25,16 +25,15 @@ void ShadowModelRenderer::setupCameraConfiguration()
 {
     // CREATE ORTHOGRAPHIC PROJECTION MATRIX
     vmml::Matrix4f orthoMatrix = vmml::Matrix4f::IDENTITY;
-    orthoMatrix.at(0, 0) = 2.0 / -200;
-    orthoMatrix.at(1, 1) = 2.0 / 200;
-    orthoMatrix.at(2, 2) = -2.0 / 1000.0;
+    orthoMatrix.at(0, 0) = 2.0 / -_shadowBoxWidth;
+    orthoMatrix.at(1, 1) = 2.0 / _shadowBoxHeight;
+    orthoMatrix.at(2, 2) = -2.0 / _shadowBoxLength;
     orthoMatrix.at(3, 3) = 1;
     _depthProjectionMatrix = orthoMatrix;
     
     // CREATE LIGHT VIEW MATRIX
     vmml::Matrix4f lightViewMatrix = vmml::Matrix4f::IDENTITY;
-    _lightPosition = _renderer.getObjects()->getLight("sun")->getPosition(); 
-    _lightPosition = _lightPosition;
+    _lightPosition = _renderer.getObjects()->getLight("sun")->getPosition();
     vmml::Vector3f direction = vmml::Vector3f(-_lightPosition.x(), -_lightPosition.y(), -_lightPosition.z());
     // vmml::Vector3f direction = vmml::Vector3f(_lightPosition);
     direction = normalize(direction);
@@ -53,13 +52,10 @@ void ShadowModelRenderer::setupCameraConfiguration()
     yaw = direction.z() > 0 ? (yaw - 180) : yaw;
     std::cout << "yaw: " << yaw << std::endl;
     lightViewMatrix *= vmml::create_rotation((float)-1.0*toRadians(yaw), vmml::Vector3f::UNIT_Y);
-    lightViewMatrix *= vmml::create_translation(vmml::Vector3f(center));
+    // lightViewMatrix *= vmml::create_translation(vmml::Vector3f(center));
+    lightViewMatrix *= vmml::create_translation(vmml::Vector3f(center.x(), 0.0, center.z()));
 
     _depthViewMatrix = lightViewMatrix;
-
-    std::cout << "LightViewMatrix: " << std::endl;
-    std::cout << _depthViewMatrix << std::endl;
-    std::cout << "--------------------- " << std::endl;
 }
 
 float ShadowModelRenderer::toDegrees(float radian){
@@ -84,6 +80,8 @@ void ShadowModelRenderer::setupShadowFBO()
      *****************/
     _depthFBO = _renderer.getObjects()->createFramebuffer("depthFBO");                    // create framebuffer object
     _depthMap = _renderer.getObjects()->createDepthMap("depthMap", _renderer.getView()->getWidth(), _renderer.getView()->getHeight());
+    std::cout << "width "<<_renderer.getView()->getWidth() <<std::endl;
+    std::cout << "height"<<_renderer.getView()->getHeight()<<std::endl;
     
     _depthMaterial = _renderer.getObjects()->createMaterial("depthMaterial", _renderer.getObjects()->getShader("simpleTexture"));
     _renderer.getObjects()->createSprite("depthSprite", _depthMaterial);
@@ -108,7 +106,7 @@ void ShadowModelRenderer::renderShadowScene(const double &deltaTime)
     _player->customProcess("camera", deltaTime, getDepthView(), getDepthProjection());
     _terrainLoader->customProcess("camera", deltaTime, getDepthView(), getDepthProjection());
     /**********************************/
-
+    
     /**************************************
      * RENDER DEPTH-MAP ONTO A GUI-SPRITE
      * to see it on screen
@@ -136,10 +134,14 @@ void ShadowModelRenderer::renderShadowScene(const double &deltaTime)
     
 //    _renderer.getModelRenderer()->drawModel(_renderer.getObjects()->getModel("depthSceneSprite"), modelMatrix, _viewMatrixHUD, vmml::Matrix4f::IDENTITY, std::vector<std::string>({}), false);
 
-    // modelMatrix = vmml::create_translation(vmml::Vector3f(-.75f, 0.75f, -0.5)) *
-    modelMatrix = vmml::create_translation(vmml::Vector3f(-0.5f, 0.5f, -0.5)) *
-    vmml::create_scaling(vmml::Vector3f(0.5));
+    modelMatrix = vmml::create_translation(vmml::Vector3f(-.75f, 0.75f, -0.5)) *
+    // modelMatrix = vmml::create_translation(vmml::Vector3f(-0.5f, 0.5f, -0.5)) *
+    vmml::create_scaling(vmml::Vector3f(0.25));
     _renderer.getModelRenderer()->drawModel(_renderer.getObjects()->getModel("depthSprite"), modelMatrix, _viewMatrixHUD, vmml::Matrix4f::IDENTITY, std::vector<std::string>({}), false);
+}
+
+float ShadowModelRenderer::getShadowBoxLength(){
+    return _shadowBoxLength;
 }
 
 vmml::Matrix4f ShadowModelRenderer::getDepthMVP(){

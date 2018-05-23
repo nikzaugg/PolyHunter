@@ -6,7 +6,7 @@ precision mediump float;
 uniform mat4 ModelViewMatrix;
 uniform mat4 ProjectionMatrix;
 
-attribute vec4 Position;
+attribute highp vec4 Position;
 
 //varying vec4 texCoordVarying;
 

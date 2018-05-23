@@ -24,31 +24,72 @@ uniform float lightIntensity_0;
 uniform vec3 lightDiffuseColor_0;
 uniform vec3 lightSpecularColor_0;
 uniform vec4 lightPositionViewSpace_0;
+uniform vec4 lightPositionWorldSpace_0;
 
 varying lowp vec4 shadowCoord_varying;
 varying lowp vec4 vertexColor_varying;
 varying lowp vec4 texCoord_varying;
-varying mediump vec3 normal_ModelSpace;
+varying mediump vec3 normal_varying_WorldSpace;
+varying mediump vec4 position_varying_WorldSpace;
 // Everything in View Space
 varying mediump vec4 position_varying_ViewSpace;
 varying mediump vec3 normal_varying_ViewSpace;
 varying mediump vec3 tangent_varying_ViewSpace;
 
-void main()
-{
-    float bias = 0.005;
+mediump vec2 poissonDisk[4];
+int pcfCount = 3;
+int totalTexels = (pcfCount * 2 + 1) * (pcfCount * 2 + 1);
 
-    float objectNearestLight = texture2D(shadowMap, shadowCoord_varying.xy).r;
-    float lightFactor = 1.0;
-    if (shadowCoord_varying.z - bias > objectNearestLight) {
-        lightFactor = 1.0 - 0.4;
+float ShadowCalculation(vec3 normal, vec4 lightDir)
+{
+    // perform perspective divide
+    vec3 shadowCoords = shadowCoord_varying.xyz/shadowCoord_varying.w;
+    
+    float mapSize = 1024.0;
+    float texelSize = 1.0/ mapSize;
+    float total = 0.0;
+    
+    float lightIntensity = dot(normal, lightDir.xyz);
+    lightIntensity = clamp(lightIntensity, 0.0, 1.0);
+    float bias = 0.005*tan(acos(lightIntensity)); // cosTheta is dot( n,l ), clamped between 0 and 1
+    bias = clamp(bias, 0.0, 0.01);
+
+    for (int x = -pcfCount; x < pcfCount; x++) {
+        for (int y=-pcfCount; y < pcfCount; y++) {
+            float closestDepth = texture2D(shadowMap, shadowCoords.xy + vec2(x,y) * texelSize).r;
+            if (shadowCoords.z - bias > closestDepth) {
+                total += 1.0;
+            }
+        }
+    }
+    float totTex = float(totalTexels);
+    total /= totTex;
+    
+    float shadow = 1.0 - (total);
+
+    if (shadowCoord_varying.w > 1.0) {
+        shadow = 1.0;
     }
     
+    if (abs(shadowCoords.x) > 1.0 ||
+        abs(shadowCoords.y) > 1.0 ||
+        abs(shadowCoords.z) > 1.0 )
+        shadow = 1.0;
+
+    return shadow;
+}
+
+void main()
+{
     vec4 position = position_varying_ViewSpace;
+    vec4 position_world = position_varying_WorldSpace;
     vec3 normal = normalize(normal_varying_ViewSpace);
-    vec3 normal_modelSpace = normalize(normal_ModelSpace);
-    vec4 lightPosition = lightPositionViewSpace_0;
+    vec3 normal_world = normalize(normal_varying_WorldSpace);
+    vec4 lightPosition = normalize(lightPositionViewSpace_0);
     vec4 lightVector = normalize(lightPosition - position);
+    vec4 lightPosition_world = normalize(lightPositionWorldSpace_0);
+    vec4 lightVector_world = normalize(lightPosition_world - position_world);
+    
     
     // ambient part
     vec4 ambientPart = vec4(ambientColor * lightIntensity_0, 1.0);
@@ -59,16 +100,14 @@ void main()
     vec3 diffuseTerm = Kd * clamp(intensityFactor, 0.0, 1.0) * lightDiffuseColor_0;
     vec4 diffusePart = vec4(clamp(diffuseTerm, 0.0, 1.0), 1.0);
     
-    diffusePart = diffusePart * lightFactor;
+    // shadow-value
+    float shadow = ShadowCalculation(normal_world, lightVector_world);
     
-    gl_FragColor = (ambientPart + diffusePart) * vertexColor_varying;
+    vec4 totalDiffuse = diffusePart * shadow;
     
-    // gl_FragColor = vec4(vec3(objectNearestLight), 1.0);
-    
+    gl_FragColor = (ambientPart + totalDiffuse) * vertexColor_varying;
+
     // Color according to normals
     // vec3 normal_test = normal/2.0 + vec3(0.5);
     // gl_FragColor = vec4(normal_test, 1.0);
-    
-    // Color accordin to model space normals
-    //gl_FragColor = vec4(normal_modelSpace, 1.0) * vec4(1.0);
 }

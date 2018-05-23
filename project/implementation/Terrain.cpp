@@ -190,7 +190,7 @@ void Terrain::customRenderTerrain(std::string camera, vmml::Matrix4f view, vmml:
     getShader()->setUniform("amplitude", _amplitude);
     renderer().getObjects()->setAmbientColor(vmml::Vector3f(0.3f));
     // draw model
-    renderer().getModelRenderer()->drawModel(renderer().getObjects()->getModel(getModelName()), computeTransformationMatrix(), view, proj, std::vector<std::string>({}), false);
+    // renderer().getModelRenderer()->drawModel(renderer().getObjects()->getModel(getModelName()), computeTransformationMatrix(), view, proj, std::vector<std::string>({}), false);
 }
 
 Terrain::TreeMap Terrain::getTreeMap()
