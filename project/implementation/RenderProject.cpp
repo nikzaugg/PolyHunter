@@ -111,10 +111,9 @@ void RenderProject::loopFunction(const double &deltaTime, const double &elapsedT
 
     _playerCamera->move();
     updateRenderQueue("camera", deltaTime);
-    bRenderer().getModelRenderer()->drawQueue(/*GL_LINES*/);
-    bRenderer().getModelRenderer()->clearQueue();
-    
     _bloomRenderer->doBloomRenderPass("camera", deltaTime);
+    
+    bRenderer().getModelRenderer()->clearQueue();
     
 	// Quit renderer when escape is pressed
 	if (bRenderer().getInput()->getKeyState(bRenderer::KEY_ESCAPE) == bRenderer::INPUT_PRESS)

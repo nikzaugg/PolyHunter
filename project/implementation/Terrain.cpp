@@ -111,6 +111,7 @@ void Terrain::generateTerrainGeometry()
              CREATE TREES
              *****************/
             placeTree(i, j);
+            placeCrystal(i, j);
         }
     }
 }
@@ -143,6 +144,39 @@ void Terrain::placeTree(int i, int j)
     }
 }
 
+void Terrain::placeCrystal(int i, int j)
+{
+    noise::module::RidgedMulti ridgedMulti;
+    ridgedMulti.SetSeed(50);
+    
+    // Rescale from -1.0:+1.0 to 0.0:1.0
+    float xPos = ((float)i / ((float)_VERTEX_COUNT - 1)) * _TERRAIN_SIZE;
+    xPos += _offsetX;
+    
+    float zPos = ((float)j / ((float)_VERTEX_COUNT - 1)) * _TERRAIN_SIZE;
+    zPos += _offsetZ;
+    
+    float crystalHeight;
+    crystalHeight = getHeightFromNoise(getNoiseInput(xPos), getNoiseInput(zPos));
+    
+    float value = ridgedMulti.GetValue(xPos, crystalHeight, zPos);
+    if (value > 1.0f)
+    {
+        /*
+         Entity(std::string objName, std::string modelName, std::string propName, ShaderPtr shader, Renderer & renderer, vmml::Vector3f pos, float rotX, float rotY, float rotZ, float scale);
+         */
+        TreePtr crystal = TreePtr(new Tree(getModelName() + std::to_string(i), "Crystal.obj", "Crystal", "crystalProperties", renderer().getObjects()->loadShaderFile("basic", 1, false, true, true, true, false), renderer(), vmml::Vector3f(xPos, crystalHeight, zPos), 0.0f, 0.0f, 0.0f, 1.0f));
+        
+        crystal->setYPosition(crystalHeight);
+        crystal->setYPosition(crystalHeight);
+        // tree->add();
+        _crystals.insert(
+                      CrystalMap::value_type( getModelName() + std::to_string(i), crystal)
+                      );
+        _treeCount++;
+    }
+}
+
 double Terrain::getNoiseInput(float coord)
 {
     return coord / (float)(_TERRAIN_SIZE * 3);
@@ -151,6 +185,7 @@ double Terrain::getNoiseInput(float coord)
 void Terrain::process(std::string cameraName, const double &deltaTime)
 {
     processTrees(cameraName);
+    processCrystals(cameraName);
     renderTerrain(cameraName);
 }
 
@@ -164,6 +199,14 @@ void Terrain::processTrees(std::string camera)
 {
     TreeMap::iterator it;
     for (auto const& x : _trees) {
+        x.second->render(camera);
+    }
+}
+
+void Terrain::processCrystals(std::string camera)
+{
+    CrystalMap::iterator it;
+    for (auto const& x : _crystals) {
         x.second->render(camera);
     }
 }

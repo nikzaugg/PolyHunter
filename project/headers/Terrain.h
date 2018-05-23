@@ -12,6 +12,7 @@ public:
     Terrain(std::string modelName, std::string materialFile, std::string materialName, std::string propName, ShaderPtr shader, Renderer & renderer, int gridX, int gridZ, int terrain_size, int vertex_count ,vmml::Vector3f pos, float rotX, float rotY, float rotZ, float scale);
 	
     typedef std::unordered_map< std::string, TreePtr > TreeMap;
+    typedef std::unordered_map< std::string, TreePtr > CrystalMap;
     typedef std::unordered_map< std::string, GeometryPtr > GroupMap;
     
 	void process(std::string cameraName, const double &deltaTime);
@@ -25,10 +26,13 @@ private:
     ModelData::GroupMap generateTerrain();
     void generateTerrainGeometry();
     void placeTree(int i, int j);
+    void placeCrystal(int i, int j);
     void renderTerrain(std::string cameraName);
     void customRenderTerrain(std::string camera, vmml::Matrix4f view, vmml::Matrix4f proj);
     void processTrees(std::string camera);
+    void processCrystals(std::string camera);
     void customProcessTrees(std::string camera, vmml::Matrix4f view, vmml::Matrix4f proj);
+    void customProcessCrystals(std::string camera, vmml::Matrix4f view, vmml::Matrix4f proj);
     double getNoiseInput(float coord);
     
     float barryCentric(vmml::Vector3f p1, vmml::Vector3f p2, vmml::Vector3f p3, vmml::Vector2f pos);
@@ -43,7 +47,9 @@ private:
 
 	int _numFaces;
 
+    RendererPtr _renderer;
 	TreeMap _trees;
+    CrystalMap _crystals;
     int _treeCount = 0;
 
     ProceduralOBJLoader _objLoader;

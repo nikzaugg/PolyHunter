@@ -8,7 +8,6 @@ class Entity
 public:
     Entity();
     Entity(std::string objName, std::string modelName, std::string propName, ShaderPtr shader, Renderer & renderer, vmml::Vector3f pos, float rotX, float rotY, float rotZ, float scale);
-    
     Entity(std::string modelName, std::string materialFile, std::string materialName, std::string propName, ShaderPtr shader, Renderer & renderer, vmml::Vector3f pos, float rotX, float rotY, float rotZ, float scale);
     
     void increasePosition(float dx, float dy, float dz);
@@ -65,4 +64,5 @@ private:
     GroupMap        _groups;
     vmml::AABBf        _boundingBox;
 };
+typedef std::shared_ptr< Entity >  EntityPtr;
 #endif /* defined(B_ENTITY_H) */
