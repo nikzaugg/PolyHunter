@@ -7,6 +7,7 @@
 #include "TerrainLoader.h"
 #include "PlayerCamera.h"
 #include "ShadowModelRenderer.h"
+#include "BloomRenderer.h"
 
 class RenderProject : public IRenderProject
 {
@@ -54,9 +55,6 @@ private:
     
 	/* Update render queue */
 	void updateRenderQueue(const std::string &camera, const double &deltaTime);
-    
-    /* Update shadow render queue */
-    void updateShadowRenderQueue(const std::string &camera, const double &deltaTime);
 
 	/* Camera movement */
 	void updateCamera(const std::string &camera, const double &deltaTime);
@@ -66,9 +64,6 @@ private:
 
 	/* Helper Functions */
 	GLfloat randomNumber(GLfloat min, GLfloat max);
-    
-    /* Do Postprocessing operations */
-    void doPostProcessingBloom(const double &deltaTime, const double &elapsedTime);
     
 	/* Variables */
 	GLfloat _randomOffset;
@@ -84,6 +79,7 @@ private:
     TerrainPtr _terrain;
     PlayerCameraPtr _playerCamera;
     ShadowModelRendererPtr _shadowModelRenderer;
+    BloomRendererPtr _bloomRenderer;
     std::vector<TerrainPtr> terrains;
     
     bool _animation_forward;

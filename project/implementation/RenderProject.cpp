@@ -84,6 +84,9 @@ void RenderProject::initFunction()
     
     // SHADOWMODELRENDERER
     _shadowModelRenderer = ShadowModelRendererPtr(new ShadowModelRenderer(getProjectRenderer(), _player, _terrainLoader));
+    
+    // BLOOMRENDERER
+    _bloomRenderer = BloomRendererPtr(new BloomRenderer(getProjectRenderer(), _terrainLoader));
 
 	// create camera
     bRenderer().getObjects()->createCamera("camera");
@@ -93,41 +96,6 @@ void RenderProject::initFunction()
 
 	// create lights
      bRenderer().getObjects()->createLight("sun", vmml::Vector3f(500, 1000, 500), vmml::Vector3f(1.0f), vmml::Vector3f(1.0f), 1.0f, 1.0f, 100.f);
-    
-    /******************
-     FBO
-     *****************/
-    bRenderer().getObjects()->createFramebuffer("shadowFBO");                    // create framebuffer object
-    bRenderer().getObjects()->createTexture("shadowTexture", 0.f, 0.f);    // create texture to bind to the fbo
-    
-    // Create an FBO with textures
-    bRenderer().getObjects()->createFramebuffer("bloomFBO");                    // create framebuffer object
-    bRenderer().getObjects()->createTexture("sceneTexture", 0.f, 0.f);    // create texture to bind to the fbo
-    bRenderer().getObjects()->createTexture("crystalTexture", 0.f, 0.f);    // create texture to bind to the fbo
-    bRenderer().getObjects()->createTexture("brightTexture", 0.f, 0.f);    // create texture to bind to the fbo
-    bRenderer().getObjects()->createTexture("horizBlurTexture", 0.f, 0.f);    // create texture to bind to the fbo
-    bRenderer().getObjects()->createTexture("vertBlurTexture", 0.f, 0.f);    // create texture to bind to the fbo
-    bRenderer().getObjects()->createTexture("combineTexture", 0.f, 0.f);    // create texture to bind to the fbo
-    
-    // create 2 depth buffers
-    bRenderer().getObjects()->createDepthMap("sceneDepthMap", bRenderer().getView()->getWidth(), bRenderer().getView()->getHeight());
-    bRenderer().getObjects()->createDepthMap("crystalDepthMap", bRenderer().getView()->getWidth(), bRenderer().getView()->getHeight());
-
-    // Create 3 different shaders for each processing step
-    ShaderPtr brightFilterShader = bRenderer().getObjects()->loadShaderFile_o("brightShader", 0);
-    ShaderPtr blurShader = bRenderer().getObjects()->loadShaderFile_o("blurShader", 0);
-    ShaderPtr combineShader = bRenderer().getObjects()->loadShaderFile_o("combineShader", 0);
-    
-    // Create Materials for each processing step, so that we can pass a texture to the shader
-    MaterialPtr brightMaterial = bRenderer().getObjects()->createMaterial("brightMaterial", brightFilterShader);
-    MaterialPtr blurMaterial = bRenderer().getObjects()->createMaterial("blurMaterial", blurShader);
-    MaterialPtr combineMaterial = bRenderer().getObjects()->createMaterial("combineMaterial", combineShader);
-
-    // Create 3 Sprites which are rendered to an FBO (thus creating the texture)
-    bRenderer().getObjects()->createSprite("sceneSprite", brightMaterial);
-    bRenderer().getObjects()->createSprite("brightSprite", brightMaterial);
-    bRenderer().getObjects()->createSprite("blurSprite", blurMaterial);
-    bRenderer().getObjects()->createSprite("combineSprite", combineMaterial);
     
 	// Update render queue
     updateRenderQueue("camera", 0.0f);
@@ -146,129 +114,18 @@ void RenderProject::loopFunction(const double &deltaTime, const double &elapsedT
     bRenderer().getModelRenderer()->drawQueue(/*GL_LINES*/);
     bRenderer().getModelRenderer()->clearQueue();
     
-    doPostProcessingBloom(deltaTime, elapsedTime);
+    _bloomRenderer->doBloomRenderPass("camera", deltaTime);
     
 	// Quit renderer when escape is pressed
 	if (bRenderer().getInput()->getKeyState(bRenderer::KEY_ESCAPE) == bRenderer::INPUT_PRESS)
 		bRenderer().terminateRenderer();
 }
 
-void RenderProject::doPostProcessingBloom(const double &deltaTime, const double &elapsedTime){
-
-    GLint defaultFBO;
-    /*************************
-     * BLOOM EFFECT BEGIN  *
-     ************************/
-    // bind Bloom FBO
-    bRenderer().getView()->setViewportSize(bRenderer().getView()->getWidth(), bRenderer().getView()->getHeight());        // reduce viewport size
-    defaultFBO = Framebuffer::getCurrentFramebuffer();    // get current fbo to bind it again after drawing the scene
-    
-    /// Render to Color Texture Attachment
-    bRenderer().getObjects()->getFramebuffer("bloomFBO")->bindTexture(bRenderer().getObjects()->getTexture("sceneTexture"), false);    // bind the fbo
-    // render whole scene to an FBO (sceneTexture)
-    bRenderer().getModelRenderer()->drawQueue(/*GL_LINES*/);
-    bRenderer().getModelRenderer()->clearQueue();
-    updateRenderQueue("camera", deltaTime);
-    updateCamera("camera", deltaTime);
-    _playerCamera->move();
-    
-    /// Render to Depth Texture Attachment
-    bRenderer().getObjects()->getFramebuffer("bloomFBO")->bindDepthMap(bRenderer().getObjects()->getDepthMap("sceneDepthMap"), false);    // bind the fbo
-    // render whole scene to an FBO (sceneTexture)
-    bRenderer().getModelRenderer()->drawQueue(/*GL_LINES*/);
-    bRenderer().getModelRenderer()->clearQueue();
-    updateRenderQueue("camera", deltaTime);
-    updateCamera("camera", deltaTime);
-    _playerCamera->move();
-    
-    /// Render to Color Texture Attachment
-    // render crystal to an FBO (crystalTexture)
-    bRenderer().getObjects()->getFramebuffer("bloomFBO")->bindTexture(bRenderer().getObjects()->getTexture("crystalTexture"), false);    // bind the fbo
-    /// LOW POLY CRYSTAL ///
-    vmml::Matrix4f modelMatrix =
-    vmml::create_translation(vmml::Vector3f(0.0, 20.0, 0.0)) *
-    vmml::create_scaling(vmml::Vector3f(5.0f));
-    // draw model
-    bRenderer().getModelRenderer()->drawModel("Crystal", "camera", modelMatrix, std::vector<std::string>({ "sun" }), true, true);
-    
-    /// Render to Depth Texture Attachment
-    bRenderer().getObjects()->getFramebuffer("bloomFBO")->bindDepthMap(bRenderer().getObjects()->getDepthMap("crystalDepthMap"), false);    // bind the fbo
-    /// LOW POLY CRYSTAL ///
-    modelMatrix =
-    vmml::create_translation(vmml::Vector3f(0.0, 20.0, 0.0)) *
-    vmml::create_scaling(vmml::Vector3f(5.0f));
-    // draw model
-    bRenderer().getModelRenderer()->drawModel("Crystal", "camera", modelMatrix, std::vector<std::string>({ "sun" }), true, true);
-    
-    /// Render the created texture to another FBO, applying a bright filter (brightTexture)
-    modelMatrix = vmml::create_translation(vmml::Vector3f(0.0f, 0.0f, -0.5));
-    bRenderer().getObjects()->getFramebuffer("bloomFBO")->bindTexture(bRenderer().getObjects()->getTexture("brightTexture"), false);    // bind the fbo
-    bRenderer().getObjects()->getMaterial("brightMaterial")->setTexture("fbo_texture", bRenderer().getObjects()->getTexture("crystalTexture"));
-    
-    // bRenderer().getObjects()->getMaterial("bloomMaterial")->setScalar("isVertical", static_cast<GLfloat>(true));
-    // draw currently active framebuffer
-    bRenderer().getModelRenderer()->drawModel(bRenderer().getObjects()->getModel("brightSprite"), modelMatrix, _viewMatrixHUD, vmml::Matrix4f::IDENTITY, std::vector<std::string>({}), false);
-    
-    /// Render brightTexture to another FBO, applying Gaussian Blur  HORIZONTAL (blurredTexture)
-    modelMatrix = vmml::create_translation(vmml::Vector3f(0.0f, 0.0f, -0.5));
-    bRenderer().getObjects()->getFramebuffer("bloomFBO")->bindTexture(bRenderer().getObjects()->getTexture("horizBlurTexture"), false);    // bind the fbo
-    bRenderer().getObjects()->getMaterial("blurMaterial")->setTexture("fbo_texture", bRenderer().getObjects()->getTexture("brightTexture"));
-    bRenderer().getObjects()->getMaterial("blurMaterial")->setScalar("isVertical", static_cast<GLfloat>(true));
-    // draw currently active framebuffer
-    bRenderer().getModelRenderer()->drawModel(bRenderer().getObjects()->getModel("blurSprite"), modelMatrix, _viewMatrixHUD, vmml::Matrix4f::IDENTITY, std::vector<std::string>({}), false);
-    
-    /// Render brightTexture to another FBO, applying Gaussian Blur VERTICAL (blurredTexture)
-    modelMatrix = vmml::create_translation(vmml::Vector3f(0.0f, 0.0f, -0.5));
-    bRenderer().getObjects()->getFramebuffer("bloomFBO")->bindTexture(bRenderer().getObjects()->getTexture("vertBlurTexture"), false);    // bind the fbo
-    bRenderer().getObjects()->getMaterial("blurMaterial")->setTexture("fbo_texture", bRenderer().getObjects()->getTexture("horizBlurTexture"));
-    bRenderer().getObjects()->getMaterial("blurMaterial")->setScalar("isVertical", static_cast<GLfloat>(false));
-    // draw currently active framebuffer
-    bRenderer().getModelRenderer()->drawModel(bRenderer().getObjects()->getModel("blurSprite"), modelMatrix, _viewMatrixHUD, vmml::Matrix4f::IDENTITY, std::vector<std::string>({}), false);
-    
-    /// Combine sceneTexture & blurredTexture and render to default FBO (screen)
-    modelMatrix = vmml::create_translation(vmml::Vector3f(0.0f, 0.0f, -0.5));
-    bRenderer().getObjects()->getFramebuffer("bloomFBO")->bindTexture(bRenderer().getObjects()->getTexture("combineTexture"), false);    // bind the fbo
-    bRenderer().getObjects()->getMaterial("combineMaterial")->setTexture("fbo_texture1", bRenderer().getObjects()->getTexture("sceneTexture"));
-    bRenderer().getObjects()->getMaterial("combineMaterial")->setTexture("fbo_texture2", bRenderer().getObjects()->getTexture("vertBlurTexture"));
-    bRenderer().getObjects()->getMaterial("combineMaterial")->setTexture("fbo_depth1", bRenderer().getObjects()->getDepthMap("sceneDepthMap"));
-    bRenderer().getObjects()->getMaterial("combineMaterial")->setTexture("fbo_depth2", bRenderer().getObjects()->getDepthMap("crystalDepthMap"));
-    // draw currently active framebuffer
-    bRenderer().getModelRenderer()->drawModel(bRenderer().getObjects()->getModel("combineSprite"), modelMatrix, _viewMatrixHUD, vmml::Matrix4f::IDENTITY, std::vector<std::string>({}), false);
-
-    /**********************************
-     * RENDER TO DEFAULT FRAMEBUFFER  *
-     * Switch to detault framebuffer (the screen) and draw the created sprite
-     *********************************/
-    bRenderer().getObjects()->getFramebuffer("bloomFBO")->unbind(defaultFBO); //unbind (original fbo will be bound)
-    bRenderer().getView()->setViewportSize(bRenderer().getView()->getWidth(), bRenderer().getView()->getHeight());
-    
-    bRenderer().getModelRenderer()->drawModel(bRenderer().getObjects()->getModel("combineSprite"), modelMatrix, _viewMatrixHUD, vmml::Matrix4f::IDENTITY, std::vector<std::string>({}), false);
-    
-    // draw GUI element to show postprocessing 
-//    modelMatrix = vmml::create_translation(vmml::Vector3f(-.75f, 0.75f, -0.5)) *
-//    vmml::create_scaling(vmml::Vector3f(0.25));
-//    bRenderer().getModelRenderer()->drawModel(bRenderer().getObjects()->getModel("blurSprite"), modelMatrix, _viewMatrixHUD, vmml::Matrix4f::IDENTITY, std::vector<std::string>({}), false);
-}
-
-/* This function is executed when terminating the renderer */
+/* function is executed when terminating the renderer */
 void RenderProject::terminateFunction()
 {
 	bRenderer::log("I totally terminated this Renderer :-)");
 }
-
-void RenderProject::updateShadowRenderQueue(const std::string &camera, const double &deltaTime)
-{
-    /**************
-     RENDER PLAYER
-     *************/
-    _player->process(camera, deltaTime);
-    
-    /**************
-     RENDER TERRAIN
-     *************/
-    _terrainLoader->process(camera, deltaTime);
-}
-
 
 /* Update render queue */
 void RenderProject::updateRenderQueue(const std::string &camera, const double &deltaTime)
@@ -292,7 +149,7 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
     vmml::create_translation(vmml::Vector3f(0.0, 20.0, 0.0)) *
     vmml::create_scaling(vmml::Vector3f(5.0f));
     // draw model
-    bRenderer().getModelRenderer()->drawModel("Crystal", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
+    bRenderer().getModelRenderer()->queueModelInstance("Crystal", "Crystal", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
 
     /// SUN ///
     modelMatrix =

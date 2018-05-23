@@ -80,11 +80,13 @@ void ShadowModelRenderer::setupShadowFBO()
      Depth FBO
      *****************/
     _depthFBO = _renderer.getObjects()->createFramebuffer("depthFBO");
+    _depthFBO = _renderer.getObjects()->createFramebuffer("shadowFBO");
     _depthMap = _renderer.getObjects()->createDepthMap("depthMap", _renderer.getView()->getWidth(), _renderer.getView()->getHeight());
     _depthMaterial = _renderer.getObjects()->createMaterial("depthMaterial", _renderer.getObjects()->getShader("simpleTexture"));
     _renderer.getObjects()->createSprite("depthSprite", _depthMaterial);
     _renderer.getObjects()->createSprite("depthSceneSprite", _depthMaterial);
     _renderer.getObjects()->createTexture("depthTexture", 0.f, 0.f);
+    _renderer.getObjects()->createTexture("shadowTexture", 0.f, 0.f);
 }
 
 void ShadowModelRenderer::updateLightViewMatrix()
@@ -134,7 +136,7 @@ void ShadowModelRenderer::drawToDepthMap(const double &deltaTime)
      * RENDER TO DEFAULT FRAMEBUFFER  *
      * Switch to detault framebuffer
      *********************************/
-    _renderer.getObjects()->getFramebuffer("shadowFBO")->unbind(defaultFBO); //unbind (original fbo will be bound)
+    _renderer.getObjects()->getFramebuffer("depthFBO")->unbind(defaultFBO); //unbind (original fbo will be bound)
     _renderer.getView()->setViewportSize(_renderer.getView()->getWidth(), _renderer.getView()->getHeight());
 }
 

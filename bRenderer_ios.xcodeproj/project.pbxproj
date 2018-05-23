@@ -21,10 +21,9 @@
 		3136FA2F209A5D4D008436CF /* right.png in Resources */ = {isa = PBXBuildFile; fileRef = 3136FA29209A5D4C008436CF /* right.png */; };
 		3136FA30209A5D4D008436CF /* top.png in Resources */ = {isa = PBXBuildFile; fileRef = 3136FA2A209A5D4C008436CF /* top.png */; };
 		3136FA34209A60C6008436CF /* skybox.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 3136FA33209A60C5008436CF /* skybox.mtl */; };
-		313CE36820AB19C20062614A /* brightShader.vert in Resources */ = {isa = PBXBuildFile; fileRef = 313CE36720AB19C20062614A /* brightShader.vert */; };
-		313CE36A20AB19E00062614A /* brightShader.frag in Resources */ = {isa = PBXBuildFile; fileRef = 313CE36920AB19E00062614A /* brightShader.frag */; };
 		315E0D9720A2D4340085984D /* guy.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 315E0D9520A2D4340085984D /* guy.mtl */; };
 		315E0D9820A2D4340085984D /* guy.obj in Resources */ = {isa = PBXBuildFile; fileRef = 315E0D9620A2D4340085984D /* guy.obj */; };
+		317950AE20B605EA00D94992 /* BloomRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 317950AD20B605EA00D94992 /* BloomRenderer.cpp */; };
 		3180C99F209FAFF600EC2AF9 /* PlayerCamera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3180C99E209FAFF600EC2AF9 /* PlayerCamera.cpp */; };
 		318C88E8208FBE6000B218B1 /* Skybox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 318C88E7208FBE6000B218B1 /* Skybox.cpp */; };
 		318C88F1208FBEFC00B218B1 /* libnoise.m in Sources */ = {isa = PBXBuildFile; fileRef = 318C88F0208FBEFC00B218B1 /* libnoise.m */; };
@@ -253,10 +252,10 @@
 		3136FA29209A5D4C008436CF /* right.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = right.png; sourceTree = "<group>"; };
 		3136FA2A209A5D4C008436CF /* top.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = top.png; sourceTree = "<group>"; };
 		3136FA33209A60C5008436CF /* skybox.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = skybox.mtl; sourceTree = "<group>"; };
-		313CE36720AB19C20062614A /* brightShader.vert */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = brightShader.vert; sourceTree = "<group>"; };
-		313CE36920AB19E00062614A /* brightShader.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = brightShader.frag; sourceTree = "<group>"; };
 		315E0D9520A2D4340085984D /* guy.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = guy.mtl; sourceTree = "<group>"; };
 		315E0D9620A2D4340085984D /* guy.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = guy.obj; sourceTree = "<group>"; };
+		317950AD20B605EA00D94992 /* BloomRenderer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = BloomRenderer.cpp; sourceTree = "<group>"; };
+		317950AF20B605FC00D94992 /* BloomRenderer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BloomRenderer.h; sourceTree = "<group>"; };
 		3180C99E209FAFF600EC2AF9 /* PlayerCamera.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = PlayerCamera.cpp; sourceTree = "<group>"; };
 		3180C9A0209FB01A00EC2AF9 /* PlayerCamera.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlayerCamera.h; sourceTree = "<group>"; };
 		318C88E6208FBE4E00B218B1 /* Skybox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Skybox.h; sourceTree = "<group>"; };
@@ -736,6 +735,7 @@
 				3180C9A0209FB01A00EC2AF9 /* PlayerCamera.h */,
 				312A838220A1936900621562 /* TerrainLoader.h */,
 				31E5CD7120B052E9005DC7D5 /* ShadowModelRenderer.h */,
+				317950AF20B605FC00D94992 /* BloomRenderer.h */,
 			);
 			path = headers;
 			sourceTree = "<group>";
@@ -755,6 +755,7 @@
 				3180C99E209FAFF600EC2AF9 /* PlayerCamera.cpp */,
 				312A838320A1937900621562 /* TerrainLoader.cpp */,
 				31E5CD6F20B052CB005DC7D5 /* ShadowModelRenderer.cpp */,
+				317950AD20B605EA00D94992 /* BloomRenderer.cpp */,
 			);
 			path = implementation;
 			sourceTree = "<group>";
@@ -764,8 +765,6 @@
 			children = (
 				31E5CD6B20B03883005DC7D5 /* simpleTexture.frag */,
 				31E5CD6C20B03883005DC7D5 /* simpleTexture.vert */,
-				313CE36720AB19C20062614A /* brightShader.vert */,
-				313CE36920AB19E00062614A /* brightShader.frag */,
 				B47949871BA6742B00B5E9DC /* blurShader.frag */,
 				B47949881BA6742B00B5E9DC /* blurShader.vert */,
 				31FEB34620AF57960033CD99 /* combineShader.frag */,
@@ -1166,7 +1165,6 @@
 				B47949B81BA6742B00B5E9DC /* flame.png in Resources */,
 				B47949A51BA6742B00B5E9DC /* blurShader.vert in Resources */,
 				31FEB34820AF57970033CD99 /* combineShader.frag in Resources */,
-				313CE36820AB19C20062614A /* brightShader.vert in Resources */,
 				31A71EEA20865D6F00A2D46A /* basic.frag in Resources */,
 				B47949BB1BA6742B00B5E9DC /* sparks.png in Resources */,
 				31A71EE520865D6F00A2D46A /* sun.png in Resources */,
@@ -1216,7 +1214,6 @@
 				3136FA24209A1D76008436CF /* skybox.vert in Resources */,
 				B4794A301BA6743D00B5E9DC /* LICENSE.txt in Resources */,
 				31E5CD6D20B03883005DC7D5 /* simpleTexture.frag in Resources */,
-				313CE36A20AB19E00062614A /* brightShader.frag in Resources */,
 				3136FA2C209A5D4D008436CF /* left.png in Resources */,
 				B4CB8CD01B72E43300FE041B /* Project-Info.plist in Resources */,
 				3136FA23209A1D76008436CF /* skybox.frag in Resources */,
@@ -1325,6 +1322,7 @@
 				31B0FD792097A20200601F21 /* Entity.cpp in Sources */,
 				31A71EEE20865D8800A2D46A /* Terrain.cpp in Sources */,
 				B4794A521BA6743D00B5E9DC /* BView.mm in Sources */,
+				317950AE20B605EA00D94992 /* BloomRenderer.cpp in Sources */,
 				B4794A321BA6743D00B5E9DC /* obj.cpp in Sources */,
 				B47AD6CB1B827E4C00AFC632 /* ftsynth.c in Sources */,
 				B47AD6DB1B827EDF00AFC632 /* raster.c in Sources */,
