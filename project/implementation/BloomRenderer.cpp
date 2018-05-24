@@ -69,11 +69,8 @@ void BloomRenderer::doBloomRenderPass(std::string camera, const double &deltaTim
     _renderer.getObjects()->getFramebuffer("bloomFBO")->bindDepthMap(_renderer.getObjects()->getDepthMap("modelsToBlurDepthMap"), false);    // bind the fbo
     
     /// DRAW MODELS THAT SHOULD HAVE THE BLOOM EFFECT ///
-    vmml::Matrix4f modelMatrix =
-    vmml::create_translation(vmml::Vector3f(0.0, 20.0, 0.0)) *
-    vmml::create_scaling(vmml::Vector3f(5.0f));
-    // draw model
-    _renderer.getModelRenderer()->drawModel("Crystal", "camera", modelMatrix, std::vector<std::string>({ "sun" }), true, true);
+    vmml::Matrix4f modelMatrix;
+    _terrainLoader->renderCrystals("camera", deltaTime);
     
     /// Render the created texture to another FBO, applying a bright filter (modelsToBlurTexture)
     modelMatrix = vmml::create_translation(vmml::Vector3f(0.0f, 0.0f, -0.5));

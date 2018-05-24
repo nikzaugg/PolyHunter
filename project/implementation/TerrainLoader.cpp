@@ -181,6 +181,14 @@ void TerrainLoader::refreshTerrainTiles()
     std::cout << _terrains.size() << std::endl;
 }
 
+void TerrainLoader::renderCrystals(std::string camera, const double &deltaTime)
+{
+    TerrainMap::iterator it;
+    for (auto const& x: _terrains) {
+        x.second->drawCrystals(camera);
+    }
+}
+
 void TerrainLoader::renderTerrains(std::string camera, const double &deltaTime)
 {
     TerrainMap::iterator it;

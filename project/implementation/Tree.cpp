@@ -1,6 +1,15 @@
 #include "Tree.h"
 #include "iostream"
 
+void Tree::draw(std::string camera)
+{
+    // set ambient color
+    renderer().getObjects()->setAmbientColor(vmml::Vector3f(0.5f));
+    
+    // draw model
+    renderer().getModelRenderer()->drawModel(getModelName(), "camera", getModelMatrix(), std::vector<std::string>({"sun"}), true, true);
+}
+
 void Tree::render(std::string camera)
 {
 	// set ambient color

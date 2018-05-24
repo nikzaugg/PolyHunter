@@ -16,6 +16,7 @@ public:
     typedef std::unordered_map< std::string, GeometryPtr > GroupMap;
     
 	void process(std::string cameraName, const double &deltaTime);
+    void drawCrystals(std::string camera);
     void customProcess(std::string cameraName, const double &deltaTime, vmml::Matrix4f view, vmml::Matrix4f proj);
     TreeMap getTreeMap();
 

@@ -107,10 +107,21 @@ void RenderProject::loopFunction(const double &deltaTime, const double &elapsedT
 	// bRenderer::log("FPS: " + std::to_string(1 / deltaTime));	// write number of frames per second to the console every frame
     // std::cout << "FPS: " << std::to_string(1 / deltaTime) << std::endl;
 
+    /* SHADOW MAPPING */
     _shadowModelRenderer->doShadowRenderPass("terrain", deltaTime, elapsedTime);
 
+    /* RENDER PLAYER */
+    _player->process("camera", deltaTime);
+    
+    /* RENDER TERRAIN */
+    _terrainLoader->process("camera", deltaTime);
+    
+    /* MOVE PLAYER CAMERA (relative to player-position) */
     _playerCamera->move();
-    updateRenderQueue("camera", deltaTime);
+    
+    // updateRenderQueue("camera", deltaTime);
+    
+    /* BLOOM POSTPROCESSING */
     _bloomRenderer->doBloomRenderPass("camera", deltaTime);
     
     bRenderer().getModelRenderer()->clearQueue();
@@ -133,42 +144,34 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
 	vmml::Matrix4f modelMatrix;
 	ShaderPtr skybox;
     
-    /**************
-     RENDER PLAYER
-     *************/
-    _player->process(camera, deltaTime);
-    
-    /**************
-     RENDER TERRAIN
-     *************/
-     _terrainLoader->process(camera, deltaTime);
 
-    /// LOW POLY CRYSTAL ///
-    modelMatrix =
-    vmml::create_translation(vmml::Vector3f(0.0, 20.0, 0.0)) *
-    vmml::create_scaling(vmml::Vector3f(5.0f));
-    // draw model
-    bRenderer().getModelRenderer()->queueModelInstance("Crystal", "Crystal", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
 
-    /// SUN ///
-    modelMatrix =
-    vmml::create_translation(vmml::Vector3f(0.0, 50.0, 0.0)) *
-    vmml::create_rotation((float)elapsedTime * M_PI_F/10, vmml::Vector3f::UNIT_Y) *
-    vmml::create_scaling(vmml::Vector3f(0.5f));
-    // set ambient color
-    bRenderer().getObjects()->setAmbientColor(vmml::Vector3f(0.5f));
-    // draw model
-    bRenderer().getModelRenderer()->drawModel("sun", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
-
-    /// TREE ///
-    modelMatrix =
-        vmml::create_translation(vmml::Vector3f(20.0, 50.0, 0.0)) *
-        vmml::create_rotation((float)elapsedTime * M_PI_F/10, vmml::Vector3f::UNIT_Y) *
-        vmml::create_scaling(vmml::Vector3f(0.5f));
-    // set ambient color
-    bRenderer().getObjects()->setAmbientColor(vmml::Vector3f(0.5f));
-    // draw model
-    bRenderer().getModelRenderer()->drawModel("tree", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
+//    /// LOW POLY CRYSTAL ///
+//    modelMatrix =
+//    vmml::create_translation(vmml::Vector3f(0.0, 20.0, 0.0)) *
+//    vmml::create_scaling(vmml::Vector3f(5.0f));
+//    // draw model
+//    bRenderer().getModelRenderer()->queueModelInstance("Crystal", "Crystal", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
+//
+//    /// SUN ///
+//    modelMatrix =
+//    vmml::create_translation(vmml::Vector3f(0.0, 50.0, 0.0)) *
+//    vmml::create_rotation((float)elapsedTime * M_PI_F/10, vmml::Vector3f::UNIT_Y) *
+//    vmml::create_scaling(vmml::Vector3f(0.5f));
+//    // set ambient color
+//    bRenderer().getObjects()->setAmbientColor(vmml::Vector3f(0.5f));
+//    // draw model
+//    bRenderer().getModelRenderer()->drawModel("sun", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
+//
+//    /// TREE ///
+//    modelMatrix =
+//        vmml::create_translation(vmml::Vector3f(20.0, 50.0, 0.0)) *
+//        vmml::create_rotation((float)elapsedTime * M_PI_F/10, vmml::Vector3f::UNIT_Y) *
+//        vmml::create_scaling(vmml::Vector3f(0.5f));
+//    // set ambient color
+//    bRenderer().getObjects()->setAmbientColor(vmml::Vector3f(0.5f));
+//    // draw model
+//    bRenderer().getModelRenderer()->drawModel("tree", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
 
     ///// Skybox ///
     modelMatrix =
