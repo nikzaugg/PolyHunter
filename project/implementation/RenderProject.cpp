@@ -113,13 +113,11 @@ void RenderProject::loopFunction(const double &deltaTime, const double &elapsedT
     /* RENDER PLAYER */
     _player->process("camera", deltaTime);
     
-    /* RENDER TERRAIN */
-    _terrainLoader->process("camera", deltaTime);
-    
     /* MOVE PLAYER CAMERA (relative to player-position) */
     _playerCamera->move();
     
-    // updateRenderQueue("camera", deltaTime);
+    /* Add Models to the RenderQueue */
+    updateRenderQueue("camera", deltaTime);
     
     /* BLOOM POSTPROCESSING */
     _bloomRenderer->doBloomRenderPass("camera", deltaTime);
@@ -143,35 +141,6 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
 	elapsedTime += deltaTime;
 	vmml::Matrix4f modelMatrix;
 	ShaderPtr skybox;
-    
-
-
-//    /// LOW POLY CRYSTAL ///
-//    modelMatrix =
-//    vmml::create_translation(vmml::Vector3f(0.0, 20.0, 0.0)) *
-//    vmml::create_scaling(vmml::Vector3f(5.0f));
-//    // draw model
-//    bRenderer().getModelRenderer()->queueModelInstance("Crystal", "Crystal", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
-//
-//    /// SUN ///
-//    modelMatrix =
-//    vmml::create_translation(vmml::Vector3f(0.0, 50.0, 0.0)) *
-//    vmml::create_rotation((float)elapsedTime * M_PI_F/10, vmml::Vector3f::UNIT_Y) *
-//    vmml::create_scaling(vmml::Vector3f(0.5f));
-//    // set ambient color
-//    bRenderer().getObjects()->setAmbientColor(vmml::Vector3f(0.5f));
-//    // draw model
-//    bRenderer().getModelRenderer()->drawModel("sun", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
-//
-//    /// TREE ///
-//    modelMatrix =
-//        vmml::create_translation(vmml::Vector3f(20.0, 50.0, 0.0)) *
-//        vmml::create_rotation((float)elapsedTime * M_PI_F/10, vmml::Vector3f::UNIT_Y) *
-//        vmml::create_scaling(vmml::Vector3f(0.5f));
-//    // set ambient color
-//    bRenderer().getObjects()->setAmbientColor(vmml::Vector3f(0.5f));
-//    // draw model
-//    bRenderer().getModelRenderer()->drawModel("tree", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
 
     ///// Skybox ///
     modelMatrix =
@@ -182,8 +151,8 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
     skybox->setUniform("CubeMap", bRenderer().getObjects()->getCubeMap("skyBoxCubeMap"));
     // set ambient color
     bRenderer().getObjects()->setAmbientColor(vmml::Vector3f(0.5f));
-    // draw model
-    bRenderer().getModelRenderer()->drawModel("skybox", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
+    // draw model instance
+    bRenderer().getModelRenderer()->queueModelInstance("skybox", "skybox", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
 }
 
 /* Camera movement */

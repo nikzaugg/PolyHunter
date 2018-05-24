@@ -14,7 +14,7 @@ void ShadowModelRenderer::setup()
 void ShadowModelRenderer::doShadowRenderPass(std::string shaderToSendUniformsTo, const double &deltaTime, const double &elapsedTime, bool debug){
     
     if (debug == true) {
-         doShadowMappingDebug(deltaTime);
+        doShadowMappingDebug(deltaTime);
     }else{
         // creates the depthmap
         doShadowMapping(deltaTime);
@@ -129,7 +129,7 @@ void ShadowModelRenderer::drawToDepthMap(const double &deltaTime)
     /********************************************
      * RENDER TERRAIN AND PLAYER TO DEPTH TEXTURE
      *******************************************/
-    _player->customProcess("camera", deltaTime, getDepthView(), getDepthProjection());
+    _player->customRender("camera", getDepthView(), getDepthProjection());
     _terrainLoader->customProcess("camera", deltaTime, getDepthView(), getDepthProjection());
     
     /**********************************
