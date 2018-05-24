@@ -99,7 +99,7 @@ void ShadowModelRenderer::updateLightViewMatrix()
     direction = normalize(direction);
 
     vmml::Vector3f playerPos = _player->getPosition();
-    vmml::Vector3f center = vmml::Vector3f(-playerPos.x(), -playerPos.y(), -playerPos.z());
+    vmml::Vector3f center = vmml::Vector3f(playerPos.x(), playerPos.y(), playerPos.z());
 
     float pitchVectorLenght = sqrt( pow(direction.x(), 2.0) + pow(direction.z(), 2.0) );
     float pitch = (float)acos(pitchVectorLenght);
@@ -129,7 +129,6 @@ void ShadowModelRenderer::drawToDepthMap(const double &deltaTime)
     /********************************************
      * RENDER TERRAIN AND PLAYER TO DEPTH TEXTURE
      *******************************************/
-    _player->customRender("camera", getDepthView(), getDepthProjection());
     _terrainLoader->customProcess("camera", deltaTime, getDepthView(), getDepthProjection());
     
     /**********************************
@@ -154,7 +153,6 @@ void ShadowModelRenderer::drawToDepthMapDebug(const double &deltaTime)
     /********************************************
      * RENDER TERRAIN AND PLAYER TO DEPTH TEXTURE
      *******************************************/
-    _player->customProcess("camera", deltaTime, getDepthView(), getDepthProjection());
     _terrainLoader->customProcess("camera", deltaTime, getDepthView(), getDepthProjection());
     /**********************************/
     

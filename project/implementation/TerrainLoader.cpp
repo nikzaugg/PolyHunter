@@ -4,13 +4,13 @@
 #include <math.h>
 #include <tuple>
 
-TerrainLoader::TerrainLoader(Renderer & renderer, ShaderPtr shader, PlayerPtr player)
+TerrainLoader::TerrainLoader(Renderer & renderer, ShaderPtr shader, CamPtr playerCam)
 {
     // initial tile position of the player
     _terrainXPlayer = 0;
     _terrainZPlayer = 0;
     
-    this->_player = player;
+    this->_player = playerCam;
     this->_renderer = renderer;
     this-> _shader = shader;
     
@@ -39,10 +39,18 @@ TerrainPtr TerrainLoader::generateTerrain(int gridX, int gridZ)
 
 void TerrainLoader::process(std::string camera, const double &deltaTime)
 {
+    float playerX = -1.0 * _player->getPosition().x();
+    float playerZ = -1.0 * _player->getPosition().z();
     // check in which tile the player is
-    int gridX = floor(_player->getPosition().x()/_TERRAIN_SIZE);
-    int gridZ = floor(_player->getPosition().z()/_TERRAIN_SIZE);
+    int gridX = floor(playerX/_TERRAIN_SIZE);
+    int gridZ = floor(playerZ/_TERRAIN_SIZE);
     
+    std::cout << "computed GridX" << gridX << std::endl;
+    std::cout << "computed GridZ" << gridZ << std::endl;
+    
+    std::cout << "_terrainXPlayer: " << _terrainXPlayer << std::endl;
+    std::cout << "_terrainZPlayer: " << _terrainZPlayer << std::endl;
+
     // check if tile has changed
     if((gridX != _terrainXPlayer) ||(gridZ != _terrainZPlayer)){
         std::cout <<  "CHANGED TILES!!!!!!!!!!" << std::endl;
@@ -56,9 +64,11 @@ void TerrainLoader::process(std::string camera, const double &deltaTime)
 
 void TerrainLoader::customProcess(std::string camera, const double &deltaTime, vmml::Matrix4f view, vmml::Matrix4f proj)
 {
+    float playerX = -1.0 * _player->getPosition().x();
+    float playerZ = -1.0 * _player->getPosition().z();
     // check in which tile the player is
-    int gridX = floor(_player->getPosition().x()/_TERRAIN_SIZE);
-    int gridZ = floor(_player->getPosition().z()/_TERRAIN_SIZE);
+    int gridX = floor(playerX/_TERRAIN_SIZE);
+    int gridZ = floor(playerZ/_TERRAIN_SIZE);
     
     // check if tile has changed
     if((gridX != _terrainXPlayer) ||(gridZ != _terrainZPlayer)){

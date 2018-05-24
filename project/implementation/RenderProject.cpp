@@ -77,31 +77,25 @@ void RenderProject::initFunction()
     bRenderer().getObjects()->addModel("skybox", skyBoxModel);
     //    bRenderer().getObjects()->addCubeMap("skyBoxCubeMap", skyBoxCubeMapPtr);
 
-    // PLAYER //
-    // _player = PlayerPtr(new Player("guy.obj", "guy", "guyProperties", playerShader, getProjectRenderer(), vmml::Vector3f(10.0, 0.0, 10.0), 0.0, -90.0, 0.0, 2.0));
+    
+    // PLAYER - FPS-CAMERA
+    bRenderer().getObjects()->createCamera("camera");
+    _cam = CamPtr(new Cam(getProjectRenderer()));
 
     // TERRAIN LOADER //
-    _terrainLoader = TerrainLoaderPtr(new TerrainLoader(getProjectRenderer(), terrainShader, _player));
+    _terrainLoader = TerrainLoaderPtr(new TerrainLoader(getProjectRenderer(), terrainShader, _cam));
     
     // SHADOWMODELRENDERER
-    _shadowModelRenderer = ShadowModelRendererPtr(new ShadowModelRenderer(getProjectRenderer(), _player, _terrainLoader));
+    _shadowModelRenderer = ShadowModelRendererPtr(new ShadowModelRenderer(getProjectRenderer(), _cam, _terrainLoader));
     
     // BLOOMRENDERER
     _bloomRenderer = BloomRendererPtr(new BloomRenderer(getProjectRenderer(), _terrainLoader));
-
-	// create camera
-    bRenderer().getObjects()->createCamera("camera");
-    // create FPS camera
-    _cam = CamPtr(new Cam("camera", getProjectRenderer()));
     
-    // create player camera
-    // _playerCamera = PlayerCameraPtr(new PlayerCamera("camera", _player, getProjectRenderer()));
-
 	// create lights
      bRenderer().getObjects()->createLight("sun", vmml::Vector3f(500, 1000, 500), vmml::Vector3f(1.0f), vmml::Vector3f(1.0f), 1.0f, 1.0f, 100.f);
     
 	// Update render queue
-    // updateRenderQueue("camera", 0.0f);
+    updateRenderQueue("camera", 0.0f);
 }
 
 /* Draw your scene here */
@@ -111,23 +105,17 @@ void RenderProject::loopFunction(const double &deltaTime, const double &elapsedT
     // std::cout << "FPS: " << std::to_string(1 / deltaTime) << std::endl;
 
     /* SHADOW MAPPING */
-    // _shadowModelRenderer->doShadowRenderPass("terrain", deltaTime, elapsedTime);
-
-    /* RENDER PLAYER */
-    // _player->process("camera", deltaTime);
-    
-    /* MOVE PLAYER CAMERA (relative to player-position) */
-    // _playerCamera->move();
-    
-    /* Add Models to the RenderQueue */
-    updateRenderQueue("camera", deltaTime);
-    _cam->process("camera", deltaTime);
-    
-    /* BLOOM POSTPROCESSING */
-    //_bloomRenderer->doBloomRenderPass("camera", deltaTime);
+    _shadowModelRenderer->doShadowRenderPass("terrain", deltaTime, elapsedTime);
     
     bRenderer().getModelRenderer()->drawQueue();
     bRenderer().getModelRenderer()->clearQueue();
+    
+    /* Add Models to the RenderQueue */
+    updateRenderQueue("camera", deltaTime);
+    
+    /* BLOOM POSTPROCESSING */
+    /* Terrain is loaded inside _bloomRenderer */
+    _bloomRenderer->doBloomRenderPass("camera", deltaTime);
     
 	// Quit renderer when escape is pressed
 	if (bRenderer().getInput()->getKeyState(bRenderer::KEY_ESCAPE) == bRenderer::INPUT_PRESS)
@@ -146,6 +134,9 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
 	elapsedTime += deltaTime;
 	vmml::Matrix4f modelMatrix;
 	ShaderPtr skybox;
+    
+    _cam->process(camera, deltaTime);
+    _terrainLoader->process(camera, deltaTime);
 
     ///// Skybox ///
     modelMatrix =

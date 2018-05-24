@@ -4,12 +4,13 @@
 #include "bRenderer.h"
 #include "Terrain.h"
 #include "Player.h"
+#include "Cam.h"
 
 class TerrainLoader {
 
 public:
 	typedef std::unordered_map< std::string, TerrainPtr > TerrainMap;
-    TerrainLoader(Renderer & renderer, ShaderPtr shader, PlayerPtr player);
+    TerrainLoader(Renderer & renderer, ShaderPtr shader, CamPtr playerCam);
     void renderTerrains(std::string camera, const double &deltaTime);
     void renderCrystals(std::string camera, const double &deltaTime);
     void customRenderTerrains(std::string camera, const double &deltaTime, vmml::Matrix4f view, vmml::Matrix4f proj);
@@ -20,8 +21,8 @@ private:
     TerrainPtr generateTerrain(int gridX, int gridZ);
     void refreshTerrainTiles();
     TerrainMap _terrains;
-    PlayerPtr _player;
     ShaderPtr _shader;
+    CamPtr _player;
     Renderer _renderer;
     int _nrOfTerrains;
     vmml::Vector3f _centerPoint;

@@ -2,14 +2,14 @@
 #define B_ShadowModelRenderer_H
 
 #include "bRenderer.h"
-#include "Player.h"
+#include "Cam.h"
 #include "TerrainLoader.h"
 
 
 class ShadowModelRenderer : public ModelRenderer {
     
 public:
-    ShadowModelRenderer(Renderer & renderer, PlayerPtr player, TerrainLoaderPtr terrainLoader) : ModelRenderer() {
+    ShadowModelRenderer(Renderer & renderer, CamPtr player, TerrainLoaderPtr terrainLoader) : ModelRenderer() {
         _renderer = renderer;
         _player = player;
         _terrainLoader = terrainLoader;
@@ -48,7 +48,7 @@ private:
     DepthMapPtr _depthMap;
     TexturePtr _depthTexture;
     MaterialPtr _depthMaterial;
-    PlayerPtr _player;
+    CamPtr _player;
     TerrainLoaderPtr _terrainLoader;
     
     vmml::Vector3f _lightPosition;
