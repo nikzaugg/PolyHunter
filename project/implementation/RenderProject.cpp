@@ -4,6 +4,7 @@
 #include "Skybox.h"
 #include "Player.h"
 #include "PlayerCamera.h"
+#include "Cam.h"
 #include "ShadowModelRenderer.h"
 
 /* Initialize the Project */
@@ -77,7 +78,7 @@ void RenderProject::initFunction()
     //    bRenderer().getObjects()->addCubeMap("skyBoxCubeMap", skyBoxCubeMapPtr);
 
     // PLAYER //
-    _player = PlayerPtr(new Player("guy.obj", "guy", "guyProperties", playerShader, getProjectRenderer(), vmml::Vector3f(10.0, 0.0, 10.0), 0.0, -90.0, 0.0, 2.0));
+    // _player = PlayerPtr(new Player("guy.obj", "guy", "guyProperties", playerShader, getProjectRenderer(), vmml::Vector3f(10.0, 0.0, 10.0), 0.0, -90.0, 0.0, 2.0));
 
     // TERRAIN LOADER //
     _terrainLoader = TerrainLoaderPtr(new TerrainLoader(getProjectRenderer(), terrainShader, _player));
@@ -90,15 +91,17 @@ void RenderProject::initFunction()
 
 	// create camera
     bRenderer().getObjects()->createCamera("camera");
+    // create FPS camera
+    _cam = CamPtr(new Cam("camera", getProjectRenderer()));
     
     // create player camera
-    _playerCamera = PlayerCameraPtr(new PlayerCamera("camera", _player, getProjectRenderer()));
+    // _playerCamera = PlayerCameraPtr(new PlayerCamera("camera", _player, getProjectRenderer()));
 
 	// create lights
      bRenderer().getObjects()->createLight("sun", vmml::Vector3f(500, 1000, 500), vmml::Vector3f(1.0f), vmml::Vector3f(1.0f), 1.0f, 1.0f, 100.f);
     
 	// Update render queue
-    updateRenderQueue("camera", 0.0f);
+    // updateRenderQueue("camera", 0.0f);
 }
 
 /* Draw your scene here */
@@ -108,20 +111,22 @@ void RenderProject::loopFunction(const double &deltaTime, const double &elapsedT
     // std::cout << "FPS: " << std::to_string(1 / deltaTime) << std::endl;
 
     /* SHADOW MAPPING */
-    _shadowModelRenderer->doShadowRenderPass("terrain", deltaTime, elapsedTime);
+    // _shadowModelRenderer->doShadowRenderPass("terrain", deltaTime, elapsedTime);
 
     /* RENDER PLAYER */
-    _player->process("camera", deltaTime);
+    // _player->process("camera", deltaTime);
     
     /* MOVE PLAYER CAMERA (relative to player-position) */
-    _playerCamera->move();
+    // _playerCamera->move();
     
     /* Add Models to the RenderQueue */
     updateRenderQueue("camera", deltaTime);
+    _cam->process("camera", deltaTime);
     
     /* BLOOM POSTPROCESSING */
-    _bloomRenderer->doBloomRenderPass("camera", deltaTime);
+    //_bloomRenderer->doBloomRenderPass("camera", deltaTime);
     
+    bRenderer().getModelRenderer()->drawQueue();
     bRenderer().getModelRenderer()->clearQueue();
     
 	// Quit renderer when escape is pressed
@@ -144,7 +149,7 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
 
     ///// Skybox ///
     modelMatrix =
-        vmml::create_translation(vmml::Vector3f(_player->getPosition().x(), 0.0, _player->getPosition().z())) *
+        vmml::create_translation(vmml::Vector3f(-_cam->getPosition().x(), 0.0, -_cam->getPosition().z())) *
         vmml::create_scaling(vmml::Vector3f(1.0));
     // set CubeMap for skybox texturing
     skybox = bRenderer().getObjects()->getShader("skybox");

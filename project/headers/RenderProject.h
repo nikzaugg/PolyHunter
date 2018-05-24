@@ -8,6 +8,7 @@
 #include "PlayerCamera.h"
 #include "ShadowModelRenderer.h"
 #include "BloomRenderer.h"
+#include "Cam.h"
 
 class RenderProject : public IRenderProject
 {
@@ -76,6 +77,7 @@ private:
 	double elapsedTime = 0.0;
     TerrainLoaderPtr _terrainLoader;
     PlayerPtr _player;
+    CamPtr _cam;
     TerrainPtr _terrain;
     PlayerCameraPtr _playerCamera;
     ShadowModelRendererPtr _shadowModelRenderer;

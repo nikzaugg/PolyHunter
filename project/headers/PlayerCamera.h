@@ -33,7 +33,7 @@ private:
     
     float degreeToRadians(float degree);
     
-    float _distanceFromPlayer = 100.0;
+    float _distanceFromPlayer = 0.0;
     float _angleAroundPlayer = 0.0;
     
     bool _moved = false;
@@ -41,7 +41,7 @@ private:
     float _pitch = -M_PI_F/6.0;
     float _yaw;
     float _roll;
-    float _lazy = 0.90;
+    float _lazy = 0.80;
 };
 typedef std::shared_ptr< PlayerCamera >  PlayerCameraPtr;
 #endif /* defined(B_PLAYERCAMERA_H) */

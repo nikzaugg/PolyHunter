@@ -21,6 +21,7 @@
 		3136FA2F209A5D4D008436CF /* right.png in Resources */ = {isa = PBXBuildFile; fileRef = 3136FA29209A5D4C008436CF /* right.png */; };
 		3136FA30209A5D4D008436CF /* top.png in Resources */ = {isa = PBXBuildFile; fileRef = 3136FA2A209A5D4C008436CF /* top.png */; };
 		3136FA34209A60C6008436CF /* skybox.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 3136FA33209A60C5008436CF /* skybox.mtl */; };
+		31581B0320B74D560074783C /* Cam.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 31581B0220B74D560074783C /* Cam.cpp */; };
 		315E0D9720A2D4340085984D /* guy.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 315E0D9520A2D4340085984D /* guy.mtl */; };
 		315E0D9820A2D4340085984D /* guy.obj in Resources */ = {isa = PBXBuildFile; fileRef = 315E0D9620A2D4340085984D /* guy.obj */; };
 		317950AE20B605EA00D94992 /* BloomRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 317950AD20B605EA00D94992 /* BloomRenderer.cpp */; };
@@ -252,6 +253,8 @@
 		3136FA29209A5D4C008436CF /* right.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = right.png; sourceTree = "<group>"; };
 		3136FA2A209A5D4C008436CF /* top.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = top.png; sourceTree = "<group>"; };
 		3136FA33209A60C5008436CF /* skybox.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = skybox.mtl; sourceTree = "<group>"; };
+		31581B0120B74D4E0074783C /* Cam.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Cam.h; sourceTree = "<group>"; };
+		31581B0220B74D560074783C /* Cam.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Cam.cpp; sourceTree = "<group>"; };
 		315E0D9520A2D4340085984D /* guy.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = guy.mtl; sourceTree = "<group>"; };
 		315E0D9620A2D4340085984D /* guy.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = guy.obj; sourceTree = "<group>"; };
 		317950AD20B605EA00D94992 /* BloomRenderer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = BloomRenderer.cpp; sourceTree = "<group>"; };
@@ -723,6 +726,7 @@
 		B44186931BA331E300604D7F /* headers */ = {
 			isa = PBXGroup;
 			children = (
+				31581B0120B74D4E0074783C /* Cam.h */,
 				3115F1EE20A9E1630051FBEF /* Tree.h */,
 				318C88E6208FBE4E00B218B1 /* Skybox.h */,
 				31F377FB2089511D00EBEC30 /* PerlinNoise.h */,
@@ -743,6 +747,7 @@
 		B44186951BA331E300604D7F /* implementation */ = {
 			isa = PBXGroup;
 			children = (
+				31581B0220B74D560074783C /* Cam.cpp */,
 				3115F1EF20A9E16F0051FBEF /* Tree.cpp */,
 				31A71EEC20865D8800A2D46A /* Terrain.cpp */,
 				31B0FD782097A20200601F21 /* Entity.cpp */,
@@ -1239,6 +1244,7 @@
 				B4794A2D1BA6743D00B5E9DC /* texture-font.c in Sources */,
 				B4794A2C1BA6743D00B5E9DC /* texture-atlas.c in Sources */,
 				B47AD6BF1B827DCD00AFC632 /* ftgxval.c in Sources */,
+				31581B0320B74D560074783C /* Cam.cpp in Sources */,
 				3115F1F020A9E16F0051FBEF /* Tree.cpp in Sources */,
 				B4CB8CD11B72E43300FE041B /* ViewController.mm in Sources */,
 				B47AD6C91B827E3E00AFC632 /* ftpfr.c in Sources */,
