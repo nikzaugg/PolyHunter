@@ -44,6 +44,18 @@ void Cam::process(std::string camera, const double &deltaTime)
     }
     /* Windows: control movement using mouse and keyboard */
     else {
+
+		// use space to pause and unpause
+		GLint currentStateSpaceKey = renderer().getInput()->getKeyState(bRenderer::KEY_SPACE);
+		if (currentStateSpaceKey != _lastStateSpaceKey)
+		{
+			_lastStateSpaceKey = currentStateSpaceKey;
+			if (currentStateSpaceKey == bRenderer::INPUT_PRESS) {
+				_running = !_running;
+				renderer().getInput()->setCursorEnabled(!_running);
+			}
+		}
+
         // mouse look
         double xpos, ypos;
         bool hasCursor = false;
@@ -57,18 +69,25 @@ void Cam::process(std::string camera, const double &deltaTime)
         
 
         // movement using wasd keys
-        if (renderer().getInput()->getKeyState(bRenderer::KEY_W) == bRenderer::INPUT_PRESS)
-            if (renderer().getInput()->getKeyState(bRenderer::KEY_LEFT_SHIFT) == bRenderer::INPUT_PRESS)
-                cameraForward = 1.0;
-            else
-                cameraForward = -1.0;
-            else if (renderer().getInput()->getKeyState(bRenderer::KEY_S) == bRenderer::INPUT_PRESS)
-                if (renderer().getInput()->getKeyState(bRenderer::KEY_LEFT_SHIFT) == bRenderer::INPUT_PRESS)
-                    cameraForward = -2.0;
-                else
-                    cameraForward = -1.0;
-                else
-                    cameraForward = 0.0;
+		if (renderer().getInput()->getKeyState(bRenderer::KEY_W) == bRenderer::INPUT_PRESS)
+		{
+			if (renderer().getInput()->getKeyState(bRenderer::KEY_LEFT_SHIFT) == bRenderer::INPUT_PRESS)
+				cameraForward = 2.0;
+			else
+				cameraForward = 1.0;
+		}
+		else if (renderer().getInput()->getKeyState(bRenderer::KEY_S) == bRenderer::INPUT_PRESS)
+		{
+			if (renderer().getInput()->getKeyState(bRenderer::KEY_LEFT_SHIFT) == bRenderer::INPUT_PRESS)
+				cameraForward = -2.0;
+			else
+				cameraForward = -1.0;
+		}
+		else {
+			cameraForward = 0.0;
+		}
+			
+            
             
         if (renderer().getInput()->getKeyState(bRenderer::KEY_A) == bRenderer::INPUT_PRESS)
             cameraSideward = -1.0;
@@ -98,7 +117,7 @@ void Cam::process(std::string camera, const double &deltaTime)
     float height = (-1.0) * getHeightFromNoise(getNoiseInput(-currentX), getNoiseInput(-currentZ));
     height -= _cameraFloorOffset;
     _position = vmml::Vector3f(currentX, height, currentZ);
-    std::cout << "camposition: "<< _position << std::endl;
+    //std::cout << "camposition: "<< _position << std::endl;
     renderer().getObjects()->getCamera(camera)->setPosition(vmml::Vector3f(_position));
     
 }

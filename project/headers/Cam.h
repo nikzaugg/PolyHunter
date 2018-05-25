@@ -31,6 +31,7 @@ private:
     GLfloat _cameraSpeed = 40.0;
     double _mouseX, _mouseY;
     GLint _lastStateSpaceKey = 0;
+	bool _running = true;
     
     // Helper Functions
     float degreeToRadians(float degree);

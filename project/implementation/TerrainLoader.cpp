@@ -46,15 +46,15 @@ void TerrainLoader::process(std::string camera, const double &deltaTime)
     int gridX = floor(playerX/_TERRAIN_SIZE);
     int gridZ = floor(playerZ/_TERRAIN_SIZE);
     
-    std::cout << "computed GridX" << gridX << std::endl;
-    std::cout << "computed GridZ" << gridZ << std::endl;
-    
-    std::cout << "_terrainXPlayer: " << _terrainXPlayer << std::endl;
-    std::cout << "_terrainZPlayer: " << _terrainZPlayer << std::endl;
+    //std::cout << "computed GridX" << gridX << std::endl;
+    //std::cout << "computed GridZ" << gridZ << std::endl;
+    //
+    //std::cout << "_terrainXPlayer: " << _terrainXPlayer << std::endl;
+    //std::cout << "_terrainZPlayer: " << _terrainZPlayer << std::endl;
 
     // check if tile has changed
     if((gridX != _terrainXPlayer) ||(gridZ != _terrainZPlayer)){
-        std::cout <<  "CHANGED TILES!!!!!!!!!!" << std::endl;
+        //std::cout <<  "CHANGED TILES!!!!!!!!!!" << std::endl;
         _terrainXPlayer = gridX;
         _terrainZPlayer = gridZ;
         refreshTerrainTiles();
