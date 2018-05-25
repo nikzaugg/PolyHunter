@@ -321,6 +321,15 @@
     <ClCompile Include="..\implementation\Sun.cpp">
       <Filter>project\implementation</Filter>
     </ClCompile>
+    <ClCompile Include="..\implementation\BloomRenderer.cpp">
+      <Filter>project\implementation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\implementation\Cam.cpp">
+      <Filter>project\implementation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\implementation\ShadowModelRenderer.cpp">
+      <Filter>project\implementation</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\bRenderer\bRenderer.h">
@@ -513,6 +522,15 @@
       <Filter>project\headers</Filter>
     </ClInclude>
     <ClInclude Include="..\headers\Sun.h">
+      <Filter>project\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\headers\BloomRenderer.h">
+      <Filter>project\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\headers\Cam.h">
+      <Filter>project\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\headers\ShadowModelRenderer.h">
       <Filter>project\headers</Filter>
     </ClInclude>
   </ItemGroup>
