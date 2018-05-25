@@ -168,7 +168,7 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
 
     /////// Skybox ///
     modelMatrix =
-        vmml::create_translation(vmml::Vector3f(-_cam->getPosition().x(), 0.0, -_cam->getPosition().z())) *
+        vmml::create_translation(vmml::Vector3f(_cam->getPosition().x(), 0.0, _cam->getPosition().z())) *
         vmml::create_scaling(vmml::Vector3f(1.0));
     // set CubeMap for skybox texturing
     skybox = bRenderer().getObjects()->getShader("skybox");

@@ -40,8 +40,8 @@ TerrainPtr TerrainLoader::generateTerrain(int gridX, int gridZ)
 
 void TerrainLoader::process(std::string camera, const double &deltaTime)
 {
-    float playerX = -1.0 * _player->getPosition().x();
-    float playerZ = -1.0 * _player->getPosition().z();
+    float playerX = _player->getPosition().x();
+    float playerZ = _player->getPosition().z();
     // check in which tile the player is
     int gridX = floor(playerX/_TERRAIN_SIZE);
     int gridZ = floor(playerZ/_TERRAIN_SIZE);
@@ -65,8 +65,8 @@ void TerrainLoader::process(std::string camera, const double &deltaTime)
 
 void TerrainLoader::customProcess(std::string camera, const double &deltaTime, vmml::Matrix4f view, vmml::Matrix4f proj)
 {
-    float playerX = -1.0 * _player->getPosition().x();
-    float playerZ = -1.0 * _player->getPosition().z();
+    float playerX = _player->getPosition().x();
+    float playerZ = _player->getPosition().z();
     // check in which tile the player is
     int gridX = floor(playerX/_TERRAIN_SIZE);
     int gridZ = floor(playerZ/_TERRAIN_SIZE);

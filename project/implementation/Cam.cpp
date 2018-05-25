@@ -138,7 +138,8 @@ float Cam::getHeightFromNoise(double nx, double nz)
 
 vmml::Vector3f Cam::getPosition()
 {
-    return _position;
+    // return _position;
+    return vmml::Vector3f(-_position.x(), -_position.y(), -_position.z());
 }
 
 float Cam::degreeToRadians(float degree) {
