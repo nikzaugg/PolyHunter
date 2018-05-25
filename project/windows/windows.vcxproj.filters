@@ -318,6 +318,9 @@
     <ClCompile Include="..\implementation\PlayerCamera.cpp">
       <Filter>project\implementation</Filter>
     </ClCompile>
+    <ClCompile Include="..\implementation\Sun.cpp">
+      <Filter>project\implementation</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\bRenderer\bRenderer.h">
@@ -509,6 +512,9 @@
     <ClInclude Include="..\headers\PlayerCamera.h">
       <Filter>project\headers</Filter>
     </ClInclude>
+    <ClInclude Include="..\headers\Sun.h">
+      <Filter>project\headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\bRenderer\os_specific\ios\FileHandler_ios.mm">
@@ -598,6 +604,15 @@
     <None Include="..\data\bloom.vert">
       <Filter>project\data</Filter>
     </None>
+    <None Include="..\data\sun.frag">
+      <Filter>project\data</Filter>
+    </None>
+    <None Include="..\data\sun.mtl">
+      <Filter>project\data</Filter>
+    </None>
+    <None Include="..\data\sun.vert">
+      <Filter>project\data</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\data\flame.png">
@@ -631,6 +646,9 @@
       <Filter>project\data</Filter>
     </Image>
     <Image Include="..\data\crystal.png">
+      <Filter>project\data</Filter>
+    </Image>
+    <Image Include="..\data\sun.png">
       <Filter>project\data</Filter>
     </Image>
   </ItemGroup>

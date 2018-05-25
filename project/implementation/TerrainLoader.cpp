@@ -13,6 +13,7 @@ TerrainLoader::TerrainLoader(Renderer & renderer, ShaderPtr shader, CamPtr playe
     this->_player = playerCam;
     this->_renderer = renderer;
     this-> _shader = shader;
+	this->_shader->setUniform("skyColor", vmml::Vector3f(0.5f, 0.5f, 0.5f));
     
     // generate initial terrains
     generateTerrain(0, 0);

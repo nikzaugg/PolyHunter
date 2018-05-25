@@ -9,6 +9,7 @@
 #include "ShadowModelRenderer.h"
 #include "BloomRenderer.h"
 #include "Cam.h"
+#include "Sun.h"
 
 class RenderProject : public IRenderProject
 {
@@ -82,6 +83,7 @@ private:
     PlayerCameraPtr _playerCamera;
     ShadowModelRendererPtr _shadowModelRenderer;
     BloomRendererPtr _bloomRenderer;
+	SunPtr _sun;
     std::vector<TerrainPtr> terrains;
     
     bool _animation_forward;

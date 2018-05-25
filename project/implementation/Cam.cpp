@@ -98,32 +98,41 @@ void Cam::process(std::string camera, const double &deltaTime)
     float height = (-1.0) * getHeightFromNoise(getNoiseInput(-currentX), getNoiseInput(-currentZ));
     height -= _cameraFloorOffset;
     _position = vmml::Vector3f(currentX, height, currentZ);
+    std::cout << "camposition: "<< _position << std::endl;
     renderer().getObjects()->getCamera(camera)->setPosition(vmml::Vector3f(_position));
     
 }
 
+
 double Cam::getNoiseInput(float coord)
 {
-    // FIXME: instead of 100.0, add _TERRAIN_SIZE
-    return coord / (float)450;
+    // FIXME: add variable instead of magic number
+    return coord / (float)(200.0 * 3);
 }
 
 double Cam::noise(double nx, double nz)
 {
     noise::module::Perlin perlin;
     perlin.SetSeed(549);
-    perlin.SetOctaveCount(3);
-    perlin.SetFrequency(4);
-    return perlin.GetValue(nx, nz, 0.0) / 2.0 + 0.5;
+    perlin.SetOctaveCount(4);
+    perlin.SetFrequency(1);
+    perlin.SetLacunarity(2.5);
+    
+    // Rescale from -1.0:+1.0 to 0.0:1.0
+    double value = perlin.GetValue(nx, nz, 0.0) / 2.0 + 0.5;
+    
+    // Prevent NaN error by not allowing values below 0
+    value = value < 0.0 ? 0.0 : value;
+    
+    return value;
 }
 
 float Cam::getHeightFromNoise(double nx, double nz)
 {
     // Rescale from -1.0:+1.0 to 0.0:1.0
-    float res = (float)noise(nx, nz);
-    
-    res = pow(res, 3);
-    res *= 70;
+    float res = noise(nx, nz);
+    res = pow(res, 1.27);
+    res *= 128;
     return res;
 }
 

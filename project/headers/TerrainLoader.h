@@ -27,7 +27,7 @@ private:
     int _nrOfTerrains;
     vmml::Vector3f _centerPoint;
     
-    int _TERRAIN_SIZE = 150;
+    int _TERRAIN_SIZE = 200;
     int _VERTEX_COUNT = 15;
     
     int _terrainXPlayer;

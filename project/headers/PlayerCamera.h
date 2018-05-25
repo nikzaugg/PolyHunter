@@ -15,6 +15,7 @@ public:
     float getPitch();
     float getYaw();
     float getRoll();
+	float getAngle();
     
 private:
     CameraPtr _camera;
@@ -32,9 +33,9 @@ private:
     void calculateCameraPosition(float horizDistance, float verticDistance);
     
     float degreeToRadians(float degree);
-    
-    float _distanceFromPlayer = 0.0;
+    float _distanceFromPlayer = 100.0;
     float _angleAroundPlayer = 0.0;
+	float _theta;
     
     bool _moved = false;
     

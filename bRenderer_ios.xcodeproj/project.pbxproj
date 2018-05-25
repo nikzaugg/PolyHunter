@@ -22,6 +22,11 @@
 		3136FA30209A5D4D008436CF /* top.png in Resources */ = {isa = PBXBuildFile; fileRef = 3136FA2A209A5D4C008436CF /* top.png */; };
 		3136FA34209A60C6008436CF /* skybox.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 3136FA33209A60C5008436CF /* skybox.mtl */; };
 		31581B0320B74D560074783C /* Cam.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 31581B0220B74D560074783C /* Cam.cpp */; };
+		31581B0620B77CBE0074783C /* Sun.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 31581B0520B77CBE0074783C /* Sun.cpp */; };
+		31581B0B20B7809A0074783C /* moon_test.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 31581B0720B780990074783C /* moon_test.mtl */; };
+		31581B0C20B7809A0074783C /* sunShader.vert in Resources */ = {isa = PBXBuildFile; fileRef = 31581B0820B7809A0074783C /* sunShader.vert */; };
+		31581B0D20B7809A0074783C /* sunShader.frag in Resources */ = {isa = PBXBuildFile; fileRef = 31581B0920B7809A0074783C /* sunShader.frag */; };
+		31581B0E20B7809A0074783C /* moon_test.png in Resources */ = {isa = PBXBuildFile; fileRef = 31581B0A20B7809A0074783C /* moon_test.png */; };
 		315E0D9720A2D4340085984D /* guy.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 315E0D9520A2D4340085984D /* guy.mtl */; };
 		315E0D9820A2D4340085984D /* guy.obj in Resources */ = {isa = PBXBuildFile; fileRef = 315E0D9620A2D4340085984D /* guy.obj */; };
 		317950AE20B605EA00D94992 /* BloomRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 317950AD20B605EA00D94992 /* BloomRenderer.cpp */; };
@@ -255,6 +260,12 @@
 		3136FA33209A60C5008436CF /* skybox.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = skybox.mtl; sourceTree = "<group>"; };
 		31581B0120B74D4E0074783C /* Cam.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Cam.h; sourceTree = "<group>"; };
 		31581B0220B74D560074783C /* Cam.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Cam.cpp; sourceTree = "<group>"; };
+		31581B0420B77CB30074783C /* Sun.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Sun.h; sourceTree = "<group>"; };
+		31581B0520B77CBE0074783C /* Sun.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Sun.cpp; sourceTree = "<group>"; };
+		31581B0720B780990074783C /* moon_test.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = moon_test.mtl; sourceTree = "<group>"; };
+		31581B0820B7809A0074783C /* sunShader.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = sunShader.vert; sourceTree = "<group>"; };
+		31581B0920B7809A0074783C /* sunShader.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = sunShader.frag; sourceTree = "<group>"; };
+		31581B0A20B7809A0074783C /* moon_test.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = moon_test.png; sourceTree = "<group>"; };
 		315E0D9520A2D4340085984D /* guy.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = guy.mtl; sourceTree = "<group>"; };
 		315E0D9620A2D4340085984D /* guy.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = guy.obj; sourceTree = "<group>"; };
 		317950AD20B605EA00D94992 /* BloomRenderer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = BloomRenderer.cpp; sourceTree = "<group>"; };
@@ -726,6 +737,7 @@
 		B44186931BA331E300604D7F /* headers */ = {
 			isa = PBXGroup;
 			children = (
+				31581B0420B77CB30074783C /* Sun.h */,
 				31581B0120B74D4E0074783C /* Cam.h */,
 				3115F1EE20A9E1630051FBEF /* Tree.h */,
 				318C88E6208FBE4E00B218B1 /* Skybox.h */,
@@ -747,6 +759,7 @@
 		B44186951BA331E300604D7F /* implementation */ = {
 			isa = PBXGroup;
 			children = (
+				31581B0520B77CBE0074783C /* Sun.cpp */,
 				31581B0220B74D560074783C /* Cam.cpp */,
 				3115F1EF20A9E16F0051FBEF /* Tree.cpp */,
 				31A71EEC20865D8800A2D46A /* Terrain.cpp */,
@@ -768,6 +781,10 @@
 		B47949841BA6742B00B5E9DC /* data */ = {
 			isa = PBXGroup;
 			children = (
+				31581B0720B780990074783C /* moon_test.mtl */,
+				31581B0A20B7809A0074783C /* moon_test.png */,
+				31581B0920B7809A0074783C /* sunShader.frag */,
+				31581B0820B7809A0074783C /* sunShader.vert */,
 				31E5CD6B20B03883005DC7D5 /* simpleTexture.frag */,
 				31E5CD6C20B03883005DC7D5 /* simpleTexture.vert */,
 				B47949871BA6742B00B5E9DC /* blurShader.frag */,
@@ -1166,6 +1183,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				31A71EE620865D6F00A2D46A /* sun.mtl in Resources */,
+				31581B0C20B7809A0074783C /* sunShader.vert in Resources */,
 				B47949A31BA6742B00B5E9DC /* basicTitle_light.png in Resources */,
 				B47949B81BA6742B00B5E9DC /* flame.png in Resources */,
 				B47949A51BA6742B00B5E9DC /* blurShader.vert in Resources */,
@@ -1188,6 +1206,7 @@
 				B47949AF1BA6742B00B5E9DC /* config.json in Resources */,
 				B47949AB1BA6742B00B5E9DC /* cave_stream.mtl in Resources */,
 				B47949BC1BA6742B00B5E9DC /* torch.mtl in Resources */,
+				31581B0E20B7809A0074783C /* moon_test.png in Resources */,
 				B47949BD1BA6742B00B5E9DC /* torch.obj in Resources */,
 				315E0D9720A2D4340085984D /* guy.mtl in Resources */,
 				31A71EE820865D6F00A2D46A /* tree.obj in Resources */,
@@ -1212,9 +1231,11 @@
 				31A71EE320865D6F00A2D46A /* terrain.mtl in Resources */,
 				31AF851020A8553D0048FBF6 /* player.frag in Resources */,
 				B47949B71BA6742B00B5E9DC /* flame.obj in Resources */,
+				31581B0B20B7809A0074783C /* moon_test.mtl in Resources */,
 				B47949B91BA6742B00B5E9DC /* flame.vert in Resources */,
 				3136FA2D209A5D4D008436CF /* front.png in Resources */,
 				B4794A311BA6743D00B5E9DC /* LICENSE.txt in Resources */,
+				31581B0D20B7809A0074783C /* sunShader.frag in Resources */,
 				B4794A2A1BA6743D00B5E9DC /* LICENSE.txt in Resources */,
 				3136FA24209A1D76008436CF /* skybox.vert in Resources */,
 				B4794A301BA6743D00B5E9DC /* LICENSE.txt in Resources */,
@@ -1289,6 +1310,7 @@
 				B47AD6F31B82800400AFC632 /* ftcache.c in Sources */,
 				312A838420A1937900621562 /* TerrainLoader.cpp in Sources */,
 				B47AD6FD1B82806900AFC632 /* ftgzip.c in Sources */,
+				31581B0620B77CBE0074783C /* Sun.cpp in Sources */,
 				B47AD6CF1B827E7100AFC632 /* ftwinfnt.c in Sources */,
 				B44186971BA331E300604D7F /* RenderProject.cpp in Sources */,
 				B4794A421BA6743D00B5E9DC /* OBJLoader.cpp in Sources */,
@@ -1411,9 +1433,9 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "project/ios/Resources/Project-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
-					NO_LOGGING,
 					"FT2_BUILD_LIBRARY=1",
 					DARWIN_NO_CARBON,
+					NO_LOGGING,
 				);
 				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
 				HEADER_SEARCH_PATHS = (
@@ -1453,9 +1475,9 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "project/ios/Resources/Project-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
-					NO_LOGGING,
 					"FT2_BUILD_LIBRARY=1",
 					DARWIN_NO_CARBON,
+					NO_LOGGING,
 				);
 				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
 				HEADER_SEARCH_PATHS = (

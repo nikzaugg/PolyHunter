@@ -166,6 +166,7 @@
     <ClCompile Include="..\implementation\ProceduralOBJLoader.cpp" />
     <ClCompile Include="..\implementation\RenderProject.cpp" />
     <ClCompile Include="..\implementation\Skybox.cpp" />
+    <ClCompile Include="..\implementation\Sun.cpp" />
     <ClCompile Include="..\implementation\Terrain.cpp" />
     <ClCompile Include="..\implementation\TerrainLoader.cpp" />
     <ClCompile Include="..\implementation\Tree.cpp" />
@@ -231,6 +232,7 @@
     <ClInclude Include="..\headers\ProceduralOBJLoader.h" />
     <ClInclude Include="..\headers\RenderProject.h" />
     <ClInclude Include="..\headers\Skybox.h" />
+    <ClInclude Include="..\headers\Sun.h" />
     <ClInclude Include="..\headers\Terrain.h" />
     <ClInclude Include="..\headers\TerrainLoader.h" />
     <ClInclude Include="..\headers\Tree.h" />
@@ -259,6 +261,9 @@
     <None Include="..\data\flame.vert" />
     <None Include="..\data\skybox.frag" />
     <None Include="..\data\skybox.vert" />
+    <None Include="..\data\sun.frag" />
+    <None Include="..\data\sun.mtl" />
+    <None Include="..\data\sun.vert" />
     <None Include="..\data\terrain.frag" />
     <None Include="..\data\terrain.geom" />
     <None Include="..\data\terrain.vert" />
@@ -277,6 +282,7 @@
     <Image Include="..\data\crystal_s.png" />
     <Image Include="..\data\flame.png" />
     <Image Include="..\data\sparks.png" />
+    <Image Include="..\data\sun.png" />
     <Image Include="..\data\torchSurface_Color.png" />
   </ItemGroup>
   <ItemGroup>

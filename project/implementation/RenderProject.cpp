@@ -2,6 +2,7 @@
 #include "Terrain.h"
 #include "TerrainLoader.h"
 #include "Skybox.h"
+#include "Sun.h"
 #include "Player.h"
 #include "PlayerCamera.h"
 #include "Cam.h"
@@ -49,35 +50,33 @@ void RenderProject::initFunction()
 	ShaderPtr terrainShader = bRenderer().getObjects()->loadShaderFile("terrain", 1, false, true, true, true, false);
     ShaderPtr skyboxShader = bRenderer().getObjects()->loadShaderFile("skybox", 1, false, true, true, true, false);
     ShaderPtr playerShader = bRenderer().getObjects()->loadShaderFile("player", 1, false, true, true, true, false);
-
+	ShaderPtr sunShader = bRenderer().getObjects()->loadShaderFile_o("sunShader", 0, AMBIENT_LIGHTING);
+	
 	// PROPERTIES FOR THE MODELS
     PropertiesPtr treeProperties = bRenderer().getObjects()->createProperties("treeProperties");
-    PropertiesPtr sunProperties = bRenderer().getObjects()->createProperties("sunProperties");
+    // PropertiesPtr sunProperties = bRenderer().getObjects()->createProperties("sunProperties");
     PropertiesPtr skyboxProperties = bRenderer().getObjects()->createProperties("skyboxProperties");
     PropertiesPtr guyProperties = bRenderer().getObjects()->createProperties("guyProperties");
 
 	// BLENDER MODELS (.obj)
-
     bRenderer().getObjects()->loadObjModel("tree.obj", false, true, basicShader, treeProperties);
-    bRenderer().getObjects()->loadObjModel("sun.obj", false, true, basicShader, sunProperties);
     bRenderer().getObjects()->loadObjModel("Crystal.obj", false, true, basicShader, nullptr);
 
-
-    // SKYBOX (with CubeMap)
-    //    TextureData left = TextureData("left.png");
-    //    TextureData right = TextureData("right.png");
-    //    TextureData bottom = TextureData("bottom.png");
-    //    TextureData top = TextureData("top.png");
-    //    TextureData front = TextureData("front.png");
-    //    TextureData back = TextureData("back.png");
-    //    CubeMapPtr skyBoxCubeMapPtr = bRenderer().getObjects()->createCubeMap("skyBoxCubeMap", std::vector<TextureData>{left, right, bottom, top, front, back});
+    // SKYBOX
     MaterialPtr skyboxMaterial = bRenderer().getObjects()->loadObjMaterial("skybox.mtl", "skybox", skyboxShader);
-    Skybox skybox = Skybox(skyboxMaterial, skyboxProperties);
-    ModelPtr skyBoxModel = skybox.generate();
-    bRenderer().getObjects()->addModel("skybox", skyBoxModel);
-    //    bRenderer().getObjects()->addCubeMap("skyBoxCubeMap", skyBoxCubeMapPtr);
+    Skybox skybox = Skybox(skyboxMaterial, skyboxProperties, getProjectRenderer());
+	skybox.setSkyColor(vmml::Vector3f(0.14f, 0.16f, 0.22f));
 
+	basicShader->setUniform("skyColor", skybox.getSkyColor());
+	basicShader->setUniform("fogDensity", 0.007f);
+	basicShader->setUniform("fogGradient", 0.4f);
+	
+    //Sun
+//    _sun = SunPtr(new Sun("sun_instance", "sun", "sunProperties", sunShader, getProjectRenderer(), vmml::Vector3f(0.0f, 100.0f, 0.0f), 0.0f, 0.0f, 0.0f, 3.0f));
     
+    /// !! need to add .obj extension !! ///
+    _sun = SunPtr(new Sun("sun.obj", "sun", "sunProperties", sunShader, getProjectRenderer(), vmml::Vector3f(0.0f, 100.0f, 0.0f), 0.0f, 0.0f, 0.0f, 3.0f));
+
     // PLAYER - FPS-CAMERA
     bRenderer().getObjects()->createCamera("camera");
     _cam = CamPtr(new Cam(getProjectRenderer()));
@@ -90,9 +89,6 @@ void RenderProject::initFunction()
     
     // BLOOMRENDERER
     _bloomRenderer = BloomRendererPtr(new BloomRenderer(getProjectRenderer(), _terrainLoader));
-    
-	// create lights
-     bRenderer().getObjects()->createLight("sun", vmml::Vector3f(500, 1000, 500), vmml::Vector3f(1.0f), vmml::Vector3f(1.0f), 1.0f, 1.0f, 100.f);
     
 	// Update render queue
     updateRenderQueue("camera", 0.0f);
@@ -107,16 +103,14 @@ void RenderProject::loopFunction(const double &deltaTime, const double &elapsedT
     /* SHADOW MAPPING */
     _shadowModelRenderer->doShadowRenderPass("terrain", deltaTime, elapsedTime);
     
-    bRenderer().getModelRenderer()->drawQueue();
-    bRenderer().getModelRenderer()->clearQueue();
-    
     /* Add Models to the RenderQueue */
     updateRenderQueue("camera", deltaTime);
-    
+        
     /* BLOOM POSTPROCESSING */
     /* Terrain is loaded inside _bloomRenderer */
+    /* Render Queue is drawn inside _bloomRenderer */
     _bloomRenderer->doBloomRenderPass("camera", deltaTime);
-    
+
 	// Quit renderer when escape is pressed
 	if (bRenderer().getInput()->getKeyState(bRenderer::KEY_ESCAPE) == bRenderer::INPUT_PRESS)
 		bRenderer().terminateRenderer();
@@ -138,7 +132,41 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
     _cam->process(camera, deltaTime);
     _terrainLoader->process(camera, deltaTime);
 
-    ///// Skybox ///
+    // Move Light to see changes in Colors/Lighting
+    // float lightPosition = bRenderer().getObjects()->getLight("sun")->getPosition().z();
+    /*
+    if(_animation_forward)
+    {
+        if(_animation > 300.0)
+        {
+            _animation_forward = false;
+        } else
+        {
+            _animation += deltaTime * _animationSpeed;
+        }
+    } else {
+        if(_animation < 0.0)
+        {
+            _animation_forward = true;
+        }
+        else
+        {
+            _animation -= deltaTime * _animationSpeed;
+        }
+    }
+     */
+    
+//    _player->process("camera", deltaTime);
+//    vmml::Matrix4f playerModel = _player->computeTransformationMatrix();
+//    vmml::Matrix4f playerView = bRenderer().getObjects()->getCamera("camera")->getViewMatrix();
+//    vmml::Matrix4f playerModelView = playerView * playerModel;
+//    bRenderer().getObjects()->getShader("basic")->setUniform("playerPos", playerView* _player->getPosition());
+//    bRenderer().getObjects()->getShader("terrain")->setUniform("playerPos", playerView* _player->getPosition());
+    vmml::Matrix4f cameraView = bRenderer().getObjects()->getCamera("camera")->getViewMatrix();
+    bRenderer().getObjects()->getShader("basic")->setUniform("playerPos", _cam->getPosition());
+    bRenderer().getObjects()->getShader("terrain")->setUniform("playerPos", _cam->getPosition());
+
+    /////// Skybox ///
     modelMatrix =
         vmml::create_translation(vmml::Vector3f(-_cam->getPosition().x(), 0.0, -_cam->getPosition().z())) *
         vmml::create_scaling(vmml::Vector3f(1.0));
@@ -147,8 +175,11 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
     skybox->setUniform("CubeMap", bRenderer().getObjects()->getCubeMap("skyBoxCubeMap"));
     // set ambient color
     bRenderer().getObjects()->setAmbientColor(vmml::Vector3f(0.5f));
-    // draw model instance
-    bRenderer().getModelRenderer()->queueModelInstance("skybox", "skybox", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
+    // draw model
+    bRenderer().getModelRenderer()->queueModelInstance("skybox", "skybox_instance", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
+
+	/// SUN ///
+	_sun->render(camera, _cam->getPosition(), _viewMatrixHUD);
 }
 
 /* Camera movement */
