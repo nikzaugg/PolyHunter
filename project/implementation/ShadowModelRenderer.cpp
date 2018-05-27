@@ -99,7 +99,7 @@ void ShadowModelRenderer::updateLightViewMatrix()
     direction = normalize(direction);
 
     vmml::Vector3f playerPos = _player->getPosition();
-    vmml::Vector3f center = vmml::Vector3f(playerPos.x(), playerPos.y(), playerPos.z());
+    vmml::Vector3f center = vmml::Vector3f(-playerPos.x(), -playerPos.y(), -playerPos.z());
 
     float pitchVectorLenght = sqrt( pow(direction.x(), 2.0) + pow(direction.z(), 2.0) );
     float pitch = (float)acos(pitchVectorLenght);

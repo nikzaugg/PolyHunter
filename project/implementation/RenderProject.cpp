@@ -196,7 +196,6 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
         vmml::create_scaling(vmml::Vector3f(1.0));
     // set CubeMap for skybox texturing
     skybox = bRenderer().getObjects()->getShader("skybox");
-    skybox->setUniform("CubeMap", bRenderer().getObjects()->getCubeMap("skyBoxCubeMap"));
     // set ambient color
     bRenderer().getObjects()->setAmbientColor(vmml::Vector3f(0.5f));
     // draw model
