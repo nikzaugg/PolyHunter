@@ -29,13 +29,35 @@ TerrainLoader::TerrainLoader(Renderer & renderer, ShaderPtr shader, CamPtr playe
 
 TerrainPtr TerrainLoader::generateTerrain(int gridX, int gridZ)
 {
-    int xNegative = gridX < 0 ? 1 : 0 ;
-    int zNegative = gridZ < 0 ? 1 : 0;
-    std::string key = std::to_string(xNegative)  + std::to_string(zNegative) + std::to_string(gridX) + std::to_string(gridZ);
-    std::string terrainName = "terrain" + std::to_string(xNegative)  + std::to_string(zNegative) + std::to_string(gridX) + std::to_string(gridZ);
+    std::string key = generateTerrainKey(gridX, gridZ);
+    std::string terrainName = generateTerrainName(gridX, gridZ);
     TerrainPtr terrain = TerrainPtr(new Terrain(terrainName, "terrain.mtl", "terrain", "terrainProperties", _shader, _renderer, gridX, gridZ, _TERRAIN_SIZE, _VERTEX_COUNT, vmml::Vector3f(0.0), 0.0, 0.0, 0.0, 1.0));
     _terrains.insert(TerrainMap::value_type(key , terrain));
     return terrain;
+}
+
+int TerrainLoader::getPlayerGridX()
+{
+    return _terrainXPlayer;
+}
+
+int TerrainLoader::getPlayerGridZ()
+{
+    return _terrainZPlayer;
+}
+
+std::string TerrainLoader::generateTerrainKey(int x, int z)
+{
+    int xNegative = x < 0 ? 1 : 0 ;
+    int zNegative = z < 0 ? 1 : 0;
+    return std::to_string(xNegative) + std::to_string(zNegative) + std::to_string(x) + std::to_string(z);
+}
+
+std::string TerrainLoader::generateTerrainName(int x, int z)
+{
+    int xNegative = x < 0 ? 1 : 0 ;
+    int zNegative = z < 0 ? 1 : 0;
+    return "terrain" + std::to_string(xNegative)  + std::to_string(zNegative) + std::to_string(x) + std::to_string(z);
 }
 
 void TerrainLoader::process(std::string camera, const double &deltaTime)
@@ -97,73 +119,55 @@ void TerrainLoader::refreshTerrainTiles()
     // find out which indices should exist
     // create names and indices of the 9 terrain tiles that should exist in the next frame
     // CENTER (where player is right now)
-    int xNegative = _terrainXPlayer < 0 ? 1 : 0;
-    int zNegative = _terrainZPlayer < 0 ? 1 : 0;
-    std::string key0 = std::to_string(xNegative)  + std::to_string(zNegative) + std::to_string(_terrainXPlayer) + std::to_string(_terrainZPlayer);
+    std::string key0 = generateTerrainKey(_terrainXPlayer, _terrainZPlayer);
     newTerrainKeys.push_back(key0);
     auto t = std::make_tuple(_terrainXPlayer, _terrainZPlayer);
     terrainIndexPairs.push_back(t);
     
     // UP
-    xNegative = _terrainXPlayer < 0 ? 1 : 0;
-    zNegative = _terrainZPlayer+1 < 0 ? 1 : 0;
-    std::string key1 = std::to_string(xNegative)  + std::to_string(zNegative) + std::to_string(_terrainXPlayer) + std::to_string(_terrainZPlayer+1);
+    std::string key1 = generateTerrainKey(_terrainXPlayer, _terrainZPlayer+1);
     newTerrainKeys.push_back(key1);
     t = std::make_tuple(_terrainXPlayer, _terrainZPlayer+1);
     terrainIndexPairs.push_back(t);
     
     // DOWN
-    xNegative = _terrainXPlayer < 0 ? 1 : 0;
-    zNegative = _terrainZPlayer-1 < 0 ? 1 : 0;
-    std::string key2 = std::to_string(xNegative)  + std::to_string(zNegative) + std::to_string(_terrainXPlayer) + std::to_string(_terrainZPlayer-1);
+    std::string key2 = generateTerrainKey(_terrainXPlayer, _terrainZPlayer-1);
     newTerrainKeys.push_back(key2);
     t = std::make_tuple(_terrainXPlayer, _terrainZPlayer-1);
     terrainIndexPairs.push_back(t);
     
     // LEFT
-    xNegative = _terrainXPlayer-1 < 0 ? 1 : 0;
-    zNegative = _terrainZPlayer < 0 ? 1 : 0;
-    std::string key3 = std::to_string(xNegative)  + std::to_string(zNegative) + std::to_string(_terrainXPlayer-1) + std::to_string(_terrainZPlayer);
+    std::string key3 = generateTerrainKey(_terrainXPlayer-1, _terrainZPlayer);
     newTerrainKeys.push_back(key3);
     t = std::make_tuple(_terrainXPlayer-1, _terrainZPlayer);
     terrainIndexPairs.push_back(t);
     
     // RIGHT
-    xNegative = _terrainXPlayer+1 < 0 ? 1 : 0;
-    zNegative = _terrainZPlayer < 0 ? 1 : 0;
-    std::string key4 = std::to_string(xNegative)  + std::to_string(zNegative) + std::to_string(_terrainXPlayer+1) + std::to_string(_terrainZPlayer);
+    std::string key4 = generateTerrainKey(_terrainXPlayer+1, _terrainZPlayer);
     newTerrainKeys.push_back(key4);
     t = std::make_tuple(_terrainXPlayer+1, _terrainZPlayer);
     terrainIndexPairs.push_back(t);
     
     // UPPER-LEFT
-    xNegative = _terrainXPlayer-1 < 0 ? 1 : 0;
-    zNegative = _terrainZPlayer+1 < 0 ? 1 : 0;
-    std::string key5 = std::to_string(xNegative)  + std::to_string(zNegative) + std::to_string(_terrainXPlayer-1) + std::to_string(_terrainZPlayer+1);
+    std::string key5 = generateTerrainKey(_terrainXPlayer-1, _terrainZPlayer+1);
     newTerrainKeys.push_back(key5);
     t = std::make_tuple(_terrainXPlayer-1, _terrainZPlayer+1);
     terrainIndexPairs.push_back(t);
     
     // BOTTOM-LEFT
-    xNegative = _terrainXPlayer-1 < 0 ? 1 : 0;
-    zNegative = _terrainZPlayer-1 < 0 ? 1 : 0;
-    std::string key6 = std::to_string(xNegative)  + std::to_string(zNegative) + std::to_string(_terrainXPlayer-1) + std::to_string(_terrainZPlayer-1);
+    std::string key6 = generateTerrainKey(_terrainXPlayer-1, _terrainZPlayer-1);
     newTerrainKeys.push_back(key6);
     t = std::make_tuple(_terrainXPlayer-1, _terrainZPlayer-1);
     terrainIndexPairs.push_back(t);
     
     // TOP-RIGHT
-    xNegative = _terrainXPlayer+1 < 0 ? 1 : 0;
-    zNegative = _terrainZPlayer+1 < 0 ? 1 : 0;
-    std::string key7 = std::to_string(xNegative)  + std::to_string(zNegative) + std::to_string(_terrainXPlayer+1) + std::to_string(_terrainZPlayer+1);
+    std::string key7 = generateTerrainKey(_terrainXPlayer+1, _terrainZPlayer+1);
     newTerrainKeys.push_back(key7);
     t = std::make_tuple(_terrainXPlayer+1, _terrainZPlayer+1);
     terrainIndexPairs.push_back(t);
     
     // BOTTOM-RIGHT
-    xNegative = _terrainXPlayer+1 < 0 ? 1 : 0;
-    zNegative = _terrainZPlayer-1 < 0 ? 1 : 0;
-    std::string key8 = std::to_string(xNegative)  + std::to_string(zNegative) + std::to_string(_terrainXPlayer+1) + std::to_string(_terrainZPlayer-1);
+    std::string key8 = generateTerrainKey(_terrainXPlayer+1, _terrainZPlayer-1);
     newTerrainKeys.push_back(key8);
     t = std::make_tuple(_terrainXPlayer+1, _terrainZPlayer-1);
     terrainIndexPairs.push_back(t);
@@ -173,7 +177,6 @@ void TerrainLoader::refreshTerrainTiles()
         if(_terrains.find(newTerrainKeys[i]) == _terrains.end()){
             // DOES NOT exist already (create TerrainPtr and add it)
             std::cout << "have to generate tile: " << newTerrainKeys[i] << std::endl;
-            std::string terrainName = "terrain" + newTerrainKeys[i];
             std::tuple<int, int> indexTuple = terrainIndexPairs[i];
             int x_Index = std::get<0>(indexTuple);
             int z_Index= std::get<1>(indexTuple);
@@ -219,4 +222,9 @@ void TerrainLoader::customRenderTerrains(std::string camera, const double &delta
 TerrainLoader::TerrainMap TerrainLoader::getTerrainMap()
 {
 	return this->_terrains;
+}
+
+TerrainPtr TerrainLoader::getSingleTerrain(std::string terrainKey)
+{
+    return this->_terrains[terrainKey];
 }

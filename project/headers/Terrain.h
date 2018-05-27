@@ -19,6 +19,7 @@ public:
     void drawCrystals(std::string camera);
     void customProcess(std::string cameraName, const double &deltaTime, vmml::Matrix4f view, vmml::Matrix4f proj);
     TreeMap getTreeMap();
+    bool checkCollisionWithEntities(vmml::Vector3f playerPos);
 
     int _TERRAIN_SIZE;
     int _VERTEX_COUNT;
@@ -51,6 +52,7 @@ private:
     RendererPtr _renderer;
 	TreeMap _trees;
     CrystalMap _crystals;
+    static CrystalMap _collectedCrystals;
     int _treeCount = 0;
 
     ProceduralOBJLoader _objLoader;

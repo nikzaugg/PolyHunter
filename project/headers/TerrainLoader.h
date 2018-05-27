@@ -17,6 +17,11 @@ public:
 	TerrainLoader::TerrainMap getTerrainMap();
     void process(std::string camera, const double &deltaTime);
     void customProcess(std::string camera, const double &deltaTime, vmml::Matrix4f view, vmml::Matrix4f proj);
+    int getPlayerGridX();
+    int getPlayerGridZ();
+    std::string generateTerrainKey(int x, int z);
+    std::string generateTerrainName(int x, int z);
+    TerrainPtr getSingleTerrain(std::string terrainKey);
 private:
     TerrainPtr generateTerrain(int gridX, int gridZ);
     void refreshTerrainTiles();

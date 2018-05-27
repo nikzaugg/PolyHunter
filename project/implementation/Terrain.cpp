@@ -8,6 +8,8 @@
 #include "iostream"
 #include "noise.h"
 
+Terrain::CrystalMap Terrain::_collectedCrystals;
+
 Terrain::Terrain(std::string modelName, std::string materialFile, std::string materialName, std::string propName, ShaderPtr shader, Renderer & renderer, int gridX, int gridZ ,int terrain_size, int vertex_count, vmml::Vector3f pos, float rotX, float rotY, float rotZ, float scale)
 : Entity(modelName, materialFile, materialName, propName, shader, renderer, pos, rotX, rotY, rotZ, scale)
 {
@@ -161,18 +163,20 @@ void Terrain::placeCrystal(int i, int j)
     float value = ridgedMulti.GetValue(xPos, crystalHeight, zPos);
     if (value > 1.0f)
     {
-        /*
-         Entity(std::string objName, std::string modelName, std::string propName, ShaderPtr shader, Renderer & renderer, vmml::Vector3f pos, float rotX, float rotY, float rotZ, float scale);
-         */
-        TreePtr crystal = TreePtr(new Tree(getModelName() + std::to_string(i), "crystal.obj", "crystal", "crystalProperties", renderer().getObjects()->loadShaderFile("basic", 1, false, true, true, true, false), renderer(), vmml::Vector3f(xPos, crystalHeight, zPos), 0.0f, 0.0f, 0.0f, 2.0f));
+        std::string crystalName = getModelName() + std::to_string(i);
+        if(Terrain::_collectedCrystals.find(crystalName) != Terrain::_collectedCrystals.end()){
+            std::cout << "crystal already collected!" << std::endl;
+        } else {
+        TreePtr crystal = TreePtr(new Tree(crystalName, "crystal.obj", "crystal", "crystalProperties", renderer().getObjects()->loadShaderFile("basic", 1, false, true, true, true, false), renderer(), vmml::Vector3f(xPos, crystalHeight, zPos), 0.0f, 0.0f, 0.0f, 2.0f));
         
         crystal->setYPosition(crystalHeight);
         crystal->setYPosition(crystalHeight);
         // tree->add();
         _crystals.insert(
-                      CrystalMap::value_type( getModelName() + std::to_string(i), crystal)
+                      CrystalMap::value_type(crystalName, crystal)
                       );
         _treeCount++;
+        }
     }
 }
 
@@ -281,6 +285,27 @@ void Terrain::customRenderTerrain(std::string camera, vmml::Matrix4f view, vmml:
 Terrain::TreeMap Terrain::getTreeMap()
 {
 	return _trees;
+}
+
+bool Terrain::checkCollisionWithEntities(vmml::Vector3f playerPos)
+{
+    TreeMap::iterator it;
+    vmml::Vector3f crystalPos;
+    bool collision = false;
+    float playerCameraGroundOffset = 10.0;
+    
+    for(TreeMap::iterator it = _crystals.begin(); it != _crystals.end(); it++)
+    {
+        crystalPos = it->second->getPosition();
+        float distance = sqrtf(pow(playerPos.x() - crystalPos.x(), 2.0) + pow(playerPos.y() - (crystalPos.y()+playerCameraGroundOffset), 2.0) + pow(playerPos.z() - crystalPos.z(), 2.0));
+        if(distance <= 10.0){
+            std::cout << "------" << std::endl;
+            Terrain::_collectedCrystals.insert(TreeMap::value_type(it->first , it->second));
+            _crystals.erase(it);
+            std::cout << "collected: "<< Terrain::_collectedCrystals.size() << std::endl;
+        }
+    }
+    return collision;
 }
 
 float Terrain::barryCentric(vmml::Vector3f p1, vmml::Vector3f p2, vmml::Vector3f p3, vmml::Vector2f pos) {

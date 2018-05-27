@@ -131,6 +131,13 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
     
     _cam->process(camera, deltaTime);
     _terrainLoader->process(camera, deltaTime);
+    
+    int gridX = _terrainLoader->getPlayerGridX();
+    int gridZ = _terrainLoader->getPlayerGridZ();
+    std::string currentTerrainKey = _terrainLoader->generateTerrainKey(gridX, gridZ);
+    TerrainPtr currentTerrain = _terrainLoader->getSingleTerrain(currentTerrainKey);
+    vmml::Vector3f currentPlayerPos = _cam->getPosition();
+    currentTerrain->checkCollisionWithEntities(currentPlayerPos);
 
     // Move Light to see changes in Colors/Lighting
     // float lightPosition = bRenderer().getObjects()->getLight("sun")->getPosition().z();
