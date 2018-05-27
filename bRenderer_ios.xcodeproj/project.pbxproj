@@ -22,6 +22,7 @@
 		313C9ED520BAECDD00D6E2F0 /* crystal.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 313C9ED220BAECDD00D6E2F0 /* crystal.mtl */; };
 		313C9ED620BAECDD00D6E2F0 /* crystal.obj in Resources */ = {isa = PBXBuildFile; fileRef = 313C9ED320BAECDD00D6E2F0 /* crystal.obj */; };
 		313C9EDA20BB1C0600D6E2F0 /* crystal_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 313C9ED920BB1C0600D6E2F0 /* crystal_icon.png */; };
+		313C9EDD20BB440700D6E2F0 /* Crystal.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 313C9EDC20BB440700D6E2F0 /* Crystal.cpp */; };
 		31581B0320B74D560074783C /* Cam.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 31581B0220B74D560074783C /* Cam.cpp */; };
 		31581B0620B77CBE0074783C /* Sun.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 31581B0520B77CBE0074783C /* Sun.cpp */; };
 		31581B0B20B7809A0074783C /* moon_test.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 31581B0720B780990074783C /* moon_test.mtl */; };
@@ -260,6 +261,8 @@
 		313C9ED220BAECDD00D6E2F0 /* crystal.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = crystal.mtl; sourceTree = "<group>"; };
 		313C9ED320BAECDD00D6E2F0 /* crystal.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = crystal.obj; sourceTree = "<group>"; };
 		313C9ED920BB1C0600D6E2F0 /* crystal_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = crystal_icon.png; sourceTree = "<group>"; };
+		313C9EDB20BB43F700D6E2F0 /* Crystal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Crystal.h; sourceTree = "<group>"; };
+		313C9EDC20BB440700D6E2F0 /* Crystal.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Crystal.cpp; sourceTree = "<group>"; };
 		31581B0120B74D4E0074783C /* Cam.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Cam.h; sourceTree = "<group>"; };
 		31581B0220B74D560074783C /* Cam.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Cam.cpp; sourceTree = "<group>"; };
 		31581B0420B77CB30074783C /* Sun.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Sun.h; sourceTree = "<group>"; };
@@ -754,6 +757,7 @@
 				312A838220A1936900621562 /* TerrainLoader.h */,
 				31E5CD7120B052E9005DC7D5 /* ShadowModelRenderer.h */,
 				317950AF20B605FC00D94992 /* BloomRenderer.h */,
+				313C9EDB20BB43F700D6E2F0 /* Crystal.h */,
 			);
 			path = headers;
 			sourceTree = "<group>";
@@ -776,6 +780,7 @@
 				312A838320A1937900621562 /* TerrainLoader.cpp */,
 				31E5CD6F20B052CB005DC7D5 /* ShadowModelRenderer.cpp */,
 				317950AD20B605EA00D94992 /* BloomRenderer.cpp */,
+				313C9EDC20BB440700D6E2F0 /* Crystal.cpp */,
 			);
 			path = implementation;
 			sourceTree = "<group>";
@@ -783,7 +788,6 @@
 		B47949841BA6742B00B5E9DC /* data */ = {
 			isa = PBXGroup;
 			children = (
-				313C9ED920BB1C0600D6E2F0 /* crystal_icon.png */,
 				B47949851BA6742B00B5E9DC /* arial.ttf */,
 				3136FA25209A5D4A008436CF /* back.png */,
 				31A71EDD20865D6E00A2D46A /* basic.frag */,
@@ -804,6 +808,7 @@
 				31FEB34620AF57960033CD99 /* combineShader.frag */,
 				31FEB34520AF57960033CD99 /* combineShader.vert */,
 				B47949921BA6742B00B5E9DC /* config.json */,
+				313C9ED920BB1C0600D6E2F0 /* crystal_icon.png */,
 				313C9ED220BAECDD00D6E2F0 /* crystal.mtl */,
 				313C9ED320BAECDD00D6E2F0 /* crystal.obj */,
 				313C9ED120BAECDD00D6E2F0 /* crystal.png */,
@@ -1296,6 +1301,7 @@
 				B4794A2B1BA6743D00B5E9DC /* platform.c in Sources */,
 				B4794A451BA6743D00B5E9DC /* Shader.cpp in Sources */,
 				B4794A4C1BA6743D00B5E9DC /* TextureData.cpp in Sources */,
+				313C9EDD20BB440700D6E2F0 /* Crystal.cpp in Sources */,
 				B47AD6D31B827EA300AFC632 /* pfr.c in Sources */,
 				B4794A561BA6743D00B5E9DC /* TextureData_ios.mm in Sources */,
 				B4794A4F1BA6743D00B5E9DC /* Renderer_desktop.cpp in Sources */,
