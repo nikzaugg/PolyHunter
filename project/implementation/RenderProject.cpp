@@ -54,13 +54,11 @@ void RenderProject::initFunction()
 	
 	// PROPERTIES FOR THE MODELS
     PropertiesPtr treeProperties = bRenderer().getObjects()->createProperties("treeProperties");
-    // PropertiesPtr sunProperties = bRenderer().getObjects()->createProperties("sunProperties");
     PropertiesPtr skyboxProperties = bRenderer().getObjects()->createProperties("skyboxProperties");
     PropertiesPtr guyProperties = bRenderer().getObjects()->createProperties("guyProperties");
 
 	// BLENDER MODELS (.obj)
     bRenderer().getObjects()->loadObjModel("tree.obj", false, true, basicShader, treeProperties);
-    // bRenderer().getObjects()->loadObjModel("crystal.obj", false, true, basicShader, nullptr);
 
     // SKYBOX
     MaterialPtr skyboxMaterial = bRenderer().getObjects()->loadObjMaterial("skybox.mtl", "skybox", skyboxShader);
@@ -71,10 +69,15 @@ void RenderProject::initFunction()
 	basicShader->setUniform("fogDensity", 0.007f);
 	basicShader->setUniform("fogGradient", 0.4f);
 	
-    //Sun
-//    _sun = SunPtr(new Sun("sun_instance", "sun", "sunProperties", sunShader, getProjectRenderer(), vmml::Vector3f(0.0f, 100.0f, 0.0f), 0.0f, 0.0f, 0.0f, 3.0f));
+    // create sprite for GUI Crystal Icon
+    bRenderer().getObjects()->createSprite("crystal_icon", "crystal_icon.png");
     
-    /// !! need to add .obj extension !! ///
+    // create text sprite for the GUI
+    FontPtr font = bRenderer().getObjects()->loadFont("KozGoPro-ExtraLight.otf", 50);
+    if (Input::isTouchDevice())
+        bRenderer().getObjects()->createTextSprite("gui-crystal-info", vmml::Vector3f(1.f, 1.f, 1.f), " ", font);
+    
+    // SUN
     _sun = SunPtr(new Sun("sun.obj", "sun", "sunProperties", sunShader, getProjectRenderer(), vmml::Vector3f(0.0f, 100.0f, 0.0f), 0.0f, 0.0f, 0.0f, 3.0f));
 
     // PLAYER - FPS-CAMERA
@@ -110,6 +113,21 @@ void RenderProject::loopFunction(const double &deltaTime, const double &elapsedT
     /* Terrain is loaded inside _bloomRenderer */
     /* Render Queue is drawn inside _bloomRenderer */
     _bloomRenderer->doBloomRenderPass("camera", deltaTime);
+    
+    /*** GUI - Crystal Icon ***/
+    // translate and scale
+    GLfloat titleScale = 0.1f;
+    vmml::Matrix4f scaling = vmml::create_scaling(vmml::Vector3f(titleScale / bRenderer().getView()->getAspectRatio(), titleScale, titleScale));
+    vmml::Matrix4f modelMatrix = vmml::create_translation(vmml::Vector3f(-0.95f, 0.9f, -0.65f)) * scaling;
+    // draw
+    bRenderer().getModelRenderer()->drawModel(bRenderer().getObjects()->getModel("crystal_icon"), modelMatrix, _viewMatrixHUD, vmml::Matrix4f::IDENTITY, std::vector<std::string>({}), false, false);
+    
+    /*** GUI - Crystal Counter Text ***/
+    titleScale = 0.1f;
+    scaling = vmml::create_scaling(vmml::Vector3f(titleScale / bRenderer().getView()->getAspectRatio(), titleScale, titleScale));
+    modelMatrix = vmml::create_translation(vmml::Vector3f(-1.15f / bRenderer().getView()->getAspectRatio(), 0.87f, -0.65f)) * scaling;
+    // draw
+    bRenderer().getModelRenderer()->drawModel(bRenderer().getObjects()->getTextSprite("gui-crystal-info"), modelMatrix, _viewMatrixHUD, vmml::Matrix4f::IDENTITY, std::vector<std::string>({}), false);
 
 	// Quit renderer when escape is pressed
 	if (bRenderer().getInput()->getKeyState(bRenderer::KEY_ESCAPE) == bRenderer::INPUT_PRESS)
@@ -132,13 +150,18 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
     _cam->process(camera, deltaTime);
     _terrainLoader->process(camera, deltaTime);
     
+    // Collision with Crystals
     int gridX = _terrainLoader->getPlayerGridX();
     int gridZ = _terrainLoader->getPlayerGridZ();
     std::string currentTerrainKey = _terrainLoader->generateTerrainKey(gridX, gridZ);
     TerrainPtr currentTerrain = _terrainLoader->getSingleTerrain(currentTerrainKey);
     vmml::Vector3f currentPlayerPos = _cam->getPosition();
     currentTerrain->checkCollisionWithEntities(currentPlayerPos);
-
+    int nrOfCrystalsCollected = currentTerrain->getNrOfCrystalsCollected();
+    std::string displayString = std::to_string(nrOfCrystalsCollected);
+    bRenderer().getObjects()->getTextSprite("gui-crystal-info")->setText(displayString);
+    // End Collision with Crystals
+    
     // Move Light to see changes in Colors/Lighting
     // float lightPosition = bRenderer().getObjects()->getLight("sun")->getPosition().z();
     /*
@@ -162,13 +185,7 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
         }
     }
      */
-    
-//    _player->process("camera", deltaTime);
-//    vmml::Matrix4f playerModel = _player->computeTransformationMatrix();
-//    vmml::Matrix4f playerView = bRenderer().getObjects()->getCamera("camera")->getViewMatrix();
-//    vmml::Matrix4f playerModelView = playerView * playerModel;
-//    bRenderer().getObjects()->getShader("basic")->setUniform("playerPos", playerView* _player->getPosition());
-//    bRenderer().getObjects()->getShader("terrain")->setUniform("playerPos", playerView* _player->getPosition());
+
     vmml::Matrix4f cameraView = bRenderer().getObjects()->getCamera("camera")->getViewMatrix();
     bRenderer().getObjects()->getShader("basic")->setUniform("playerPos", _cam->getPosition());
     bRenderer().getObjects()->getShader("terrain")->setUniform("playerPos", _cam->getPosition());

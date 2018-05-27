@@ -21,6 +21,7 @@
 		313C9ED420BAECDD00D6E2F0 /* crystal.png in Resources */ = {isa = PBXBuildFile; fileRef = 313C9ED120BAECDD00D6E2F0 /* crystal.png */; };
 		313C9ED520BAECDD00D6E2F0 /* crystal.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 313C9ED220BAECDD00D6E2F0 /* crystal.mtl */; };
 		313C9ED620BAECDD00D6E2F0 /* crystal.obj in Resources */ = {isa = PBXBuildFile; fileRef = 313C9ED320BAECDD00D6E2F0 /* crystal.obj */; };
+		313C9EDA20BB1C0600D6E2F0 /* crystal_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 313C9ED920BB1C0600D6E2F0 /* crystal_icon.png */; };
 		31581B0320B74D560074783C /* Cam.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 31581B0220B74D560074783C /* Cam.cpp */; };
 		31581B0620B77CBE0074783C /* Sun.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 31581B0520B77CBE0074783C /* Sun.cpp */; };
 		31581B0B20B7809A0074783C /* moon_test.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 31581B0720B780990074783C /* moon_test.mtl */; };
@@ -258,6 +259,7 @@
 		313C9ED120BAECDD00D6E2F0 /* crystal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = crystal.png; sourceTree = "<group>"; };
 		313C9ED220BAECDD00D6E2F0 /* crystal.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = crystal.mtl; sourceTree = "<group>"; };
 		313C9ED320BAECDD00D6E2F0 /* crystal.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = crystal.obj; sourceTree = "<group>"; };
+		313C9ED920BB1C0600D6E2F0 /* crystal_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = crystal_icon.png; sourceTree = "<group>"; };
 		31581B0120B74D4E0074783C /* Cam.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Cam.h; sourceTree = "<group>"; };
 		31581B0220B74D560074783C /* Cam.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Cam.cpp; sourceTree = "<group>"; };
 		31581B0420B77CB30074783C /* Sun.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Sun.h; sourceTree = "<group>"; };
@@ -781,6 +783,7 @@
 		B47949841BA6742B00B5E9DC /* data */ = {
 			isa = PBXGroup;
 			children = (
+				313C9ED920BB1C0600D6E2F0 /* crystal_icon.png */,
 				B47949851BA6742B00B5E9DC /* arial.ttf */,
 				3136FA25209A5D4A008436CF /* back.png */,
 				31A71EDD20865D6E00A2D46A /* basic.frag */,
@@ -1214,6 +1217,7 @@
 				31E5CD6E20B03883005DC7D5 /* simpleTexture.vert in Resources */,
 				3136FA2B209A5D4D008436CF /* back.png in Resources */,
 				B47949AA1BA6742B00B5E9DC /* cave_stream.frag in Resources */,
+				313C9EDA20BB1C0600D6E2F0 /* crystal_icon.png in Resources */,
 				B47949BA1BA6742B00B5E9DC /* KozGoPro-ExtraLight.otf in Resources */,
 				31A71EE220865D6F00A2D46A /* sun.obj in Resources */,
 				31A71EDF20865D6F00A2D46A /* terrain.vert in Resources */,

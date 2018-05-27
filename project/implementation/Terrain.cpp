@@ -302,10 +302,15 @@ bool Terrain::checkCollisionWithEntities(vmml::Vector3f playerPos)
             std::cout << "------" << std::endl;
             Terrain::_collectedCrystals.insert(TreeMap::value_type(it->first , it->second));
             _crystals.erase(it);
-            std::cout << "collected: "<< Terrain::_collectedCrystals.size() << std::endl;
+            std::cout << "Collected Crystals: "<< Terrain::_collectedCrystals.size() << std::endl;
         }
     }
     return collision;
+}
+
+int Terrain::getNrOfCrystalsCollected()
+{
+    return Terrain::_collectedCrystals.size();
 }
 
 float Terrain::barryCentric(vmml::Vector3f p1, vmml::Vector3f p2, vmml::Vector3f p3, vmml::Vector2f pos) {

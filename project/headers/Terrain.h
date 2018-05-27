@@ -20,6 +20,7 @@ public:
     void customProcess(std::string cameraName, const double &deltaTime, vmml::Matrix4f view, vmml::Matrix4f proj);
     TreeMap getTreeMap();
     bool checkCollisionWithEntities(vmml::Vector3f playerPos);
+    int getNrOfCrystalsCollected();
 
     int _TERRAIN_SIZE;
     int _VERTEX_COUNT;
