@@ -1,5 +1,5 @@
 # Blender MTL File: 'Crystal.blend'
-# Material Count: 1
+# Material Count: 2
 
 newmtl Almaz
 Ns 96.078431
@@ -11,3 +11,4 @@ Ni 1.000000
 d 1.000000
 illum 2
 map_Kd crystal.png
+

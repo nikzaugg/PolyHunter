@@ -164,7 +164,7 @@ void Terrain::placeCrystal(int i, int j)
         /*
          Entity(std::string objName, std::string modelName, std::string propName, ShaderPtr shader, Renderer & renderer, vmml::Vector3f pos, float rotX, float rotY, float rotZ, float scale);
          */
-        TreePtr crystal = TreePtr(new Tree(getModelName() + std::to_string(i), "Crystal.obj", "Crystal", "crystalProperties", renderer().getObjects()->loadShaderFile("basic", 1, false, true, true, true, false), renderer(), vmml::Vector3f(xPos, crystalHeight, zPos), 0.0f, 0.0f, 0.0f, 2.0f));
+        TreePtr crystal = TreePtr(new Tree(getModelName() + std::to_string(i), "crystal.obj", "crystal", "crystalProperties", renderer().getObjects()->loadShaderFile("basic", 1, false, true, true, true, false), renderer(), vmml::Vector3f(xPos, crystalHeight, zPos), 0.0f, 0.0f, 0.0f, 2.0f));
         
         crystal->setYPosition(crystalHeight);
         crystal->setYPosition(crystalHeight);

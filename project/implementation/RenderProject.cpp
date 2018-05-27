@@ -60,7 +60,7 @@ void RenderProject::initFunction()
 
 	// BLENDER MODELS (.obj)
     bRenderer().getObjects()->loadObjModel("tree.obj", false, true, basicShader, treeProperties);
-    bRenderer().getObjects()->loadObjModel("Crystal.obj", false, true, basicShader, nullptr);
+    // bRenderer().getObjects()->loadObjModel("crystal.obj", false, true, basicShader, nullptr);
 
     // SKYBOX
     MaterialPtr skyboxMaterial = bRenderer().getObjects()->loadObjMaterial("skybox.mtl", "skybox", skyboxShader);
@@ -165,7 +165,7 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
     vmml::Matrix4f cameraView = bRenderer().getObjects()->getCamera("camera")->getViewMatrix();
     bRenderer().getObjects()->getShader("basic")->setUniform("playerPos", _cam->getPosition());
     bRenderer().getObjects()->getShader("terrain")->setUniform("playerPos", _cam->getPosition());
-
+    
     /////// Skybox ///
     modelMatrix =
         vmml::create_translation(vmml::Vector3f(_cam->getPosition().x(), 0.0, _cam->getPosition().z())) *
