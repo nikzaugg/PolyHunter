@@ -18,6 +18,8 @@ public:
     
 	void process(std::string cameraName, const double &deltaTime);
     void drawCrystals(std::string camera);
+    void renderTerrain(std::string cameraName);
+    void customRenderTerrain(std::string camera, vmml::Matrix4f view, vmml::Matrix4f proj);
     void customProcess(std::string cameraName, const double &deltaTime, vmml::Matrix4f view, vmml::Matrix4f proj);
     TreeMap getTreeMap();
     bool checkCollisionWithEntities(vmml::Vector3f playerPos);
@@ -31,8 +33,6 @@ private:
     void generateTerrainGeometry();
     void placeTree(int i, int j);
     void placeCrystal(int i, int j);
-    void renderTerrain(std::string cameraName);
-    void customRenderTerrain(std::string camera, vmml::Matrix4f view, vmml::Matrix4f proj);
     void processTrees(std::string camera);
     void processCrystals(std::string camera);
     void customProcessTrees(std::string camera, vmml::Matrix4f view, vmml::Matrix4f proj);

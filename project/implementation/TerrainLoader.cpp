@@ -100,7 +100,6 @@ void TerrainLoader::customProcess(std::string camera, const double &deltaTime, v
         _terrainZPlayer = gridZ;
         refreshTerrainTiles();
     }
-    
     customRenderTerrains(camera, deltaTime, view, proj);
 }
 
@@ -200,6 +199,15 @@ void TerrainLoader::renderCrystals(std::string camera, const double &deltaTime)
     TerrainMap::iterator it;
     for (auto const& x: _terrains) {
         x.second->drawCrystals(camera);
+    }
+}
+
+void TerrainLoader::renderTerrainTilesOnly(std::string camera, const double &deltaTime)
+{
+    _renderer.getObjects()->getShader("terrain")->setUniform("bloomPass", 1.0);
+    TerrainMap::iterator it;
+    for (auto const& x: _terrains) {
+        x.second->renderTerrain(camera);
     }
 }
 

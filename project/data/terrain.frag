@@ -44,6 +44,8 @@ mediump vec2 poissonDisk[4];
 int pcfCount = 3;
 int totalTexels = (pcfCount * 2 + 1) * (pcfCount * 2 + 1);
 
+uniform float bloomPass;
+
 float ShadowCalculation(vec3 normal, vec4 lightDir)
 {
     // perform perspective divide
@@ -85,36 +87,41 @@ float ShadowCalculation(vec3 normal, vec4 lightDir)
 
 void main()
 {
-    vec4 position = position_varying_ViewSpace;
-    vec4 position_world = position_varying_WorldSpace;
-    vec3 normal = normalize(normal_varying_ViewSpace);
-    vec3 normal_world = normalize(normal_varying_WorldSpace);
-    vec4 lightPosition = normalize(lightPositionViewSpace_0);
-    vec4 lightVector = normalize(lightPosition - position);
-    vec4 lightPosition_world = normalize(lightPositionWorldSpace_0);
-    vec4 lightVector_world = normalize(lightPosition_world - position_world);
-    
-    
-    // ambient part
-    vec4 ambientPart = vec4(ambientColor * lightIntensity_0, 1.0);
-    ambientPart = clamp(ambientPart, 0.0, 1.0);
-    
-    // diffuse part
-    float intensityFactor = dot(normal, lightVector.xyz);
-    vec3 diffuseTerm = Kd * clamp(intensityFactor, 0.0, 1.0) * lightDiffuseColor_0;
-    vec4 diffusePart = vec4(clamp(diffuseTerm, 0.0, 1.0), 1.0);
-    
-    // shadow-value
-    float shadow = ShadowCalculation(normal_world, lightVector_world);
-    
-    vec4 totalDiffuse = diffusePart * shadow;
-    // gl_FragColor = (ambientPart + diffusePart) * vertexColor_varying;
-
-     vec4 outColor = (ambientPart + totalDiffuse) * vertexColor_varying;
-    gl_FragColor = mix(vec4(skyColor, 1.0), outColor, visibility);
-    
-    // gl_FragColor = vec4(visibility);
-    // Color according to normals
-    // vec3 normal_test = normal/2.0 + vec3(0.5);
-    // gl_FragColor = vec4(normal_test, 1.0);
+    // In the bloom Pass we draw everything black, as terrain should not get the bloom effect.
+    if (bloomPass > 0.0) {
+        gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+    } else {
+        vec4 position = position_varying_ViewSpace;
+        vec4 position_world = position_varying_WorldSpace;
+        vec3 normal = normalize(normal_varying_ViewSpace);
+        vec3 normal_world = normalize(normal_varying_WorldSpace);
+        vec4 lightPosition = normalize(lightPositionViewSpace_0);
+        vec4 lightVector = normalize(lightPosition - position);
+        vec4 lightPosition_world = normalize(lightPositionWorldSpace_0);
+        vec4 lightVector_world = normalize(lightPosition_world - position_world);
+        
+        
+        // ambient part
+        vec4 ambientPart = vec4(ambientColor * lightIntensity_0, 1.0);
+        ambientPart = clamp(ambientPart, 0.0, 1.0);
+        
+        // diffuse part
+        float intensityFactor = dot(normal, lightVector.xyz);
+        vec3 diffuseTerm = Kd * clamp(intensityFactor, 0.0, 1.0) * lightDiffuseColor_0;
+        vec4 diffusePart = vec4(clamp(diffuseTerm, 0.0, 1.0), 1.0);
+        
+        // shadow-value
+        float shadow = ShadowCalculation(normal_world, lightVector_world);
+        
+        vec4 totalDiffuse = diffusePart * shadow;
+        // gl_FragColor = (ambientPart + diffusePart) * vertexColor_varying;
+        
+        vec4 outColor = (ambientPart + totalDiffuse) * vertexColor_varying;
+        gl_FragColor = mix(vec4(skyColor, 1.0), outColor, visibility);
+        
+        // gl_FragColor = vec4(visibility);
+        // Color according to normals
+        // vec3 normal_test = normal/2.0 + vec3(0.5);
+        // gl_FragColor = vec4(normal_test, 1.0);
+    }
 }

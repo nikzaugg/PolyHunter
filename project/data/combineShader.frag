@@ -10,8 +10,8 @@ uniform sampler2D fbo_depth2;
 
 varying vec4 texCoordVarying;
 
-float near = 0.25;
-float far  = 10000.0;
+float near = -1.0;
+float far  = 1.0;
 
 float LinearizeDepth(float depth)
 {
@@ -26,13 +26,8 @@ void main()
     
     float sceneDepth = texture2D(fbo_depth1, texCoordVarying.xy).r;
     float crystalDepth = texture2D(fbo_depth2, texCoordVarying.xy).r;
-    
+
     gl_FragColor = sceneColor + blurColor;
     
-//    if(crystalDepth < sceneDepth) {
-//        gl_FragColor = sceneColor;
-//    } else {
-//        gl_FragColor = sceneColor + blurColor;
-//    }
 }
 

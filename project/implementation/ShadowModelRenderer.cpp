@@ -121,7 +121,7 @@ void ShadowModelRenderer::drawToDepthMap(const double &deltaTime)
     /**************************
      * BIND DEPTH-FBO
      *************************/
-    _renderer.getView()->setViewportSize(_renderer.getView()->getWidth(), _renderer.getView()->getHeight());
+    //_renderer.getView()->setViewportSize(_renderer.getView()->getWidth(), _renderer.getView()->getHeight());
     GLint defaultFBO = Framebuffer::getCurrentFramebuffer();
     _renderer.getObjects()->getFramebuffer("depthFBO")->bindDepthMap(_renderer.getObjects()->getDepthMap("depthMap"), false);
     //_renderer.getObjects()->getFramebuffer("depthFBO")->bindTexture(_renderer.getObjects()->getTexture("sceneTexture"), false);

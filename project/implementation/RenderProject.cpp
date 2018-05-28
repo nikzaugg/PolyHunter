@@ -58,7 +58,7 @@ void RenderProject::initFunction()
     PropertiesPtr guyProperties = bRenderer().getObjects()->createProperties("guyProperties");
 
 	// BLENDER MODELS (.obj)
-    bRenderer().getObjects()->loadObjModel("tree.obj", false, true, basicShader, treeProperties);
+    // bRenderer().getObjects()->loadObjModel("tree.obj", false, true, basicShader, treeProperties);
 
     // SKYBOX
     MaterialPtr skyboxMaterial = bRenderer().getObjects()->loadObjMaterial("skybox.mtl", "skybox", skyboxShader);
