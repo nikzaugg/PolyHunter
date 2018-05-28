@@ -77,7 +77,7 @@ void Sun::renderFragments(std::string camera, vmml::Vector3f pos)
 void Sun::render(std::string camera, vmml::Vector3f playerPos, vmml::Matrix4f viewMatrixHUD)
 {
 	// draw model instance
-	setPosition(vmml::Vector3f(playerPos.x() + 450.0f, 100.0f, playerPos.z()));
+	setPosition(vmml::Vector3f(playerPos.x() + 450.0f, 300.0f, playerPos.z()));
 	setScale(50.0f);
 	setRotY(90.0f);
 	_renderer.getModelRenderer()->queueModelInstance("moon_test", "moon_test_instance", camera, computeTransformationMatrix(), std::vector<std::string>({}), false, false, true, GL_SRC_ALPHA, GL_ONE);

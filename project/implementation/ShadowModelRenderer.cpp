@@ -123,6 +123,7 @@ void ShadowModelRenderer::drawToDepthMap(const double &deltaTime)
      *************************/
     //_renderer.getView()->setViewportSize(_renderer.getView()->getWidth(), _renderer.getView()->getHeight());
     GLint defaultFBO = Framebuffer::getCurrentFramebuffer();
+    _renderer.getObjects()->getFramebuffer("depthFBO")->bind(false);
     _renderer.getObjects()->getFramebuffer("depthFBO")->bindDepthMap(_renderer.getObjects()->getDepthMap("depthMap"), false);
     //_renderer.getObjects()->getFramebuffer("depthFBO")->bindTexture(_renderer.getObjects()->getTexture("sceneTexture"), false);
     
@@ -147,6 +148,7 @@ void ShadowModelRenderer::drawToDepthMapDebug(const double &deltaTime)
      *************************/
     _renderer.getView()->setViewportSize(_renderer.getView()->getWidth(), _renderer.getView()->getHeight());
     GLint defaultFBO = Framebuffer::getCurrentFramebuffer();
+    _renderer.getObjects()->getFramebuffer("depthFBO")->bind(false);
     _renderer.getObjects()->getFramebuffer("depthFBO")->bindDepthMap(_renderer.getObjects()->getDepthMap("depthMap"), false);
     //_renderer.getObjects()->getFramebuffer("depthFBO")->bindTexture(_renderer.getObjects()->getTexture("sceneTexture"), false);
     
@@ -155,11 +157,12 @@ void ShadowModelRenderer::drawToDepthMapDebug(const double &deltaTime)
      *******************************************/
     _terrainLoader->customProcess("camera", deltaTime, getDepthView(), getDepthProjection());
     /**********************************/
-    
+    _renderer.getObjects()->getFramebuffer("depthFBO")->unbind();
     /**************************************
      * RENDER DEPTH-MAP ONTO A GUI-SPRITE
      * to see it on screen
      *************************************/
+    _renderer.getObjects()->getFramebuffer("shadowFBO")->bind(false);
     _renderer.getObjects()->getFramebuffer("shadowFBO")->bindTexture(_renderer.getObjects()->getTexture("shadowTexture"), false);
     vmml::Matrix4f modelMatrix = vmml::create_translation(vmml::Vector3f(0.0f, 0.0f, -0.5));
     // _renderer.getObjects()->getMaterial("depthMaterial")->setTexture("fbo_texture", _renderer.getObjects()->getTexture("sceneTexture"));
