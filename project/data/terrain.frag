@@ -29,6 +29,7 @@ uniform vec4 lightPositionWorldSpace_0;
 varying lowp vec4 shadowCoord_varying;
 
 uniform vec3 skyColor;
+uniform vec3 fogColor;
 varying mediump float visibility;
 
 varying lowp vec4 vertexColor_varying;
@@ -117,7 +118,7 @@ void main()
         // gl_FragColor = (ambientPart + diffusePart) * vertexColor_varying;
         
         vec4 outColor = (ambientPart + totalDiffuse) * vertexColor_varying;
-        gl_FragColor = mix(vec4(0.5, 0.5, 0.5, 1.0), outColor, visibility);
+        gl_FragColor = mix(vec4(vec3(fogColor), 1.0), outColor, visibility);
         
         // gl_FragColor = vec4(visibility);
         // Color according to normals

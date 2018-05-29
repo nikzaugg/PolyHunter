@@ -16,6 +16,8 @@ Skybox::Skybox(MaterialPtr material, PropertiesPtr properties, Renderer & render
 	ModelPtr skyBoxModel = generate();
 	_renderer.getObjects()->addModel("skybox", skyBoxModel);
 	_renderer.getObjects()->getShader("skybox")->setUniform("skyBoxSize", SIZE);
+    _renderer.getObjects()->getShader("skybox")->setUniform("skyBoxDensity", _skyBoxDensity);
+    _renderer.getObjects()->getShader("skybox")->setUniform("skyBoxGradient", _skyBoxGradient);
 }
 
 ModelPtr Skybox::generate()
@@ -86,6 +88,14 @@ void Skybox::setSkyColor(vmml::Vector3f color)
 {
 	_skyColor = color;
 	_renderer.getObjects()->getShader("skybox")->setUniform("skyColor", color);
+}
+
+void Skybox::setSkyboxGradient(float gradient){
+    _skyBoxGradient = gradient;
+}
+
+void Skybox::setSkyboxDensity(float density){
+    _skyBoxDensity = density;
 }
 
 vmml::Vector3f Skybox::getSkyColor()

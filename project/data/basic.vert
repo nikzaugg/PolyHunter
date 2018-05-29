@@ -31,7 +31,7 @@ uniform float amplitude;
 uniform float heightPercent;
 uniform vec3 skyColor;
 uniform vec3 playerPos;
-
+uniform vec3 fogColor;
 uniform float fogDensity;
 uniform float fogGradient;
 

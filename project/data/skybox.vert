@@ -23,7 +23,10 @@ uniform vec4 lightPositionViewSpace_0;
 
 uniform float amplitude;
 uniform float heightPercent;
+
 uniform float skyBoxSize;
+uniform float skyBoxDensity;
+uniform float skyBoxGradient;
 
 attribute vec4 Position;
 attribute vec3 Normal;
@@ -57,7 +60,7 @@ void main()
 	float dist = abs(skyBoxSize - Position.y);
     
     height = Position;
-	heightGradient =  exp(-pow((dist * 0.9), 0.5));
+	heightGradient =  exp(-pow((dist * skyBoxDensity), skyBoxGradient));
     
     // Position of Vertex
     gl_Position = ProjectionMatrix*posViewSpace;

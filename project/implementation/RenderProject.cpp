@@ -65,19 +65,26 @@ void RenderProject::initFunction()
     Skybox skybox = Skybox(skyboxMaterial, skyboxProperties, getProjectRenderer());
 	skybox.setSkyColor(vmml::Vector3f(0.26, 0.48, 0.96));
 
+    // FOG
+    vmml::Vector3f fogColor = vmml::Vector3f(0.5);
+    float fogDensity = 0.007;
+    float fogGradient = 0.9;
+    
+    basicShader->setUniform("fogColor", fogColor);
 	basicShader->setUniform("skyColor", skybox.getSkyColor());
-	basicShader->setUniform("fogDensity", 0.007f);
-	basicShader->setUniform("fogGradient", 0.9f);
+	basicShader->setUniform("fogDensity", fogDensity);
+	basicShader->setUniform("fogGradient", fogGradient);
+    
+    terrainShader->setUniform("fogColor", fogColor);
 	terrainShader->setUniform("skyColor", skybox.getSkyColor());
-	terrainShader->setUniform("fogDensity", 0.007f);
-	terrainShader->setUniform("fogGradient", 0.9f);
+	terrainShader->setUniform("fogDensity", fogDensity);
+	terrainShader->setUniform("fogGradient", fogGradient);
 	
-    // create sprite for GUI Crystal Icon
+    // GUI CRYSTAL ICON
     bRenderer().getObjects()->createSprite("crystal_icon", "crystal_icon.png");
     
-    // create text sprite for the GUI
+    // GUI TEXT
     FontPtr font = bRenderer().getObjects()->loadFont("KozGoPro-ExtraLight.otf", 50);
-    
     bRenderer().getObjects()->createTextSprite("gui-crystal-info", vmml::Vector3f(1.f, 1.f, 1.f), " ", font);
     
     // SUN
@@ -118,9 +125,9 @@ void RenderProject::loopFunction(const double &deltaTime, const double &elapsedT
     /* Terrain is loaded inside _bloomRenderer */
     /* Render Queue is drawn inside _bloomRenderer */
     //_bloomRenderer->doBloomRenderPass("camera", deltaTime);
-	_terrainLoader->process("camera", deltaTime);
-	bRenderer().getModelRenderer()->drawQueue(/*GL_LINES*/);
-	bRenderer().getModelRenderer()->clearQueue();
+    _terrainLoader->process("camera", deltaTime);
+    bRenderer().getModelRenderer()->drawQueue(/*GL_LINES*/);
+    bRenderer().getModelRenderer()->clearQueue();
     
     /*** GUI - Crystal Icon ***/
     // translate and scale
@@ -171,6 +178,7 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
     std::string displayString = std::to_string(nrOfCrystalsCollected);
     bRenderer().getObjects()->getTextSprite("gui-crystal-info")->setText(displayString);
     // End Collision with Crystals
+    
     
     // Move Light to see changes in Colors/Lighting
     // float lightPosition = bRenderer().getObjects()->getLight("sun")->getPosition().z();
