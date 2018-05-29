@@ -59,9 +59,9 @@ private:
     vmml::Matrix4f _depthMVP;
     vmml::Matrix4f _viewMatrixHUD;
     
-    float _shadowBoxWidth = 350.0;
-    float _shadowBoxHeight = 350.0;
-    float _shadowBoxLength = 400.0;
+    float _shadowBoxWidth = 200.0;
+    float _shadowBoxHeight = 200.0;
+    float _shadowBoxLength = 500.0;
     
 };
 typedef std::shared_ptr< ShadowModelRenderer >  ShadowModelRendererPtr;

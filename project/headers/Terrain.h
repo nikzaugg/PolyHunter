@@ -5,6 +5,7 @@
 #include "Entity.h"
 #include "ProceduralOBJLoader.h"
 #include "Tree.h"
+#include "Crystal.h"
 
 class Terrain : public Entity
 {
@@ -12,11 +13,13 @@ public:
     Terrain(std::string modelName, std::string materialFile, std::string materialName, std::string propName, ShaderPtr shader, Renderer & renderer, int gridX, int gridZ, int terrain_size, int vertex_count ,vmml::Vector3f pos, float rotX, float rotY, float rotZ, float scale);
 	
     typedef std::unordered_map< std::string, TreePtr > TreeMap;
-    typedef std::unordered_map< std::string, TreePtr > CrystalMap;
+    typedef std::unordered_map< std::string, CrystalPtr > CrystalMap;
     typedef std::unordered_map< std::string, GeometryPtr > GroupMap;
     
 	void process(std::string cameraName, const double &deltaTime);
     void drawCrystals(std::string camera);
+    void renderTerrain(std::string cameraName);
+    void customRenderTerrain(std::string camera, vmml::Matrix4f view, vmml::Matrix4f proj);
     void customProcess(std::string cameraName, const double &deltaTime, vmml::Matrix4f view, vmml::Matrix4f proj);
     TreeMap getTreeMap();
     bool checkCollisionWithEntities(vmml::Vector3f playerPos);
@@ -30,8 +33,6 @@ private:
     void generateTerrainGeometry();
     void placeTree(int i, int j);
     void placeCrystal(int i, int j);
-    void renderTerrain(std::string cameraName);
-    void customRenderTerrain(std::string camera, vmml::Matrix4f view, vmml::Matrix4f proj);
     void processTrees(std::string camera);
     void processCrystals(std::string camera);
     void customProcessTrees(std::string camera, vmml::Matrix4f view, vmml::Matrix4f proj);

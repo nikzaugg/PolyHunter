@@ -12,6 +12,7 @@ public:
 	typedef std::unordered_map< std::string, TerrainPtr > TerrainMap;
     TerrainLoader(Renderer & renderer, ShaderPtr shader, CamPtr playerCam);
     void renderTerrains(std::string camera, const double &deltaTime);
+    void renderTerrainTilesOnly(std::string camera, const double &deltaTime);
     void renderCrystals(std::string camera, const double &deltaTime);
     void customRenderTerrains(std::string camera, const double &deltaTime, vmml::Matrix4f view, vmml::Matrix4f proj);
 	TerrainLoader::TerrainMap getTerrainMap();

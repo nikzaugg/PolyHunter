@@ -58,16 +58,19 @@ void RenderProject::initFunction()
     PropertiesPtr guyProperties = bRenderer().getObjects()->createProperties("guyProperties");
 
 	// BLENDER MODELS (.obj)
-    bRenderer().getObjects()->loadObjModel("tree.obj", false, true, basicShader, treeProperties);
+    // bRenderer().getObjects()->loadObjModel("tree.obj", false, true, basicShader, treeProperties);
 
     // SKYBOX
     MaterialPtr skyboxMaterial = bRenderer().getObjects()->loadObjMaterial("skybox.mtl", "skybox", skyboxShader);
     Skybox skybox = Skybox(skyboxMaterial, skyboxProperties, getProjectRenderer());
-	skybox.setSkyColor(vmml::Vector3f(0.14f, 0.16f, 0.22f));
+	skybox.setSkyColor(vmml::Vector3f(0.26, 0.48, 0.96));
 
 	basicShader->setUniform("skyColor", skybox.getSkyColor());
 	basicShader->setUniform("fogDensity", 0.007f);
-	basicShader->setUniform("fogGradient", 0.4f);
+	basicShader->setUniform("fogGradient", 0.9f);
+	terrainShader->setUniform("skyColor", skybox.getSkyColor());
+	terrainShader->setUniform("fogDensity", 0.007f);
+	terrainShader->setUniform("fogGradient", 0.9f);
 	
     // create sprite for GUI Crystal Icon
     bRenderer().getObjects()->createSprite("crystal_icon", "crystal_icon.png");
@@ -95,6 +98,8 @@ void RenderProject::initFunction()
     
 	// Update render queue
     updateRenderQueue("camera", 0.0f);
+
+	currentSecond = 0;
 }
 
 /* Draw your scene here */
@@ -112,7 +117,10 @@ void RenderProject::loopFunction(const double &deltaTime, const double &elapsedT
     /* BLOOM POSTPROCESSING */
     /* Terrain is loaded inside _bloomRenderer */
     /* Render Queue is drawn inside _bloomRenderer */
-    _bloomRenderer->doBloomRenderPass("camera", deltaTime);
+    //_bloomRenderer->doBloomRenderPass("camera", deltaTime);
+	_terrainLoader->process("camera", deltaTime);
+	bRenderer().getModelRenderer()->drawQueue(/*GL_LINES*/);
+	bRenderer().getModelRenderer()->clearQueue();
     
     /*** GUI - Crystal Icon ***/
     // translate and scale
@@ -128,7 +136,7 @@ void RenderProject::loopFunction(const double &deltaTime, const double &elapsedT
     modelMatrix = vmml::create_translation(vmml::Vector3f(-1.15f / bRenderer().getView()->getAspectRatio(), 0.87f, -0.65f)) * scaling;
     // draw
     bRenderer().getModelRenderer()->drawModel(bRenderer().getObjects()->getTextSprite("gui-crystal-info"), modelMatrix, _viewMatrixHUD, vmml::Matrix4f::IDENTITY, std::vector<std::string>({}), false);
-
+    
 	// Quit renderer when escape is pressed
 	if (bRenderer().getInput()->getKeyState(bRenderer::KEY_ESCAPE) == bRenderer::INPUT_PRESS)
 		bRenderer().terminateRenderer();
@@ -156,7 +164,9 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
     std::string currentTerrainKey = _terrainLoader->generateTerrainKey(gridX, gridZ);
     TerrainPtr currentTerrain = _terrainLoader->getSingleTerrain(currentTerrainKey);
     vmml::Vector3f currentPlayerPos = _cam->getPosition();
-    currentTerrain->checkCollisionWithEntities(currentPlayerPos);
+	if (currentTerrain->checkCollisionWithEntities(currentPlayerPos)) {
+		_sun->increaseIntensity(0.05);
+	}
     int nrOfCrystalsCollected = currentTerrain->getNrOfCrystalsCollected();
     std::string displayString = std::to_string(nrOfCrystalsCollected);
     bRenderer().getObjects()->getTextSprite("gui-crystal-info")->setText(displayString);
@@ -186,17 +196,22 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
     }
      */
 
+	//if ((int)elapsedTime % 10 == 0 && currentSecond != (int)elapsedTime) {
+	//	std::cout << elapsedTime << std::endl;
+	//	currentSecond = (int)elapsedTime;
+	//	_sun->setIntensity(0.1 * currentSecond);
+	//}
+
     vmml::Matrix4f cameraView = bRenderer().getObjects()->getCamera("camera")->getViewMatrix();
-    bRenderer().getObjects()->getShader("basic")->setUniform("playerPos", _cam->getPosition());
-    bRenderer().getObjects()->getShader("terrain")->setUniform("playerPos", _cam->getPosition());
+    bRenderer().getObjects()->getShader("basic")->setUniform("playerPos", cameraView * _cam->getPosition());
+    bRenderer().getObjects()->getShader("terrain")->setUniform("playerPos", cameraView * _cam->getPosition());
     
     /////// Skybox ///
     modelMatrix =
-        vmml::create_translation(vmml::Vector3f(_cam->getPosition().x(), 0.0, _cam->getPosition().z())) *
+        vmml::create_translation(vmml::Vector3f(_cam->getPosition().x(), 900.0, _cam->getPosition().z())) *
         vmml::create_scaling(vmml::Vector3f(1.0));
     // set CubeMap for skybox texturing
     skybox = bRenderer().getObjects()->getShader("skybox");
-    skybox->setUniform("CubeMap", bRenderer().getObjects()->getCubeMap("skyBoxCubeMap"));
     // set ambient color
     bRenderer().getObjects()->setAmbientColor(vmml::Vector3f(0.5f));
     // draw model

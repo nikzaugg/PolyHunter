@@ -85,6 +85,8 @@ private:
     BloomRendererPtr _bloomRenderer;
 	SunPtr _sun;
     std::vector<TerrainPtr> terrains;
+
+	int currentSecond;
     
     bool _animation_forward;
     float _animation;

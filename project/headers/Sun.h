@@ -14,6 +14,8 @@ public:
 
 	void setIntensity(float intensity);
 
+	void increaseIntensity(float dI);
+
 	void setPosition(vmml::Vector3f position);
 
 	float getVertexPos();

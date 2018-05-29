@@ -160,6 +160,7 @@
     <ClCompile Include="..\..\project\windows\main.cpp" />
     <ClCompile Include="..\implementation\BloomRenderer.cpp" />
     <ClCompile Include="..\implementation\Cam.cpp" />
+    <ClCompile Include="..\implementation\Crystal.cpp" />
     <ClCompile Include="..\implementation\Entity.cpp" />
     <ClCompile Include="..\implementation\PerlinNoise.cpp" />
     <ClCompile Include="..\implementation\PerlinNoise2D.cpp" />
@@ -228,6 +229,7 @@
     <ClInclude Include="..\..\bRenderer\os_specific\ios\BView.h" />
     <ClInclude Include="..\headers\BloomRenderer.h" />
     <ClInclude Include="..\headers\Cam.h" />
+    <ClInclude Include="..\headers\Crystal.h" />
     <ClInclude Include="..\headers\Entity.h" />
     <ClInclude Include="..\headers\glcorearb.h" />
     <ClInclude Include="..\headers\PerlinNoise.h" />

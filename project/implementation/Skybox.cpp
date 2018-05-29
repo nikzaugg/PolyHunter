@@ -15,6 +15,7 @@ Skybox::Skybox(MaterialPtr material, PropertiesPtr properties, Renderer & render
 	//Entity(std::string objName, std::string modelName, std::string propName, ShaderPtr shader, Renderer & renderer, vmml::Vector3f pos, float rotX, float rotY, float rotZ, float scale);
 	ModelPtr skyBoxModel = generate();
 	_renderer.getObjects()->addModel("skybox", skyBoxModel);
+	_renderer.getObjects()->getShader("skybox")->setUniform("skyBoxSize", SIZE);
 }
 
 ModelPtr Skybox::generate()

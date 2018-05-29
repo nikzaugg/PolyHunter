@@ -167,7 +167,7 @@ void Terrain::placeCrystal(int i, int j)
         if(Terrain::_collectedCrystals.find(crystalName) != Terrain::_collectedCrystals.end()){
             std::cout << "crystal already collected!" << std::endl;
         } else {
-        TreePtr crystal = TreePtr(new Tree(crystalName, "crystal.obj", "crystal", "crystalProperties", renderer().getObjects()->loadShaderFile("basic", 1, false, true, true, true, false), renderer(), vmml::Vector3f(xPos, crystalHeight, zPos), 0.0f, 0.0f, 0.0f, 2.0f));
+        CrystalPtr crystal = CrystalPtr(new Crystal(crystalName, "crystal.obj", "crystal", "crystalProperties", renderer().getObjects()->loadShaderFile("basic", 1, false, true, true, true, false), renderer(), vmml::Vector3f(xPos, crystalHeight, zPos), 0.0f, 0.0f, 0.0f, 2.0f));
         
         crystal->setYPosition(crystalHeight);
         crystal->setYPosition(crystalHeight);
@@ -210,7 +210,9 @@ void Terrain::processCrystals(std::string camera)
 {
     CrystalMap::iterator it;
     for (auto const& x : _crystals) {
-        x.second->render(camera);
+        if (Terrain::_collectedCrystals.find(x.first) == Terrain::_collectedCrystals.end()) {
+            x.second->render(camera);
+        }
     }
 }
 
@@ -218,7 +220,9 @@ void Terrain::drawCrystals(std::string camera)
 {
     CrystalMap::iterator it;
     for (auto const& x : _crystals) {
-        x.second->draw(camera);
+        if (Terrain::_collectedCrystals.find(x.first) == Terrain::_collectedCrystals.end()) {
+            x.second->draw(camera);
+        }
     }
 }
 
@@ -232,40 +236,6 @@ void Terrain::customProcessTrees(std::string camera, vmml::Matrix4f view, vmml::
 
 void Terrain::renderTerrain(std::string camera)
 {
-	noise::module::RidgedMulti ridgedMulti;
-
-	ridgedMulti.SetSeed(100);
-
-	int treeCount = 0;
-	for (int i = 0; i < _VERTEX_COUNT - 1; i++) 
-	{
-		for (int j = 0; j < _VERTEX_COUNT - 1; j++)
-		{
-			// Rescale from -1.0:+1.0 to 0.0:1.0
-			float xPos = ((float)i / ((float)_VERTEX_COUNT - 1)) * _TERRAIN_SIZE;
-			xPos += _offsetX;
-
-			float zPos = ((float)j / ((float)_VERTEX_COUNT - 1)) * _TERRAIN_SIZE;
-			zPos += _offsetZ;
-
-			float treeHeight = getHeightFromNoise(getNoiseInput(xPos), getNoiseInput(zPos));
-
-			float value = ridgedMulti.GetValue(xPos, treeHeight, zPos);
-			
-			if (value > 1.0f)
-			{
-                TreePtr tree = TreePtr(new Tree(getModelName() + std::to_string(i), "tree.obj", "tree", "treeProperties", renderer().getObjects()->getShader("basic"), renderer(), vmml::Vector3f(xPos, treeHeight, zPos), 0.0f, 0.0f, 0.0f, 1.0f));
-				tree->setYPosition(treeHeight);
-				_trees.insert(
-					TreeMap::value_type(
-						getModelName() + std::to_string(i),
-						tree
-					)
-				);
-				treeCount++;
-			}
-		}
-	}
     getShader()->setUniform("amplitude", _amplitude);
     getShader()->setUniform("ModelMatrix", computeTransformationMatrix());
     renderer().getObjects()->setAmbientColor(vmml::Vector3f(0.3f));
@@ -292,20 +262,19 @@ bool Terrain::checkCollisionWithEntities(vmml::Vector3f playerPos)
     vmml::Vector3f crystalPos;
     bool collision = false;
     float playerCameraGroundOffset = 10.0;
-	int count = 0;
-	   for(TreeMap::iterator it = _crystals.begin(); it != _crystals.end(); it++)
-		{
-		   count++;
-		   std::cout << count << std::endl;
-			crystalPos = it->second->getPosition();
-			float distance = sqrtf(pow(playerPos.x() - crystalPos.x(), 2.0) + pow(playerPos.y() - (crystalPos.y()+playerCameraGroundOffset), 2.0) + pow(playerPos.z() - crystalPos.z(), 2.0));
-			if(distance <= 10.0){
-				std::cout << "------" << std::endl;
-				Terrain::_collectedCrystals.insert(TreeMap::value_type(it->first , it->second));
-				//_crystals.erase(it);
-				std::cout << "Collected Crystals: "<< Terrain::_collectedCrystals.size() << std::endl;
-			}
-		}
+    
+    for(CrystalMap::iterator it = _crystals.begin(); it != _crystals.end(); it++)
+    {
+        crystalPos = it->second->getPosition();
+        float distance = sqrtf(pow(playerPos.x() - crystalPos.x(), 2.0) + pow(playerPos.y() - (crystalPos.y()+playerCameraGroundOffset), 2.0) + pow(playerPos.z() - crystalPos.z(), 2.0));
+        if(distance <= 10.0){
+            std::cout << "------" << std::endl;
+            Terrain::_collectedCrystals.insert(CrystalMap::value_type(it->first , it->second));
+            std::cout << "Collected Crystals: "<< Terrain::_collectedCrystals.size() << std::endl;
+			collision = true;
+        }
+    }
+
     return collision;
 }
 
