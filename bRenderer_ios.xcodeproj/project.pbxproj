@@ -754,6 +754,7 @@
 			isa = PBXGroup;
 			children = (
 				31581B0520B77CBE0074783C /* Sun.cpp */,
+				313C9EDC20BB440700D6E2F0 /* Crystal.cpp */,
 				31581B0220B74D560074783C /* Cam.cpp */,
 				3115F1EF20A9E16F0051FBEF /* Tree.cpp */,
 				31A71EEC20865D8800A2D46A /* Terrain.cpp */,
@@ -768,7 +769,6 @@
 				312A838320A1937900621562 /* TerrainLoader.cpp */,
 				31E5CD6F20B052CB005DC7D5 /* ShadowModelRenderer.cpp */,
 				317950AD20B605EA00D94992 /* BloomRenderer.cpp */,
-				313C9EDC20BB440700D6E2F0 /* Crystal.cpp */,
 			);
 			path = implementation;
 			sourceTree = "<group>";

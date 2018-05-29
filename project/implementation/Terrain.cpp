@@ -210,7 +210,9 @@ void Terrain::processCrystals(std::string camera)
 {
     CrystalMap::iterator it;
     for (auto const& x : _crystals) {
-        x.second->render(camera);
+        if (Terrain::_collectedCrystals.find(x.first) == Terrain::_collectedCrystals.end()) {
+            x.second->render(camera);
+        }
     }
 }
 
@@ -218,7 +220,9 @@ void Terrain::drawCrystals(std::string camera)
 {
     CrystalMap::iterator it;
     for (auto const& x : _crystals) {
-        x.second->draw(camera);
+        if (Terrain::_collectedCrystals.find(x.first) == Terrain::_collectedCrystals.end()) {
+            x.second->draw(camera);
+        }
     }
 }
 
@@ -267,7 +271,6 @@ bool Terrain::checkCollisionWithEntities(vmml::Vector3f playerPos)
         if(distance <= 10.0){
             std::cout << "------" << std::endl;
             Terrain::_collectedCrystals.insert(CrystalMap::value_type(it->first , it->second));
-            _crystals.erase(it);
             std::cout << "Collected Crystals: "<< Terrain::_collectedCrystals.size() << std::endl;
         }
     }
