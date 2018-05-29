@@ -41,6 +41,18 @@ void Sun::setPosition(vmml::Vector3f position)
 	Entity::setPosition(vmml::Vector3f(position));
 }
 
+void Sun::setHealth(float health){
+    _health = health;
+}
+
+void Sun::increaseHealth(float hx){
+    _health += hx;
+}
+
+float Sun::getHealth(){
+    return _health;
+}
+
 float Sun::getVertexPos()
 {
 	noise::module::RidgedMulti ridgedMulti;

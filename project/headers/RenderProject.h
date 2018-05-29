@@ -10,6 +10,7 @@
 #include "BloomRenderer.h"
 #include "Cam.h"
 #include "Sun.h"
+#include "Skybox.h"
 
 class RenderProject : public IRenderProject
 {
@@ -63,6 +64,12 @@ private:
     
     /* Update Player Camera */
     void updatePlayerCamera(const std::string &camera, PlayerPtr _player, const double &deltaTime);
+    
+    void checkCollision();
+    
+    void updateGameVariables();
+    void updateFogVariables(std::string shaderName);
+    void updateSkyBoxVariables(vmml::Vector3f skyColor, float gradient, float density);
 
 	/* Helper Functions */
 	GLfloat randomNumber(GLfloat min, GLfloat max);
@@ -84,9 +91,15 @@ private:
     ShadowModelRendererPtr _shadowModelRenderer;
     BloomRendererPtr _bloomRenderer;
 	SunPtr _sun;
+    SkyboxPtr _skybox;
     std::vector<TerrainPtr> terrains;
+    
+    float _fogDensity;
+    float _fogGradient;
+    vmml::Vector3f _fogColor;
 
 	int currentSecond;
+    int _nrOfCollectedCrystals = 0;
     
     bool _animation_forward;
     float _animation;
