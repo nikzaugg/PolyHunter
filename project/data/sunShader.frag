@@ -24,7 +24,11 @@ uniform vec3 lightDiffuseColor_0;
 uniform vec3 lightSpecularColor_0;
 uniform vec4 lightPositionViewSpace_0;
 
-uniform vec3 skyColor;
+//uniform vec3 skyColor;
+
+// Sick sun uniforms
+uniform mediump vec2 upperSicknessRange;
+uniform mediump vec2 lowerSicknessRange;
 
 varying lowp vec4 vertexColor_varying;
 varying lowp vec4 texCoord_varying;
@@ -99,10 +103,9 @@ void main()
     float noiseValue = (fbm(texCoord_varying.st, vec2(10)) + 0.5 * fbm(texCoord_varying.st, vec2(5)) + 0.25 * fbm(texCoord_varying.st, vec2(3))) / 3;
     // +  fbm(texCoord_varying.st, vec2(5)) +  fbm(texCoord_varying.st, vec2(2.5)) + fbm(texCoord_varying.st, vec2(1))) / 4;
     
-    if ((noiseValue < 0.2 && noiseValue > 0.15) || (noiseValue < 0.4 && noiseValue > 0.25)) {
+    if ((noiseValue > 0.125 && noiseValue < 0.325) || (noiseValue > 0.625 && noiseValue < 0.875)) {
         color = vec4(vec3(0.0), color.a);
     }
-    
     
 	gl_FragColor = color;
     // gl_FragColor = vec4((vec3(texCoord_varying.st, 0.0) + vec3(1.0)) * 0.5, 1.0);

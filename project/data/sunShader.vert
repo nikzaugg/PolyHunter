@@ -23,7 +23,7 @@ uniform vec4 lightPositionViewSpace_0;
 
 uniform float amplitude;
 uniform float heightPercent;
-uniform vec3 skyColor;
+// uniform vec3 skyColor;
 uniform vec3 playerPos;
 
 attribute vec4 Position;

@@ -30,6 +30,7 @@ private:
 	MaterialPtr _sunMaterial;
 	PropertiesPtr _sunProperties;
 	ModelPtr _sunFragments;
+	ShaderPtr _shader;
 
 	ModelData::GroupMap createFragments();
 
