@@ -30,6 +30,7 @@ varying lowp vec4 shadowCoord_varying;
 
 uniform vec3 skyColor;
 uniform vec3 fogColor;
+
 varying mediump float visibility;
 
 varying lowp vec4 vertexColor_varying;

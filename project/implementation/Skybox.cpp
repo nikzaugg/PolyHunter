@@ -92,10 +92,12 @@ void Skybox::setSkyColor(vmml::Vector3f color)
 
 void Skybox::setSkyboxGradient(float gradient){
     _skyBoxGradient = gradient;
+    _renderer.getObjects()->getShader("skybox")->setUniform("skyBoxGradient", gradient);
 }
 
 void Skybox::setSkyboxDensity(float density){
     _skyBoxDensity = density;
+    _renderer.getObjects()->getShader("skybox")->setUniform("skyBoxDensity", density);
 }
 
 vmml::Vector3f Skybox::getSkyColor()

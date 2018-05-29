@@ -15,6 +15,12 @@ public:
 	void setIntensity(float intensity);
 
 	void increaseIntensity(float dI);
+    
+    void setHealth(float health);
+    
+    float getHealth();
+    
+    void increaseHealth(float hx);
 
 	void setPosition(vmml::Vector3f position);
 
@@ -30,8 +36,10 @@ private:
 	MaterialPtr _sunMaterial;
 	PropertiesPtr _sunProperties;
 	ModelPtr _sunFragments;
-
+    
 	ModelData::GroupMap createFragments();
+    
+    float _health = 0.2;
 
 	void renderFragments(std::string camera, vmml::Vector3f pos);
 

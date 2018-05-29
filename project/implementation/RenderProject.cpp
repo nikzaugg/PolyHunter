@@ -62,23 +62,20 @@ void RenderProject::initFunction()
 
     // SKYBOX
     MaterialPtr skyboxMaterial = bRenderer().getObjects()->loadObjMaterial("skybox.mtl", "skybox", skyboxShader);
-    Skybox skybox = Skybox(skyboxMaterial, skyboxProperties, getProjectRenderer());
-	skybox.setSkyColor(vmml::Vector3f(0.26, 0.48, 0.96));
+    _skybox = SkyboxPtr(new Skybox(skyboxMaterial, skyboxProperties, getProjectRenderer()));
+	_skybox->setSkyColor(vmml::Vector3f(0.26, 0.48, 0.96));
+    //skybox->setSkyColor(vmml::Vector3f(0.25));
 
     // FOG
-    vmml::Vector3f fogColor = vmml::Vector3f(0.5);
-    float fogDensity = 0.007;
-    float fogGradient = 0.9;
+    _fogColor = vmml::Vector3f(0.5);
+    _fogDensity = 0.005;
+    _fogGradient = 5.00;
     
-    basicShader->setUniform("fogColor", fogColor);
-	basicShader->setUniform("skyColor", skybox.getSkyColor());
-	basicShader->setUniform("fogDensity", fogDensity);
-	basicShader->setUniform("fogGradient", fogGradient);
-    
-    terrainShader->setUniform("fogColor", fogColor);
-	terrainShader->setUniform("skyColor", skybox.getSkyColor());
-	terrainShader->setUniform("fogDensity", fogDensity);
-	terrainShader->setUniform("fogGradient", fogGradient);
+    // Send fog-variables to shader
+    updateFogVariables("basic");
+    updateFogVariables("terrain");
+    basicShader->setUniform("skyColor", _skybox->getSkyColor());
+    terrainShader->setUniform("skyColor", _skybox->getSkyColor());
 	
     // GUI CRYSTAL ICON
     bRenderer().getObjects()->createSprite("crystal_icon", "crystal_icon.png");
@@ -118,9 +115,12 @@ void RenderProject::loopFunction(const double &deltaTime, const double &elapsedT
     /* SHADOW MAPPING */
     _shadowModelRenderer->doShadowRenderPass("terrain", deltaTime, elapsedTime);
     
+    // check for collisions of the player with crystals
+    checkCollision();
+    
     /* Add Models to the RenderQueue */
     updateRenderQueue("camera", deltaTime);
-        
+    
     /* BLOOM POSTPROCESSING */
     /* Terrain is loaded inside _bloomRenderer */
     /* Render Queue is drawn inside _bloomRenderer */
@@ -149,6 +149,65 @@ void RenderProject::loopFunction(const double &deltaTime, const double &elapsedT
 		bRenderer().terminateRenderer();
 }
 
+// checks collision between player and crystals
+void RenderProject::checkCollision()
+{
+    int gridX = _terrainLoader->getPlayerGridX();
+    int gridZ = _terrainLoader->getPlayerGridZ();
+    std::string currentTerrainKey = _terrainLoader->generateTerrainKey(gridX, gridZ);
+    TerrainPtr currentTerrain = _terrainLoader->getSingleTerrain(currentTerrainKey);
+    vmml::Vector3f currentPlayerPos = _cam->getPosition();
+    currentTerrain->checkCollisionWithEntities(currentPlayerPos);
+    int nrOfCrystalsCollected = currentTerrain->getNrOfCrystalsCollected();
+    if (nrOfCrystalsCollected > _nrOfCollectedCrystals) {
+        // handle crystal addition
+        updateGameVariables();
+        _nrOfCollectedCrystals = nrOfCrystalsCollected;
+    }
+    bRenderer().getObjects()->getTextSprite("gui-crystal-info")->setText(std::to_string(_nrOfCollectedCrystals));
+}
+
+// updates gameplay-variables (fog, sun-healt, points etc.)
+void RenderProject::updateGameVariables()
+{
+    float sunHealth = _sun->getHealth();
+    vmml::Vector3f skyColor = _skybox->getSkyColor();
+
+    // update sun-health
+    sunHealth += 0.05;
+    std::cout << sunHealth << std::endl;
+    // set new skycolor
+    vmml::Vector3f newSkyColor = skyColor * (1.0 + sunHealth);
+    _skybox->setSkyColor(newSkyColor);
+    
+    // set new fogDensity
+    
+    // set new fogDistance
+    
+    // updateFogVariables
+    updateFogVariables("basic");
+    updateFogVariables("terrain");
+    
+    // updateSkyBoxVariables
+}
+
+// updates fog variables in specified shader
+void RenderProject::updateFogVariables(std::string shaderName)
+{
+    ShaderPtr shader = bRenderer().getObjects()->getShader(shaderName);
+    shader->setUniform("fogDensity", _fogDensity);
+    shader->setUniform("fogGradient", _fogGradient);
+    shader->setUniform("fogColor", _fogColor);
+}
+
+// updates skybox variables in specified shader
+void RenderProject::updateSkyBoxVariables(vmml::Vector3f skyColor, float gradient, float density)
+{
+    _skybox->setSkyColor(skyColor);
+    _skybox->setSkyboxGradient(gradient);
+    _skybox->setSkyboxDensity(density);
+}
+
 /* function is executed when terminating the renderer */
 void RenderProject::terminateFunction()
 {
@@ -165,45 +224,6 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
     _cam->process(camera, deltaTime);
     _terrainLoader->process(camera, deltaTime);
     
-    // Collision with Crystals
-    int gridX = _terrainLoader->getPlayerGridX();
-    int gridZ = _terrainLoader->getPlayerGridZ();
-    std::string currentTerrainKey = _terrainLoader->generateTerrainKey(gridX, gridZ);
-    TerrainPtr currentTerrain = _terrainLoader->getSingleTerrain(currentTerrainKey);
-    vmml::Vector3f currentPlayerPos = _cam->getPosition();
-	if (currentTerrain->checkCollisionWithEntities(currentPlayerPos)) {
-		_sun->increaseIntensity(0.05);
-	}
-    int nrOfCrystalsCollected = currentTerrain->getNrOfCrystalsCollected();
-    std::string displayString = std::to_string(nrOfCrystalsCollected);
-    bRenderer().getObjects()->getTextSprite("gui-crystal-info")->setText(displayString);
-    // End Collision with Crystals
-    
-    
-    // Move Light to see changes in Colors/Lighting
-    // float lightPosition = bRenderer().getObjects()->getLight("sun")->getPosition().z();
-    /*
-    if(_animation_forward)
-    {
-        if(_animation > 300.0)
-        {
-            _animation_forward = false;
-        } else
-        {
-            _animation += deltaTime * _animationSpeed;
-        }
-    } else {
-        if(_animation < 0.0)
-        {
-            _animation_forward = true;
-        }
-        else
-        {
-            _animation -= deltaTime * _animationSpeed;
-        }
-    }
-     */
-
 	//if ((int)elapsedTime % 10 == 0 && currentSecond != (int)elapsedTime) {
 	//	std::cout << elapsedTime << std::endl;
 	//	currentSecond = (int)elapsedTime;
@@ -216,13 +236,13 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
     
     /////// Skybox ///
     modelMatrix =
-        vmml::create_translation(vmml::Vector3f(_cam->getPosition().x(), 900.0, _cam->getPosition().z())) *
+        vmml::create_translation(vmml::Vector3f(_cam->getPosition().x(), 0.0, _cam->getPosition().z())) *
         vmml::create_scaling(vmml::Vector3f(1.0));
     // set CubeMap for skybox texturing
     skybox = bRenderer().getObjects()->getShader("skybox");
     // set ambient color
     bRenderer().getObjects()->setAmbientColor(vmml::Vector3f(0.5f));
-    // draw model
+    // draw modeld
     bRenderer().getModelRenderer()->queueModelInstance("skybox", "skybox_instance", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
 
 	/// SUN ///

@@ -27,7 +27,7 @@ private:
 	int _numFaces;
 
     vmml::Vector3f _skyColor;
-	const int SIZE = 900;
+	const int SIZE = 400;
     float _skyBoxGradient = 0.04;
     float _skyBoxDensity = 0.9;
     
