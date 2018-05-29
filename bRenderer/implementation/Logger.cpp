@@ -4,6 +4,8 @@
 
 namespace bRenderer
 {
+	static const int LOG_LEVEL = LM_ERROR;
+
 	std::string getTag(LogMode mode)
 	{
 		switch (mode)
@@ -24,13 +26,15 @@ namespace bRenderer
 	void log(const std::string &msg, LogMode mode)
 	{
 	#ifndef NO_LOGGING
-		std::cout << getTag(mode) << ": " << msg << std::endl;
+		if (mode >= LOG_LEVEL)
+			std::cout << getTag(mode) << ": " << msg << std::endl;
 	#endif
 	}
 
 	void log(const GLubyte *arg, LogMode mode)
 	{
 	#ifndef NO_LOGGING
+		if (mode >= LOG_LEVEL)
 			log("", arg, mode);
 	#endif
 	}
@@ -38,6 +42,7 @@ namespace bRenderer
 	void log(const std::string &msg, const GLubyte *arg, LogMode mode)
 	{	
 	#ifndef NO_LOGGING
+		if (mode >= LOG_LEVEL)
 			std::cout << getTag(mode) << ": " << msg << arg << std::endl;
 	#endif
 	}

@@ -38,6 +38,7 @@ varying lowp vec4 texCoord_varying;
 varying mediump vec4 position_varying_ViewSpace;
 varying mediump vec3 normal_varying_ViewSpace;
 varying mediump vec3 tangent_varying_ViewSpace;
+varying mediump vec4 position_varying;
 
 varying mediump float visibility;
 
@@ -60,6 +61,8 @@ void main()
     tangent_varying_ViewSpace = tangent_ViewSpace;
     position_varying_ViewSpace = posViewSpace;
     texCoord_varying = TexCoord;
+
+    position_varying = ModelMatrix * Position;
 
     float dist = length(posRelativeToPlayer.xyz);
 

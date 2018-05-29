@@ -270,6 +270,8 @@
     <None Include="..\data\sun.frag" />
     <None Include="..\data\sun.mtl" />
     <None Include="..\data\sun.vert" />
+    <None Include="..\data\sunShader.frag" />
+    <None Include="..\data\sunShader.vert" />
     <None Include="..\data\terrain.frag" />
     <None Include="..\data\terrain.geom" />
     <None Include="..\data\terrain.vert" />
@@ -284,6 +286,7 @@
     <Image Include="..\data\cave_stream_n.png" />
     <Image Include="..\data\crystal.png" />
     <Image Include="..\data\crystal_d.png" />
+    <Image Include="..\data\crystal_icon.png" />
     <Image Include="..\data\crystal_n.png" />
     <Image Include="..\data\crystal_s.png" />
     <Image Include="..\data\flame.png" />
