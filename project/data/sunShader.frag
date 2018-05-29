@@ -3,6 +3,8 @@ $B_SHADER_VERSION
 precision mediump float;
 #endif
 
+#define PI 3.14159265358979323846
+
 uniform mediump mat4 ViewMatrix;
 uniform mediump mat4 ModelMatrix;
 uniform mat4 ModelViewMatrix;
@@ -94,10 +96,11 @@ void main()
     vec4 outColor = (ambientPart + diffusePart) * color;
     vec4 lightColor = vec4(1.0, 0.7, 1.0, 1.0);
 
-    float noiseValue = (fbm(texCoord_varying.st, vec2(100)) +  fbm(texCoord_varying.st, vec2(75)) +  fbm(texCoord_varying.st, vec2(50)) + fbm(texCoord_varying.st, vec2(25))) / 4;
+    float noiseValue = (fbm(texCoord_varying.st, vec2(10)) + 0.5 * fbm(texCoord_varying.st, vec2(5)) + 0.25 * fbm(texCoord_varying.st, vec2(3))) / 3;
+    // +  fbm(texCoord_varying.st, vec2(5)) +  fbm(texCoord_varying.st, vec2(2.5)) + fbm(texCoord_varying.st, vec2(1))) / 4;
     
-    if (noiseValue > 0.5) {
-        color = vec4(0.96, 0.95, 0.26, 1.0);
+    if ((noiseValue < 0.2 && noiseValue > 0.15) || (noiseValue < 0.4 && noiseValue > 0.25)) {
+        color = vec4(vec3(0.0), color.a);
     }
     
     
