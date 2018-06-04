@@ -110,11 +110,11 @@ void main()
         // color =  vec4(0.96, 0.95, 0.78, 1.0);
         color = vec4(1.0, 1.0, 1.0, 1.0);
     } else {
-        color = vec4(0.11, 0.29, 0.42, 1.0);
+        color = vec4(0.0, 0.0, 0.0, 1.0);
     }
    
     
-	gl_FragColor = color;
+	gl_FragColor =color;
     // gl_FragColor = vec4(visibility);
     
     // Color according to normals

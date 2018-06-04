@@ -11,10 +11,11 @@ Sun::Sun(std::string objName, std::string modelName, std::string propName, Shade
 	_renderer = renderer;
 	_shader = shader;
 
+
 	// create lights
-	_lightPosition = vmml::Vector3f(1000.0, 1000.0, 0.0);
-	_renderer.getObjects()->createLight("sun", vmml::Vector3f(100.0, 100.0, 0.0), vmml::Vector3f(1.0f), vmml::Vector3f(1.0f), 1.0f, 0.5f, 100.0f);
-	setPosition(vmml::Vector3f(vmml::Vector3f(100.0, 100.0, 0.0)));
+	_lightPosition = vmml::Vector3f(300, 300, 0.0);
+	_renderer.getObjects()->createLight("sun", _lightPosition, vmml::Vector3f(1.0f), vmml::Vector3f(1.0f), 1.0f, 0.5f, 100.0f);
+	setPosition(vmml::Vector3f(_lightPosition));
 	this->setIntensity(1.0f);
 
  
@@ -91,10 +92,13 @@ void Sun::renderFragments(std::string camera, vmml::Vector3f pos)
 
 void Sun::render(std::string camera, vmml::Vector3f playerPos, vmml::Matrix4f viewMatrixHUD)
 {
-	// draw model instance
-	//setPosition(vmml::Vector3f(playerPos.x() + 10, 500, playerPos.z()));
+	_lightPosition = vmml::Vector3f(playerPos.x() + 1200, 1000, playerPos.z());
+	_renderer.getObjects()->getLight("sun")->setPosition(_lightPosition);
 
-	setScale(10.0f);
+	// draw model instance
+	setPosition(playerPos + (_lightPosition - playerPos) * 0.3f);
+
+	//setScale(5.0f);
 	setRotY(90.0f);
 
 	//_renderer.getModelRenderer()->queueModelInstance("sun", "sun_instance", camera, computeTransformationMatrix(), std::vector<std::string>({}), false, false, true, GL_SRC_ALPHA, GL_ONE);
