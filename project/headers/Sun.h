@@ -37,6 +37,7 @@ private:
 	PropertiesPtr _sunProperties;
 	ModelPtr _sunFragments;
 	ShaderPtr _shader;
+	vmml::Vector3f _lightPosition;
 
 	ModelData::GroupMap createFragments();
     

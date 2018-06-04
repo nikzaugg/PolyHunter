@@ -50,7 +50,7 @@ void RenderProject::initFunction()
 	ShaderPtr terrainShader = bRenderer().getObjects()->loadShaderFile("terrain", 1, false, true, true, true, false);
     ShaderPtr skyboxShader = bRenderer().getObjects()->loadShaderFile("skybox", 1, false, true, true, true, false);
     ShaderPtr playerShader = bRenderer().getObjects()->loadShaderFile("player", 1, false, true, true, true, false);
-	ShaderPtr sunShader = bRenderer().getObjects()->loadShaderFile_o("sunShader", 0, AMBIENT_LIGHTING);
+	ShaderPtr sunShader = bRenderer().getObjects()->loadShaderFile_o("sun", 0, AMBIENT_LIGHTING);
 	
 	// PROPERTIES FOR THE MODELS
     PropertiesPtr treeProperties = bRenderer().getObjects()->createProperties("treeProperties");

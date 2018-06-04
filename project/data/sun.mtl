@@ -1,5 +1,2 @@
-# Blender MTL File: 'sun.blend'
-# Material Count: 1
-
 newmtl sun
 map_Kd sun.png

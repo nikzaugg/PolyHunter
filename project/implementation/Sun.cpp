@@ -12,15 +12,17 @@ Sun::Sun(std::string objName, std::string modelName, std::string propName, Shade
 	_shader = shader;
 
 	// create lights
-	_renderer.getObjects()->createLight("sun", vmml::Vector3f(0.0, 200.0, 0.0), vmml::Vector3f(1.0f), vmml::Vector3f(1.0f), 1.0f, 0.5f, 100.0f);
-    
-	_sunProperties = renderer.getObjects()->createProperties("sun");
-	MaterialPtr sunMaterial = renderer.getObjects()->loadObjMaterial("sun.mtl", "sun", _shader);
-	MaterialPtr moonMaterial = renderer.getObjects()->loadObjMaterial("moon_test.mtl", "moon_test", _shader);
-	_renderer.getObjects()->createSprite_o("sun", sunMaterial, NO_OPTION, _sunProperties);
-	_renderer.getObjects()->createSprite_o("moon_test", moonMaterial, NO_OPTION, renderer.getObjects()->createProperties("moon_test"));
+	_lightPosition = vmml::Vector3f(1000.0, 1000.0, 0.0);
+	_renderer.getObjects()->createLight("sun", vmml::Vector3f(100.0, 100.0, 0.0), vmml::Vector3f(1.0f), vmml::Vector3f(1.0f), 1.0f, 0.5f, 100.0f);
+	setPosition(vmml::Vector3f(vmml::Vector3f(100.0, 100.0, 0.0)));
+	this->setIntensity(1.0f);
 
-	setIntensity(0.5f);
+ 
+	//_sunProperties = renderer.getObjects()->createProperties("sun");
+	//MaterialPtr sunMaterial = renderer.getObjects()->loadObjMaterial("sun.mtl", "sun", _shader);
+	//MaterialPtr sunMaterial = renderer.getObjects()->loadObjMaterial("sun.mtl", "sun", _shader);
+	//_renderer.getObjects()->createSprite_o("sun", sunMaterial, NO_OPTION, _sunProperties);
+
 }
 
 void Sun::setIntensity(float intensity)
@@ -37,7 +39,6 @@ void Sun::increaseIntensity(float dI)
 
 void Sun::setPosition(vmml::Vector3f position)
 {
-	_renderer.getObjects()->getLight("sun")->setPosition(position);
 	Entity::setPosition(vmml::Vector3f(position));
 }
 
@@ -91,13 +92,11 @@ void Sun::renderFragments(std::string camera, vmml::Vector3f pos)
 void Sun::render(std::string camera, vmml::Vector3f playerPos, vmml::Matrix4f viewMatrixHUD)
 {
 	// draw model instance
-	setPosition(vmml::Vector3f(playerPos.x() + 450.0f, 300.0f, playerPos.z()));
-	setScale(50.0f);
-	setRotY(90.0f);
-	/*_shader->setUniform("lowerSicknessRange", vmml::Vector2f(0.125, 0.325));
-	_shader->setUniform("upperSicknessRange", vmml::Vector2f(0.625, 0.875));*/
+	//setPosition(vmml::Vector3f(playerPos.x() + 10, 500, playerPos.z()));
 
-	//renderFragments(camera, vmml::Vector3f(playerPos.x() + 450.0f, 100.0f, playerPos.z()));
-	_renderer.getModelRenderer()->queueModelInstance("moon_test", "moon_test_instance", camera, computeTransformationMatrix(), std::vector<std::string>({}), false, false, true, GL_SRC_ALPHA, GL_ONE);
-	
+	setScale(10.0f);
+	setRotY(90.0f);
+
+	//_renderer.getModelRenderer()->queueModelInstance("sun", "sun_instance", camera, computeTransformationMatrix(), std::vector<std::string>({}), false, false, true, GL_SRC_ALPHA, GL_ONE);
+	_renderer.getModelRenderer()->queueModelInstance("sun", "sun_instance", camera, computeTransformationMatrix(), std::vector<std::string>({}), false, false, true);
 }
