@@ -21,6 +21,8 @@ public:
     void renderTerrain(std::string cameraName);
     void customRenderTerrain(std::string camera, vmml::Matrix4f view, vmml::Matrix4f proj);
     void customProcess(std::string cameraName, const double &deltaTime, vmml::Matrix4f view, vmml::Matrix4f proj);
+    void drawPositionsOnly(std::string camera, const double &deltaTime, std::string entityName);
+    void drawNormalsOnly(std::string camera, const double &deltaTime, std::string entityName);
     TreeMap getTreeMap();
     bool checkCollisionWithEntities(vmml::Vector3f playerPos);
     int getNrOfCrystalsCollected();

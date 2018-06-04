@@ -28,3 +28,4 @@ void Crystal::customRender(std::string camera, vmml::Matrix4f view ,vmml::Matrix
     renderer().getModelRenderer()->drawModel(renderer().getObjects()->getModel(getModelName()), computeTransformationMatrix(), view, proj, std::vector<std::string>({}), false);
 }
 
+

@@ -15,6 +15,8 @@ public:
     void renderTerrainTilesOnly(std::string camera, const double &deltaTime);
     void renderCrystals(std::string camera, const double &deltaTime);
     void customRenderTerrains(std::string camera, const double &deltaTime, vmml::Matrix4f view, vmml::Matrix4f proj);
+    void drawPositionsOnly(std::string camera, const double &deltaTime, std::string entityName);
+    void drawNormalsOnly(std::string camera, const double &deltaTime, std::string entityName);
 	TerrainLoader::TerrainMap getTerrainMap();
     void process(std::string camera, const double &deltaTime);
     void customProcess(std::string camera, const double &deltaTime, vmml::Matrix4f view, vmml::Matrix4f proj);
