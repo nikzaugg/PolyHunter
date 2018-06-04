@@ -13,12 +13,15 @@ attribute vec3 Tangent;
 attribute vec3 Bitangent;
 attribute vec4 TexCoord;
 
-varying highp vec4 fragPos;
+varying highp vec3 fragPos;
 
 void main()
 {
     vec4 posViewSpace = ModelViewMatrix * Position;
-    fragPos = ModelViewMatrix * Position;
+    
+    // send to fragment shader
+    fragPos = posViewSpace.xyz;
+    
     // Position of Vertex
     gl_Position = ProjectionMatrix * ModelViewMatrix * Position;
 }

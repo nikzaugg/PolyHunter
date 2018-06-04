@@ -72,7 +72,7 @@ void ModelRenderer::drawModel(ModelPtr model, const vmml::Matrix4f &modelMatrix,
 					compareShader = shader->getProgramID();
 
 					// compute NormalMatrix and set in shader
-					vmml::compute_inverse(vmml::transpose(vmml::Matrix3f(modelMatrix)), normalMatrix);
+					vmml::compute_inverse(vmml::transpose(vmml::Matrix3f(viewMatrix * modelMatrix)), normalMatrix);
                     shader->setUniform("ViewMatrix", viewMatrix);
 					shader->setUniform("NormalMatrix", normalMatrix);
 					shader->setUniform(bRenderer::DEFAULT_SHADER_UNIFORM_PROJECTION_MATRIX(), projectionMatrix);

@@ -10,7 +10,11 @@ varying mediump vec3 v_normal;
 
 void main()
 {
-    gl_FragColor = normalize(vec4(v_normal, 1.0));
+    // map normals to range [0.0 , 1.0]
+    vec3 normal = v_normal;
+    normal = normal / 2.0 + 0.5;
+    normal = normalize(normal);
+    gl_FragColor = vec4(vec3(normal), 1.0);
 
 }
 

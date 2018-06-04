@@ -94,6 +94,7 @@ void RenderProject::initFunction()
 
     // PLAYER - FPS-CAMERA
     bRenderer().getObjects()->createCamera("camera");
+    bRenderer().getObjects()->getCamera("camera")->setFarClippingPlane(10.0);
     _cam = CamPtr(new Cam(getProjectRenderer()));
 
     // TERRAIN LOADER //
@@ -108,10 +109,12 @@ void RenderProject::initFunction()
     // SSAO FBO
     bRenderer().getObjects()->createFramebuffer("SSAO_FBO");
     bRenderer().getObjects()->createFramebuffer("SSAO_FBO2");
+    bRenderer().getObjects()->createFramebuffer("SSAO_FBO3");
     bRenderer().getObjects()->createDepthMap("ssao_scene_depth", bRenderer().getView()->getWidth(), bRenderer().getView()->getHeight());
     bRenderer().getObjects()->createTexture("ssao_position_texture", bRenderer().getView()->getWidth(), bRenderer().getView()->getHeight());
     bRenderer().getObjects()->createTexture("ssao_normal_texture", bRenderer().getView()->getWidth(), bRenderer().getView()->getHeight());
     bRenderer().getObjects()->createTexture("ssao_noise_texture", bRenderer().getView()->getWidth(), bRenderer().getView()->getHeight());
+    bRenderer().getObjects()->createSprite("randomNoiseSprite", "randomNoise.png");
     
     ShaderPtr ssaoShader = bRenderer().getObjects()->loadShaderFile("ssaoShader", 0);
     MaterialPtr ssaoMaterial = bRenderer().getObjects()->createMaterial("ssaoMaterial", ssaoShader);
@@ -169,6 +172,13 @@ void RenderProject::loopFunction(const double &deltaTime, const double &elapsedT
         
         _terrainLoader->drawNormalsOnly("camera", deltaTime, "terrain");
         _terrainLoader->drawNormalsOnly("camera", deltaTime, "tree");
+        bRenderer().getObjects()->getFramebuffer("SSAO_FBO2")->unbind();
+        
+        bRenderer().getObjects()->getFramebuffer("SSAO_FBO3")->bindTexture(bRenderer().getObjects()->getTexture("ssao_noise_texture"), false);
+        
+        modelMatrix = vmml::create_translation(vmml::Vector3f(0.0f, 0.0f, -0.5)) *
+        vmml::create_scaling(vmml::Vector3f(1.0));
+        bRenderer().getModelRenderer()->drawModel(bRenderer().getObjects()->getModel("randomNoiseSprite"), modelMatrix, _viewMatrixHUD, vmml::Matrix4f::IDENTITY, std::vector<std::string>({}), false);
         
         /**********************************
          * RENDER TO DEFAULT FRAMEBUFFER  *
@@ -183,7 +193,7 @@ void RenderProject::loopFunction(const double &deltaTime, const double &elapsedT
          * -> write only Normals in ViewSpae to Shader
          * -> In ssaoShader compute TBN to rotate Kernel along tangent-normal
          ***************/
-        bRenderer().getObjects()->getFramebuffer("SSAO_FBO2")->unbind(defaultFBO); //unbind (original fbo will be bound)
+        bRenderer().getObjects()->getFramebuffer("SSAO_FBO3")->unbind(defaultFBO); //unbind (original fbo will be bound)
         bRenderer().getView()->setViewportSize(bRenderer().getView()->getWidth(), bRenderer().getView()->getHeight());
         
         std::uniform_real_distribution<float> randomFloats(0.0, 1.0);
@@ -235,11 +245,16 @@ void RenderProject::loopFunction(const double &deltaTime, const double &elapsedT
         
         modelMatrix = vmml::create_translation(vmml::Vector3f(0.0f, 0.0f, -0.5)) *
         vmml::create_scaling(vmml::Vector3f(1.0));
-        bRenderer().getObjects()->getShader("ssaoShader")->setUniform("newProjectionMatrix", bRenderer().getObjects()->getCamera("camera")->getProjectionMatrix());
+        vmml::Matrix4f inverseProj;
+        vmml::Matrix4f proj = bRenderer().getObjects()->getCamera("camera")->getProjectionMatrix();
+        vmml::compute_inverse(proj, inverseProj);
+        bRenderer().getObjects()->getShader("ssaoShader")->setUniform("newProjectionMatrix", proj);
+        bRenderer().getObjects()->getShader("ssaoShader")->setUniform("invProjectionMatrix", inverseProj);
         bRenderer().getObjects()->getShader("ssaoShader")->setUniform("ViewMatrix", bRenderer().getObjects()->getCamera("camera")->getViewMatrix());
         bRenderer().getObjects()->getMaterial("ssaoMaterial")->setTexture("depthMap", bRenderer().getObjects()->getDepthMap("ssao_scene_depth"));
         bRenderer().getObjects()->getMaterial("ssaoMaterial")->setTexture("positionMap", bRenderer().getObjects()->getTexture("ssao_position_texture"));
         bRenderer().getObjects()->getMaterial("ssaoMaterial")->setTexture("normalMap", bRenderer().getObjects()->getTexture("ssao_normal_texture"));
+        bRenderer().getObjects()->getMaterial("ssaoMaterial")->setTexture("noiseTex", bRenderer().getObjects()->getTexture("ssao_noise_texture"));
         
         // send depthMap and samples to all shaders
         // draw scene again to generate occlusion texture

@@ -6,10 +6,11 @@ precision mediump float;
 uniform mat4 ModelViewMatrix;
 uniform mat4 ProjectionMatrix;
 
-varying highp vec4 fragPos;
+varying highp vec3 fragPos;
 
 void main()
 {
-    gl_FragColor = fragPos;
+    // store the position as color
+    gl_FragColor = vec4(fragPos, 1.0);
 }
 

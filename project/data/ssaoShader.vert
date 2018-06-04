@@ -11,11 +11,9 @@ attribute vec4 Position;
 attribute vec4 TexCoord;
 
 varying vec4 texCoordVarying;
-varying vec4 posViewSpace;
 
 void main()
 {
     texCoordVarying = TexCoord;
-    vec4 posView = ModelViewMatrix * Position;
-    gl_Position = ProjectionMatrix * posView;
+    gl_Position = ProjectionMatrix * ModelViewMatrix * Position;
 }
