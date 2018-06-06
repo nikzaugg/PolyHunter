@@ -23,7 +23,11 @@ void main()
 {
     vec4 posViewSpace = ModelViewMatrix * Position;
     
-    v_normal = normalize(mat3(ModelViewMatrix) * Normal * vec3(1.0, 1.0, -1.0));
+    if (flipNormal == 1.0) {
+        v_normal = normalize(mat3(ModelMatrix) * Normal * vec3(1.0, 1.0, 1.0));
+    } else {
+        v_normal = normalize(mat3(ModelMatrix) * Normal.zxy * vec3(1.0, -1.0, 1.0));
+    }
     
     // Position of Vertex
     gl_Position = ProjectionMatrix * ModelViewMatrix * Position;

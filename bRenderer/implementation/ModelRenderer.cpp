@@ -40,7 +40,7 @@ void ModelRenderer::drawModel(ModelPtr model, const vmml::Matrix4f &modelMatrix,
 	vmml::Matrix4f modelViewProjectionMatrix = projectionMatrix*modelViewMatrix;
 	vmml::Matrix3f normalMatrix;
 	vmml::Visibility visibility = vmml::VISIBILITY_FULL;
-
+    
 	GLint compareShader = -1;
 
 	// Frustum culling

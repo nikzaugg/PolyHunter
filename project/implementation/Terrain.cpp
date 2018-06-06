@@ -221,7 +221,7 @@ void Terrain::drawNormalsOnly(std::string camera, const double &deltaTime, std::
         renderer().getObjects()->getModel(getModelName())->setMaterial(renderer().getObjects()->getMaterial("terrain_ssao_normalMaterial"));
         renderer().getObjects()->setAmbientColor(vmml::Vector3f(0.3f));
         renderer().getObjects()->getShader("ssao_normalShader")->setUniform("ModelMatrix", computeTransformationMatrix());
-        renderer().getObjects()->getShader("ssao_normalShader")->setUniform("flipNormal", 1.0);
+        renderer().getObjects()->getShader("ssao_normalShader")->setUniform("flipNormal", 0.0);
         // draw model
         renderer().getModelRenderer()->drawModel(getModelName(), camera, computeTransformationMatrix(), std::vector<std::string>({ "sun" }), true, true);
         // renderer().getObjects()->getModel(getModelName())->setMaterial(renderer().getObjects()->getMaterial("terrain"));

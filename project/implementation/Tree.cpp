@@ -41,16 +41,16 @@ void Tree::drawPositionsOnly(std::string camera, const double &deltaTime, std::s
     
     //renderer().getObjects()->getShader("ssao_normalShader")->setUniform("flipNormal", 1.0);
 
-    renderer().getObjects()->getModel("guy")->setMaterial(renderer().getObjects()->getMaterial("guy_ssao_pos_depthMaterial"));
-    vmml::Matrix4f modelMatrix = vmml::create_scaling(vmml::Vector3f(5.0)) * vmml::create_translation(vmml::Vector3f(0.0, 0.0 ,0.0));
-    renderer().getObjects()->getShader("ssao_pos_depthShader")->setUniform("ModelMatrix", modelMatrix);
-    renderer().getModelRenderer()->drawModel("guy", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
-    
-    modelMatrix = vmml::create_scaling(vmml::Vector3f(5.0)) * vmml::create_translation(vmml::Vector3f(4.5, 0.0 ,0.0));
-    renderer().getModelRenderer()->drawModel("guy", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
-
-    modelMatrix = vmml::create_scaling(vmml::Vector3f(5.0)) * vmml::create_translation(vmml::Vector3f(9.0, 0.0 ,0.0));
-    renderer().getModelRenderer()->drawModel("guy", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
+//    renderer().getObjects()->getModel("guy")->setMaterial(renderer().getObjects()->getMaterial("guy_ssao_pos_depthMaterial"));
+//    vmml::Matrix4f modelMatrix = vmml::create_scaling(vmml::Vector3f(5.0)) * vmml::create_translation(vmml::Vector3f(0.0, 0.0 ,0.0));
+//    renderer().getObjects()->getShader("ssao_pos_depthShader")->setUniform("ModelMatrix", modelMatrix);
+//    renderer().getModelRenderer()->drawModel("guy", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
+//    
+//    modelMatrix = vmml::create_scaling(vmml::Vector3f(5.0)) * vmml::create_translation(vmml::Vector3f(4.5, 0.0 ,0.0));
+//    renderer().getModelRenderer()->drawModel("guy", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
+//
+//    modelMatrix = vmml::create_scaling(vmml::Vector3f(5.0)) * vmml::create_translation(vmml::Vector3f(9.0, 0.0 ,0.0));
+//    renderer().getModelRenderer()->drawModel("guy", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
 //
 //    modelMatrix = vmml::create_scaling(vmml::Vector3f(5.0)) * vmml::create_translation(vmml::Vector3f(0.0, 0.0 ,5.0));
 //    renderer().getModelRenderer()->drawModel("guy", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
@@ -66,23 +66,26 @@ void Tree::drawPositionsOnly(std::string camera, const double &deltaTime, std::s
 
 void Tree::drawNormalsOnly(std::string camera, const double &deltaTime, std::string entityName)
 {
-//    renderer().getObjects()->getModel(getModelName())->setMaterial(renderer().getObjects()->getMaterial("tree_ssao_normalMaterial"));
-//    renderer().getObjects()->setAmbientColor(vmml::Vector3f(0.3f));
-//    renderer().getObjects()->getShader("ssao_normalShader")->setUniform("ModelMatrix", computeTransformationMatrix());
-//    renderer().getObjects()->getShader("ssao_normalShader")->setUniform("flipNormal", 0.0);
-//    // draw model
-//    renderer().getModelRenderer()->drawModel(getModelName(), camera, computeTransformationMatrix(), std::vector<std::string>({ "sun" }), true, true);
-//
-//    renderer().getObjects()->getShader("ssao_normalShader")->setUniform("flipNormal", 1.0);
+    renderer().getObjects()->getModel(getModelName())->setMaterial(renderer().getObjects()->getMaterial("tree_ssao_normalMaterial"));
+    renderer().getObjects()->setAmbientColor(vmml::Vector3f(0.3f));
+    renderer().getObjects()->getShader("ssao_normalShader")->setUniform("ModelMatrix", computeTransformationMatrix());
+    renderer().getObjects()->getShader("ssao_normalShader")->setUniform("flipNormal", 0.0);
+    // draw model
+    renderer().getModelRenderer()->drawModel(getModelName(), camera, computeTransformationMatrix(), std::vector<std::string>({ "sun" }), true, true);
+
+    renderer().getObjects()->getShader("ssao_normalShader")->setUniform("flipNormal", 1.0);
     renderer().getObjects()->getModel("guy")->setMaterial(renderer().getObjects()->getMaterial("guy_ssao_normalMaterial"));
-    vmml::Matrix4f modelMatrix = vmml::create_scaling(vmml::Vector3f(5.0)) * vmml::create_translation(vmml::Vector3f(0.0, 0.0 ,0.0));
+    
+    vmml::Matrix4f modelMatrix = vmml::create_scaling(vmml::Vector3f(5.0)) * vmml::create_translation(vmml::Vector3f(0.0, 15.0 ,0.0));
     renderer().getObjects()->getShader("ssao_normalShader")->setUniform("ModelMatrix", modelMatrix);
     renderer().getModelRenderer()->drawModel("guy", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
     
-    modelMatrix = vmml::create_scaling(vmml::Vector3f(5.0)) * vmml::create_translation(vmml::Vector3f(4.5, 0.0 ,0.0));
+    modelMatrix = vmml::create_scaling(vmml::Vector3f(5.0)) * vmml::create_translation(vmml::Vector3f(4.5, 15.0 ,0.0));
+    renderer().getObjects()->getShader("ssao_normalShader")->setUniform("ModelMatrix", modelMatrix);
     renderer().getModelRenderer()->drawModel("guy", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
     
-    modelMatrix = vmml::create_scaling(vmml::Vector3f(5.0)) * vmml::create_translation(vmml::Vector3f(9.0, 0.0 ,0.0));
+    modelMatrix = vmml::create_scaling(vmml::Vector3f(5.0)) * vmml::create_translation(vmml::Vector3f(9.0, 15.0 ,0.0));
+    renderer().getObjects()->getShader("ssao_normalShader")->setUniform("ModelMatrix", modelMatrix);
     renderer().getModelRenderer()->drawModel("guy", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
 //
 //    modelMatrix = vmml::create_scaling(vmml::Vector3f(5.0)) * vmml::create_translation(vmml::Vector3f(0.0, 0.0 ,5.0));
