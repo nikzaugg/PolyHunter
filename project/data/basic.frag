@@ -58,8 +58,8 @@ void main()
     vec4 color = texture2D(DiffuseMap, texCoord_varying.st);
     
     vec4 outColor = (ambientPart + diffusePart) * color;
-    gl_FragColor = mix(vec4(vec3(fogColor), 1.0), outColor, visibility);
-    // gl_FragColor = vec4(visibility);
+    //gl_FragColor = mix(vec4(vec3(fogColor), 1.0), outColor, visibility);
+    gl_FragColor = vec4(normal, 1.0);
     
     // Color according to normals
 //     vec3 normal_test = normal/2.0 + vec3(0.5);

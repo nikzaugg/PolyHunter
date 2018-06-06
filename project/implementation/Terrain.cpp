@@ -24,9 +24,6 @@ Terrain::Terrain(std::string modelName, std::string materialFile, std::string ma
     this->_offsetX = gridX * _TERRAIN_SIZE;
     this->_offsetZ = gridZ * _TERRAIN_SIZE;
     
-    renderer.getObjects()->loadObjMaterial("terrain.mtl","terrain_ssao_pos_depthMaterial", renderer.getObjects()->getShader("ssao_pos_depthShader"));
-    renderer.getObjects()->loadObjMaterial("terrain.mtl","terrain_ssao_normalMaterial", renderer.getObjects()->getShader("ssao_normalShader"));
-    
     _data = generateTerrain();
     ModelPtr terrainModel = ModelPtr(new Model(_data, getMaterial(), getProperties()));
     SetModel(terrainModel);

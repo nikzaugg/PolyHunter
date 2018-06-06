@@ -17,62 +17,58 @@ uniform vec3 samples[32]; // kernel samples, sent from CPU
 
 varying vec4 texCoordVarying;
 
-float random_size;
-float g_sample_rad = 0.01;
-float g_intensity = 1.0;
-float g_scale = 0.001;
-float g_bias = 0.0025;
-
-vec3 getPosition(vec2 uv)
-{
-    return texture2D(positionMap,uv).xyz;
-}
-
-vec3 getNormal(vec2 uv)
-{
-    return normalize(texture2D(normalMap, uv).xyz * 2.0 - 1.0);
-}
-
-vec2 getRandom(vec2 uv)
-{
-    return normalize(texture2D(noiseTex, uv).xy * 2.0 - 1.0);
-}
-
-float doAmbientOcclusion(vec2 tcoord,vec2 uv, vec3 p, vec3 cnorm)
-{
-    vec3 diff = getPosition(tcoord + uv) - p;
-    vec3 v = normalize(diff);
-    float d = length(diff)*g_scale;
-    return max(0.0,dot(cnorm,v)-g_bias)*(1.0/(1.0+d))*g_intensity;
-}
+float kernelSize = 32.0; // 32 samples
+float radius = 3.0; // radius of hemisphere
+float bias = 0.25;
 
 void main()
 {
-    vec2 vec[4];
-    vec[0] = vec2(1,0);
-    vec[1] = vec2(-1,0);
-    vec[2] = vec2(0,1);
-    vec[3] = vec2(0,-1);
-    vec3 p = getPosition(texCoordVarying.xy);
-    vec3 n = getNormal(texCoordVarying.xy);
-    vec2 rand = getRandom(texCoordVarying.xy);
-    float ao = 0.0;
-    float rad = g_sample_rad/p.z;
+    float depth = texture2D(depthMap, texCoordVarying.xy).r;
+    // depth = LinearizeDepth(depth);
     
-    //**SSAO Calculation**//
-    int iterations = 4;
-    for (int j = 0; j < iterations; ++j)
-    {
-        vec2 coord1 = reflect(vec[j],rand)*rad;
-        vec2 coord2 = vec2(coord1.x*0.707 - coord1.y*0.707, coord1.x*0.707 + coord1.y*0.707);
+    // position from texture
+//    vec3 fragPos = (texture2D(positionMap, texCoordVarying.xy).xyz - 0.5) * 200.0;
+//    vec3 fragPos = texture2D(positionMap, texCoordVarying.xy).xyz;
+    vec2 fragPosXY = texCoordVarying.xy * 2.0 -1.0;
+    float fragPosZ = texture2D(depthMap, texCoordVarying.xy).r;
+    vec3 fragPos = vec3(fragPosXY, fragPosZ);
+    fragPos = vec3( ProjectionMatrix * vec4(fragPos, 1.0) );
+    // normal from texture (rescale to [-1.0 , 1.0])
+    vec3 normal = texture2D(normalMap, texCoordVarying.xy).rgb * 2.0 - 1.0;
+    normal = normalize(normal);
+    
+    // random vector for the fragments -> points in xy-direction
+    vec3 randomVec = texture2D(noiseTex, texCoordVarying.xy).xyz * 2.0 - 1.0;
+    //randomVec.z = -1.0 * randomVec.z;
+    randomVec = normalize(randomVec);
+    
+    // construct TBN matrix to transform from tangent to view-space
+    vec3 tangent = normalize(randomVec - normal * dot(randomVec, normal));
+    vec3 bitangent = cross(normal, tangent);
+    mat3 TBN = mat3(tangent, bitangent, normal);
+    
+    float occlusion = 0.0;
+    // for each kernel-sample, test depth values
+    for (int i = 0; i < 32; ++i) {
         
-        ao += doAmbientOcclusion(texCoordVarying.xy,coord1*0.25, p, n);
-        ao += doAmbientOcclusion(texCoordVarying.xy,coord2*0.5, p, n);
-        ao += doAmbientOcclusion(texCoordVarying.xy,coord1*0.75, p, n);
-        ao += doAmbientOcclusion(texCoordVarying.xy,coord2, p, n);
+        vec3 samp = TBN * samples[i];
+        samp = samp * radius + fragPos;
+
+        vec4 offset = vec4(samp, 1.0);
+        offset = ProjectionMatrix * offset; // from view to clip-space
+        offset.xyz /= offset.w;
+        offset.xyz = offset.xyz * 0.5 + 0.5; // tranform to range [0.0, 1.0]
+
+        // get depth of the sample
+        float sampleDepth = texture2D(depthMap, offset.xy).z;
+        
+        float rangeCheck = smoothstep(0.0, 1.0, radius / abs(fragPos.z - sampleDepth));
+        occlusion += (sampleDepth >= samp.z + bias ? 1.0 : 0.0) * rangeCheck;
     }
     
-    ao = ao / (4.0*4.0);
-    float outColor = 1.0 - ao;
-    gl_FragColor = vec4(vec3(outColor), 1.0);
+    // compute occlusion-weight for current fragment
+    occlusion = 1.0 - (occlusion / kernelSize);
+    
+    // output gray-scale color to texture
+    gl_FragColor = vec4(vec3(occlusion), 1.0);
 }

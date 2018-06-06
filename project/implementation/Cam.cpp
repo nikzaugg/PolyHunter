@@ -111,14 +111,14 @@ void Cam::process(std::string camera, const double &deltaTime)
     renderer().getObjects()->getCamera(camera)->rotateCamera(deltaCameraX, deltaCameraY, 0.0f);
     renderer().getObjects()->getCamera(camera)->moveCameraSideward(_dz);
     
-    vmml::Vector3f currentPosition = renderer().getObjects()->getCamera(camera)->getPosition();
-    float currentX = currentPosition.x();
-    float currentZ = currentPosition.z();
-    float height = (-1.0) * getHeightFromNoise(getNoiseInput(-currentX), getNoiseInput(-currentZ));
-    height -= _cameraFloorOffset;
-    _position = vmml::Vector3f(currentX, height, currentZ);
-    //std::cout << "camposition: "<< _position << std::endl;
-    renderer().getObjects()->getCamera(camera)->setPosition(vmml::Vector3f(_position));
+//    vmml::Vector3f currentPosition = renderer().getObjects()->getCamera(camera)->getPosition();
+//    float currentX = currentPosition.x();
+//    float currentZ = currentPosition.z();
+//    float height = (-1.0) * getHeightFromNoise(getNoiseInput(-currentX), getNoiseInput(-currentZ));
+//    height -= _cameraFloorOffset;
+//    _position = vmml::Vector3f(currentX, height, currentZ);
+//    //std::cout << "camposition: "<< _position << std::endl;
+//    renderer().getObjects()->getCamera(camera)->setPosition(vmml::Vector3f(_position));
     
 }
 
@@ -126,7 +126,7 @@ void Cam::process(std::string camera, const double &deltaTime)
 double Cam::getNoiseInput(float coord)
 {
     // FIXME: add variable instead of magic number
-    return coord / (float)(400.0 * 3);
+    return coord / (float)(200.0 * 3);
 }
 
 double Cam::noise(double nx, double nz)

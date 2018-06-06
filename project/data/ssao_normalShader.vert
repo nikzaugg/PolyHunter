@@ -7,6 +7,7 @@ uniform mat3 NormalMatrix;
 uniform mat4 ModelMatrix;
 uniform mat4 ModelViewMatrix;
 uniform mat4 ProjectionMatrix;
+uniform mat3 invModelViewMatrix;
 
 attribute highp vec4 Position;
 attribute vec3 Normal;
@@ -22,15 +23,8 @@ void main()
 {
     vec4 posViewSpace = ModelViewMatrix * Position;
     
-    // NormalMatrix is the inverse transpose of the ModelViewMatrix
-    if (flipNormal > 0.0) {
-        // flip for terrain vec3(-1.0, -1.0, 1.0)
-        v_normal = mat3(ModelViewMatrix) * (Normal * vec3(-1.0, -1.0, 1.0));
-    } else {
-        // basic
-        v_normal = mat3(ModelViewMatrix) * (Normal * vec3(1.0, 1.0, -1.0));
-    }
-
+    v_normal = normalize(mat3(ModelViewMatrix) * Normal * vec3(1.0, 1.0, -1.0));
+    
     // Position of Vertex
     gl_Position = ProjectionMatrix * ModelViewMatrix * Position;
     

@@ -11,8 +11,6 @@ public:
 	Tree() : Entity() {};
     Tree(std::string treeName, std::string objName, std::string modelName, std::string propName, ShaderPtr shader, Renderer renderer, vmml::Vector3f pos, float rotX, float rotY, float rotZ, float scale) : Entity(objName, modelName, propName, shader, renderer, pos, rotX, rotY, rotZ, scale)
     {
-        renderer.getObjects()->loadObjMaterial("tree.mtl","tree_ssao_pos_depthMaterial", renderer.getObjects()->getShader("ssao_pos_depthShader"));
-        renderer.getObjects()->loadObjMaterial("tree.mtl","tree_ssao_normalMaterial", renderer.getObjects()->getShader("ssao_normalShader"));
         _treeName = treeName;
     };
 

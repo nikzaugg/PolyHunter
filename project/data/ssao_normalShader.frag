@@ -12,8 +12,8 @@ void main()
 {
     // map normals to range [0.0 , 1.0]
     vec3 normal = v_normal;
-    normal = normal / 2.0 + 0.5;
     normal = normalize(normal);
+    normal = normal / 2.0 + 0.5;
     gl_FragColor = vec4(vec3(normal), 1.0);
 
 }
