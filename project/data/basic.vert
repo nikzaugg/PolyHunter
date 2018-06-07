@@ -3,6 +3,9 @@ $B_SHADER_VERSION
 precision mediump float;
 #endif
 
+// for ssao render pass, writes normals into texture
+uniform float writeNormalsOnly;
+
 uniform mat4 depthMVP;
 uniform mat4 depthView;
 uniform mat4 depthProjection;
@@ -48,28 +51,36 @@ varying lowp vec4 texCoord_varying;
 varying mediump vec4 position_varying_ViewSpace;
 varying mediump vec3 normal_varying_ViewSpace;
 varying mediump vec3 tangent_varying_ViewSpace;
+// WorldSpace
+varying mediump vec3 normal_varying_WorldSpace;
 
 varying mediump float visibility;
 
 void main()
 {
-    /*READ THIS*/
-    // Need to flip z-coord of Normal
-    vec3 normal_ViewSpace = mat3(ModelViewMatrix) * (Normal * vec3(1.0, 1.0, -1.0));
-    vec3 tangent_ViewSpace = mat3(ModelViewMatrix) * Tangent;
-    vec3 bitangent_ViewSpace = mat3(ModelViewMatrix) * Bitangent;
     vec4 posViewSpace = ModelViewMatrix * Position;
-    vec3 posRelativeToPlayer = playerPos - vec3(posViewSpace);
     
-    // Outputs to Fragment Shader
-    normal_varying_ViewSpace = normal_ViewSpace;
-    tangent_varying_ViewSpace = tangent_ViewSpace;
-    position_varying_ViewSpace = posViewSpace;
-    texCoord_varying = TexCoord;
-
-    float dist = length(posRelativeToPlayer.xyz);
-
-    visibility = exp(-pow((dist * fogDensity), fogGradient));
+    // if in ssao render pass
+    if (writeNormalsOnly > 0.0) {
+        normal_varying_ViewSpace = normalize(mat3(ModelViewMatrix) * (Normal * vec3(1.0, 1.0, -1.0))) * vec3(1.0, 1.0, -1.0);
+    } else {
+        // Need to flip z-coord of Normal
+        vec3 normal_ViewSpace = normalize(mat3(ModelViewMatrix) * (Normal * vec3(1.0, 1.0, -1.0)));
+        vec3 tangent_ViewSpace = mat3(ModelViewMatrix) * Tangent;
+        vec3 bitangent_ViewSpace = mat3(ModelViewMatrix) * Bitangent;
+        vec3 posRelativeToPlayer = playerPos - vec3(posViewSpace);
+        
+        // Outputs to Fragment Shader
+        normal_varying_ViewSpace = normal_ViewSpace;
+        tangent_varying_ViewSpace = tangent_ViewSpace;
+        position_varying_ViewSpace = posViewSpace;
+        texCoord_varying = TexCoord;
+        normal_varying_WorldSpace = normalize(mat3(ModelMatrix) * (Normal * vec3(1.0, 1.0, -1.0)));
+        
+        float dist = length(posRelativeToPlayer.xyz);
+        
+        visibility = exp(-pow((dist * fogDensity), fogGradient));
+    }
     
     // Position of Vertex
     gl_Position = ProjectionMatrix*posViewSpace;

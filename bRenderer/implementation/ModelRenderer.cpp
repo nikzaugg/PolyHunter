@@ -74,9 +74,6 @@ void ModelRenderer::drawModel(ModelPtr model, const vmml::Matrix4f &modelMatrix,
 					// compute NormalMatrix and set in shader
 					vmml::compute_inverse(vmml::transpose(vmml::Matrix3f(modelMatrix)), normalMatrix);
 					shader->setUniform("NormalMatrix", normalMatrix);
-                    vmml::Matrix3f invModelViewMatrix;;
-                    vmml::compute_inverse(vmml::transpose(vmml::Matrix3f(viewMatrix * modelMatrix)), invModelViewMatrix);
-                    shader->setUniform("invModelViewMatrix", invModelViewMatrix);
 					shader->setUniform(bRenderer::DEFAULT_SHADER_UNIFORM_PROJECTION_MATRIX(), projectionMatrix);
 					shader->setUniform(bRenderer::DEFAULT_SHADER_UNIFORM_MODEL_VIEW_MATRIX(), modelViewMatrix);
 
@@ -121,6 +118,7 @@ void ModelRenderer::queueModelInstance(const std::string &modelName, const std::
 
 void ModelRenderer::queueModelInstance(ModelPtr model, const std::string &instanceName, const vmml::Matrix4f &modelMatrix, const vmml::Matrix4f &viewMatrix, const vmml::Matrix4f &projectionMatrix, const std::vector<std::string> &lightNames, bool doFrustumCulling, bool cullIndividualGeometry, bool isTransparent, GLenum blendSfactor, GLenum blendDfactor, GLfloat customDistance)
 {
+    vmml::Matrix3f normalMatrix;
 	vmml::Matrix4f modelViewMatrix = viewMatrix*modelMatrix;
 	vmml::Matrix4f modelViewProjectionMatrix = projectionMatrix*modelViewMatrix;
 	vmml::Visibility visibility = vmml::VISIBILITY_FULL;
@@ -141,6 +139,8 @@ void ModelRenderer::queueModelInstance(ModelPtr model, const std::string &instan
 			ShaderPtr shader = i->first;
 			PropertiesPtr properties = i->second;
             
+            vmml::compute_inverse(vmml::transpose(vmml::Matrix3f(modelMatrix)), normalMatrix);
+            properties->setMatrix("NormalMatrix", normalMatrix);
 			properties->setMatrix(bRenderer::DEFAULT_SHADER_UNIFORM_PROJECTION_MATRIX(), projectionMatrix);
 			properties->setMatrix(bRenderer::DEFAULT_SHADER_UNIFORM_MODEL_VIEW_MATRIX(), modelViewMatrix);
 

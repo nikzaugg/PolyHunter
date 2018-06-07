@@ -3,6 +3,9 @@ $B_SHADER_VERSION
 precision mediump float;
 #endif
 
+// for ssao render pass, writes normals into texture
+uniform float writeNormalsOnly;
+
 uniform mat4 depthMVP;
 uniform mat4 depthView;
 uniform mat4 depthProjection;
@@ -37,32 +40,42 @@ varying lowp vec4 texCoord_varying;
 varying mediump vec4 position_varying_ViewSpace;
 varying mediump vec3 normal_varying_ViewSpace;
 varying mediump vec3 tangent_varying_ViewSpace;
+// World Space
+varying mediump vec3 normal_varying_WorldSpace;
 
 varying mediump float visibility;
 
 void main()
 {
-    vec4 position = position_varying_ViewSpace;
-    vec3 normal = normalize(normal_varying_ViewSpace);
-    vec4 lightPosition = lightPositionViewSpace_0;
-    vec4 lightVector = normalize(lightPosition - position);
-    
-    // ambient part
-    vec4 ambientPart = vec4(ambientColor * lightIntensity_0, 1.0);
-    
-    // diffuse part
-    float intensityFactor = dot(normal, lightVector.xyz);
-    vec3 diffuseTerm = Kd * clamp(intensityFactor, 0.0, 1.0) * lightDiffuseColor_0;
-    vec4 diffusePart = vec4(clamp(diffuseTerm, 0.0, 1.0), 1.0);
-  
-    vec4 color = texture2D(DiffuseMap, texCoord_varying.st);
-    
-    vec4 outColor = (ambientPart + diffusePart) * color;
-    //gl_FragColor = mix(vec4(vec3(fogColor), 1.0), outColor, visibility);
-    gl_FragColor = vec4(normal, 1.0);
-    
-    // Color according to normals
-//     vec3 normal_test = normal/2.0 + vec3(0.5);
-//     gl_FragColor = vec4(normal_test, 1.0);
+    // if in ssao render pass
+    if (writeNormalsOnly > 0.0) {
+        vec3 normal = normalize(normal_varying_ViewSpace);
+        normal = normal / 2.0 + 0.5;
+        gl_FragColor = vec4(normal, 1.0);
+    } else {
+        vec4 position = position_varying_ViewSpace;
+        vec3 normal = normalize(normal_varying_ViewSpace);
+        vec3 normal_world = normalize(normal_varying_WorldSpace);
+        vec4 lightPosition = lightPositionViewSpace_0;
+        vec4 lightVector = normalize(lightPosition - position);
+        
+        // ambient part
+        vec4 ambientPart = vec4(ambientColor * lightIntensity_0, 1.0);
+        
+        // diffuse part
+        float intensityFactor = dot(normal, lightVector.xyz);
+        vec3 diffuseTerm = Kd * clamp(intensityFactor, 0.0, 1.0) * lightDiffuseColor_0;
+        vec4 diffusePart = vec4(clamp(diffuseTerm, 0.0, 1.0), 1.0);
+        
+        vec4 color = texture2D(DiffuseMap, texCoord_varying.st);
+        
+        vec4 outColor = (ambientPart + diffusePart) * color;
+        //gl_FragColor = mix(vec4(vec3(fogColor), 1.0), outColor, visibility);
+        
+        // Color according to normals
+        //     vec3 normal_test = normal/2.0 + vec3(0.5);
+        gl_FragColor = vec4(normal, 1.0);
+    }
+
 }
 

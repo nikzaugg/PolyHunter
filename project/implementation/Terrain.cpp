@@ -198,36 +198,20 @@ void Terrain::customProcess(std::string cameraName, const double &deltaTime, vmm
     customRenderTerrain(cameraName, view, proj);
 }
 
-void Terrain::drawPositionsOnly(std::string camera, const double &deltaTime, std::string entityName)
-{
-    if (entityName == "terrain") {
-        renderer().getObjects()->getModel(getModelName())->setMaterial(renderer().getObjects()->getMaterial("terrain_ssao_pos_depthMaterial"));
-        renderer().getObjects()->setAmbientColor(vmml::Vector3f(0.3f));
-        renderer().getObjects()->getShader("ssao_pos_depthShader")->setUniform("ModelMatrix", computeTransformationMatrix());
-        // draw model
-        renderer().getModelRenderer()->drawModel(getModelName(), camera, computeTransformationMatrix(), std::vector<std::string>({ "sun" }), true, true);
-        // renderer().getObjects()->getModel(getModelName())->setMaterial(renderer().getObjects()->getMaterial("terrain"));
-    } else if (entityName == "tree") {
-        TreeMap::iterator it;
-        for (auto const& x : _trees) {
-            x.second->drawPositionsOnly(camera, deltaTime, entityName);
-        }
-    }
-}
-
 void Terrain::drawNormalsOnly(std::string camera, const double &deltaTime, std::string entityName)
 {
     if (entityName == "terrain") {
-        renderer().getObjects()->getModel(getModelName())->setMaterial(renderer().getObjects()->getMaterial("terrain_ssao_normalMaterial"));
         renderer().getObjects()->setAmbientColor(vmml::Vector3f(0.3f));
-        renderer().getObjects()->getShader("ssao_normalShader")->setUniform("ModelMatrix", computeTransformationMatrix());
-        renderer().getObjects()->getShader("ssao_normalShader")->setUniform("flipNormal", 0.0);
         // draw model
         renderer().getModelRenderer()->drawModel(getModelName(), camera, computeTransformationMatrix(), std::vector<std::string>({ "sun" }), true, true);
-        // renderer().getObjects()->getModel(getModelName())->setMaterial(renderer().getObjects()->getMaterial("terrain"));
     } else if (entityName == "tree") {
         TreeMap::iterator it;
         for (auto const& x : _trees) {
+            x.second->drawNormalsOnly(camera, deltaTime, entityName);
+        }
+    } else if (entityName == "crystal") {
+        CrystalMap::iterator it;
+        for (auto const& x : _crystals) {
             x.second->drawNormalsOnly(camera, deltaTime, entityName);
         }
     }

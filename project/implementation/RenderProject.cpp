@@ -52,10 +52,6 @@ void RenderProject::initFunction()
     ShaderPtr skyboxShader = bRenderer().getObjects()->loadShaderFile("skybox", 1, false, true, true, true, false);
     ShaderPtr playerShader = bRenderer().getObjects()->loadShaderFile("player", 1, false, true, true, true, false);
 	ShaderPtr sunShader = bRenderer().getObjects()->loadShaderFile_o("sunShader", 0, AMBIENT_LIGHTING);
-    // SSAO-Shaders
-    ShaderPtr positionAndDepthToTextureShader = bRenderer().getObjects()->loadShaderFile("ssao_pos_depthShader", 1, false, true, true, true, false);
-    ShaderPtr normalToTextureShader = bRenderer().getObjects()->loadShaderFile("ssao_normalShader", 1, false, true, true, true, false);
-//    ShaderPtr blurToTextureShader = bRenderer().getObjects()->loadShaderFile("ssao_blurShader", 1, false, true, true, true, false);
 	
 	// PROPERTIES FOR THE MODELS
     PropertiesPtr treeProperties = bRenderer().getObjects()->createProperties("treeProperties");
@@ -63,9 +59,11 @@ void RenderProject::initFunction()
     PropertiesPtr guyProperties = bRenderer().getObjects()->createProperties("guyProperties");
 
 	// BLENDER MODELS (.obj)
-    bRenderer().getObjects()->loadObjModel("guy.obj", false, true, normalToTextureShader, treeProperties);
+    bRenderer().getObjects()->loadObjModel("guy.obj", false, true, basicShader, treeProperties);
     bRenderer().getObjects()->loadObjModel("tree.obj", false, true, basicShader, treeProperties);
     bRenderer().getObjects()->loadObjModel("crystal.obj", false, true, basicShader, nullptr);
+    bRenderer().getObjects()->loadObjModel("cube.obj", false, true, basicShader, nullptr);
+    bRenderer().getObjects()->loadObjModel("cube_no_normals.obj", false, true, basicShader, nullptr);
 
     // SKYBOX
     MaterialPtr skyboxMaterial = bRenderer().getObjects()->loadObjMaterial("skybox.mtl", "skybox", skyboxShader);
@@ -107,26 +105,12 @@ void RenderProject::initFunction()
     // BLOOMRENDERER
     _bloomRenderer = BloomRendererPtr(new BloomRenderer(getProjectRenderer(), _terrainLoader));
     
-    // SSAO MATERIALS
-    bRenderer().getObjects()->loadObjMaterial("guy.mtl","guy_ssao_pos_depthMaterial", bRenderer().getObjects()->getShader("ssao_pos_depthShader"));
-    bRenderer().getObjects()->loadObjMaterial("guy.mtl","guy_ssao_normalMaterial", bRenderer().getObjects()->getShader("ssao_normalShader"));
-    
-    bRenderer().getObjects()->loadObjMaterial("terrain.mtl","terrain_ssao_pos_depthMaterial", bRenderer().getObjects()->getShader("ssao_pos_depthShader"));
-    bRenderer().getObjects()->loadObjMaterial("terrain.mtl","terrain_ssao_normalMaterial", bRenderer().getObjects()->getShader("ssao_normalShader"));
-    
-    bRenderer().getObjects()->loadObjMaterial("tree.mtl","tree_ssao_pos_depthMaterial", bRenderer().getObjects()->getShader("ssao_pos_depthShader"));
-    bRenderer().getObjects()->loadObjMaterial("tree.mtl","tree_ssao_normalMaterial", bRenderer().getObjects()->getShader("ssao_normalShader"));
-    
-    bRenderer().getObjects()->loadObjMaterial("crystal.mtl","crystal_ssao_pos_depthMaterial", bRenderer().getObjects()->getShader("ssao_pos_depthShader"));
-    bRenderer().getObjects()->loadObjMaterial("crystal.mtl","crystal_ssao_normalMaterial", bRenderer().getObjects()->getShader("ssao_normalShader"));
-    
     // SSAO FBO
     bRenderer().getObjects()->createFramebuffer("SSAO_FBO");
     bRenderer().getObjects()->createFramebuffer("SSAO_FBO2");
     bRenderer().getObjects()->createFramebuffer("SSAO_FBO3");
     bRenderer().getObjects()->createFramebuffer("SSAO_FBO4");
     bRenderer().getObjects()->createDepthMap("ssao_scene_depth", bRenderer().getView()->getWidth(), bRenderer().getView()->getHeight());
-    bRenderer().getObjects()->createTexture("ssao_position_texture", bRenderer().getView()->getWidth(), bRenderer().getView()->getHeight());
     bRenderer().getObjects()->createTexture("ssao_normal_texture", bRenderer().getView()->getWidth(), bRenderer().getView()->getHeight());
     bRenderer().getObjects()->createTexture("ssao_noise_texture", bRenderer().getView()->getWidth(), bRenderer().getView()->getHeight());
     bRenderer().getObjects()->createTexture("ssao_texture", bRenderer().getView()->getWidth(), bRenderer().getView()->getHeight());
@@ -165,16 +149,17 @@ void RenderProject::loopFunction(const double &deltaTime, const double &elapsedT
     //checkCollision();
     
     /* Add Models to the RenderQueue */
-    // updateRenderQueue("camera", deltaTime);
+//    updateRenderQueue("camera", deltaTime);
     
     /* BLOOM POSTPROCESSING */
     /* Terrain is loaded inside _bloomRenderer */
     /* Render Queue is drawn inside _bloomRenderer */
-    // _bloomRenderer->doBloomRenderPass("camera", deltaTime);
-    
+//    _cam->process("camera", deltaTime);
+//    _bloomRenderer->doBloomRenderPass("camera", deltaTime);
+
     if (SSAO) {
-        _cam->process("camera", deltaTime);
         GLint defaultFBO = Framebuffer::getCurrentFramebuffer();
+        _cam->process("camera", deltaTime);
         
         /**************************
          * BIND FBO 1
@@ -183,8 +168,16 @@ void RenderProject::loopFunction(const double &deltaTime, const double &elapsedT
         bRenderer().getObjects()->getFramebuffer("SSAO_FBO")->bindDepthMap(bRenderer().getObjects()->getDepthMap("ssao_scene_depth"), false);
         bRenderer().getObjects()->getFramebuffer("SSAO_FBO")->bindTexture(bRenderer().getObjects()->getTexture("ssao_normal_texture"), false);
         
-        _terrainLoader->drawNormalsOnly("camera", deltaTime, "terrain");
+        // render depth and normals to texture
+        bRenderer().getObjects()->getShader("basic")->setUniform("writeNormalsOnly", static_cast<GLfloat>(true));
+        bRenderer().getObjects()->getShader("terrain")->setUniform("writeNormalsOnly", static_cast<GLfloat>(true));
         _terrainLoader->drawNormalsOnly("camera", deltaTime, "tree");
+        _terrainLoader->drawNormalsOnly("camera", deltaTime, "crystal");
+        _terrainLoader->drawNormalsOnly("camera", deltaTime, "terrain");
+        
+        bRenderer().getObjects()->getShader("basic")->setUniform("writeNormalsOnly", static_cast<GLfloat>(false));
+        bRenderer().getObjects()->getShader("terrain")->setUniform("writeNormalsOnly", static_cast<GLfloat>(false));
+        
         bRenderer().getObjects()->getFramebuffer("SSAO_FBO")->unbind();
         
         /**************************
@@ -207,7 +200,7 @@ void RenderProject::loopFunction(const double &deltaTime, const double &elapsedT
         std::uniform_real_distribution<float> randomFloats(0.0, 1.0);
         std::default_random_engine generator;
         std::vector<vmml::Vector3f> ssaoKernel;
-        float kernelSize = 32.0;
+        float kernelSize = 64.0;
         for (unsigned int i = 0; i<kernelSize; ++i) {
             vmml::Vector3f sample(randomFloats(generator) * 2.0 - 1.0,
                                   randomFloats(generator) * 2.0 - 1.0,

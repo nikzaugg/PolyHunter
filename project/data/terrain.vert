@@ -3,6 +3,9 @@ $B_SHADER_VERSION
 precision mediump float;
 #endif
 
+// for ssao render pass, writes normals into texture
+uniform float writeNormalsOnly;
+
 uniform highp mat4 depthMVP;
 uniform highp mat4 depthView;
 uniform highp mat4 depthProjection;
@@ -80,27 +83,33 @@ vec4 biome()
 
 void main()
 {
-    vec3 normal_WorldSpace = normalize(NormalMatrix * (Normal * vec3(-1.0, -1.0, 1.0)));
-    vec4 position_WorldSpace = ModelMatrix * Position;
-    vec3 normal_ViewSpace = normalize(mat3(ModelViewMatrix) * (Normal * vec3(-1.0, -1.0, 1.0)));
-    vec3 tangent_ViewSpace = mat3(ModelViewMatrix) * Tangent;
-    vec3 bitangent_ViewSpace = mat3(ModelViewMatrix) * Bitangent;
-	vec4 posViewSpace = ModelViewMatrix * Position;
-    vec3 posRelativeToPlayer = playerPos - vec3(posViewSpace);
+    vec4 posViewSpace = ModelViewMatrix * Position;
     
-    // Outputs to Fragment Shader
-    shadowCoord_varying = depthOffset * depthProjection  * depthView * Position;
-    normal_varying_ViewSpace = normal_ViewSpace;
-    tangent_varying_ViewSpace = tangent_ViewSpace;
-    position_varying_ViewSpace = posViewSpace;
-    texCoord_varying = TexCoord;
-    vertexColor_varying = biome();
-    normal_varying_WorldSpace = normal_WorldSpace;
-    position_varying_WorldSpace = position_WorldSpace;
-    
-    float dist = length(posRelativeToPlayer.xyz);
-    visibility = exp(-pow((dist * fogDensity), fogGradient));
-    
+    // if in ssao render pass
+    if (writeNormalsOnly > 0.0) {
+        normal_varying_ViewSpace = normalize(mat3(ModelViewMatrix) * (Normal * vec3(-1.0, -1.0, 1.0))) * vec3(1.0, 1.0, -1.0);
+    } else {
+        vec3 normal_WorldSpace = normalize(mat3(ModelMatrix) * (Normal * vec3(-1.0, -1.0, 1.0)));
+        vec4 position_WorldSpace = ModelMatrix * Position;
+        vec3 normal_ViewSpace = normalize(mat3(ModelViewMatrix) * (Normal * vec3(-1.0, -1.0, 1.0))) * vec3(1.0, 1.0, -1.0);
+        vec3 tangent_ViewSpace = mat3(ModelViewMatrix) * Tangent;
+        vec3 bitangent_ViewSpace = mat3(ModelViewMatrix) * Bitangent;
+        vec3 posRelativeToPlayer = playerPos - vec3(posViewSpace);
+        
+        // Outputs to Fragment Shader
+        shadowCoord_varying = depthOffset * depthProjection  * depthView * Position;
+        normal_varying_ViewSpace = normal_ViewSpace;
+        tangent_varying_ViewSpace = tangent_ViewSpace;
+        position_varying_ViewSpace = posViewSpace;
+        texCoord_varying = TexCoord;
+        vertexColor_varying = biome();
+        normal_varying_WorldSpace = normal_WorldSpace;
+        position_varying_WorldSpace = position_WorldSpace;
+        
+        float dist = length(posRelativeToPlayer.xyz);
+        visibility = exp(-pow((dist * fogDensity), fogGradient));
+    }
+
     // Position of Vertex
     gl_Position = ProjectionMatrix * ModelViewMatrix * Position;
 }

@@ -226,14 +226,6 @@ void TerrainLoader::customRenderTerrains(std::string camera, const double &delta
     }
 }
 
-void TerrainLoader::drawPositionsOnly(std::string camera, const double &deltaTime, std::string entityName)
-{
-    TerrainMap::iterator it;
-    for (auto const& x: _terrains) {
-        x.second->drawPositionsOnly(camera, deltaTime, entityName);
-    }
-}
-
 void TerrainLoader::drawNormalsOnly(std::string camera, const double &deltaTime, std::string entityName)
 {
     TerrainMap::iterator it;
