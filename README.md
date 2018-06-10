@@ -2,7 +2,7 @@
 
 Interactive 3D game for iOS written in C++ and OpenGL.
 
-Part of the 2018 Computer Graphics Lab Project.
+Part of the 2018 Computer Graphics Lab Project [@uzh](https://github.com/uzh)
 
 Built with: [**bRenderer Framework**](http://brenderer.b-dimension.com/), cross-platform educational framework written in C++.
 
@@ -20,4 +20,4 @@ An evil force has destroyed many worlds by consuming their light source. To stop
 * first-person camera
 
 # Authors
-[**Nik Zaugg**](https://github.com/nikzaugg) & [**Valentin Weiss**](https://github.com/nikzaugg)
+[**Nik Zaugg**](https://github.com/nikzaugg) & [**Valentin Weiss**](https://github.com/WeissDev)
