@@ -21,6 +21,7 @@ uniform lowp vec3 Ks;   // specular material coefficient
 
 uniform mediump float Ns;   // specular material exponent (shininess)
 
+uniform vec3 viewPos;
 uniform vec3 ambientColor;
 uniform float lightIntensity_0;
 uniform vec3 lightDiffuseColor_0;
@@ -45,6 +46,7 @@ varying lowp vec4 shadowCoord_varying;
 varying lowp vec4 vertexColor_varying;
 varying lowp vec4 texCoord_varying;
 // Everything in View Space
+varying mediump vec4 viewPos_varying_ViewSpace;
 varying mediump vec4 position_varying_ViewSpace;
 varying mediump vec3 normal_varying_ViewSpace;
 varying mediump vec3 tangent_varying_ViewSpace;
@@ -65,6 +67,7 @@ void main()
     normal_varying_ViewSpace = normal_ViewSpace;
     tangent_varying_ViewSpace = tangent_ViewSpace;
     position_varying_ViewSpace = posViewSpace;
+    viewPos_varying_ViewSpace = ModelViewMatrix * vec4(viewPos, 1.0);
     texCoord_varying = TexCoord;
 
     float dist = length(posRelativeToPlayer.xyz);

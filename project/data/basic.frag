@@ -21,6 +21,7 @@ uniform mediump float Ns;   // specular material exponent (shininess)
 
 uniform sampler2D DiffuseMap;
 
+uniform vec3 viewPos;
 uniform vec3 ambientColor;
 uniform float lightIntensity_0;
 uniform vec3 lightDiffuseColor_0;
@@ -34,6 +35,7 @@ varying lowp vec4 shadowCoord_varying;
 varying lowp vec4 vertexColor_varying;
 varying lowp vec4 texCoord_varying;
 // Everything in View Space
+varying mediump vec4 viewPos_varying_ViewSpace;
 varying mediump vec4 position_varying_ViewSpace;
 varying mediump vec3 normal_varying_ViewSpace;
 varying mediump vec3 tangent_varying_ViewSpace;
@@ -54,12 +56,25 @@ void main()
     float intensityFactor = dot(normal, lightVector.xyz);
     vec3 diffuseTerm = Kd * clamp(intensityFactor, 0.0, 1.0) * lightDiffuseColor_0;
     vec4 diffusePart = vec4(clamp(diffuseTerm, 0.0, 1.0), 1.0);
+    
+    vec4 specular = vec4(0.0);
+    if (intensityFactor > 0.0) {
+        vec3 viewDir = vec3(normalize(vec4(0.0) - position));
+        vec3 reflectDir = -normalize(reflect(lightVector.xyz, normal));
+        float spec = pow(max(dot(viewDir, reflectDir), 0.0), Ns);
+        spec = clamp(spec, 0.0, 1.0);
+        specular = vec4(Ks * spec, 1.0);
+        specular = clamp(specular, 0.0, 1.0);
+    }
+    // specular term
+
   
     vec4 color = texture2D(DiffuseMap, texCoord_varying.st);
     
-    vec4 outColor = (ambientPart + diffusePart) * color;
+    vec4 outColor = (ambientPart + diffusePart) * color + specular;
+    
     gl_FragColor = mix(vec4(vec3(fogColor), 1.0), outColor, visibility);
-    // gl_FragColor = vec4(visibility);
+//     gl_FragColor = vec4(vec3(normal), 1.0);
     
     // Color according to normals
 //     vec3 normal_test = normal/2.0 + vec3(0.5);

@@ -120,6 +120,7 @@ void Cam::process(std::string camera, const double &deltaTime)
     //std::cout << "camposition: "<< _position << std::endl;
     renderer().getObjects()->getCamera(camera)->setPosition(vmml::Vector3f(_position));
     
+    renderer().getObjects()->getShader("basic")->setUniform("viewPos", getPosition());
 }
 
 
