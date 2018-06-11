@@ -175,6 +175,9 @@ void RenderProject::loopFunction(const double &deltaTime, const double &elapsedT
         _terrainLoader->drawNormalsOnly("camera", deltaTime, "crystal");
         _terrainLoader->drawNormalsOnly("camera", deltaTime, "terrain");
         
+        modelMatrix = vmml::create_scaling(vmml::Vector3f(5.0)) * vmml::create_translation(vmml::Vector3f(10.0, 15.0 ,0.0));
+        bRenderer().getModelRenderer()->drawModel("guy", "camera", modelMatrix, std::vector<std::string>({ "sun" }), true, true);
+        
         bRenderer().getObjects()->getShader("basic")->setUniform("writeNormalsOnly", static_cast<GLfloat>(false));
         bRenderer().getObjects()->getShader("terrain")->setUniform("writeNormalsOnly", static_cast<GLfloat>(false));
         
@@ -200,7 +203,7 @@ void RenderProject::loopFunction(const double &deltaTime, const double &elapsedT
         std::uniform_real_distribution<float> randomFloats(0.0, 1.0);
         std::default_random_engine generator;
         std::vector<vmml::Vector3f> ssaoKernel;
-        float kernelSize = 64.0;
+        float kernelSize = 16.0;
         for (unsigned int i = 0; i<kernelSize; ++i) {
             vmml::Vector3f sample(randomFloats(generator) * 2.0 - 1.0,
                                   randomFloats(generator) * 2.0 - 1.0,

@@ -10,13 +10,13 @@ uniform sampler2D depthMap;
 uniform sampler2D normalMap;
 uniform sampler2D noiseTex;
 
-uniform vec3 samples[64]; // kernel samples, sent from CPU
+uniform vec3 samples[16]; // kernel samples, sent from CPU
 
 varying vec4 texCoordVarying;
 
-float kernelSize = 64.0; // 32 samples
-float radius = 10.0; // radius of hemisphere
-float bias = 0.0025;
+float kernelSize = 16.0; // 32 samples
+float radius = 0.5; // radius of hemisphere
+float bias = 0.025;
 
 vec3 normalFromDepth(float depth, vec2 texcoords)
 {
@@ -63,7 +63,7 @@ void main()
     
     float occlusion = 0.0;
     // for each kernel-sample, test depth values
-    for (int i = 0; i < 64; ++i) {
+    for (int i = 0; i < 16; ++i) {
         
         vec3 samp = TBN * samples[i];
         samp = samp * radius + fragPos;
@@ -76,9 +76,8 @@ void main()
         // get depth of the sample
         float sampleDepth = texture2D(depthMap, offset.xy).z;
         
-//        float rangeCheck = smoothstep(0.0, 1.0, radius / abs(fragPos.z - sampleDepth));
-//        occlusion += (sampleDepth >= samp.z + bias ? 1.0 : 0.0) * rangeCheck;
-        occlusion += (sampleDepth >= samp.z + bias ? 1.0 : 0.0);
+        float rangeCheck = smoothstep(0.0, 1.0, radius / abs(fragPos.z - sampleDepth));
+        occlusion += (sampleDepth >= samp.z + bias ? 1.0 : 0.0) * rangeCheck;
     }
 
     // compute occlusion-weight for current fragment

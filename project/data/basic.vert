@@ -73,7 +73,6 @@ void main()
         // Outputs to Fragment Shader
         normal_varying_ViewSpace = normal_ViewSpace;
         tangent_varying_ViewSpace = tangent_ViewSpace;
-        position_varying_ViewSpace = posViewSpace;
         texCoord_varying = TexCoord;
         normal_varying_WorldSpace = normalize(mat3(ModelMatrix) * (Normal * vec3(1.0, 1.0, -1.0)));
         
@@ -82,6 +81,7 @@ void main()
         visibility = exp(-pow((dist * fogDensity), fogGradient));
     }
     
+    position_varying_ViewSpace = posViewSpace;
     // Position of Vertex
     gl_Position = ProjectionMatrix*posViewSpace;
 }
