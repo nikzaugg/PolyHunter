@@ -126,7 +126,7 @@ void Cam::process(std::string camera, const double &deltaTime)
 double Cam::getNoiseInput(float coord)
 {
     // FIXME: add variable instead of magic number
-    return coord / (float)(200.0 * 3);
+    return coord / (float)(400.0 * 3);
 }
 
 double Cam::noise(double nx, double nz)

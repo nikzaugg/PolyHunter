@@ -32,6 +32,7 @@ varying mediump vec4 position_varying_ViewSpace;
 varying mediump vec3 normal_varying_ViewSpace;
 varying mediump vec3 tangent_varying_ViewSpace;
 varying mediump vec4 height;
+varying mediump float heightGradient;
 
 void main()
 {
@@ -49,10 +50,12 @@ void main()
     vec4 diffusePart = vec4(clamp(diffuseTerm, 0.0, 1.0), 1.0);
     
     // vec4 skyboxColor = textureCube(CubeMap, position.xyz);
-    vec4 heightNormalized = normalize(height);
-    float blue_color = heightNormalized.y/2.0 + 0.5;
+    vec4 positionNormalized = normalize(height);
+    float heightNormalized = positionNormalized.y/2.0 + 0.5;
+
+	gl_FragColor = mix(vec4(0.5, 0.5, 0.5, 1.0),  vec4(skyColor, 1.0), heightGradient);
     
-    gl_FragColor = vec4(skyColor, 1.0) * (blue_color + 0.6);
+   // gl_FragColor = vec4(skyColor, 1.0) * (blue_color + 0.6);
     
     // Color according to normals
     // vec3 normal_test = normal/2.0 + vec3(0.5);

@@ -259,21 +259,25 @@ Terrain::TreeMap Terrain::getTreeMap()
 
 bool Terrain::checkCollisionWithEntities(vmml::Vector3f playerPos)
 {
-    TreeMap::iterator it;
     vmml::Vector3f crystalPos;
     bool collision = false;
     float playerCameraGroundOffset = 10.0;
     
     for(CrystalMap::iterator it = _crystals.begin(); it != _crystals.end(); it++)
     {
-        crystalPos = it->second->getPosition();
-        float distance = sqrtf(pow(playerPos.x() - crystalPos.x(), 2.0) + pow(playerPos.y() - (crystalPos.y()+playerCameraGroundOffset), 2.0) + pow(playerPos.z() - crystalPos.z(), 2.0));
-        if(distance <= 10.0){
-            std::cout << "------" << std::endl;
-            Terrain::_collectedCrystals.insert(CrystalMap::value_type(it->first , it->second));
-            std::cout << "Collected Crystals: "<< Terrain::_collectedCrystals.size() << std::endl;
+        // if crystal was already collected, don't check distance/collision
+        if (Terrain::_collectedCrystals.find(it->first) == Terrain::_collectedCrystals.end()) {
+            crystalPos = it->second->getPosition();
+            float distance = sqrtf(pow(playerPos.x() - crystalPos.x(), 2.0) + pow(playerPos.y() - (crystalPos.y()+playerCameraGroundOffset), 2.0) + pow(playerPos.z() - crystalPos.z(), 2.0));
+            if(distance <= 10.0){
+                std::cout << "------" << std::endl;
+                Terrain::_collectedCrystals.insert(CrystalMap::value_type(it->first , it->second));
+                std::cout << "Collected Crystals: "<< Terrain::_collectedCrystals.size() << std::endl;
+                collision = true;
+            }
         }
     }
+
     return collision;
 }
 

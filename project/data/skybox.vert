@@ -24,6 +24,10 @@ uniform vec4 lightPositionViewSpace_0;
 uniform float amplitude;
 uniform float heightPercent;
 
+uniform float skyBoxSize;
+uniform float skyBoxDensity;
+uniform float skyBoxGradient;
+
 attribute vec4 Position;
 attribute vec3 Normal;
 attribute vec3 Tangent;
@@ -37,6 +41,7 @@ varying mediump vec4 position_varying_ViewSpace;
 varying mediump vec3 normal_varying_ViewSpace;
 varying mediump vec3 tangent_varying_ViewSpace;
 varying mediump vec4 height;
+varying mediump float heightGradient;
 
 void main()
 {
@@ -52,8 +57,10 @@ void main()
     tangent_varying_ViewSpace = tangent_ViewSpace;
     position_varying_ViewSpace = posViewSpace;
     texCoord_varying = TexCoord;
+	float dist = abs(skyBoxSize - Position.y);
     
     height = Position;
+	heightGradient =  exp(-pow((dist * skyBoxDensity), skyBoxGradient));
     
     // Position of Vertex
     gl_Position = ProjectionMatrix*posViewSpace;

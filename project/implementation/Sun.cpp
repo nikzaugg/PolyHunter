@@ -9,20 +9,21 @@ Sun::Sun(std::string objName, std::string modelName, std::string propName, Shade
 	: Entity(objName, modelName, propName, shader, renderer, pos, rotX, rotY, rotZ, scale)
 {
 	_renderer = renderer;
+	_shader = shader;
+
 
 	// create lights
-	_renderer.getObjects()->createLight("sun", vmml::Vector3f(0.0, 200.0, 0.0), vmml::Vector3f(1.0f), vmml::Vector3f(1.0f), 1.0f, 0.5f, 100.0f);
-    
-	_sunProperties = renderer.getObjects()->createProperties("sun");
-	MaterialPtr sunMaterial = renderer.getObjects()->loadObjMaterial("sun.mtl", "sun", shader);
-	MaterialPtr moonMaterial = renderer.getObjects()->loadObjMaterial("moon_test.mtl", "moon_test", shader);
-	_renderer.getObjects()->createSprite_o("sun", sunMaterial, NO_OPTION, _sunProperties);
-	_renderer.getObjects()->createSprite_o("moon_test", moonMaterial, NO_OPTION, renderer.getObjects()->createProperties("moon_test"));
-	
-	// Add Fragments
-	_sunFragments = ModelPtr(new Model(createFragments(), getMaterial(), getProperties()));
-	_renderer.getObjects()->addModel("fragment_overlay", _sunFragments);
-	setIntensity(0.1f);
+	_lightPosition = vmml::Vector3f(300, 300, 0.0);
+	_renderer.getObjects()->createLight("sun", _lightPosition, vmml::Vector3f(1.0f), vmml::Vector3f(1.0f), 1.0f, 0.5f, 100.0f);
+	setPosition(vmml::Vector3f(_lightPosition));
+	this->setIntensity(1.0f);
+
+ 
+	//_sunProperties = renderer.getObjects()->createProperties("sun");
+	//MaterialPtr sunMaterial = renderer.getObjects()->loadObjMaterial("sun.mtl", "sun", _shader);
+	//MaterialPtr sunMaterial = renderer.getObjects()->loadObjMaterial("sun.mtl", "sun", _shader);
+	//_renderer.getObjects()->createSprite_o("sun", sunMaterial, NO_OPTION, _sunProperties);
+
 }
 
 void Sun::setIntensity(float intensity)
@@ -30,10 +31,28 @@ void Sun::setIntensity(float intensity)
 	_renderer.getObjects()->getLight("sun")->setIntensity(intensity);
 }
 
+void Sun::increaseIntensity(float dI)
+{
+	float currentIntensity = _renderer.getObjects()->getLight("sun")->getIntensity();
+	currentIntensity += dI;
+	setIntensity(currentIntensity);
+}
+
 void Sun::setPosition(vmml::Vector3f position)
 {
-	_renderer.getObjects()->getLight("sun")->setPosition(position);
 	Entity::setPosition(vmml::Vector3f(position));
+}
+
+void Sun::setHealth(float health){
+    _health = health;
+}
+
+void Sun::increaseHealth(float hx){
+    _health += hx;
+}
+
+float Sun::getHealth(){
+    return _health;
 }
 
 float Sun::getVertexPos()
@@ -67,19 +86,21 @@ ModelData::GroupMap Sun::createFragments()
 
 void Sun::renderFragments(std::string camera, vmml::Vector3f pos)
 {
-	vmml::Matrix4f modelMatrix;
-	modelMatrix *= vmml::create_translation(vmml::Vector3f(pos.x() - 10.0f, 100.0f, pos.z()));
-	modelMatrix *= vmml::create_scaling(vmml::Vector3f(10.f));
-
-	//_renderer.getModelRenderer()->queueModelInstance("fragment_overlay", "fragment_overlay_instance", camera, modelMatrix, std::vector<std::string>({"sun"}), false, false);
-}
+	_shader->setUniform("lowerSicknessRange", vmml::Vector2f(0.125, 0.325));
+	_shader->setUniform("upperSicknessRange", vmml::Vector2f(0.625, 0.875));
+}	
 
 void Sun::render(std::string camera, vmml::Vector3f playerPos, vmml::Matrix4f viewMatrixHUD)
 {
+	_lightPosition = vmml::Vector3f(playerPos.x() + 1200, 1000, playerPos.z());
+	_renderer.getObjects()->getLight("sun")->setPosition(_lightPosition);
+
 	// draw model instance
-	setPosition(vmml::Vector3f(playerPos.x() + 450.0f, 300.0f, playerPos.z()));
-	setScale(50.0f);
+	setPosition(playerPos + (_lightPosition - playerPos) * 0.3f);
+
+	//setScale(5.0f);
 	setRotY(90.0f);
-	_renderer.getModelRenderer()->queueModelInstance("moon_test", "moon_test_instance", camera, computeTransformationMatrix(), std::vector<std::string>({}), false, false, true, GL_SRC_ALPHA, GL_ONE);
-	renderFragments(camera, vmml::Vector3f(playerPos.x() + 450.0f, 100.0f, playerPos.z()));
+
+	//_renderer.getModelRenderer()->queueModelInstance("sun", "sun_instance", camera, computeTransformationMatrix(), std::vector<std::string>({}), false, false, true, GL_SRC_ALPHA, GL_ONE);
+	_renderer.getModelRenderer()->queueModelInstance("sun", "sun_instance", camera, computeTransformationMatrix(), std::vector<std::string>({}), false, false, true);
 }

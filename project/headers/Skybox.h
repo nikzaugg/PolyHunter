@@ -14,6 +14,8 @@ public:
 	ModelPtr generate();
 
 	void setSkyColor(vmml::Vector3f color);
+    void setSkyboxGradient(float gradient);
+    void setSkyboxDensity(float density);
 
 	vmml::Vector3f getSkyColor();
 
@@ -24,11 +26,12 @@ private:
 
 	int _numFaces;
 
-	const int SIZE = 900;
+    vmml::Vector3f _skyColor;
+	const int SIZE = 400;
+    float _skyBoxGradient = 0.04;
+    float _skyBoxDensity = 0.9;
     
     ProceduralOBJLoader _objLoader;
-
-	vmml::Vector3f _skyColor;
 
 	GroupMap        _groups;
 	vmml::AABBf		_boundingBox;

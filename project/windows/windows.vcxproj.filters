@@ -637,6 +637,12 @@
     <None Include="..\data\sun.vert">
       <Filter>project\data</Filter>
     </None>
+    <None Include="..\data\sunShader.frag">
+      <Filter>project\data</Filter>
+    </None>
+    <None Include="..\data\sunShader.vert">
+      <Filter>project\data</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\data\flame.png">
@@ -673,6 +679,9 @@
       <Filter>project\data</Filter>
     </Image>
     <Image Include="..\data\sun.png">
+      <Filter>project\data</Filter>
+    </Image>
+    <Image Include="..\data\crystal_icon.png">
       <Filter>project\data</Filter>
     </Image>
   </ItemGroup>

@@ -34,6 +34,9 @@ uniform float amplitude;
 uniform vec3 skyColor;
 uniform vec3 playerPos;
 
+uniform float fogGradient;
+uniform float fogDensity;
+
 attribute highp vec4 Position;
 attribute vec3 Normal;
 attribute vec3 Tangent;
@@ -57,8 +60,6 @@ varying mediump vec3 tangent_varying_ViewSpace;
 uniform float shadowDistance;
 
 varying mediump float visibility;
-const float density = 0.002;
-const float gradient = 0.9;
 
 vec4 biome()
 {
@@ -98,7 +99,7 @@ void main()
     position_varying_WorldSpace = position_WorldSpace;
     
     float dist = length(posRelativeToPlayer.xyz);
-    visibility = exp(-pow((dist * density), gradient));
+    visibility = exp(-pow((dist * fogDensity), fogGradient));
     
     // Position of Vertex
     gl_Position = ProjectionMatrix * ModelViewMatrix * Position;
