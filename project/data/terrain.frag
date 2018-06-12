@@ -19,28 +19,29 @@ uniform lowp vec3 Ks;   // specular material coefficient
 
 uniform mediump float Ns;   // specular material exponent (shininess)
 
+uniform vec3 viewPos;
 uniform vec3 ambientColor;
 uniform float lightIntensity_0;
 uniform vec3 lightDiffuseColor_0;
 uniform vec3 lightSpecularColor_0;
 uniform vec4 lightPositionViewSpace_0;
-uniform vec4 lightPositionWorldSpace_0;
-
-varying lowp vec4 shadowCoord_varying;
+uniform vec4 lighPos_World_0;
 
 uniform vec3 skyColor;
 uniform vec3 fogColor;
 
 varying mediump float visibility;
 
-varying lowp vec4 vertexColor_varying;
-varying lowp vec4 texCoord_varying;
-varying mediump vec3 normal_varying_WorldSpace;
-varying mediump vec4 position_varying_WorldSpace;
-// Everything in View Space
-varying mediump vec4 position_varying_ViewSpace;
-varying mediump vec3 normal_varying_ViewSpace;
-varying mediump vec3 tangent_varying_ViewSpace;
+// World Space Coordinates
+varying mediump vec3 v_normal;
+varying mediump vec4 v_position;
+varying mediump vec3 v_tangent;
+varying mediump vec3 v_bitangent;
+
+// texture Coords and Color
+varying lowp vec4 v_texCoord;
+varying lowp vec4 v_shadowCoord;
+varying lowp vec4 v_color;
 
 mediump vec2 poissonDisk[4];
 int pcfCount = 3;
@@ -51,7 +52,7 @@ uniform float bloomPass;
 float ShadowCalculation(vec3 normal, vec4 lightDir)
 {
     // perform perspective divide
-    vec3 shadowCoords = shadowCoord_varying.xyz/shadowCoord_varying.w;
+    vec3 shadowCoords = v_shadowCoord.xyz/v_shadowCoord.w;
     
     float mapSize = 1024.0;
     float texelSize = 1.0/ mapSize;
@@ -75,7 +76,7 @@ float ShadowCalculation(vec3 normal, vec4 lightDir)
     
     float shadow = 1.0 - (total);
 
-    if (shadowCoord_varying.w > 1.0) {
+    if (v_shadowCoord.w > 1.0) {
         shadow = 1.0;
     }
     
@@ -92,16 +93,11 @@ void main()
     // In the bloom Pass we draw everything black, as terrain should not get the bloom effect.
     if (bloomPass > 0.0) {
         gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
-    } else {
-        vec4 position = position_varying_ViewSpace;
-        vec4 position_world = position_varying_WorldSpace;
-        vec3 normal = normalize(normal_varying_ViewSpace);
-        vec3 normal_world = normalize(normal_varying_WorldSpace);
-        vec4 lightPosition = normalize(lightPositionViewSpace_0);
-        vec4 lightVector = normalize(lightPosition - position);
-        vec4 lightPosition_world = normalize(lightPositionWorldSpace_0);
-        vec4 lightVector_world = normalize(lightPosition_world - position_world);
         
+    } else {
+        vec4 position = v_position;
+        vec3 normal = normalize(v_normal);
+        vec4 lightVector = normalize(lighPos_World_0 - position);
         
         // ambient part
         vec4 ambientPart = vec4(ambientColor * lightIntensity_0, 1.0);
@@ -112,18 +108,21 @@ void main()
         vec3 diffuseTerm = Kd * clamp(intensityFactor, 0.0, 1.0) * lightDiffuseColor_0;
         vec4 diffusePart = vec4(clamp(diffuseTerm, 0.0, 1.0), 1.0);
         
+        // specular part
+        vec4 specular = vec4(0.0);
+        if (intensityFactor > 0.0) {
+            vec3 viewDir = vec3(normalize(vec4(0.0) - position));
+            vec3 reflectDir = -normalize(reflect(lightVector.xyz, normal));
+            float spec = pow(max(dot(viewDir, reflectDir), 0.0), Ns);
+            spec = clamp(spec, 0.0, 1.0);
+            specular = clamp(vec4(Ks * spec, 1.0), 0.0, 1.0);
+        }
+        
         // shadow-value
-        float shadow = ShadowCalculation(normal_world, lightVector_world);
-        
+        float shadow = ShadowCalculation(v_normal, lightVector);
         vec4 totalDiffuse = diffusePart * shadow;
-        // gl_FragColor = (ambientPart + diffusePart) * vertexColor_varying;
         
-        vec4 outColor = (ambientPart + totalDiffuse) * vertexColor_varying;
+        vec4 outColor = (ambientPart + totalDiffuse) * v_color + specular;
         gl_FragColor = mix(vec4(vec3(fogColor), 1.0), outColor, visibility);
-        
-        // gl_FragColor = vec4(visibility);
-        // Color according to normals
-        // vec3 normal_test = normal/2.0 + vec3(0.5);
-        // gl_FragColor = vec4(normal_test, 1.0);
     }
 }

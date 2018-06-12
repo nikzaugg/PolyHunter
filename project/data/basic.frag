@@ -57,24 +57,23 @@ void main()
     vec3 diffuseTerm = Kd * clamp(intensityFactor, 0.0, 1.0) * lightDiffuseColor_0;
     vec4 diffusePart = vec4(clamp(diffuseTerm, 0.0, 1.0), 1.0);
     
+    // specular term
     vec4 specular = vec4(0.0);
     if (intensityFactor > 0.0) {
         vec3 viewDir = vec3(normalize(vec4(0.0) - position));
         vec3 reflectDir = -normalize(reflect(lightVector.xyz, normal));
         float spec = pow(max(dot(viewDir, reflectDir), 0.0), Ns);
         spec = clamp(spec, 0.0, 1.0);
-        specular = vec4(Ks * spec, 1.0);
-        specular = clamp(specular, 0.0, 1.0);
+        specular = clamp(vec4(Ks * spec, 1.0), 0.0, 1.0);
     }
-    // specular term
-
-  
+    
     vec4 color = texture2D(DiffuseMap, texCoord_varying.st);
     
-    vec4 outColor = (ambientPart + diffusePart) * color + specular;
+    vec4 outColor = (diffusePart) * vec4(1.0);
+    gl_FragColor = outColor;
+//     gl_FragColor = vec4(vec3(intensityFactor), 1.0);
     
-    gl_FragColor = mix(vec4(vec3(fogColor), 1.0), outColor, visibility);
-//     gl_FragColor = vec4(vec3(normal), 1.0);
+//    gl_FragColor = mix(vec4(vec3(fogColor), 1.0), outColor, visibility);
     
     // Color according to normals
 //     vec3 normal_test = normal/2.0 + vec3(0.5);

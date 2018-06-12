@@ -121,8 +121,8 @@ void Cam::process(std::string camera, const double &deltaTime)
     renderer().getObjects()->getCamera(camera)->setPosition(vmml::Vector3f(_position));
     
     renderer().getObjects()->getShader("basic")->setUniform("viewPos", getPosition());
+    renderer().getObjects()->getShader("terrain")->setUniform("viewPos", getPosition());
 }
-
 
 double Cam::getNoiseInput(float coord)
 {
@@ -152,7 +152,7 @@ float Cam::getHeightFromNoise(double nx, double nz)
     // Rescale from -1.0:+1.0 to 0.0:1.0
     float res = noise(nx, nz);
     res = pow(res, 1.27);
-    res *= 128;
+    res *= 300;
     return res;
 }
 

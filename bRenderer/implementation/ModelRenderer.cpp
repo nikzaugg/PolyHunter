@@ -92,6 +92,7 @@ void ModelRenderer::drawModel(ModelPtr model, const vmml::Matrix4f &modelMatrix,
 							std::string pos = std::to_string(i);
 							LightPtr l = _objectManager->getLight(lightNames[i]);
 							shader->setUniform(bRenderer::DEFAULT_SHADER_UNIFORM_LIGHT_POSITION_VIEW_SPACE() + pos, (viewMatrix*l->getPosition()));
+                            shader->setUniform("lighPos_World_" + pos, (l->getPosition()));
 							if (shader->supportsDiffuseLighting())
 								shader->setUniform(bRenderer::DEFAULT_SHADER_UNIFORM_DIFFUSE_LIGHT_COLOR() + pos, l->getDiffuseColor());
 							if (shader->supportsSpecularLighting())
@@ -121,6 +122,7 @@ void ModelRenderer::queueModelInstance(ModelPtr model, const std::string &instan
 {
 	vmml::Matrix4f modelViewMatrix = viewMatrix*modelMatrix;
 	vmml::Matrix4f modelViewProjectionMatrix = projectionMatrix*modelViewMatrix;
+    vmml::Matrix3f normalMatrix;
 	vmml::Visibility visibility = vmml::VISIBILITY_FULL;
 
 	// Frustum culling
@@ -139,6 +141,9 @@ void ModelRenderer::queueModelInstance(ModelPtr model, const std::string &instan
 			ShaderPtr shader = i->first;
 			PropertiesPtr properties = i->second;
             
+            vmml::compute_inverse(vmml::transpose(vmml::Matrix3f(modelMatrix)), normalMatrix);
+            properties->setMatrix("ViewMatrix", viewMatrix);
+            properties->setMatrix("NormalMatrix", normalMatrix);
 			properties->setMatrix(bRenderer::DEFAULT_SHADER_UNIFORM_PROJECTION_MATRIX(), projectionMatrix);
 			properties->setMatrix(bRenderer::DEFAULT_SHADER_UNIFORM_MODEL_VIEW_MATRIX(), modelViewMatrix);
 
@@ -156,7 +161,7 @@ void ModelRenderer::queueModelInstance(ModelPtr model, const std::string &instan
 					std::string pos = std::to_string(i);
 					LightPtr l = _objectManager->getLight(lightNames[i]);
 					properties->setVector(bRenderer::DEFAULT_SHADER_UNIFORM_LIGHT_POSITION_VIEW_SPACE() + pos, (viewMatrix*l->getPosition()));
-                    properties->setVector("lightPositionWorldSpace_" + pos, (l->getPosition()));
+                    properties->setVector("lighPos_World_" + pos, (l->getPosition()));
 					if (shader->supportsDiffuseLighting())
 						properties->setVector(bRenderer::DEFAULT_SHADER_UNIFORM_DIFFUSE_LIGHT_COLOR() + pos, l->getDiffuseColor());
 					if (shader->supportsSpecularLighting())

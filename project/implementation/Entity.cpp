@@ -172,7 +172,7 @@ float Entity::getHeightFromNoise(double nx, double nz)
     // Rescale from -1.0:+1.0 to 0.0:1.0
 	float res = noise(nx, nz);
     res = pow(res, 1.27);
-    res *= 128;
+    res *= 300;
     return res;
 }
 

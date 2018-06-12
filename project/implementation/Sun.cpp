@@ -93,7 +93,7 @@ void Sun::renderFragments(std::string camera, vmml::Vector3f pos)
 void Sun::render(std::string camera, vmml::Vector3f playerPos, vmml::Matrix4f viewMatrixHUD)
 {
 	_lightPosition = vmml::Vector3f(playerPos.x() + 1200, 1000, playerPos.z());
-	_renderer.getObjects()->getLight("sun")->setPosition(_lightPosition);
+    _renderer.getObjects()->getLight("sun")->setPosition(vmml::Vector3f(1200, 1000, 1000));
 
 	// draw model instance
 	setPosition(playerPos + (_lightPosition - playerPos) * 0.3f);

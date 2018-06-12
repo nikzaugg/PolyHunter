@@ -113,19 +113,18 @@ void RenderProject::loopFunction(const double &deltaTime, const double &elapsedT
     // std::cout << "FPS: " << std::to_string(1 / deltaTime) << std::endl;
 
     /* SHADOW MAPPING */
-    _shadowModelRenderer->doShadowRenderPass("terrain", deltaTime, elapsedTime);
+    _shadowModelRenderer->doShadowRenderPass("terrain", deltaTime, elapsedTime, true);
     
-    // check for collisions of the player with crystals
-    checkCollision();
-    
-    /* Add Models to the RenderQueue */
+//    // check for collisions of the player with crystals
+//    checkCollision();
+//
+//    /* Add Models to the RenderQueue */
     updateRenderQueue("camera", deltaTime);
-    
-    /* BLOOM POSTPROCESSING */
-    /* Terrain is loaded inside _bloomRenderer */
-    /* Render Queue is drawn inside _bloomRenderer */
-    //_bloomRenderer->doBloomRenderPass("camera", deltaTime);
-    _terrainLoader->process("camera", deltaTime);
+//
+//    /* BLOOM POSTPROCESSING */
+//    /* Terrain is loaded inside _bloomRenderer */
+//    /* Render Queue is drawn inside _bloomRenderer */
+//    //_bloomRenderer->doBloomRenderPass("camera", deltaTime);
     bRenderer().getModelRenderer()->drawQueue(/*GL_LINES*/);
     bRenderer().getModelRenderer()->clearQueue();
     
@@ -230,9 +229,8 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
 	//	_sun->setIntensity(0.1 * currentSecond);
 	//}
 
-    vmml::Matrix4f cameraView = bRenderer().getObjects()->getCamera("camera")->getViewMatrix();
-    bRenderer().getObjects()->getShader("basic")->setUniform("playerPos", cameraView * _cam->getPosition());
-    bRenderer().getObjects()->getShader("terrain")->setUniform("playerPos", cameraView * _cam->getPosition());
+    bRenderer().getObjects()->getShader("basic")->setUniform("playerPos", _cam->getPosition());
+    bRenderer().getObjects()->getShader("terrain")->setUniform("playerPos", _cam->getPosition());
     
     /////// Skybox ///
     modelMatrix =
