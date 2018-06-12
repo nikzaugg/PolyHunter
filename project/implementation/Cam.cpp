@@ -180,3 +180,22 @@ void Cam::initStartScreen()
 	MaterialPtr blurMaterial = renderer().getObjects()->createMaterial("blurMaterial", blurShader);
 	renderer().getObjects()->createSprite("blurSprite", blurMaterial);
 }
+
+void Cam::showStartScreen(GLint defaultFBO)
+{
+	if (!_running)
+	{
+		/*** Blur ***/
+		// translate
+		vmml::Matrix4f modelMatrix = vmml::create_translation(vmml::Vector3f(0.0f, 0.0f, -0.5));
+		// blur vertically and horizontally
+
+		renderer().getObjects()->getFramebuffer("blurFbo")->unbind(defaultFBO); //unbind (original fbo will be bound)
+		renderer().getView()->setViewportSize(renderer().getView()->getWidth(), renderer().getView()->getHeight());								// reset vieport size
+
+		renderer().getObjects()->getMaterial("blurMaterial")->setTexture("fbo_texture", renderer().getObjects()->getTexture("blurFbo_texture1"));
+		renderer().getObjects()->getMaterial("blurMaterial")->setScalar("isVertical", static_cast<GLfloat>(true));
+		// draw
+		renderer().getModelRenderer()->drawModel(renderer().getObjects()->getModel("blurSprite"), modelMatrix, _viewMatrixHUD, vmml::Matrix4f::IDENTITY, std::vector<std::string>({}), false);
+	}
+}

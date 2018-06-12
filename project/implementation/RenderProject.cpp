@@ -83,6 +83,10 @@ void RenderProject::initFunction()
     // GUI TEXT
     FontPtr font = bRenderer().getObjects()->loadFont("KozGoPro-ExtraLight.otf", 50);
     bRenderer().getObjects()->createTextSprite("gui-crystal-info", vmml::Vector3f(1.f, 1.f, 1.f), " ", font);
+	
+	// START SCREEN TEXT
+	bRenderer().getObjects()->createTextSprite("start-button-text", vmml::Vector3f(1.f, 1.f, 1.f), " ", font);
+	bRenderer().getObjects()->getTextSprite("start-button-text")->setText("Start Game");
     
     // SUN
     _sun = SunPtr(new Sun("sun.obj", "sun", "sunProperties", sunShader, getProjectRenderer(), vmml::Vector3f(0.0f, 100.0f, 0.0f), 0.0f, 0.0f, 0.0f, 3.0f));
@@ -115,7 +119,7 @@ void RenderProject::loopFunction(const double &deltaTime, const double &elapsedT
 	if (!_running) {
 		bRenderer().getView()->setViewportSize(bRenderer().getView()->getWidth(), bRenderer().getView()->getHeight());		// reduce viewport size
 		defaultFBO = Framebuffer::getCurrentFramebuffer();	// get current fbo to bind it again after drawing the scene
-		bRenderer().getObjects()->getFramebuffer("blurFbo")->bindTexture(bRenderer().getObjects()->getTexture("blurFbo_texture1"), false);	// bind the fbo
+		bRenderer().getObjects()->getFramebuffer("blurFbo")->bindTexture(bRenderer().getObjects()->getTexture("blurFbo_texture1"), false);
 	}
 	
 
@@ -151,14 +155,14 @@ void RenderProject::loopFunction(const double &deltaTime, const double &elapsedT
 	// draw
 	bRenderer().getModelRenderer()->drawModel(bRenderer().getObjects()->getTextSprite("gui-crystal-info"), modelMatrix, _viewMatrixHUD, vmml::Matrix4f::IDENTITY, std::vector<std::string>({}), false);
 
+	
+
 	// Quit renderer when escape is pressed
 	if (bRenderer().getInput()->getKeyState(bRenderer::KEY_ESCAPE) == bRenderer::INPUT_PRESS)
 		bRenderer().terminateRenderer();
 
-	/// Begin post processing ///
-	/* GAME PAUSE SCREEN */
-	if (!_running) {
-		/// End post processing ///		
+	if (!_running)
+	{
 		/*** Blur ***/
 		// translate
 		vmml::Matrix4f modelMatrix = vmml::create_translation(vmml::Vector3f(0.0f, 0.0f, -0.5));
@@ -167,30 +171,23 @@ void RenderProject::loopFunction(const double &deltaTime, const double &elapsedT
 		bRenderer().getObjects()->getFramebuffer("blurFbo")->unbind(defaultFBO); //unbind (original fbo will be bound)
 		bRenderer().getView()->setViewportSize(bRenderer().getView()->getWidth(), bRenderer().getView()->getHeight());								// reset vieport size
 
-
-
-		//bRenderer().getObjects()->getFramebuffer("blurFbo")->bindTexture(bRenderer().getObjects()->getTexture("blurFbo_texture1"), false);
 		bRenderer().getObjects()->getMaterial("blurMaterial")->setTexture("fbo_texture", bRenderer().getObjects()->getTexture("blurFbo_texture1"));
 		bRenderer().getObjects()->getMaterial("blurMaterial")->setScalar("isVertical", static_cast<GLfloat>(true));
 		// draw
 		bRenderer().getModelRenderer()->drawModel(bRenderer().getObjects()->getModel("blurSprite"), modelMatrix, _viewMatrixHUD, vmml::Matrix4f::IDENTITY, std::vector<std::string>({}), false);
+
+
 		
-		////bRenderer().getObjects()->getFramebuffer("blurFbo")->bindTexture(bRenderer().getObjects()->getTexture("blurFbo_texture2"), false);    // bind the fbo
-		//bRenderer().getObjects()->getMaterial("blurMaterial")->setTexture("fbo_texture", bRenderer().getObjects()->getTexture("blurFbo_texture2"));
-		//bRenderer().getObjects()->getMaterial("blurMaterial")->setScalar("isVertical", static_cast<GLfloat>(false));
-		////// draw
-		//bRenderer().getModelRenderer()->drawModel(bRenderer().getObjects()->getModel("blurSprite"), modelMatrix, _viewMatrixHUD, vmml::Matrix4f::IDENTITY, std::vector<std::string>({}), false);
-
-
-		//bRenderer().getObjects()->getFramebuffer("fbo")->bindTexture(bRenderer().getObjects()->getTexture(b ? "fbo_texture2" : "fbo_texture1"), false);
-		//bRenderer().getObjects()->getMaterial("blurMaterial")->setTexture("fbo_texture", bRenderer().getObjects()->getTexture(b ? "fbo_texture1" : "fbo_texture2"));
-		//bRenderer().getObjects()->getMaterial("blurMaterial")->setScalar("isVertical", static_cast<GLfloat>(b));
-		//// draw
-		//bRenderer().getModelRenderer()->drawModel(bRenderer().getObjects()->getModel("blurSprite"), modelMatrix, _viewMatrixHUD, vmml::Matrix4f::IDENTITY, std::vector<std::string>({}), false);
+		// draw
+		/*** GUI - Start Game Text ***/
+		// Draw without blur
+		titleScale = 0.1f;
+		scaling = vmml::create_scaling(vmml::Vector3f(titleScale / bRenderer().getView()->getAspectRatio(), titleScale, titleScale));
+		modelMatrix = vmml::create_translation(vmml::Vector3f(-0.3f / bRenderer().getView()->getAspectRatio(), -0.6f, -0.65f)) * scaling;
+		bRenderer().getModelRenderer()->drawModel(bRenderer().getObjects()->getTextSprite("start-button-text"), modelMatrix, _viewMatrixHUD, vmml::Matrix4f::IDENTITY, std::vector<std::string>({}), false);
 	}
-	else {
-		std::cout << "no pause screen" << std::endl;
-	}
+
+	
 }
 
 // checks collision between player and crystals
