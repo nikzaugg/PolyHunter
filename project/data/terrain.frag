@@ -57,6 +57,11 @@ varying lowp vec4 v_texCoord;
 varying lowp vec4 v_shadowCoord;
 varying lowp vec4 v_color;
 
+// Torch Uniforms
+uniform vec3 torchDir;
+uniform float torchInnerCutOff;
+uniform float torchOuterCutOff;
+
 mediump vec2 poissonDisk[4];
 int pcfCount = 3;
 int totalTexels = (pcfCount * 2 + 1) * (pcfCount * 2 + 1);
@@ -127,9 +132,15 @@ void main()
             specularCoefficient = pow(max(0.0, dot(surfaceToCamera, reflect(-normalize(lightVector_0), normal))), Ns);
             specular += vec4(lightSpecularColor_0 * (specularCoefficient * intensity * intensityBasedOnDist_0), 0.0);
         }
+        
         // TORCH-LIGHT
         if (intensityBasedOnDist_1 > 0.0 && (intensity = max(dot(normal, normalize(lightVector_1)), 0.0)) > 0.0){
+            float theta     = dot(lightVector_1, normalize(-torchDir));
+            float epsilon   = torchInnerCutOff - torchOuterCutOff;
+            float coneInstensity = clamp((theta - torchOuterCutOff) / epsilon, 0.0, 1.0);
+            
             intensity = clamp(intensity, 0.0, 1.0);
+            intensity *= coneInstensity;
             diffuse += vec4(lightDiffuseColor_1 * (intensity * intensityBasedOnDist_1), 0.0);
             specularCoefficient = pow(max(0.0, dot(surfaceToCamera, reflect(-normalize(lightVector_1), normal))), Ns);
             specular += vec4(lightSpecularColor_1 * (specularCoefficient * intensity * intensityBasedOnDist_1), 0.0);
@@ -141,7 +152,7 @@ void main()
         // ambient part
         vec4 ambient = vec4(ambientColor * Ks, 1.0);
         ambient = clamp(ambient, 0.0, 1.0);
-        diffuse = diffuse * vec4(Kd,1.0) * shadow;
+        diffuse = diffuse * vec4(Kd,1.0) * (shadow * 0.5);
         specular = specular  * vec4(Ks, 0.0);
         vec4 outColor = clamp(ambient+diffuse+specular, 0.0, 1.0);
 

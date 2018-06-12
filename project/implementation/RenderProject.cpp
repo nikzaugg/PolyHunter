@@ -63,13 +63,13 @@ void RenderProject::initFunction()
     // SKYBOX
     MaterialPtr skyboxMaterial = bRenderer().getObjects()->loadObjMaterial("skybox.mtl", "skybox", skyboxShader);
     _skybox = SkyboxPtr(new Skybox(skyboxMaterial, skyboxProperties, getProjectRenderer()));
-	_skybox->setSkyColor(vmml::Vector3f(0.26, 0.48, 0.96));
+	_skybox->setSkyColor(vmml::Vector3f(0.026, 0.048, 0.096));
     //skybox->setSkyColor(vmml::Vector3f(0.25));
 
     // FOG
-    _fogColor = vmml::Vector3f(0.5);
+    _fogColor = vmml::Vector3f(0.05);
     _fogDensity = 0.005;
-    _fogGradient = 5.00;
+    _fogGradient = 10.00;
     
     // Send fog-variables to shader
     updateFogVariables("basic");
@@ -246,6 +246,12 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
 
     ///*** Torch ***/
     // Position the torch relative to the camera
+    bRenderer().getObjects()->getShader("basic")->setUniform("torchDir", bRenderer().getObjects()->getCamera("camera")->getForward());
+    bRenderer().getObjects()->getShader("basic")->setUniform("torchInnerCutOff", cos(M_PI_F/180 * 15.0));
+    bRenderer().getObjects()->getShader("basic")->setUniform("torchOuterCutOff", cos(M_PI_F/180 * 20.0));
+    bRenderer().getObjects()->getShader("terrain")->setUniform("torchDir", bRenderer().getObjects()->getCamera("camera")->getForward());
+    bRenderer().getObjects()->getShader("terrain")->setUniform("torchInnerCutOff", cos(M_PI_F/180 * 15.0));
+    bRenderer().getObjects()->getShader("terrain")->setUniform("torchOuterCutOff", cos(M_PI_F/180 * 20.0));
     bRenderer().getObjects()->getLight("torch")->setPosition(_cam->getPosition() - bRenderer().getObjects()->getCamera("camera")->getForward()*10.0f);
     modelMatrix = bRenderer().getObjects()->getCamera(camera)->getInverseViewMatrix();        // position and orient to match camera
     modelMatrix *= vmml::create_translation(vmml::Vector3f(0.75f, -0.75f, 0.8f)) * vmml::create_scaling(vmml::Vector3f(0.25f)) * vmml::create_rotation(1.64f, vmml::Vector3f::UNIT_Y); // now position it relative to the camera

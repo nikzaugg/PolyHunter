@@ -110,7 +110,7 @@ void main()
     lightDistance = distance(v_position, lightPos_World_0);
     intensityBasedOnDist_0 = 0.0;
     if (lightDistance <= lightRadius_0) {
-        intensityBasedOnDist_0 = 0.2;
+        intensityBasedOnDist_0 = 0.1;
     };
     
     lightDistance = distance(v_position, lightPos_World_1);
