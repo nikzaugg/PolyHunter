@@ -115,27 +115,28 @@ void main()
         
         vec4 position = v_position;
         vec3 normal = normalize(v_normal);
-        vec3 lightVector = normalize(vec3(lightPos_World_0) - vec3(position));
+        vec3 lightVector_0 = normalize(vec3(lightPos_World_0) - vec3(position));
+        vec3 lightVector_1 = normalize(vec3(lightPos_World_1) - vec3(position));
         vec3 surfaceToCamera = vec3(normalize(vec4(viewPos, 1.0) - position));
         
         // SUN-LIGHT
         float intensity = 0.0;
-        if (intensityBasedOnDist_0 > 0.0 && (intensity = max(dot(normal, normalize(lightVector)), 0.0)) > 0.0){
+        if (intensityBasedOnDist_0 > 0.0 && (intensity = max(dot(normal, normalize(lightVector_0)), 0.0)) > 0.0){
             intensity = clamp(intensity, 0.0, 1.0);
             diffuse += vec4(lightDiffuseColor_0 * (intensity * intensityBasedOnDist_0), 0.0);
-            specularCoefficient = pow(max(0.0, dot(surfaceToCamera, reflect(-normalize(lightVector), normal))), Ns);
+            specularCoefficient = pow(max(0.0, dot(surfaceToCamera, reflect(-normalize(lightVector_0), normal))), Ns);
             specular += vec4(lightSpecularColor_0 * (specularCoefficient * intensity * intensityBasedOnDist_0), 0.0);
         }
         // TORCH-LIGHT
-        if (intensityBasedOnDist_1 > 0.0 && (intensity = max(dot(normal, normalize(lightVector)), 0.0)) > 0.0){
+        if (intensityBasedOnDist_1 > 0.0 && (intensity = max(dot(normal, normalize(lightVector_1)), 0.0)) > 0.0){
             intensity = clamp(intensity, 0.0, 1.0);
             diffuse += vec4(lightDiffuseColor_1 * (intensity * intensityBasedOnDist_1), 0.0);
-            specularCoefficient = pow(max(0.0, dot(surfaceToCamera, reflect(-normalize(lightVector), normal))), Ns);
+            specularCoefficient = pow(max(0.0, dot(surfaceToCamera, reflect(-normalize(lightVector_1), normal))), Ns);
             specular += vec4(lightSpecularColor_1 * (specularCoefficient * intensity * intensityBasedOnDist_1), 0.0);
         }
         
         // shadow-value
-        float shadow = ShadowCalculation(v_normal, lightVector);
+        float shadow = ShadowCalculation(v_normal, lightVector_0);
         
         // ambient part
         vec4 ambient = vec4(ambientColor * Ks, 1.0);

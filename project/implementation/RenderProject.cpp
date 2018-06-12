@@ -46,7 +46,7 @@ void RenderProject::initFunction()
 	bRenderer().getObjects()->setShaderVersionES("#version 100");
 
 	// SHADERS
-	ShaderPtr basicShader = bRenderer().getObjects()->loadShaderFile("basic", 1, false, true, true, true, false);
+	ShaderPtr basicShader = bRenderer().getObjects()->loadShaderFile("basic", 2, false, true, true, true, false);
 	ShaderPtr terrainShader = bRenderer().getObjects()->loadShaderFile("terrain", 2, false, true, true, true, false);
     ShaderPtr skyboxShader = bRenderer().getObjects()->loadShaderFile("skybox", 1, false, true, true, true, false);
     ShaderPtr torchLightShader = bRenderer().getObjects()->loadShaderFile("torchLight", 1, false, true, true, true, false);
