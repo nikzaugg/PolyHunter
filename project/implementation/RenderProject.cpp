@@ -47,9 +47,9 @@ void RenderProject::initFunction()
 
 	// SHADERS
 	ShaderPtr basicShader = bRenderer().getObjects()->loadShaderFile("basic", 1, false, true, true, true, false);
-	ShaderPtr terrainShader = bRenderer().getObjects()->loadShaderFile("terrain", 1, false, true, true, true, false);
+	ShaderPtr terrainShader = bRenderer().getObjects()->loadShaderFile("terrain", 2, false, true, true, true, false);
     ShaderPtr skyboxShader = bRenderer().getObjects()->loadShaderFile("skybox", 1, false, true, true, true, false);
-    ShaderPtr playerShader = bRenderer().getObjects()->loadShaderFile("player", 1, false, true, true, true, false);
+    ShaderPtr torchLightShader = bRenderer().getObjects()->loadShaderFile("torchLight", 1, false, true, true, true, false);
 	ShaderPtr sunShader = bRenderer().getObjects()->loadShaderFile_o("sun", 0, AMBIENT_LIGHTING);
 	
 	// PROPERTIES FOR THE MODELS
@@ -58,7 +58,7 @@ void RenderProject::initFunction()
     PropertiesPtr guyProperties = bRenderer().getObjects()->createProperties("guyProperties");
 
 	// BLENDER MODELS (.obj)
-    // bRenderer().getObjects()->loadObjModel("tree.obj", false, true, basicShader, treeProperties);
+    bRenderer().getObjects()->loadObjModel("torch.obj", false, true, torchLightShader, nullptr);
 
     // SKYBOX
     MaterialPtr skyboxMaterial = bRenderer().getObjects()->loadObjMaterial("skybox.mtl", "skybox", skyboxShader);
@@ -86,10 +86,13 @@ void RenderProject::initFunction()
     
     // SUN
     _sun = SunPtr(new Sun("sun.obj", "sun", "sunProperties", sunShader, getProjectRenderer(), vmml::Vector3f(0.0f, 100.0f, 0.0f), 0.0f, 0.0f, 0.0f, 3.0f));
-
+    
     // PLAYER - FPS-CAMERA
     bRenderer().getObjects()->createCamera("camera");
     _cam = CamPtr(new Cam(getProjectRenderer()));
+    
+    // TORCH-LIGHT
+    bRenderer().getObjects()->createLight("torch", -bRenderer().getObjects()->getCamera("camera")->getPosition(), vmml::Vector3f(1.0, 0.45, -0.4), vmml::Vector3f(1.0), 100.0, 0.9, 280.0);
 
     // TERRAIN LOADER //
     _terrainLoader = TerrainLoaderPtr(new TerrainLoader(getProjectRenderer(), terrainShader, _cam));
@@ -238,9 +241,17 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
     skybox = bRenderer().getObjects()->getShader("skybox");
     // set ambient color
     bRenderer().getObjects()->setAmbientColor(vmml::Vector3f(0.5f));
-    // draw modeld
+    // draw model
     bRenderer().getModelRenderer()->queueModelInstance("skybox", "skybox_instance", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
 
+    ///*** Torch ***/
+    // Position the torch relative to the camera
+    modelMatrix = bRenderer().getObjects()->getCamera(camera)->getInverseViewMatrix();        // position and orient to match camera
+    modelMatrix *= vmml::create_translation(vmml::Vector3f(0.75f, -0.75f, 0.8f)) * vmml::create_scaling(vmml::Vector3f(0.25f)) * vmml::create_rotation(1.64f, vmml::Vector3f::UNIT_Y); // now position it relative to the camera
+    // submit to render queue
+    bRenderer().getModelRenderer()->queueModelInstance("torch", "torch_instance", camera, modelMatrix, std::vector<std::string>({ "sun" }));
+
+    
 	/// SUN ///
 	_sun->render(camera, _cam->getPosition(), _viewMatrixHUD);
 }

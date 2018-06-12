@@ -19,14 +19,30 @@ uniform lowp vec3 Ks;   // specular material coefficient
 
 uniform mediump float Ns;   // specular material exponent (shininess)
 
-uniform vec3 viewPos;
-uniform vec3 ambientColor;
+// Light-Info: SUN
+uniform vec4 lightPositionViewSpace_0;
 uniform float lightIntensity_0;
+uniform float lightAttenuation_0;
+uniform float lightRadius_0;
 uniform vec3 lightDiffuseColor_0;
 uniform vec3 lightSpecularColor_0;
-uniform vec4 lightPositionViewSpace_0;
+varying vec3 lightVectorTangentSpace_0;
+varying float intensityBasedOnDist_0;
 uniform vec4 lighPos_World_0;
 
+// Light-Info: TORCH
+uniform vec4 lightPositionViewSpace_1;
+uniform float lightIntensity_1;
+uniform float lightAttenuation_1;
+uniform float lightRadius_1;
+uniform vec3 lightDiffuseColor_1;
+uniform vec3 lightSpecularColor_1;
+varying vec3 lightVectorTangentSpace_1;
+varying float intensityBasedOnDist_1;
+uniform vec4 lighPos_World_1;
+
+uniform vec3 viewPos;
+uniform vec3 ambientColor;
 uniform vec3 skyColor;
 uniform vec3 fogColor;
 

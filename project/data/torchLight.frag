@@ -3,11 +3,6 @@ $B_SHADER_VERSION
 precision mediump float;
 #endif
 
-uniform mat4 depthMVP;
-uniform mat4 depthView;
-uniform mat4 depthProjection;
-uniform sampler2D shadowMap;
-
 uniform mediump mat4 ViewMatrix;
 uniform mediump mat4 ModelMatrix;
 uniform mat4 ModelViewMatrix;
@@ -29,9 +24,6 @@ uniform vec3 lightSpecularColor_0;
 uniform vec4 lightPositionViewSpace_0;
 uniform vec4 lighPos_World_0;
 
-uniform vec3 skyColor;
-uniform vec3 fogColor;
-
 // World Space Coordinates
 varying mediump vec3 v_normal;
 varying mediump vec4 v_position;
@@ -40,9 +32,6 @@ varying mediump vec3 v_bitangent;
 
 // texture Coords and Color
 varying lowp vec4 v_texCoord;
-
-// Visibility for Fog
-varying mediump float visibility;
 
 void main()
 {
@@ -70,11 +59,8 @@ void main()
     
     vec4 color = texture2D(DiffuseMap, v_texCoord.st);
     
-    vec4 outColor §§§§§§§§§§= (ambientPart + diffusePart) * color + specular;
-    gl_FragColor = mix(vec4(vec3(fogColor), 1.0), outColor, visibility);
-//    gl_FragColor = diffusePart;
-    // Color according to normals
-//     vec3 normal_test = normal/2.0 + vec3(0.5);
-//     gl_FragColor = vec4(normal, 1.0);
+    vec4 outColor = (ambientPart + diffusePart) * color;
+    gl_FragColor = outColor;
+//    gl_FragColor = vec4(normal, 1.0);
 }
 
