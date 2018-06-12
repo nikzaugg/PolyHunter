@@ -92,7 +92,7 @@ void RenderProject::initFunction()
     _cam = CamPtr(new Cam(getProjectRenderer()));
     
     // TORCH-LIGHT
-    bRenderer().getObjects()->createLight("torch", -bRenderer().getObjects()->getCamera("camera")->getPosition(), vmml::Vector3f(1.0, 0.45, -0.4), vmml::Vector3f(1.0), 100.0, 0.9, 280.0);
+    bRenderer().getObjects()->createLight("torch", -bRenderer().getObjects()->getCamera("camera")->getPosition(), vmml::Vector3f(0.92, 1.0, 0.99), vmml::Vector3f(1.0), 1400.0, 0.9, 100.0);
 
     // TERRAIN LOADER //
     _terrainLoader = TerrainLoaderPtr(new TerrainLoader(getProjectRenderer(), terrainShader, _cam));
@@ -246,12 +246,12 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
 
     ///*** Torch ***/
     // Position the torch relative to the camera
+    bRenderer().getObjects()->getLight("torch")->setPosition(_cam->getPosition() - bRenderer().getObjects()->getCamera("camera")->getForward()*10.0f);
     modelMatrix = bRenderer().getObjects()->getCamera(camera)->getInverseViewMatrix();        // position and orient to match camera
     modelMatrix *= vmml::create_translation(vmml::Vector3f(0.75f, -0.75f, 0.8f)) * vmml::create_scaling(vmml::Vector3f(0.25f)) * vmml::create_rotation(1.64f, vmml::Vector3f::UNIT_Y); // now position it relative to the camera
     // submit to render queue
     bRenderer().getModelRenderer()->queueModelInstance("torch", "torch_instance", camera, modelMatrix, std::vector<std::string>({ "sun" }));
 
-    
 	/// SUN ///
 	_sun->render(camera, _cam->getPosition(), _viewMatrixHUD);
 }

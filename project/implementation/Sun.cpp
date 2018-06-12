@@ -14,7 +14,7 @@ Sun::Sun(std::string objName, std::string modelName, std::string propName, Shade
 
 	// create lights
 	_lightPosition = vmml::Vector3f(300, 300, 0.0);
-	_renderer.getObjects()->createLight("sun", _lightPosition, vmml::Vector3f(1.0f), vmml::Vector3f(1.0f), 1.0f, 0.5f, 100.0f);
+	_renderer.getObjects()->createLight("sun", _lightPosition, vmml::Vector3f(1.0f), vmml::Vector3f(1.0f), 1400.0, 1.0f, 100000.0);
 	setPosition(vmml::Vector3f(_lightPosition));
 	this->setIntensity(1.0f);
 

@@ -23,25 +23,23 @@ uniform mediump float Ns;   // specular material exponent (shininess)
 
 // Light-Info: SUN
 uniform vec4 lightPositionViewSpace_0;
+uniform vec4 lightPos_World_0;
 uniform float lightIntensity_0;
 uniform float lightAttenuation_0;
 uniform float lightRadius_0;
 uniform vec3 lightDiffuseColor_0;
 uniform vec3 lightSpecularColor_0;
-varying vec3 lightVectorTangentSpace_0;
 varying float intensityBasedOnDist_0;
-uniform vec4 lighPos_World_0;
 
 // Light-Info: TORCH
 uniform vec4 lightPositionViewSpace_1;
+uniform vec4 lightPos_World_1;
 uniform float lightIntensity_1;
 uniform float lightAttenuation_1;
 uniform float lightRadius_1;
 uniform vec3 lightDiffuseColor_1;
 uniform vec3 lightSpecularColor_1;
-varying vec3 lightVectorTangentSpace_1;
 varying float intensityBasedOnDist_1;
-uniform vec4 lighPos_World_1;
 
 uniform vec3 viewPos;
 uniform vec3 ambientColor;
@@ -108,6 +106,20 @@ void main()
     
     visibility = exp(-pow((dist * fogDensity), fogGradient));
     
+    float lightDistance = 0.0;
+    lightDistance = distance(v_position, lightPos_World_0);
+    intensityBasedOnDist_0 = 0.0;
+    if (lightDistance <= lightRadius_0) {
+        intensityBasedOnDist_0 = 0.2;
+    };
+    
+    lightDistance = distance(v_position, lightPos_World_1);
+    intensityBasedOnDist_1 = 0.0;
+    if (lightDistance <= lightRadius_1) {
+        intensityBasedOnDist_1 = clamp(lightIntensity_1 / (lightAttenuation_1*lightDistance*lightDistance), 0.0, 1.0);
+    };
+
+
     // Position of Vertex
     gl_Position = ProjectionMatrix * ModelViewMatrix * Position;
 }

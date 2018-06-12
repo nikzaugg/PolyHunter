@@ -93,7 +93,7 @@ void ModelRenderer::drawModel(ModelPtr model, const vmml::Matrix4f &modelMatrix,
 							std::string pos = std::to_string(i);
 							LightPtr l = _objectManager->getLight(lightNames[i]);
 							shader->setUniform(bRenderer::DEFAULT_SHADER_UNIFORM_LIGHT_POSITION_VIEW_SPACE() + pos, (viewMatrix*l->getPosition()));
-                            shader->setUniform("lighPos_World_" + pos, (l->getPosition()));
+                            shader->setUniform("lightPos_World_" + pos, (l->getPosition()));
 							if (shader->supportsDiffuseLighting())
 								shader->setUniform(bRenderer::DEFAULT_SHADER_UNIFORM_DIFFUSE_LIGHT_COLOR() + pos, l->getDiffuseColor());
 							if (shader->supportsSpecularLighting())
@@ -163,7 +163,7 @@ void ModelRenderer::queueModelInstance(ModelPtr model, const std::string &instan
 					std::string pos = std::to_string(i);
 					LightPtr l = _objectManager->getLight(lightNames[i]);
 					properties->setVector(bRenderer::DEFAULT_SHADER_UNIFORM_LIGHT_POSITION_VIEW_SPACE() + pos, (viewMatrix*l->getPosition()));
-                    properties->setVector("lighPos_World_" + pos, (l->getPosition()));
+                    properties->setVector("lightPos_World_" + pos, (l->getPosition()));
 					if (shader->supportsDiffuseLighting())
 						properties->setVector(bRenderer::DEFAULT_SHADER_UNIFORM_DIFFUSE_LIGHT_COLOR() + pos, l->getDiffuseColor());
 					if (shader->supportsSpecularLighting())
