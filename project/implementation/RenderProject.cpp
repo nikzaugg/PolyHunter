@@ -89,7 +89,7 @@ void RenderProject::initFunction()
 
     // PLAYER - FPS-CAMERA
     bRenderer().getObjects()->createCamera("camera");
-    _cam = CamPtr(new Cam(getProjectRenderer()));
+    _cam = CamPtr(new Cam(getProjectRenderer(), _viewMatrixHUD));
 
     // TERRAIN LOADER //
     _terrainLoader = TerrainLoaderPtr(new TerrainLoader(getProjectRenderer(), terrainShader, _cam));
@@ -110,43 +110,87 @@ void RenderProject::initFunction()
 void RenderProject::loopFunction(const double &deltaTime, const double &elapsedTime)
 {
 	// bRenderer::log("FPS: " + std::to_string(1 / deltaTime));	// write number of frames per second to the console every frame
-    // std::cout << "FPS: " << std::to_string(1 / deltaTime) << std::endl;
+	// std::cout << "FPS: " << std::to_string(1 / deltaTime) << std::endl;
+	GLint defaultFBO;
+	if (!_running) {
+		bRenderer().getView()->setViewportSize(bRenderer().getView()->getWidth(), bRenderer().getView()->getHeight());		// reduce viewport size
+		defaultFBO = Framebuffer::getCurrentFramebuffer();	// get current fbo to bind it again after drawing the scene
+		bRenderer().getObjects()->getFramebuffer("blurFbo")->bindTexture(bRenderer().getObjects()->getTexture("blurFbo_texture1"), false);	// bind the fbo
+	}
+	
 
-    /* SHADOW MAPPING */
-    _shadowModelRenderer->doShadowRenderPass("terrain", deltaTime, elapsedTime);
-    
-    // check for collisions of the player with crystals
-    checkCollision();
-    
-    /* Add Models to the RenderQueue */
-    updateRenderQueue("camera", deltaTime);
-    
-    /* BLOOM POSTPROCESSING */
-    /* Terrain is loaded inside _bloomRenderer */
-    /* Render Queue is drawn inside _bloomRenderer */
-    //_bloomRenderer->doBloomRenderPass("camera", deltaTime);
-    _terrainLoader->process("camera", deltaTime);
-    bRenderer().getModelRenderer()->drawQueue(/*GL_LINES*/);
-    bRenderer().getModelRenderer()->clearQueue();
-    
-    /*** GUI - Crystal Icon ***/
-    // translate and scale
-    GLfloat titleScale = 0.1f;
-    vmml::Matrix4f scaling = vmml::create_scaling(vmml::Vector3f(titleScale / bRenderer().getView()->getAspectRatio(), titleScale, titleScale));
-    vmml::Matrix4f modelMatrix = vmml::create_translation(vmml::Vector3f(-0.95f, 0.9f, -0.65f)) * scaling;
-    // draw
-    bRenderer().getModelRenderer()->drawModel(bRenderer().getObjects()->getModel("crystal_icon"), modelMatrix, _viewMatrixHUD, vmml::Matrix4f::IDENTITY, std::vector<std::string>({}), false, false);
-    
-    /*** GUI - Crystal Counter Text ***/
-    titleScale = 0.1f;
-    scaling = vmml::create_scaling(vmml::Vector3f(titleScale / bRenderer().getView()->getAspectRatio(), titleScale, titleScale));
-    modelMatrix = vmml::create_translation(vmml::Vector3f(-1.15f / bRenderer().getView()->getAspectRatio(), 0.87f, -0.65f)) * scaling;
-    // draw
-    bRenderer().getModelRenderer()->drawModel(bRenderer().getObjects()->getTextSprite("gui-crystal-info"), modelMatrix, _viewMatrixHUD, vmml::Matrix4f::IDENTITY, std::vector<std::string>({}), false);
-    
+	/* SHADOW MAPPING */
+	_shadowModelRenderer->doShadowRenderPass("terrain", deltaTime, elapsedTime);
+
+	// check for collisions of the player with crystals
+	checkCollision();
+
+	/* Add Models to the RenderQueue */
+	updateRenderQueue("camera", deltaTime);
+
+	/* BLOOM POSTPROCESSING */
+	/* Terrain is loaded inside _bloomRenderer */
+	/* Render Queue is drawn inside _bloomRenderer */
+	//_bloomRenderer->doBloomRenderPass("camera", deltaTime);
+	_terrainLoader->process("camera", deltaTime);
+	bRenderer().getModelRenderer()->drawQueue(/*GL_LINES*/);
+	bRenderer().getModelRenderer()->clearQueue();
+
+	/*** GUI - Crystal Icon ***/
+	// translate and scale
+	GLfloat titleScale = 0.1f;
+	vmml::Matrix4f scaling = vmml::create_scaling(vmml::Vector3f(titleScale / bRenderer().getView()->getAspectRatio(), titleScale, titleScale));
+	vmml::Matrix4f modelMatrix = vmml::create_translation(vmml::Vector3f(-0.95f, 0.9f, -0.65f)) * scaling;
+	// draw
+	bRenderer().getModelRenderer()->drawModel(bRenderer().getObjects()->getModel("crystal_icon"), modelMatrix, _viewMatrixHUD, vmml::Matrix4f::IDENTITY, std::vector<std::string>({}), false, false);
+
+	/*** GUI - Crystal Counter Text ***/
+	titleScale = 0.1f;
+	scaling = vmml::create_scaling(vmml::Vector3f(titleScale / bRenderer().getView()->getAspectRatio(), titleScale, titleScale));
+	modelMatrix = vmml::create_translation(vmml::Vector3f(-1.15f / bRenderer().getView()->getAspectRatio(), 0.87f, -0.65f)) * scaling;
+	// draw
+	bRenderer().getModelRenderer()->drawModel(bRenderer().getObjects()->getTextSprite("gui-crystal-info"), modelMatrix, _viewMatrixHUD, vmml::Matrix4f::IDENTITY, std::vector<std::string>({}), false);
+
 	// Quit renderer when escape is pressed
 	if (bRenderer().getInput()->getKeyState(bRenderer::KEY_ESCAPE) == bRenderer::INPUT_PRESS)
 		bRenderer().terminateRenderer();
+
+	/// Begin post processing ///
+	/* GAME PAUSE SCREEN */
+	if (!_running) {
+		/// End post processing ///		
+		/*** Blur ***/
+		// translate
+		vmml::Matrix4f modelMatrix = vmml::create_translation(vmml::Vector3f(0.0f, 0.0f, -0.5));
+		// blur vertically and horizontally
+
+		bRenderer().getObjects()->getFramebuffer("blurFbo")->unbind(defaultFBO); //unbind (original fbo will be bound)
+		bRenderer().getView()->setViewportSize(bRenderer().getView()->getWidth(), bRenderer().getView()->getHeight());								// reset vieport size
+
+
+
+		//bRenderer().getObjects()->getFramebuffer("blurFbo")->bindTexture(bRenderer().getObjects()->getTexture("blurFbo_texture1"), false);
+		bRenderer().getObjects()->getMaterial("blurMaterial")->setTexture("fbo_texture", bRenderer().getObjects()->getTexture("blurFbo_texture1"));
+		bRenderer().getObjects()->getMaterial("blurMaterial")->setScalar("isVertical", static_cast<GLfloat>(true));
+		// draw
+		bRenderer().getModelRenderer()->drawModel(bRenderer().getObjects()->getModel("blurSprite"), modelMatrix, _viewMatrixHUD, vmml::Matrix4f::IDENTITY, std::vector<std::string>({}), false);
+		
+		////bRenderer().getObjects()->getFramebuffer("blurFbo")->bindTexture(bRenderer().getObjects()->getTexture("blurFbo_texture2"), false);    // bind the fbo
+		//bRenderer().getObjects()->getMaterial("blurMaterial")->setTexture("fbo_texture", bRenderer().getObjects()->getTexture("blurFbo_texture2"));
+		//bRenderer().getObjects()->getMaterial("blurMaterial")->setScalar("isVertical", static_cast<GLfloat>(false));
+		////// draw
+		//bRenderer().getModelRenderer()->drawModel(bRenderer().getObjects()->getModel("blurSprite"), modelMatrix, _viewMatrixHUD, vmml::Matrix4f::IDENTITY, std::vector<std::string>({}), false);
+
+
+		//bRenderer().getObjects()->getFramebuffer("fbo")->bindTexture(bRenderer().getObjects()->getTexture(b ? "fbo_texture2" : "fbo_texture1"), false);
+		//bRenderer().getObjects()->getMaterial("blurMaterial")->setTexture("fbo_texture", bRenderer().getObjects()->getTexture(b ? "fbo_texture1" : "fbo_texture2"));
+		//bRenderer().getObjects()->getMaterial("blurMaterial")->setScalar("isVertical", static_cast<GLfloat>(b));
+		//// draw
+		//bRenderer().getModelRenderer()->drawModel(bRenderer().getObjects()->getModel("blurSprite"), modelMatrix, _viewMatrixHUD, vmml::Matrix4f::IDENTITY, std::vector<std::string>({}), false);
+	}
+	else {
+		std::cout << "no pause screen" << std::endl;
+	}
 }
 
 // checks collision between player and crystals
@@ -256,22 +300,22 @@ void RenderProject::updateCamera(const std::string &camera, const double &deltaT
 	bRenderer().getObjects()->getCamera(camera)->setAspectRatio(bRenderer().getView()->getAspectRatio());
 
     // pause using double tap
-	if (Input::isTouchDevice()) {
-		if (bRenderer().getInput()->doubleTapRecognized()) {
-			_running = !_running;
-		}
-	}
-	else {
-		GLint currentStateSpaceKey = bRenderer().getInput()->getKeyState(bRenderer::KEY_SPACE);
-		if (currentStateSpaceKey != _lastStateSpaceKey)
-		{
-		    _lastStateSpaceKey = currentStateSpaceKey;
-		    if (currentStateSpaceKey == bRenderer::INPUT_PRESS){
-		        _running = !_running;
-		        bRenderer().getInput()->setCursorEnabled(!_running);
-		    }
-		}
-	}
+	//if (Input::isTouchDevice()) {
+	//	if (bRenderer().getInput()->doubleTapRecognized()) {
+	//		_running = !_running;
+	//	}
+	//}
+	//else {
+	//	GLint currentStateSpaceKey = bRenderer().getInput()->getKeyState(bRenderer::KEY_SPACE);
+	//	if (currentStateSpaceKey != _lastStateSpaceKey)
+	//	{
+	//	    _lastStateSpaceKey = currentStateSpaceKey;
+	//	    if (currentStateSpaceKey == bRenderer::INPUT_PRESS){
+	//	        _running = !_running;
+	//	        bRenderer().getInput()->setCursorEnabled(!_running);
+	//	    }
+	//	}
+	//}
 }
 
 /* For iOS only: Handle device rotation */

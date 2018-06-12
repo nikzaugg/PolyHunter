@@ -8,13 +8,14 @@ class Cam
 {
 public:
     Cam();
-    Cam(Renderer &renderer);
+    Cam(Renderer &renderer, vmml::Matrix4f _viewMatrixHUD);
     void process(std::string camera, const double &deltaTime);
     vmml::Vector3f getPosition();
     
 private:
     CameraPtr _camera;
     Renderer _renderer;
+	vmml::Matrix4f _viewMatrixHUD;
     
     Renderer renderer() {
         return _renderer;
@@ -35,6 +36,7 @@ private:
     
     // Helper Functions
     float degreeToRadians(float degree);
+	void initStartScreen();
 };
 typedef std::shared_ptr< Cam >  CamPtr;
 #endif /* defined(B_Cam_H) */

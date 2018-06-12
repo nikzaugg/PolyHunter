@@ -2,10 +2,11 @@
 #include "Cam.h"
 #include "noise.h"
 
-
-Cam::Cam(Renderer &renderer)
+Cam::Cam(Renderer &renderer, vmml::Matrix4f _viewMatrixHUD)
 {
     _renderer = renderer;
+	_viewMatrixHUD = _viewMatrixHUD;
+	initStartScreen();
 }
 
 void Cam::process(std::string camera, const double &deltaTime)
@@ -119,6 +120,8 @@ void Cam::process(std::string camera, const double &deltaTime)
     _position = vmml::Vector3f(currentX, height, currentZ);
     //std::cout << "camposition: "<< _position << std::endl;
     renderer().getObjects()->getCamera(camera)->setPosition(vmml::Vector3f(_position));
+
+	
     
 }
 
@@ -151,7 +154,7 @@ float Cam::getHeightFromNoise(double nx, double nz)
     // Rescale from -1.0:+1.0 to 0.0:1.0
     float res = noise(nx, nz);
     res = pow(res, 1.27);
-    res *= 128;
+    res *= 300;
     return res;
 }
 
@@ -163,4 +166,17 @@ vmml::Vector3f Cam::getPosition()
 
 float Cam::degreeToRadians(float degree) {
     return degree * M_PI/180.0;
+}
+
+void Cam::initStartScreen()
+{
+	// Create Blur Framebuffer Object
+	renderer().getObjects()->createFramebuffer("blurFbo");
+
+	renderer().getObjects()->createTexture("blurFbo_texture1", 0.0f, 0.0f);
+	renderer().getObjects()->createTexture("blurFbo_texture2", 0.0f, 0.0f);
+
+	ShaderPtr blurShader = renderer().getObjects()->loadShaderFile_o("blurShader", 0);
+	MaterialPtr blurMaterial = renderer().getObjects()->createMaterial("blurMaterial", blurShader);
+	renderer().getObjects()->createSprite("blurSprite", blurMaterial);
 }
