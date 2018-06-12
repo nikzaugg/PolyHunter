@@ -91,6 +91,7 @@ void main()
     vec3 normal = normalize(normal_varying_ViewSpace);
     vec4 lightPosition = lightPositionViewSpace_0;
     vec4 lightVector = normalize(lightPosition - position);
+	// lightVector = lightVector * -1;
     
     // ambient part
     vec4 ambientPart = vec4(ambientColor * lightIntensity_0, 1.0);
@@ -102,19 +103,19 @@ void main()
   
     vec4 color = texture2D(DiffuseMap, texCoord_varying.st);
     
-    vec4 outColor = (ambientPart + diffusePart) * color;
    // gl_FragColor = mix(vec4(vec3(fogColor), 1.0), outColor, visibility);
    float noiseValue = fbm(position_varying.xy);
-
+ 
     if (noiseValue > 0.5) {
         // color =  vec4(0.96, 0.95, 0.78, 1.0);
         color = vec4(1.0, 1.0, 1.0, 1.0);
     } else {
         color = vec4(0.0, 0.0, 0.0, 1.0);
     }
-   
+	vec4 outColor = (ambientPart + diffusePart) * color;
+	outColor = vec4(vec3(lightIntensity_0), 1.0);
     
-	gl_FragColor =color;
+	gl_FragColor = outColor;
     // gl_FragColor = vec4(visibility);
     
     // Color according to normals

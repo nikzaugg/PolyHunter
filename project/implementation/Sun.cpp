@@ -95,12 +95,12 @@ void Sun::render(std::string camera, vmml::Vector3f playerPos, vmml::Matrix4f vi
 	_lightPosition = vmml::Vector3f(playerPos.x() + 1200, 1000, playerPos.z());
 	_renderer.getObjects()->getLight("sun")->setPosition(_lightPosition);
 
-	// draw model instance
+	// draw model instance	
 	setPosition(playerPos + (_lightPosition - playerPos) * 0.3f);
 
 	//setScale(5.0f);
 	setRotY(90.0f);
 
 	//_renderer.getModelRenderer()->queueModelInstance("sun", "sun_instance", camera, computeTransformationMatrix(), std::vector<std::string>({}), false, false, true, GL_SRC_ALPHA, GL_ONE);
-	_renderer.getModelRenderer()->queueModelInstance("sun", "sun_instance", camera, computeTransformationMatrix(), std::vector<std::string>({}), false, false, true);
+	_renderer.getModelRenderer()->queueModelInstance("sun", "sun_instance", camera, computeTransformationMatrix(), std::vector<std::string>({ "sun" }), false, false, true);
 }
