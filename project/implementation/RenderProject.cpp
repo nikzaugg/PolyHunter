@@ -177,10 +177,20 @@ void RenderProject::loopFunction(const double &deltaTime, const double &elapsedT
 		bRenderer().getModelRenderer()->drawModel(bRenderer().getObjects()->getModel("blurSprite"), modelMatrix, _viewMatrixHUD, vmml::Matrix4f::IDENTITY, std::vector<std::string>({}), false);
 
 
-		
-		// draw
+		GLint prevLeftMouseButtonState = -1;
+		GLint leftMouseButtonState = bRenderer().getInput()->getMouseButtonState(1);
 		/*** GUI - Start Game Text ***/
 		// Draw without blur
+		if (bRenderer().getInput()->getMouseButtonState(bRenderer::LEFT_MOUSE_BUTTON))
+		{
+			std::cout << bRenderer().getInput()->getMouseButtonState(bRenderer::LEFT_MOUSE_BUTTON) << std::endl;
+			// Check if click on button
+			double xpos, ypos; bool hasCursor = false;
+			bRenderer().getInput()->getCursorPosition(&xpos, &ypos, &hasCursor);
+			std::cout << xpos << std::endl;
+			std::cout << ypos << std::endl;
+		}
+			
 		titleScale = 0.1f;
 		scaling = vmml::create_scaling(vmml::Vector3f(titleScale / bRenderer().getView()->getAspectRatio(), titleScale, titleScale));
 		modelMatrix = vmml::create_translation(vmml::Vector3f(-0.3f / bRenderer().getView()->getAspectRatio(), -0.6f, -0.65f)) * scaling;
