@@ -46,8 +46,8 @@ attribute vec4 TexCoord;
 uniform float shadowDistance;
 
 // World Space Coordinates
-varying mediump vec3 v_normal;
-varying mediump vec4 v_position;
+varying highp vec3 v_normal;
+varying highp vec4 v_position;
 varying mediump vec3 v_tangent;
 varying mediump vec3 v_bitangent;
 
