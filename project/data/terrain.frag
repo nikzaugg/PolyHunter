@@ -111,7 +111,7 @@ void main()
         // specular part
         vec4 specular = vec4(0.0);
         if (intensityFactor > 0.0) {
-            vec3 viewDir = vec3(normalize(vec4(0.0) - position));
+            vec3 viewDir = vec3(normalize(vec4(viewPos, 1.0) - position));
             vec3 reflectDir = -normalize(reflect(lightVector.xyz, normal));
             float spec = pow(max(dot(viewDir, reflectDir), 0.0), Ns);
             spec = clamp(spec, 0.0, 1.0);

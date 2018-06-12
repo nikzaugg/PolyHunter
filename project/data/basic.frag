@@ -27,27 +27,28 @@ uniform float lightIntensity_0;
 uniform vec3 lightDiffuseColor_0;
 uniform vec3 lightSpecularColor_0;
 uniform vec4 lightPositionViewSpace_0;
+uniform vec4 lighPos_World_0;
 
 uniform vec3 skyColor;
 uniform vec3 fogColor;
 
-varying lowp vec4 shadowCoord_varying;
-varying lowp vec4 vertexColor_varying;
-varying lowp vec4 texCoord_varying;
-// Everything in View Space
-varying mediump vec4 viewPos_varying_ViewSpace;
-varying mediump vec4 position_varying_ViewSpace;
-varying mediump vec3 normal_varying_ViewSpace;
-varying mediump vec3 tangent_varying_ViewSpace;
+// World Space Coordinates
+varying mediump vec3 v_normal;
+varying mediump vec4 v_position;
+varying mediump vec3 v_tangent;
+varying mediump vec3 v_bitangent;
 
+// texture Coords and Color
+varying lowp vec4 v_texCoord;
+
+// Visibility for Fog
 varying mediump float visibility;
 
 void main()
 {
-    vec4 position = position_varying_ViewSpace;
-    vec3 normal = normalize(normal_varying_ViewSpace);
-    vec4 lightPosition = lightPositionViewSpace_0;
-    vec4 lightVector = normalize(lightPosition - position);
+    vec4 position = v_position;
+    vec3 normal = normalize(v_normal);
+    vec4 lightVector = normalize(lighPos_World_0 - position);
     
     // ambient part
     vec4 ambientPart = vec4(ambientColor * lightIntensity_0, 1.0);
@@ -60,21 +61,18 @@ void main()
     // specular term
     vec4 specular = vec4(0.0);
     if (intensityFactor > 0.0) {
-        vec3 viewDir = vec3(normalize(vec4(0.0) - position));
+        vec3 viewDir = vec3(normalize(vec4(viewPos, 1.0) - position));
         vec3 reflectDir = -normalize(reflect(lightVector.xyz, normal));
         float spec = pow(max(dot(viewDir, reflectDir), 0.0), Ns);
         spec = clamp(spec, 0.0, 1.0);
         specular = clamp(vec4(Ks * spec, 1.0), 0.0, 1.0);
     }
     
-    vec4 color = texture2D(DiffuseMap, texCoord_varying.st);
+    vec4 color = texture2D(DiffuseMap, v_texCoord.st);
     
-    vec4 outColor = (diffusePart) * vec4(1.0);
-    gl_FragColor = outColor;
-//     gl_FragColor = vec4(vec3(intensityFactor), 1.0);
-    
-//    gl_FragColor = mix(vec4(vec3(fogColor), 1.0), outColor, visibility);
-    
+    vec4 outColor = (ambientPart + diffusePart) * color + specular;
+    gl_FragColor = mix(vec4(vec3(fogColor), 1.0), outColor, visibility);
+//    gl_FragColor = diffusePart;
     // Color according to normals
 //     vec3 normal_test = normal/2.0 + vec3(0.5);
 //     gl_FragColor = vec4(normal_test, 1.0);

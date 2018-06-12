@@ -113,20 +113,18 @@ void RenderProject::loopFunction(const double &deltaTime, const double &elapsedT
     // std::cout << "FPS: " << std::to_string(1 / deltaTime) << std::endl;
 
     /* SHADOW MAPPING */
-    _shadowModelRenderer->doShadowRenderPass("terrain", deltaTime, elapsedTime, true);
+    _shadowModelRenderer->doShadowRenderPass("terrain", deltaTime, elapsedTime);
     
-//    // check for collisions of the player with crystals
-//    checkCollision();
-//
-//    /* Add Models to the RenderQueue */
+    // check for collisions of the player with crystals
+    checkCollision();
+
+    /* Add Models to the RenderQueue */
     updateRenderQueue("camera", deltaTime);
-//
-//    /* BLOOM POSTPROCESSING */
-//    /* Terrain is loaded inside _bloomRenderer */
-//    /* Render Queue is drawn inside _bloomRenderer */
-//    //_bloomRenderer->doBloomRenderPass("camera", deltaTime);
-    bRenderer().getModelRenderer()->drawQueue(/*GL_LINES*/);
-    bRenderer().getModelRenderer()->clearQueue();
+
+    /* BLOOM POSTPROCESSING */
+    /* Terrain is loaded inside _bloomRenderer */
+    /* Render Queue is drawn inside _bloomRenderer */
+    _bloomRenderer->doBloomRenderPass("camera", deltaTime);
     
     /*** GUI - Crystal Icon ***/
     // translate and scale

@@ -82,7 +82,6 @@ void main()
     v_tangent = normalize(NormalMatrix * Tangent);
     v_bitangent = normalize(NormalMatrix * Bitangent);
     v_position = ModelMatrix * Position;
-    
     v_texCoord = TexCoord;
     v_shadowCoord = depthOffset * depthProjection * depthView * Position;
     v_color = biome();
