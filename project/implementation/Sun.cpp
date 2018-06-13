@@ -17,6 +17,11 @@ Sun::Sun(std::string objName, std::string modelName, std::string propName, Shade
 	_renderer.getObjects()->createLight("sun", _lightPosition, vmml::Vector3f(1.0f), vmml::Vector3f(1.0f), 1400.0, 1.0f, 100000.0);
 	setPosition(vmml::Vector3f(_lightPosition));
 	this->setIntensity(1.0f);
+    
+    // updates the strength of the sun (between 0 and 1)
+    updateSunIntensityInShader("terrain", 0.25);
+    updateSunIntensityInShader("basic", 0.25);
+    updateSunIntensityInShader("torchLight", 0.25);
 
  
 	//_sunProperties = renderer.getObjects()->createProperties("sun");
@@ -24,6 +29,11 @@ Sun::Sun(std::string objName, std::string modelName, std::string propName, Shade
 	//MaterialPtr sunMaterial = renderer.getObjects()->loadObjMaterial("sun.mtl", "sun", _shader);
 	//_renderer.getObjects()->createSprite_o("sun", sunMaterial, NO_OPTION, _sunProperties);
 
+}
+
+void Sun::updateSunIntensityInShader(std::string shaderName, float intensity)
+{
+    _renderer.getObjects()->getShader(shaderName)->setUniform("sunIntensity", intensity);
 }
 
 void Sun::setIntensity(float intensity)

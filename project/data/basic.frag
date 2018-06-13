@@ -29,7 +29,7 @@ uniform float lightAttenuation_0;
 uniform float lightRadius_0;
 uniform vec3 lightDiffuseColor_0;
 uniform vec3 lightSpecularColor_0;
-varying float intensityBasedOnDist_0;
+varying highp float intensityBasedOnDist_0;
 
 // Light-Info: TORCH
 uniform vec4 lightPositionViewSpace_1;
@@ -39,7 +39,7 @@ uniform float lightAttenuation_1;
 uniform float lightRadius_1;
 uniform vec3 lightDiffuseColor_1;
 uniform vec3 lightSpecularColor_1;
-varying float intensityBasedOnDist_1;
+varying highp float intensityBasedOnDist_1;
 
 uniform vec3 viewPos;
 uniform vec3 ambientColor;

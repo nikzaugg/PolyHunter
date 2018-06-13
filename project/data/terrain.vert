@@ -29,7 +29,7 @@ uniform float lightAttenuation_0;
 uniform float lightRadius_0;
 uniform vec3 lightDiffuseColor_0;
 uniform vec3 lightSpecularColor_0;
-varying float intensityBasedOnDist_0;
+varying highp float intensityBasedOnDist_0;
 
 // Light-Info: TORCH
 uniform vec4 lightPositionViewSpace_1;
@@ -39,7 +39,7 @@ uniform float lightAttenuation_1;
 uniform float lightRadius_1;
 uniform vec3 lightDiffuseColor_1;
 uniform vec3 lightSpecularColor_1;
-varying float intensityBasedOnDist_1;
+varying highp float intensityBasedOnDist_1;
 
 uniform vec3 viewPos;
 uniform vec3 ambientColor;
@@ -47,6 +47,8 @@ uniform vec3 ambientColor;
 uniform float amplitude;
 uniform vec3 skyColor;
 uniform vec3 playerPos;
+
+uniform float sunIntensity;
 
 uniform float fogGradient;
 uniform float fogDensity;
@@ -110,7 +112,7 @@ void main()
     lightDistance = distance(v_position, lightPos_World_0);
     intensityBasedOnDist_0 = 0.0;
     if (lightDistance <= lightRadius_0) {
-        intensityBasedOnDist_0 = 0.1;
+        intensityBasedOnDist_0 = sunIntensity;
     };
     
     lightDistance = distance(v_position, lightPos_World_1);

@@ -10,7 +10,7 @@
 #include "BloomRenderer.h"
 #include "Cam.h"
 #include "Sun.h"
-#include "Skybox.h"
+#include "Skydome.h"
 
 class RenderProject : public IRenderProject
 {
@@ -91,7 +91,7 @@ private:
     ShadowModelRendererPtr _shadowModelRenderer;
     BloomRendererPtr _bloomRenderer;
 	SunPtr _sun;
-    SkyboxPtr _skybox;
+    SkydomePtr _skydome;
     std::vector<TerrainPtr> terrains;
     
     float _fogDensity;

@@ -1,7 +1,7 @@
 #include "RenderProject.h"
 #include "Terrain.h"
 #include "TerrainLoader.h"
-#include "Skybox.h"
+#include "Skydome.h"
 #include "Sun.h"
 #include "Player.h"
 #include "PlayerCamera.h"
@@ -48,34 +48,33 @@ void RenderProject::initFunction()
 	// SHADERS
 	ShaderPtr basicShader = bRenderer().getObjects()->loadShaderFile("basic", 2, false, true, true, true, false);
 	ShaderPtr terrainShader = bRenderer().getObjects()->loadShaderFile("terrain", 2, false, true, true, true, false);
-    ShaderPtr skyboxShader = bRenderer().getObjects()->loadShaderFile("skybox", 1, false, true, true, true, false);
+    ShaderPtr skydomeShader = bRenderer().getObjects()->loadShaderFile("skydome", 1, false, true, true, true, false);
     ShaderPtr torchLightShader = bRenderer().getObjects()->loadShaderFile("torchLight", 3, false, true, true, true, false);
 	ShaderPtr sunShader = bRenderer().getObjects()->loadShaderFile_o("sun", 0, AMBIENT_LIGHTING);
 	
 	// PROPERTIES FOR THE MODELS
     PropertiesPtr treeProperties = bRenderer().getObjects()->createProperties("treeProperties");
-    PropertiesPtr skyboxProperties = bRenderer().getObjects()->createProperties("skyboxProperties");
+    PropertiesPtr skydomeProperties = bRenderer().getObjects()->createProperties("skydomeProperties");
     PropertiesPtr guyProperties = bRenderer().getObjects()->createProperties("guyProperties");
 
 	// BLENDER MODELS (.obj)
     bRenderer().getObjects()->loadObjModel("torch.obj", false, true, torchLightShader, nullptr);
-
-    // SKYBOX
-    MaterialPtr skyboxMaterial = bRenderer().getObjects()->loadObjMaterial("skybox.mtl", "skybox", skyboxShader);
-    _skybox = SkyboxPtr(new Skybox(skyboxMaterial, skyboxProperties, getProjectRenderer()));
-	_skybox->setSkyColor(vmml::Vector3f(0.026, 0.048, 0.096));
-    //skybox->setSkyColor(vmml::Vector3f(0.25));
-
+    bRenderer().getObjects()->loadObjModel("skydome.obj", false, true, skydomeShader, nullptr);
+    
+    // SKYDOME
+    _skydome = SkydomePtr(new Skydome("skydome", getProjectRenderer()));
+    
     // FOG
-    _fogColor = vmml::Vector3f(0.05);
+    vmml::Vector3f fogC = vmml::Vector3f(0.026, 0.048, 0.096);
+    _fogColor = fogC * 0.3;
     _fogDensity = 0.005;
     _fogGradient = 10.00;
     
     // Send fog-variables to shader
     updateFogVariables("basic");
     updateFogVariables("terrain");
-    basicShader->setUniform("skyColor", _skybox->getSkyColor());
-    terrainShader->setUniform("skyColor", _skybox->getSkyColor());
+    basicShader->setUniform("skyColor", _skydome->getSkyColor());
+    terrainShader->setUniform("skyColor", _skydome->getSkyColor());
 	
     // GUI CRYSTAL ICON
     bRenderer().getObjects()->createSprite("crystal_icon", "crystal_icon.png");
@@ -93,8 +92,8 @@ void RenderProject::initFunction()
     
     // TORCH-LIGHTS
     bRenderer().getObjects()->createLight("torch", -bRenderer().getObjects()->getCamera("camera")->getPosition(), vmml::Vector3f(0.92, 1.0, 0.99), vmml::Vector3f(1.0), 1400.0, 0.9, 100.0);
-    bRenderer().getObjects()->createLight("torch_top", -bRenderer().getObjects()->getCamera("camera")->getPosition() + vmml::Vector3f(0.0, 10.0, 0.0), vmml::Vector3f(0.92, 1.0, 0.99), vmml::Vector3f(1.0), 800.0, 0.9, 10.0);
-
+    bRenderer().getObjects()->createLight("torch_top", -bRenderer().getObjects()->getCamera("camera")->getPosition(), vmml::Vector3f(0.92, 1.0, 0.99), vmml::Vector3f(1.0), 300.0, 0.9, 10.0);
+    
     // TERRAIN LOADER //
     _terrainLoader = TerrainLoaderPtr(new TerrainLoader(getProjectRenderer(), terrainShader, _cam));
     
@@ -172,14 +171,20 @@ void RenderProject::checkCollision()
 void RenderProject::updateGameVariables()
 {
     float sunHealth = _sun->getHealth();
-    vmml::Vector3f skyColor = _skybox->getSkyColor();
+    vmml::Vector3f skyColor = _skydome->getSkyColor();
 
     // update sun-health
     sunHealth += 0.05;
-    std::cout << sunHealth << std::endl;
+    std::cout << "skyColor: " <<skyColor << std::endl;
     // set new skycolor
     vmml::Vector3f newSkyColor = skyColor * (1.0 + sunHealth);
-    _skybox->setSkyColor(newSkyColor);
+    _skydome->setSkyColor(newSkyColor);
+    
+    // new fogColor
+    _fogDensity = 0.005 * 0.95;
+    _fogGradient = 10.00 * 1.05;
+    updateFogVariables("terrain");
+    updateFogVariables("basic");
     
     // set new fogDensity
     
@@ -204,9 +209,9 @@ void RenderProject::updateFogVariables(std::string shaderName)
 // updates skybox variables in specified shader
 void RenderProject::updateSkyBoxVariables(vmml::Vector3f skyColor, float gradient, float density)
 {
-    _skybox->setSkyColor(skyColor);
-    _skybox->setSkyboxGradient(gradient);
-    _skybox->setSkyboxDensity(density);
+    _skydome->setSkyColor(skyColor);
+    _skydome->setSkydomeGradient(gradient);
+    _skydome->setSkydomeDensity(density);
 }
 
 /* function is executed when terminating the renderer */
@@ -234,17 +239,9 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
     bRenderer().getObjects()->getShader("basic")->setUniform("playerPos", _cam->getPosition());
     bRenderer().getObjects()->getShader("terrain")->setUniform("playerPos", _cam->getPosition());
     
-    /////// Skybox ///
-    modelMatrix =
-        vmml::create_translation(vmml::Vector3f(_cam->getPosition().x(), 0.0, _cam->getPosition().z())) *
-        vmml::create_scaling(vmml::Vector3f(1.0));
-    // set CubeMap for skybox texturing
-    skybox = bRenderer().getObjects()->getShader("skybox");
-    // set ambient color
-    bRenderer().getObjects()->setAmbientColor(vmml::Vector3f(0.5f));
-    // draw model
-    bRenderer().getModelRenderer()->queueModelInstance("skybox", "skybox_instance", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
-
+    /////// Skydome ///
+    _skydome->render(camera, _cam->getPosition());
+    
     ///*** Torch ***/
     // Position the torch relative to the camera
     bRenderer().getObjects()->getShader("basic")->setUniform("torchDir", bRenderer().getObjects()->getCamera("camera")->getForward());
@@ -255,7 +252,7 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
     bRenderer().getObjects()->getShader("terrain")->setUniform("torchOuterCutOff", cos(M_PI_F/180 * 20.0));
     // place torch-light
     bRenderer().getObjects()->getLight("torch")->setPosition(_cam->getPosition() - bRenderer().getObjects()->getCamera("camera")->getForward()*10.0f);
-    bRenderer().getObjects()->getLight("torch_top")->setPosition(_cam->getPosition() - bRenderer().getObjects()->getCamera("camera")->getForward()*5.0f);
+    bRenderer().getObjects()->getLight("torch_top")->setPosition(_cam->getPosition() - bRenderer().getObjects()->getCamera("camera")->getForward());
     
     modelMatrix = bRenderer().getObjects()->getCamera(camera)->getInverseViewMatrix();        // position and orient to match camera
     modelMatrix *= vmml::create_translation(vmml::Vector3f(0.75f, -0.70f, 0.8f)) * vmml::create_scaling(vmml::Vector3f(0.15f)) * vmml::create_rotation(1.64f, vmml::Vector3f::UNIT_Y);

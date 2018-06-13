@@ -16,6 +16,8 @@ public:
 
 	void increaseIntensity(float dI);
     
+    void updateSunIntensityInShader(std::string shaderName, float intensity);
+    
     void setHealth(float health);
     
     float getHealth();
