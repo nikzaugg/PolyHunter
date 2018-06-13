@@ -166,17 +166,17 @@ void Terrain::placeCrystal(int i, int j)
         std::string crystalName = getModelName() + std::to_string(i);
         if(Terrain::_collectedCrystals.find(crystalName) != Terrain::_collectedCrystals.end()){
             std::cout << "crystal already collected!" << std::endl;
-        } else {
-        CrystalPtr crystal = CrystalPtr(new Crystal(crystalName, "crystal.obj", "crystal", "crystalProperties", renderer().getObjects()->loadShaderFile("basic", 1, false, true, true, true, false), renderer(), vmml::Vector3f(xPos, crystalHeight, zPos), 0.0f, 0.0f, 0.0f, 2.0f));
-        
-        crystal->setYPosition(crystalHeight);
-        crystal->setYPosition(crystalHeight);
-        // tree->add();
-        _crystals.insert(
-                      CrystalMap::value_type(crystalName, crystal)
-                      );
-        _treeCount++;
         }
+            CrystalPtr crystal = CrystalPtr(new Crystal(crystalName, "crystal.obj", "crystal", "crystalProperties", renderer().getObjects()->loadShaderFile("basic", 1, false, true, true, true, false), renderer(), vmml::Vector3f(xPos, crystalHeight, zPos), 0.0f, 0.0f, 0.0f, 2.0f));
+            
+            crystal->setYPosition(crystalHeight);
+            crystal->setYPosition(crystalHeight);
+
+            _crystals.insert(
+                             CrystalMap::value_type(crystalName, crystal)
+                             );
+            _treeCount++;
+        
     }
 }
 
@@ -240,7 +240,7 @@ void Terrain::renderTerrain(std::string camera)
     getShader()->setUniform("ModelMatrix", computeTransformationMatrix());
     renderer().getObjects()->setAmbientColor(vmml::Vector3f(0.3f));
     // draw model
-    renderer().getModelRenderer()->queueModelInstance(getModelName(), "terrain", camera, computeTransformationMatrix(), std::vector<std::string>({ "sun" }), true, true);
+    renderer().getModelRenderer()->queueModelInstance(getModelName(), "terrain", camera, computeTransformationMatrix(), std::vector<std::string>({ "sun", "torch" }), true, true);
 
 }
 
@@ -265,16 +265,28 @@ bool Terrain::checkCollisionWithEntities(vmml::Vector3f playerPos)
     
     for(CrystalMap::iterator it = _crystals.begin(); it != _crystals.end(); it++)
     {
-        // if crystal was already collected, don't check distance/collision
-        if (Terrain::_collectedCrystals.find(it->first) == Terrain::_collectedCrystals.end()) {
-            crystalPos = it->second->getPosition();
-            float distance = sqrtf(pow(playerPos.x() - crystalPos.x(), 2.0) + pow(playerPos.y() - (crystalPos.y()+playerCameraGroundOffset), 2.0) + pow(playerPos.z() - crystalPos.z(), 2.0));
-            if(distance <= 10.0){
-                std::cout << "------" << std::endl;
+        crystalPos = it->second->getPosition();
+        float distance = sqrtf(pow(playerPos.x() - crystalPos.x(), 2.0) + pow(playerPos.y() - (crystalPos.y()+playerCameraGroundOffset), 2.0) + pow(playerPos.z() - crystalPos.z(), 2.0));
+        
+        // if close enough to crystal
+        if(distance <= 15.0){
+            // calculate angle between torchlight direction and crystal-position
+            vmml::Vector3f camDir = renderer().getObjects()->getCamera("camera")->getForward();
+            vmml::Vector3f torchPos = renderer().getObjects()->getLight("torch")->getPosition();
+            vmml::Vector3f crystalPos = it->second->getPosition();
+            camDir = vmml::normalize(camDir);
+            vmml::Vector3f modelToTorch = vmml::normalize(torchPos - crystalPos);
+            float angle = vmml::dot(modelToTorch, -camDir);
+            
+            float scale = it->second->getScale();
+            // if small enough, add it to collected crystals
+            if(scale < 1.0){
                 Terrain::_collectedCrystals.insert(CrystalMap::value_type(it->first , it->second));
-                std::cout << "Collected Crystals: "<< Terrain::_collectedCrystals.size() << std::endl;
-                collision = true;
+            } else if (scale > 0.25 && angle > 0.985) {
+                // if angle is small enough, slowly shrink crystal
+                it->second->setScale(scale * 0.98);
             }
+            collision = true;
         }
     }
 

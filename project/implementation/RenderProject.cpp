@@ -47,10 +47,10 @@ void RenderProject::initFunction()
 	bRenderer().getObjects()->setShaderVersionES("#version 100");
 
 	// SHADERS
-	ShaderPtr basicShader = bRenderer().getObjects()->loadShaderFile("basic", 1, false, true, true, true, false);
-	ShaderPtr terrainShader = bRenderer().getObjects()->loadShaderFile("terrain", 1, false, true, true, true, false);
+	ShaderPtr basicShader = bRenderer().getObjects()->loadShaderFile("basic", 2, false, true, true, true, false);
+	ShaderPtr terrainShader = bRenderer().getObjects()->loadShaderFile("terrain", 2, false, true, true, true, false);
     ShaderPtr skyboxShader = bRenderer().getObjects()->loadShaderFile("skybox", 1, false, true, true, true, false);
-    ShaderPtr playerShader = bRenderer().getObjects()->loadShaderFile("player", 1, false, true, true, true, false);
+    ShaderPtr torchLightShader = bRenderer().getObjects()->loadShaderFile("torchLight", 3, false, true, true, true, false);
 	ShaderPtr sunShader = bRenderer().getObjects()->loadShaderFile_o("sun", 0, AMBIENT_LIGHTING);
 	
 	// PROPERTIES FOR THE MODELS
@@ -59,18 +59,18 @@ void RenderProject::initFunction()
     PropertiesPtr guyProperties = bRenderer().getObjects()->createProperties("guyProperties");
 
 	// BLENDER MODELS (.obj)
-    // bRenderer().getObjects()->loadObjModel("tree.obj", false, true, basicShader, treeProperties);
+    bRenderer().getObjects()->loadObjModel("torch.obj", false, true, torchLightShader, nullptr);
 
     // SKYBOX
     MaterialPtr skyboxMaterial = bRenderer().getObjects()->loadObjMaterial("skybox.mtl", "skybox", skyboxShader);
     _skybox = SkyboxPtr(new Skybox(skyboxMaterial, skyboxProperties, getProjectRenderer()));
-	_skybox->setSkyColor(vmml::Vector3f(0.26, 0.48, 0.96));
+	_skybox->setSkyColor(vmml::Vector3f(0.026, 0.048, 0.096));
     //skybox->setSkyColor(vmml::Vector3f(0.25));
 
     // FOG
-    _fogColor = vmml::Vector3f(0.5);
+    _fogColor = vmml::Vector3f(0.05);
     _fogDensity = 0.005;
-    _fogGradient = 5.00;
+    _fogGradient = 10.00;
     
     // Send fog-variables to shader
     updateFogVariables("basic");
@@ -92,10 +92,15 @@ void RenderProject::initFunction()
     
     // SUN
     _sun = SunPtr(new Sun("sun.obj", "sun", "sunProperties", sunShader, getProjectRenderer(), vmml::Vector3f(0.0f, 100.0f, 0.0f), 0.0f, 0.0f, 0.0f, 3.0f));
-
+    
     // PLAYER - FPS-CAMERA
     bRenderer().getObjects()->createCamera("camera");
-    _cam = CamPtr(new Cam(getProjectRenderer(), _viewMatrixHUD));
+
+    _cam = CamPtr(new Cam(getProjectRenderer()));
+    
+    // TORCH-LIGHTS
+    bRenderer().getObjects()->createLight("torch", -bRenderer().getObjects()->getCamera("camera")->getPosition(), vmml::Vector3f(0.92, 1.0, 0.99), vmml::Vector3f(1.0), 1400.0, 0.9, 100.0);
+    bRenderer().getObjects()->createLight("torch_top", -bRenderer().getObjects()->getCamera("camera")->getPosition() + vmml::Vector3f(0.0, 10.0, 0.0), vmml::Vector3f(0.92, 1.0, 0.99), vmml::Vector3f(1.0), 800.0, 0.9, 10.0);
 
     // TERRAIN LOADER //
     _terrainLoader = TerrainLoaderPtr(new TerrainLoader(getProjectRenderer(), terrainShader, _cam));
@@ -119,41 +124,39 @@ void RenderProject::loopFunction(const double &deltaTime, const double &elapsedT
 	// std::cout << "FPS: " << std::to_string(1 / deltaTime) << std::endl;
 	_startScreenRenderer->bindBlurFbo();
 	
+    /* SHADOW MAPPING */
+    _shadowModelRenderer->doShadowRenderPass("terrain", deltaTime, elapsedTime);
+    
+    // check for collisions of the player with crystals
+    checkCollision();
 
-	/* SHADOW MAPPING */
-	_shadowModelRenderer->doShadowRenderPass("terrain", deltaTime, elapsedTime);
+    /* Add Models to the RenderQueue */
+    updateRenderQueue("camera", deltaTime);
 
-	// check for collisions of the player with crystals
-	checkCollision();
+    /* BLOOM POSTPROCESSING */
+    /* Terrain is loaded inside _bloomRenderer */
+    /* Render Queue is drawn inside _bloomRenderer */
+    _bloomRenderer->doBloomRenderPass("camera", deltaTime);
 
-	/* Add Models to the RenderQueue */
-	updateRenderQueue("camera", deltaTime);
+	//bRenderer().getModelRenderer()->drawQueue(/*GL_LINES*/);
+	//bRenderer().getModelRenderer()->clearQueue();
 
-	/* BLOOM POSTPROCESSING */
-	/* Terrain is loaded inside _bloomRenderer */
-	/* Render Queue is drawn inside _bloomRenderer */
-	//_bloomRenderer->doBloomRenderPass("camera", deltaTime);
-	_terrainLoader->process("camera", deltaTime);
-	bRenderer().getModelRenderer()->drawQueue(/*GL_LINES*/);
-	bRenderer().getModelRenderer()->clearQueue();
-
-	/*** GUI - Crystal Icon ***/
-	// translate and scale
-	GLfloat titleScale = 0.1f;
-	vmml::Matrix4f scaling = vmml::create_scaling(vmml::Vector3f(titleScale / bRenderer().getView()->getAspectRatio(), titleScale, titleScale));
-	vmml::Matrix4f modelMatrix = vmml::create_translation(vmml::Vector3f(-0.95f, 0.9f, -0.65f)) * scaling;
-	// draw
-	bRenderer().getModelRenderer()->drawModel(bRenderer().getObjects()->getModel("crystal_icon"), modelMatrix, _viewMatrixHUD, vmml::Matrix4f::IDENTITY, std::vector<std::string>({}), false, false);
-
-	/*** GUI - Crystal Counter Text ***/
-	titleScale = 0.1f;
-	scaling = vmml::create_scaling(vmml::Vector3f(titleScale / bRenderer().getView()->getAspectRatio(), titleScale, titleScale));
-	modelMatrix = vmml::create_translation(vmml::Vector3f(-1.15f / bRenderer().getView()->getAspectRatio(), 0.87f, -0.65f)) * scaling;
-	// draw
-	bRenderer().getModelRenderer()->drawModel(bRenderer().getObjects()->getTextSprite("gui-crystal-info"), modelMatrix, _viewMatrixHUD, vmml::Matrix4f::IDENTITY, std::vector<std::string>({}), false);
-
-	
-
+    
+    /*** GUI - Crystal Icon ***/
+    // translate and scale
+    GLfloat titleScale = 0.1f;
+    vmml::Matrix4f scaling = vmml::create_scaling(vmml::Vector3f(titleScale / bRenderer().getView()->getAspectRatio(), titleScale, titleScale));
+    vmml::Matrix4f modelMatrix = vmml::create_translation(vmml::Vector3f(-0.95f, 0.9f, -0.65f)) * scaling;
+    // draw
+    bRenderer().getModelRenderer()->drawModel(bRenderer().getObjects()->getModel("crystal_icon"), modelMatrix, _viewMatrixHUD, vmml::Matrix4f::IDENTITY, std::vector<std::string>({}), false, false);
+    
+    /*** GUI - Crystal Counter Text ***/
+    titleScale = 0.1f;
+    scaling = vmml::create_scaling(vmml::Vector3f(titleScale / bRenderer().getView()->getAspectRatio(), titleScale, titleScale));
+    modelMatrix = vmml::create_translation(vmml::Vector3f(-1.15f / bRenderer().getView()->getAspectRatio(), 0.87f, -0.65f)) * scaling;
+    // draw
+    bRenderer().getModelRenderer()->drawModel(bRenderer().getObjects()->getTextSprite("gui-crystal-info"), modelMatrix, _viewMatrixHUD, vmml::Matrix4f::IDENTITY, std::vector<std::string>({}), false);
+    
 	// Quit renderer when escape is pressed
 	if (bRenderer().getInput()->getKeyState(bRenderer::KEY_ESCAPE) == bRenderer::INPUT_PRESS)
 		bRenderer().terminateRenderer();
@@ -242,9 +245,8 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
 	//	_sun->setIntensity(0.1 * currentSecond);
 	//}
 
-    vmml::Matrix4f cameraView = bRenderer().getObjects()->getCamera("camera")->getViewMatrix();
-    bRenderer().getObjects()->getShader("basic")->setUniform("playerPos", cameraView * _cam->getPosition());
-    bRenderer().getObjects()->getShader("terrain")->setUniform("playerPos", cameraView * _cam->getPosition());
+    bRenderer().getObjects()->getShader("basic")->setUniform("playerPos", _cam->getPosition());
+    bRenderer().getObjects()->getShader("terrain")->setUniform("playerPos", _cam->getPosition());
     
     /////// Skybox ///
     modelMatrix =
@@ -254,8 +256,49 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
     skybox = bRenderer().getObjects()->getShader("skybox");
     // set ambient color
     bRenderer().getObjects()->setAmbientColor(vmml::Vector3f(0.5f));
-    // draw modeld
+    // draw model
     bRenderer().getModelRenderer()->queueModelInstance("skybox", "skybox_instance", camera, modelMatrix, std::vector<std::string>({ "sun" }), true, true);
+
+    ///*** Torch ***/
+    // Position the torch relative to the camera
+    bRenderer().getObjects()->getShader("basic")->setUniform("torchDir", bRenderer().getObjects()->getCamera("camera")->getForward());
+    bRenderer().getObjects()->getShader("basic")->setUniform("torchInnerCutOff", cos(M_PI_F/180 * 15.0));
+    bRenderer().getObjects()->getShader("basic")->setUniform("torchOuterCutOff", cos(M_PI_F/180 * 20.0));
+    bRenderer().getObjects()->getShader("terrain")->setUniform("torchDir", bRenderer().getObjects()->getCamera("camera")->getForward());
+    bRenderer().getObjects()->getShader("terrain")->setUniform("torchInnerCutOff", cos(M_PI_F/180 * 15.0));
+    bRenderer().getObjects()->getShader("terrain")->setUniform("torchOuterCutOff", cos(M_PI_F/180 * 20.0));
+    // place torch-light
+    bRenderer().getObjects()->getLight("torch")->setPosition(_cam->getPosition() - bRenderer().getObjects()->getCamera("camera")->getForward()*10.0f);
+    bRenderer().getObjects()->getLight("torch_top")->setPosition(_cam->getPosition() - bRenderer().getObjects()->getCamera("camera")->getForward()*5.0f);
+    
+    modelMatrix = bRenderer().getObjects()->getCamera(camera)->getInverseViewMatrix();        // position and orient to match camera
+    modelMatrix *= vmml::create_translation(vmml::Vector3f(0.75f, -0.70f, 0.8f)) * vmml::create_scaling(vmml::Vector3f(0.15f)) * vmml::create_rotation(1.64f, vmml::Vector3f::UNIT_Y);
+    modelMatrix *= vmml::create_rotation(float(M_PI_F/10.0 * elapsedTime), vmml::Vector3f::UNIT_Y);
+    // submit to render queue
+    bRenderer().getModelRenderer()->queueModelInstance("torch", "torch_instance", camera, modelMatrix, std::vector<std::string>({ "sun", "torch_top" }));
+    
+    ///*** Torch - Particles ***/
+    float origX = 0.8;
+    float origZ = 0.8;
+    int gridX = _terrainLoader->getPlayerGridX();
+    int gridZ = _terrainLoader->getPlayerGridZ();
+    std::string currentTerrainKey = _terrainLoader->generateTerrainKey(gridX, gridZ);
+    TerrainPtr currentTerrain = _terrainLoader->getSingleTerrain(currentTerrainKey);
+    int nrOfCrystals = currentTerrain->getNrOfCrystalsCollected();
+    
+    for (int i = 1; i <= nrOfCrystals; i++) {
+        float angle = 2*M_PI_F / nrOfCrystals;
+        angle *= i + ((M_PI_F/20.0)*elapsedTime);
+    
+        float x = origX + 0.3 * cos(angle);
+        float z = origZ + 0.3 * sin(angle);
+        
+        modelMatrix = bRenderer().getObjects()->getCamera(camera)->getInverseViewMatrix();        // position and orient to match camera
+        modelMatrix *= vmml::create_translation(vmml::Vector3f(x, -0.2f, z)) * vmml::create_scaling(vmml::Vector3f(0.02f)) *
+        vmml::create_rotation(-0.82f, vmml::Vector3f::UNIT_Z);
+        modelMatrix *= vmml::create_rotation(float(M_PI_F/10.0 * elapsedTime), vmml::Vector3f::UNIT_Y);
+        bRenderer().getModelRenderer()->queueModelInstance("torch", &"torch_particle_"[i], camera, modelMatrix, std::vector<std::string>({ "sun", "torch_top" }));
+    }
 
 	/// SUN ///
 	_sun->render(camera, _cam->getPosition(), _viewMatrixHUD);

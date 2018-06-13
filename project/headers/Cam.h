@@ -8,7 +8,7 @@ class Cam
 {
 public:
     Cam();
-    Cam(Renderer &renderer, vmml::Matrix4f _viewMatrixHUD);
+    Cam(Renderer &renderer);
     void process(std::string camera, const double &deltaTime);
     vmml::Vector3f getPosition();
     

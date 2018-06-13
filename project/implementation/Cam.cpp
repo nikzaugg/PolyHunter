@@ -2,7 +2,7 @@
 #include "Cam.h"
 #include "noise.h"
 
-Cam::Cam(Renderer &renderer, vmml::Matrix4f _viewMatrixHUD)
+Cam::Cam(Renderer &renderer)
 {
     _renderer = renderer;
 	_viewMatrixHUD = _viewMatrixHUD;
@@ -122,8 +122,9 @@ void Cam::process(std::string camera, const double &deltaTime)
 
 	
     
+    renderer().getObjects()->getShader("basic")->setUniform("viewPos", getPosition());
+    renderer().getObjects()->getShader("terrain")->setUniform("viewPos", getPosition());
 }
-
 
 double Cam::getNoiseInput(float coord)
 {

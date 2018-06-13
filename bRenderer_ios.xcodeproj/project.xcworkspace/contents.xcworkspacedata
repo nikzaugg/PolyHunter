@@ -2,6 +2,12 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:/Users/demo/Desktop/OneDrive/UZH/Bachelorarbeit/bRenderer/bRenderer_ios.xcodeproj">
+      location = "group:/Users/nikzaugg/Desktop/PolyHunter/project/data/torchLight.frag">
+   </FileRef>
+   <FileRef
+      location = "group:/Users/nikzaugg/Desktop/PolyHunter/project/data/torchLight.vert">
+   </FileRef>
+   <FileRef
+      location = "self:">
    </FileRef>
 </Workspace>

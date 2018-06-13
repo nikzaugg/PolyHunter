@@ -31,7 +31,7 @@ uniform vec3 lightDiffuseColor_0;
 uniform vec3 lightSpecularColor_0;
 varying float intensityBasedOnDist_0;
 
-// Light-Info: TORCH
+// Light-Info: TORCH_TOP
 uniform vec4 lightPositionViewSpace_1;
 uniform vec4 lightPos_World_1;
 uniform float lightIntensity_1;
@@ -77,11 +77,6 @@ void main()
     v_position = ModelMatrix * Position;
     v_texCoord = TexCoord;
     
-    vec3 posRelativeToPlayer = playerPos - vec3(v_position);
-    float dist = length(posRelativeToPlayer.xyz);
-    
-    visibility = exp(-pow((dist * fogDensity), fogGradient));
-    
     float lightDistance = 0.0;
     lightDistance = distance(v_position, lightPos_World_0);
     intensityBasedOnDist_0 = 0.0;
@@ -94,7 +89,6 @@ void main()
     if (lightDistance <= lightRadius_1) {
         intensityBasedOnDist_1 = clamp(lightIntensity_1 / (lightAttenuation_1*lightDistance*lightDistance), 0.0, 1.0);
     };
-    
     
     // Position of Vertex
     gl_Position = ProjectionMatrix * ModelViewMatrix * Position;

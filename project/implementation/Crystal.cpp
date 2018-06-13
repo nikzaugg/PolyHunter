@@ -7,7 +7,7 @@ void Crystal::draw(std::string camera)
     renderer().getObjects()->setAmbientColor(vmml::Vector3f(0.5f));
     
     // draw model
-    renderer().getModelRenderer()->drawModel(getModelName(), "camera", getModelMatrix(), std::vector<std::string>({"sun"}), true, true);
+    renderer().getModelRenderer()->drawModel(getModelName(), "camera", computeTransformationMatrix(), std::vector<std::string>({"sun", "torch"}), true, true);
 }
 
 void Crystal::render(std::string camera)
@@ -16,7 +16,7 @@ void Crystal::render(std::string camera)
     renderer().getObjects()->setAmbientColor(vmml::Vector3f(0.5f));
     
     // draw model instance
-    renderer().getModelRenderer()->queueModelInstance(getModelName(), _crystalName, camera, getModelMatrix(), std::vector<std::string>({ "sun" }), true, true);
+    renderer().getModelRenderer()->queueModelInstance(getModelName(), _crystalName, camera, computeTransformationMatrix(), std::vector<std::string>({ "sun" , "torch"}), true, true);
 }
 
 void Crystal::customRender(std::string camera, vmml::Matrix4f view ,vmml::Matrix4f proj)

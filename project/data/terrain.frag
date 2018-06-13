@@ -19,28 +19,48 @@ uniform lowp vec3 Ks;   // specular material coefficient
 
 uniform mediump float Ns;   // specular material exponent (shininess)
 
-uniform vec3 ambientColor;
+// Light-Info: SUN
+uniform vec4 lightPositionViewSpace_0;
 uniform float lightIntensity_0;
+uniform float lightAttenuation_0;
+uniform float lightRadius_0;
 uniform vec3 lightDiffuseColor_0;
 uniform vec3 lightSpecularColor_0;
-uniform vec4 lightPositionViewSpace_0;
-uniform vec4 lightPositionWorldSpace_0;
+varying float intensityBasedOnDist_0;
+uniform vec4 lightPos_World_0;
 
-varying lowp vec4 shadowCoord_varying;
+// Light-Info: TORCH
+uniform vec4 lightPositionViewSpace_1;
+uniform float lightIntensity_1;
+uniform float lightAttenuation_1;
+uniform float lightRadius_1;
+uniform vec3 lightDiffuseColor_1;
+uniform vec3 lightSpecularColor_1;
+varying float intensityBasedOnDist_1;
+uniform vec4 lightPos_World_1;
 
+uniform vec3 viewPos;
+uniform vec3 ambientColor;
 uniform vec3 skyColor;
 uniform vec3 fogColor;
 
 varying mediump float visibility;
 
-varying lowp vec4 vertexColor_varying;
-varying lowp vec4 texCoord_varying;
-varying mediump vec3 normal_varying_WorldSpace;
-varying mediump vec4 position_varying_WorldSpace;
-// Everything in View Space
-varying mediump vec4 position_varying_ViewSpace;
-varying mediump vec3 normal_varying_ViewSpace;
-varying mediump vec3 tangent_varying_ViewSpace;
+// World Space Coordinates
+varying highp vec3 v_normal;
+varying highp vec4 v_position;
+varying mediump vec3 v_tangent;
+varying mediump vec3 v_bitangent;
+
+// texture Coords and Color
+varying lowp vec4 v_texCoord;
+varying lowp vec4 v_shadowCoord;
+varying lowp vec4 v_color;
+
+// Torch Uniforms
+uniform vec3 torchDir;
+uniform float torchInnerCutOff;
+uniform float torchOuterCutOff;
 
 mediump vec2 poissonDisk[4];
 int pcfCount = 3;
@@ -48,16 +68,16 @@ int totalTexels = (pcfCount * 2 + 1) * (pcfCount * 2 + 1);
 
 uniform float bloomPass;
 
-float ShadowCalculation(vec3 normal, vec4 lightDir)
+float ShadowCalculation(vec3 normal, vec3 lightDir)
 {
     // perform perspective divide
-    vec3 shadowCoords = shadowCoord_varying.xyz/shadowCoord_varying.w;
+    vec3 shadowCoords = v_shadowCoord.xyz/v_shadowCoord.w;
     
     float mapSize = 1024.0;
     float texelSize = 1.0/ mapSize;
     float total = 0.0;
     
-    float lightIntensity = dot(normal, lightDir.xyz);
+    float lightIntensity = dot(normal, lightDir);
     lightIntensity = clamp(lightIntensity, 0.0, 1.0);
     float bias = 0.005*tan(acos(lightIntensity)); // cosTheta is dot( n,l ), clamped between 0 and 1
     bias = clamp(bias, 0.0, 0.01);
@@ -75,7 +95,7 @@ float ShadowCalculation(vec3 normal, vec4 lightDir)
     
     float shadow = 1.0 - (total);
 
-    if (shadowCoord_varying.w > 1.0) {
+    if (v_shadowCoord.w > 1.0) {
         shadow = 1.0;
     }
     
@@ -92,38 +112,50 @@ void main()
     // In the bloom Pass we draw everything black, as terrain should not get the bloom effect.
     if (bloomPass > 0.0) {
         gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+        
     } else {
-        vec4 position = position_varying_ViewSpace;
-        vec4 position_world = position_varying_WorldSpace;
-        vec3 normal = normalize(normal_varying_ViewSpace);
-        vec3 normal_world = normalize(normal_varying_WorldSpace);
-        vec4 lightPosition = normalize(lightPositionViewSpace_0);
-        vec4 lightVector = normalize(lightPosition - position);
-        vec4 lightPosition_world = normalize(lightPositionWorldSpace_0);
-        vec4 lightVector_world = normalize(lightPosition_world - position_world);
+        vec4 diffuse = vec4(0.0,0.0,0.0,1.0);
+        vec4 specular = vec4(0.0,0.0,0.0,1.0);
+        float specularCoefficient = 0.0;
         
+        vec4 position = v_position;
+        vec3 normal = normalize(v_normal);
+        vec3 lightVector_0 = normalize(vec3(lightPos_World_0) - vec3(position));
+        vec3 lightVector_1 = normalize(vec3(lightPos_World_1) - vec3(position));
+        vec3 surfaceToCamera = vec3(normalize(vec4(viewPos, 1.0) - position));
         
-        // ambient part
-        vec4 ambientPart = vec4(ambientColor * lightIntensity_0, 1.0);
-        ambientPart = clamp(ambientPart, 0.0, 1.0);
+        // SUN-LIGHT
+        float intensity = 0.0;
+        if (intensityBasedOnDist_0 > 0.0 && (intensity = max(dot(normal, normalize(lightVector_0)), 0.0)) > 0.0){
+            intensity = clamp(intensity, 0.0, 1.0);
+            diffuse += vec4(lightDiffuseColor_0 * (intensity * intensityBasedOnDist_0), 0.0);
+            specularCoefficient = pow(max(0.0, dot(surfaceToCamera, reflect(-normalize(lightVector_0), normal))), Ns);
+            specular += vec4(lightSpecularColor_0 * (specularCoefficient * intensity * intensityBasedOnDist_0), 0.0);
+        }
         
-        // diffuse part
-        float intensityFactor = dot(normal, lightVector.xyz);
-        vec3 diffuseTerm = Kd * clamp(intensityFactor, 0.0, 1.0) * lightDiffuseColor_0;
-        vec4 diffusePart = vec4(clamp(diffuseTerm, 0.0, 1.0), 1.0);
+        // TORCH-LIGHT
+        if (intensityBasedOnDist_1 > 0.0 && (intensity = max(dot(normal, normalize(lightVector_1)), 0.0)) > 0.0){
+            float theta     = dot(lightVector_1, normalize(-torchDir));
+            float epsilon   = torchInnerCutOff - torchOuterCutOff;
+            float coneInstensity = clamp((theta - torchOuterCutOff) / epsilon, 0.0, 1.0);
+            
+            intensity = clamp(intensity, 0.0, 1.0);
+            intensity *= coneInstensity;
+            diffuse += vec4(lightDiffuseColor_1 * (intensity * intensityBasedOnDist_1), 0.0);
+            specularCoefficient = pow(max(0.0, dot(surfaceToCamera, reflect(-normalize(lightVector_1), normal))), Ns);
+            specular += vec4(lightSpecularColor_1 * (specularCoefficient * intensity * intensityBasedOnDist_1), 0.0);
+        }
         
         // shadow-value
-        float shadow = ShadowCalculation(normal_world, lightVector_world);
+        float shadow = ShadowCalculation(v_normal, lightVector_0);
         
-        vec4 totalDiffuse = diffusePart * shadow;
-        // gl_FragColor = (ambientPart + diffusePart) * vertexColor_varying;
-        
-        vec4 outColor = (ambientPart + totalDiffuse) * vertexColor_varying;
+        // ambient part
+        vec4 ambient = vec4(ambientColor * Ks, 1.0);
+        ambient = clamp(ambient, 0.0, 1.0);
+        diffuse = diffuse * vec4(Kd,1.0) * (shadow * 0.5);
+        specular = specular  * vec4(Ks, 0.0);
+        vec4 outColor = clamp(ambient+diffuse+specular, 0.0, 1.0);
+
         gl_FragColor = mix(vec4(vec3(fogColor), 1.0), outColor, visibility);
-        
-        // gl_FragColor = vec4(visibility);
-        // Color according to normals
-        // vec3 normal_test = normal/2.0 + vec3(0.5);
-        // gl_FragColor = vec4(normal_test, 1.0);
     }
 }
