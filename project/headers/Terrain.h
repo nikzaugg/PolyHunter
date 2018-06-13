@@ -29,6 +29,7 @@ public:
 	static double Terrain::noise(double nx, double nz);
 	static float Terrain::getHeightFromNoise(double nx, double nz);
 	static double Terrain::getNoiseInput(float coord);
+	static int Terrain::getRandomSeed();
 	static int TERRAIN_SIZE;
 	static int VERTEX_COUNT;
 

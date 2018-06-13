@@ -35,6 +35,7 @@ private:
 	TerrainLoaderPtr _terrainLoader;
 	
 	bool isInScreenBounds(double xpos, int numeratorX, int denominatorX, double ypos, int numeratorY, int denominatorY);
+	void handleNewGameButton(double xpos, double ypos);
 };
 typedef std::shared_ptr< StartScreenRenderer >  StartScreenRendererPtr;
 #endif /* defined(B_START_SCREEN_RENDERER_H) */

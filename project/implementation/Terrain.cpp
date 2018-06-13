@@ -7,9 +7,11 @@
 #include "math.h"
 #include "iostream"
 #include "noise.h"
+#include <ctime>
 
 Terrain::CrystalMap Terrain::_collectedCrystals;
-int Terrain::seed = 10 + (rand() % static_cast<int>(10000 - 10 + 1));
+
+int Terrain::seed = Terrain::getRandomSeed();
 int Terrain::TERRAIN_SIZE = 400;
 int Terrain::VERTEX_COUNT = 30;
 
@@ -333,4 +335,10 @@ float Terrain::getHeightFromNoise(double nx, double nz)
 double Terrain::getNoiseInput(float coord)
 {
 	return coord / (float)(Terrain::TERRAIN_SIZE * 3);
+}
+
+int Terrain::getRandomSeed()
+{
+	srand(time(NULL));
+	return 10 + (rand() % static_cast<int>(10000 - 10 + 1));
 }

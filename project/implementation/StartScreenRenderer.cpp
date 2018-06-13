@@ -57,17 +57,21 @@ bool StartScreenRenderer::isInScreenBounds(double xpos, int numeratorX, int deno
 	return isInXBounds && isInYBounds;
 }
 
-bool StartScreenRenderer::isOverNewGameButton(double xpos, double ypos)
+void StartScreenRenderer::handleNewGameButton(double xpos, double ypos)
 {
 	if (isInScreenBounds(xpos, 3, 4, ypos, 2, 2)) {
 		_renderer.getObjects()->getTextSprite("new-game-text")->setColor(vmml::Vector3f(0.11f, 0.29f, 0.42f));
-		return true;
+
+		if (_renderer.getInput()->getMouseButtonState(bRenderer::LEFT_MOUSE_BUTTON))
+		{
+			startNewGame();
+		}
 	}
 	else {
 		_renderer.getObjects()->getTextSprite("new-game-text")->setColor(vmml::Vector3f(1.0f, 1.0f, 1.0f));
-		return false;
 	}
 }
+
 
 
 void StartScreenRenderer::showStartScreen()
@@ -139,7 +143,7 @@ void StartScreenRenderer::showStartScreen()
 			_renderer.getObjects()->getTextSprite("resume-text")->setColor(vmml::Vector3f(1.0f, 1.0f, 1.0f));
 		}
 
-		isOverNewGameButton(xpos, ypos);
+		handleNewGameButton(xpos, ypos);
 	}
 	else {
 		// Case: Start Screen inactive
@@ -151,17 +155,11 @@ void StartScreenRenderer::showStartScreen()
 			_renderer.getInput()->setCursorEnabled(true);
 		}
 	}
-
-	if (_renderer.getInput()->getKeyState(bRenderer::KEY_L))
-	{
-		startNewGame();
-	}
-	
 }
 
 void StartScreenRenderer::startNewGame()
 {
-	Terrain::seed = 10 + (rand() % static_cast<int>(10000 - 10 + 1));
+	Terrain::seed = Terrain::getRandomSeed();
 	_camera->setPosition(vmml::Vector3f(0.0f, Terrain::getHeightFromNoise(0.0, 0.0), 0.0f));
 	_terrainLoader->reloadTerrains();
 }
