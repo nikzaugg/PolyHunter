@@ -7,6 +7,7 @@
 #include "PlayerCamera.h"
 #include "Cam.h"
 #include "ShadowModelRenderer.h"
+#include "StartScreenRenderer.h"
 
 /* Initialize the Project */
 void RenderProject::init()
@@ -85,8 +86,9 @@ void RenderProject::initFunction()
     bRenderer().getObjects()->createTextSprite("gui-crystal-info", vmml::Vector3f(1.f, 1.f, 1.f), " ", font);
 	
 	// START SCREEN TEXT
-	bRenderer().getObjects()->createTextSprite("start-button-text", vmml::Vector3f(1.f, 1.f, 1.f), " ", font);
-	bRenderer().getObjects()->getTextSprite("start-button-text")->setText("Start Game");
+	//bRenderer().getObjects()->createTextSprite("start-button-text", vmml::Vector3f(1.f, 1.f, 1.f), " ", font);
+	//bRenderer().getObjects()->getTextSprite("start-button-text")->setText("Start Game");
+	_startScreenRenderer = StartScreenRendererPtr(new StartScreenRenderer(getProjectRenderer(), _viewMatrixHUD));
     
     // SUN
     _sun = SunPtr(new Sun("sun.obj", "sun", "sunProperties", sunShader, getProjectRenderer(), vmml::Vector3f(0.0f, 100.0f, 0.0f), 0.0f, 0.0f, 0.0f, 3.0f));
@@ -115,12 +117,7 @@ void RenderProject::loopFunction(const double &deltaTime, const double &elapsedT
 {
 	// bRenderer::log("FPS: " + std::to_string(1 / deltaTime));	// write number of frames per second to the console every frame
 	// std::cout << "FPS: " << std::to_string(1 / deltaTime) << std::endl;
-	GLint defaultFBO;
-	if (!_running) {
-		bRenderer().getView()->setViewportSize(bRenderer().getView()->getWidth(), bRenderer().getView()->getHeight());		// reduce viewport size
-		defaultFBO = Framebuffer::getCurrentFramebuffer();	// get current fbo to bind it again after drawing the scene
-		bRenderer().getObjects()->getFramebuffer("blurFbo")->bindTexture(bRenderer().getObjects()->getTexture("blurFbo_texture1"), false);
-	}
+	_startScreenRenderer->bindBlurFbo();
 	
 
 	/* SHADOW MAPPING */
@@ -161,43 +158,7 @@ void RenderProject::loopFunction(const double &deltaTime, const double &elapsedT
 	if (bRenderer().getInput()->getKeyState(bRenderer::KEY_ESCAPE) == bRenderer::INPUT_PRESS)
 		bRenderer().terminateRenderer();
 
-	if (!_running)
-	{
-		/*** Blur ***/
-		// translate
-		vmml::Matrix4f modelMatrix = vmml::create_translation(vmml::Vector3f(0.0f, 0.0f, -0.5));
-		// blur vertically and horizontally
-
-		bRenderer().getObjects()->getFramebuffer("blurFbo")->unbind(defaultFBO); //unbind (original fbo will be bound)
-		bRenderer().getView()->setViewportSize(bRenderer().getView()->getWidth(), bRenderer().getView()->getHeight());								// reset vieport size
-
-		bRenderer().getObjects()->getMaterial("blurMaterial")->setTexture("fbo_texture", bRenderer().getObjects()->getTexture("blurFbo_texture1"));
-		bRenderer().getObjects()->getMaterial("blurMaterial")->setScalar("isVertical", static_cast<GLfloat>(true));
-		// draw
-		bRenderer().getModelRenderer()->drawModel(bRenderer().getObjects()->getModel("blurSprite"), modelMatrix, _viewMatrixHUD, vmml::Matrix4f::IDENTITY, std::vector<std::string>({}), false);
-
-
-		GLint prevLeftMouseButtonState = -1;
-		GLint leftMouseButtonState = bRenderer().getInput()->getMouseButtonState(1);
-		/*** GUI - Start Game Text ***/
-		// Draw without blur
-		if (bRenderer().getInput()->getMouseButtonState(bRenderer::LEFT_MOUSE_BUTTON))
-		{
-			std::cout << bRenderer().getInput()->getMouseButtonState(bRenderer::LEFT_MOUSE_BUTTON) << std::endl;
-			// Check if click on button
-			double xpos, ypos; bool hasCursor = false;
-			bRenderer().getInput()->getCursorPosition(&xpos, &ypos, &hasCursor);
-			std::cout << xpos << std::endl;
-			std::cout << ypos << std::endl;
-		}
-			
-		titleScale = 0.1f;
-		scaling = vmml::create_scaling(vmml::Vector3f(titleScale / bRenderer().getView()->getAspectRatio(), titleScale, titleScale));
-		modelMatrix = vmml::create_translation(vmml::Vector3f(-0.3f / bRenderer().getView()->getAspectRatio(), -0.6f, -0.65f)) * scaling;
-		bRenderer().getModelRenderer()->drawModel(bRenderer().getObjects()->getTextSprite("start-button-text"), modelMatrix, _viewMatrixHUD, vmml::Matrix4f::IDENTITY, std::vector<std::string>({}), false);
-	}
-
-	
+	_startScreenRenderer->showStartScreen();	
 }
 
 // checks collision between player and crystals

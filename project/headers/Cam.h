@@ -11,7 +11,6 @@ public:
     Cam(Renderer &renderer, vmml::Matrix4f _viewMatrixHUD);
     void process(std::string camera, const double &deltaTime);
     vmml::Vector3f getPosition();
-	void showStartScreen(GLint defaultFBO);
     
 private:
     CameraPtr _camera;
@@ -37,7 +36,6 @@ private:
     
     // Helper Functions
     float degreeToRadians(float degree);
-	void initStartScreen();
 };
 typedef std::shared_ptr< Cam >  CamPtr;
 #endif /* defined(B_Cam_H) */
