@@ -160,14 +160,11 @@ void StartScreenRenderer::showStartScreen()
 			_renderer.getObjects()->getTextSprite("resume-text")->setColor(vmml::Vector3f(1.0f, 1.0f, 1.0f));
 		}
 
-
-	
-
 		handleNewGameButton(xpos, ypos);
 	}
 	else {
 		// Case: Start Screen inactive
-		if (_renderer.getInput()->getKeyState(bRenderer::KEY_SPACE))
+		if (_renderer.getInput()->getKeyState(bRenderer::KEY_SPACE) && _renderer.getInput()->doubleTapRecognized())
 		{
 			// Show start screen and disable camera movement
 			_showScreen = true;

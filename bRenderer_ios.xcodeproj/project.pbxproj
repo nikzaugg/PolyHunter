@@ -21,6 +21,7 @@
 		313C9EDD20BB440700D6E2F0 /* Crystal.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 313C9EDC20BB440700D6E2F0 /* Crystal.cpp */; };
 		31448AD920D10464002B91CE /* skydome.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 31448AD720D10463002B91CE /* skydome.mtl */; };
 		31448ADA20D10464002B91CE /* skydome.obj in Resources */ = {isa = PBXBuildFile; fileRef = 31448AD820D10464002B91CE /* skydome.obj */; };
+		31448ADC20D1BA72002B91CE /* StartScreenRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 31448ADB20D1BA70002B91CE /* StartScreenRenderer.cpp */; };
 		31581B0320B74D560074783C /* Cam.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 31581B0220B74D560074783C /* Cam.cpp */; };
 		31581B0620B77CBE0074783C /* Sun.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 31581B0520B77CBE0074783C /* Sun.cpp */; };
 		31581B0B20B7809A0074783C /* moon_test.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 31581B0720B780990074783C /* moon_test.mtl */; };
@@ -258,6 +259,8 @@
 		313C9EDC20BB440700D6E2F0 /* Crystal.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Crystal.cpp; sourceTree = "<group>"; };
 		31448AD720D10463002B91CE /* skydome.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = skydome.mtl; sourceTree = "<group>"; };
 		31448AD820D10464002B91CE /* skydome.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = skydome.obj; sourceTree = "<group>"; };
+		31448ADB20D1BA70002B91CE /* StartScreenRenderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = StartScreenRenderer.cpp; sourceTree = "<group>"; };
+		31448ADD20D1BA81002B91CE /* StartScreenRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StartScreenRenderer.h; sourceTree = "<group>"; };
 		31581B0120B74D4E0074783C /* Cam.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Cam.h; sourceTree = "<group>"; };
 		31581B0220B74D560074783C /* Cam.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Cam.cpp; sourceTree = "<group>"; };
 		31581B0420B77CB30074783C /* Sun.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Sun.h; sourceTree = "<group>"; };
@@ -736,6 +739,7 @@
 		B44186931BA331E300604D7F /* headers */ = {
 			isa = PBXGroup;
 			children = (
+				31448ADD20D1BA81002B91CE /* StartScreenRenderer.h */,
 				317950AF20B605FC00D94992 /* BloomRenderer.h */,
 				31581B0120B74D4E0074783C /* Cam.h */,
 				313C9EDB20BB43F700D6E2F0 /* Crystal.h */,
@@ -759,6 +763,7 @@
 		B44186951BA331E300604D7F /* implementation */ = {
 			isa = PBXGroup;
 			children = (
+				31448ADB20D1BA70002B91CE /* StartScreenRenderer.cpp */,
 				317950AD20B605EA00D94992 /* BloomRenderer.cpp */,
 				31581B0220B74D560074783C /* Cam.cpp */,
 				313C9EDC20BB440700D6E2F0 /* Crystal.cpp */,
@@ -1272,6 +1277,7 @@
 				B4794A4E1BA6743D00B5E9DC /* Input_desktop.cpp in Sources */,
 				B47AD6DF1B827EFF00AFC632 /* truetype.c in Sources */,
 				B47AD6DD1B827EEE00AFC632 /* sfnt.c in Sources */,
+				31448ADC20D1BA72002B91CE /* StartScreenRenderer.cpp in Sources */,
 				B47AD6C31B827E1000AFC632 /* ftmm.c in Sources */,
 				B4794A351BA6743D00B5E9DC /* Configuration.cpp in Sources */,
 				B4794A471BA6743D00B5E9DC /* ShaderDataGenerator.cpp in Sources */,

@@ -26,10 +26,10 @@ public:
     int getNrOfCrystalsCollected();
 
 	static int seed;
-	static double Terrain::noise(double nx, double nz);
-	static float Terrain::getHeightFromNoise(double nx, double nz);
-	static double Terrain::getNoiseInput(float coord);
-	static int Terrain::getRandomSeed();
+    static double noise(double nx, double nz);
+    static float getHeightFromNoise(double nx, double nz);
+    static double getNoiseInput(float coord);
+    static int getRandomSeed();
 	static int TERRAIN_SIZE;
 	static int VERTEX_COUNT;
 
