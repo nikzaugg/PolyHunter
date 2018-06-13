@@ -7,6 +7,7 @@ uniform mediump mat4 ViewMatrix;
 uniform mediump mat4 ModelMatrix;
 uniform mat4 ModelViewMatrix;
 uniform mat4 ProjectionMatrix;
+uniform mat3 NormalMatrix;
 
 uniform lowp vec3 Ka;   // ambient material coefficient
 uniform lowp vec3 Kd;   // diffuse material coefficient
@@ -14,30 +15,45 @@ uniform lowp vec3 Ks;   // specular material coefficient
 
 uniform mediump float Ns;   // specular material exponent (shininess)
 
-uniform sampler2D DiffuseMap;
-
 uniform vec3 ambientColor;
 uniform float lightIntensity_0;
 uniform vec3 lightDiffuseColor_0;
 uniform vec3 lightSpecularColor_0;
 uniform vec4 lightPositionViewSpace_0;
 
+attribute highp vec4 Position;
+attribute vec3 Normal;
+attribute vec3 Tangent;
+attribute vec3 Bitangent;
+attribute vec4 TexCoord;
+
 // World Space Coordinates
 varying mediump vec3 v_normal;
-varying mediump vec3 v_normal_model;
-varying highp vec4 v_position;
-varying highp vec4 v_position_model;
+varying mediump vec4 v_position;
 varying mediump vec3 v_tangent;
 varying mediump vec3 v_bitangent;
 
+// texture Coords
 varying lowp vec4 v_texCoord;
 
-// Sun variables
+// noise
 varying mediump float noise;
-uniform float time;
-uniform float sickness;
+uniform highp float offset;
 
+//void main()
+//{
+//    v_normal = normalize(NormalMatrix * (Normal * vec3(1.0, 1.0, -1.0)));
+//    v_tangent = normalize(NormalMatrix * Tangent);
+//    v_bitangent = normalize(NormalMatrix * Bitangent);
+//    v_position = ModelMatrix * Position;
+//    v_texCoord = TexCoord;
+//
+//    // Position of Vertex
+//    gl_Position = ProjectionMatrix*ModelViewMatrix*Position;
+//}
 
+// Include the Ashima code here!
+//
 // GLSL textureless classic 3D noise "cnoise",
 // with an RSL-style periodic variant "pnoise".
 // Author:  Stefan Gustavson (stefan.gustavson@liu.se)
@@ -49,6 +65,7 @@ uniform float sickness;
 // Copyright (c) 2011 Stefan Gustavson. All rights reserved.
 // Distributed under the MIT license. See LICENSE file.
 // https://github.com/stegu/webgl-noise
+//
 
 vec3 mod289(vec3 x)
 {
@@ -224,17 +241,26 @@ float turbulence( vec3 p ) {
         float power = pow( 2.0, f );
         t += abs( pnoise( vec3( power * p ), vec3( 10.0, 10.0, 10.0 ) ) / power );
     }
+    
     return t;
     
 }
 
-void main()
-{
-    vec3 sunColor = vec3(1.0, 1.0, 0.0) * 10.0 *  -.10 *turbulence( vec3(v_normal_model));
-    float offset = (sin(time)/2.0 + 0.5) * 0.2 * v_normal_model.y;
-    float n  = abs(sin(time)) * 10.0 *  -.10 * turbulence( 0.5 * offset * vec3(v_position_model));
-    vec3 sickColor = n * sunColor;
-    vec3 outColor = mix(sickColor, sunColor, sickness);
-    gl_FragColor = vec4(outColor, 1.0);
+void main() {
+    
+    v_texCoord = TexCoord;
+    vec3 position = vec3(Position);
+    vec3 normal = Normal * vec3(1.0, 1.0, -1.0);
+    // get a turbulent 3d noise using the normal, normal to high freq
+    noise = 10.0 *  -.10 * turbulence( .5 * normal );
+    // get a 3d noise using the position, low frequency
+    float b = 5.0 * pnoise( 0.05 * position, vec3( 100.0 ) );
+    // compose both noises
+    float displacement = 10. * noise + b;
+    
+    // move the position along the normal and transform it
+    vec3 newPosition = position + normal * 2.0;
+//    gl_Position = ProjectionMatrix * ModelViewMatrix * vec4( newPosition, 1.0 );
+    gl_Position = ProjectionMatrix * ModelViewMatrix * Position;
+    
 }
-

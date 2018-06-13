@@ -13,10 +13,10 @@ Sun::Sun(std::string objName, std::string modelName, std::string propName, Shade
 
 
 	// create lights
-	_lightPosition = vmml::Vector3f(300, 300, 0.0);
+	_lightPosition = vmml::Vector3f(1000, 1000, 0.0);
 	_renderer.getObjects()->createLight("sun", _lightPosition, vmml::Vector3f(1.0f), vmml::Vector3f(1.0f), 1400.0, 1.0f, 100000.0);
-	setPosition(vmml::Vector3f(_lightPosition));
-	this->setIntensity(1.0f);
+	//setPosition(vmml::Vector3f(_lightPosition));
+	//this->setIntensity(1.0f);
     
     // updates the strength of the sun (between 0 and 1)
     updateSunIntensityInShader("terrain", _sunIntensity);
@@ -102,19 +102,27 @@ void Sun::renderFragments(std::string camera, vmml::Vector3f pos)
 {
 	_shader->setUniform("lowerSicknessRange", vmml::Vector2f(0.125, 0.325));
 	_shader->setUniform("upperSicknessRange", vmml::Vector2f(0.625, 0.875));
-}	
+}
 
-void Sun::render(std::string camera, vmml::Vector3f playerPos, vmml::Matrix4f viewMatrixHUD)
+void Sun::increaseSunSize(float deltaScale){
+    _sunSize += deltaScale;
+}
+
+void Sun::render(std::string camera, vmml::Vector3f playerPos, vmml::Matrix4f viewMatrixHUD, const double &elapsedTime )
 {
-	_lightPosition = vmml::Vector3f(playerPos.x() + 1200, 1000, playerPos.z());
-    _renderer.getObjects()->getLight("sun")->setPosition(_lightPosition);
+    vmml::Matrix4f modelMatrix = _renderer.getObjects()->getCamera(camera)->getInverseViewMatrix();
+    modelMatrix *=
+    vmml::create_translation(vmml::Vector3f(0.75f, -0.70f, 0.8f)) *
+    vmml::create_scaling(vmml::Vector3f(0.025f));
+    modelMatrix *= vmml::create_rotation(float(M_PI_F/10.0 * elapsedTime), vmml::Vector3f::UNIT_Y);
 
-	// draw model instance
-	setPosition(playerPos + (_lightPosition - playerPos) * 0.3f);
+    _shaderOffset += 0.2;
+    float sinScale = sin(_shaderOffset);
+    sinScale =  (sinScale - (-1.0)) * (_pulsateMax - _pulsateMin) / (1.0 - (-1.0)) + _pulsateMin;
+    
+    getShader()->setUniform("time", sinScale);
+    getShader()->setUniform("sickness", _health);
+    modelMatrix *= vmml::create_scaling(vmml::Vector3f(_sunSize * sinScale));
 
-	//setScale(5.0f);
-	setRotY(90.0f);
-
-	//_renderer.getModelRenderer()->queueModelInstance("sun", "sun_instance", camera, computeTransformationMatrix(), std::vector<std::string>({}), false, false, true, GL_SRC_ALPHA, GL_ONE);
-	_renderer.getModelRenderer()->queueModelInstance("sun", "sun_instance", camera, computeTransformationMatrix(), std::vector<std::string>({}), false, false, true);
+	_renderer.getModelRenderer()->queueModelInstance("sun", "sun_instance", camera, modelMatrix, std::vector<std::string>({ "sun", "torch" }));
 }
