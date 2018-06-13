@@ -58,6 +58,9 @@ void RenderProject::initFunction()
     PropertiesPtr guyProperties = bRenderer().getObjects()->createProperties("guyProperties");
 
 	// BLENDER MODELS (.obj)
+    bRenderer().getObjects()->loadObjModel("tree.obj", false, true, basicShader, treeProperties);
+    bRenderer().getObjects()->loadObjModel("crystal.obj", false, true, basicShader, nullptr);
+    bRenderer().getObjects()->loadObjModel("sun.obj", false, true, sunShader, nullptr);
     bRenderer().getObjects()->loadObjModel("torch.obj", false, true, torchLightShader, nullptr);
     bRenderer().getObjects()->loadObjModel("skydome.obj", false, true, skydomeShader, nullptr);
     

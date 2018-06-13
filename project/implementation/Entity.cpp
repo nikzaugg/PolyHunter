@@ -14,7 +14,7 @@ Entity::Entity(std::string objName, std::string modelName, std::string propName,
     _propertiesName = propName;
     _shader = shader;
     this->_properties = _renderer.getObjects()->createProperties(_propertiesName);
-    this->_model = _renderer.getObjects()->loadObjModel(objName, false, true, _shader, _properties);
+    this->_model = _renderer.getObjects()->getModel(modelName);
     this->_position = pos;
     this->_rotX = rotX;
     this->_rotY = rotY;
