@@ -84,11 +84,6 @@ void RenderProject::initFunction()
     // GUI TEXT
     FontPtr font = bRenderer().getObjects()->loadFont("KozGoPro-ExtraLight.otf", 50);
     bRenderer().getObjects()->createTextSprite("gui-crystal-info", vmml::Vector3f(1.f, 1.f, 1.f), " ", font);
-	
-	// START SCREEN TEXT
-	//bRenderer().getObjects()->createTextSprite("start-button-text", vmml::Vector3f(1.f, 1.f, 1.f), " ", font);
-	//bRenderer().getObjects()->getTextSprite("start-button-text")->setText("Start Game");
-	_startScreenRenderer = StartScreenRendererPtr(new StartScreenRenderer(getProjectRenderer(), _viewMatrixHUD));
     
     // SUN
     _sun = SunPtr(new Sun("sun.obj", "sun", "sunProperties", sunShader, getProjectRenderer(), vmml::Vector3f(0.0f, 100.0f, 0.0f), 0.0f, 0.0f, 0.0f, 3.0f));
@@ -97,6 +92,9 @@ void RenderProject::initFunction()
     bRenderer().getObjects()->createCamera("camera");
 
     _cam = CamPtr(new Cam(getProjectRenderer()));
+
+	// START SCREEN
+	_startScreenRenderer = StartScreenRendererPtr(new StartScreenRenderer(getProjectRenderer(), _cam, _viewMatrixHUD));
     
     // TORCH-LIGHTS
     bRenderer().getObjects()->createLight("torch", -bRenderer().getObjects()->getCamera("camera")->getPosition(), vmml::Vector3f(0.92, 1.0, 0.99), vmml::Vector3f(1.0), 1400.0, 0.9, 100.0);
@@ -136,10 +134,10 @@ void RenderProject::loopFunction(const double &deltaTime, const double &elapsedT
     /* BLOOM POSTPROCESSING */
     /* Terrain is loaded inside _bloomRenderer */
     /* Render Queue is drawn inside _bloomRenderer */
-    _bloomRenderer->doBloomRenderPass("camera", deltaTime);
+    //_bloomRenderer->doBloomRenderPass("camera", deltaTime);
 
-	//bRenderer().getModelRenderer()->drawQueue(/*GL_LINES*/);
-	//bRenderer().getModelRenderer()->clearQueue();
+	bRenderer().getModelRenderer()->drawQueue(/*GL_LINES*/);
+	bRenderer().getModelRenderer()->clearQueue();
 
     
     /*** GUI - Crystal Icon ***/

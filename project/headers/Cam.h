@@ -11,6 +11,7 @@ public:
     Cam(Renderer &renderer);
     void process(std::string camera, const double &deltaTime);
     vmml::Vector3f getPosition();
+	void setMovable(bool enable);
     
 private:
     CameraPtr _camera;
@@ -33,7 +34,7 @@ private:
     double _mouseX, _mouseY;
     GLint _lastStateSpaceKey = 0;
 	bool _running = true;
-    
+	bool _movementEnabled;
     // Helper Functions
     float degreeToRadians(float degree);
 };

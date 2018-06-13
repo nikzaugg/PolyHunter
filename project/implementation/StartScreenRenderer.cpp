@@ -1,11 +1,11 @@
 #include "StartScreenRenderer.h"
 
-StartScreenRenderer::StartScreenRenderer(Renderer & renderer, vmml::Matrix4f viewMatrixHUD)
+StartScreenRenderer::StartScreenRenderer(Renderer & renderer, CamPtr camera, vmml::Matrix4f viewMatrixHUD)
 {
 	_renderer = renderer;
 	_viewMatrixHUD = viewMatrixHUD;
 	_showScreen = true;
-
+	_camera = camera;
 
 	// Create Blur Framebuffer Object
 	_renderer.getObjects()->createFramebuffer("blurFbo");
@@ -19,14 +19,19 @@ StartScreenRenderer::StartScreenRenderer(Renderer & renderer, vmml::Matrix4f vie
 
 	_renderer.getObjects()->createSprite("blurSprite2", blurMaterial);
 
-	
-
-
 	FontPtr font = _renderer.getObjects()->loadFont("KozGoPro-ExtraLight.otf", 50);
+
+	// Resume
 	_renderer.getObjects()->createTextSprite("resume-text", vmml::Vector3f(1.f, 1.f, 1.f), " ", font);
 	_renderer.getObjects()->getTextSprite("resume-text")->setText("Resume");
+	
+	// New Game
 	_renderer.getObjects()->createTextSprite("new-game-text", vmml::Vector3f(1.f, 1.f, 1.f), " ", font);
 	_renderer.getObjects()->getTextSprite("new-game-text")->setText("New Game");
+
+	// Title
+	_renderer.getObjects()->createTextSprite("title", vmml::Vector3f(1.f, 1.f, 1.f), " ", font);
+	_renderer.getObjects()->getTextSprite("title")->setText("PolyHunter");
 }
 
 void StartScreenRenderer::bindBlurFbo()
@@ -78,8 +83,24 @@ void StartScreenRenderer::showStartScreen()
 
 		/*** GUI - Start Game Text ***/
 		// Draw without blur
-		GLfloat titleScale = 0.1f;
+		GLfloat titleScale = 0.2f;
 		vmml::Matrix4f scaling = vmml::create_scaling(vmml::Vector3f(titleScale / _renderer.getView()->getAspectRatio(), titleScale, titleScale));
+
+		modelMatrix = vmml::create_translation(vmml::Vector3f(0.1f, 0.0f, -0.65f)) * scaling;
+		// draw
+		_renderer.getModelRenderer()->drawModel(_renderer.getObjects()->getModel("crystal_icon"), modelMatrix, _viewMatrixHUD, vmml::Matrix4f::IDENTITY, std::vector<std::string>({}), false, false);
+
+		modelMatrix = vmml::create_translation(vmml::Vector3f(-0.23f, 0.4f, -0.65f)) * scaling;
+		_renderer.getModelRenderer()->drawModel(_renderer.getObjects()->getTextSprite("title"), modelMatrix, _viewMatrixHUD, vmml::Matrix4f::IDENTITY, std::vector<std::string>({}), false, false);
+
+		titleScale = 0.1f;
+		scaling = vmml::create_scaling(vmml::Vector3f(titleScale / _renderer.getView()->getAspectRatio(), titleScale, titleScale));
+
+		modelMatrix = vmml::create_translation(vmml::Vector3f(-0.1f, 0.0f, -0.65f)) * scaling;
+		// draw
+		_renderer.getModelRenderer()->drawModel(_renderer.getObjects()->getTextSprite("gui-crystal-info"), modelMatrix, _viewMatrixHUD, vmml::Matrix4f::IDENTITY, std::vector<std::string>({}), false);
+
+
 		modelMatrix = vmml::create_translation(vmml::Vector3f(-0.5f, -0.7f, -0.65f)) * scaling;
 		// draw
 		_renderer.getModelRenderer()->drawModel(_renderer.getObjects()->getTextSprite("resume-text"), modelMatrix, _viewMatrixHUD, vmml::Matrix4f::IDENTITY, std::vector<std::string>({}), false);
@@ -95,6 +116,8 @@ void StartScreenRenderer::showStartScreen()
 			if (_renderer.getInput()->getMouseButtonState(bRenderer::LEFT_MOUSE_BUTTON))
 			{
 				_showScreen = false;
+				_camera->setMovable(true);
+				_renderer.getInput()->setCursorEnabled(false);
 			}
 
 		}
@@ -109,8 +132,16 @@ void StartScreenRenderer::showStartScreen()
 			_renderer.getObjects()->getTextSprite("new-game-text")->setColor(vmml::Vector3f(1.0f, 1.0f, 1.0f));
 		}
 	}
-	//double xpos, ypos; bool hasCursor = false;
-	//_renderer.getInput()->getCursorPosition(&xpos, &ypos, &hasCursor);
-	//std::cout << _renderer.getView()->getWidth() / 2 << std::endl;
-	//std::cout << _renderer.getView()->getHeight() / 2 << std::endl;
+	else {
+		// Case: Start Screen inactive
+		if (_renderer.getInput()->getKeyState(bRenderer::KEY_SPACE))
+		{
+			// Show start screen and disable camera movement
+			_showScreen = true;
+			_camera->setMovable(false);
+			_renderer.getInput()->setCursorEnabled(true);
+		}
+	}
+
+	
 }

@@ -2,13 +2,14 @@
 #define B_START_SCREEN_RENDERER_H
 
 #include "bRenderer.h"
+#include "Cam.h"
 
 class StartScreenRenderer
 {
 public:
 	StartScreenRenderer();
 
-	StartScreenRenderer(Renderer & renderer, vmml::Matrix4f viewMatrixHUD);
+	StartScreenRenderer(Renderer & renderer, CamPtr camera, vmml::Matrix4f viewMatrixHUD);
 
 	void bindBlurFbo();
 
@@ -21,6 +22,7 @@ private:
 	GLint _defaultFBO;
 	vmml::Matrix4f _viewMatrixHUD;
 	bool _showScreen;
+	CamPtr _camera;
 	
 	bool isInScreenBounds(double xpos, int numeratorX, int denominatorX, double ypos, int numeratorY, int denominatorY);
 };
