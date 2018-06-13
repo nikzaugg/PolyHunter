@@ -62,7 +62,7 @@ void StartScreenRenderer::handleNewGameButton(double xpos, double ypos)
 	if (isInScreenBounds(xpos, 3, 4, ypos, 2, 2)) {
 		_renderer.getObjects()->getTextSprite("new-game-text")->setColor(vmml::Vector3f(0.11f, 0.29f, 0.42f));
 
-		if (_renderer.getInput()->getMouseButtonState(bRenderer::LEFT_MOUSE_BUTTON))
+		if (_renderer.getInput()->getMouseButtonState(bRenderer::LEFT_MOUSE_BUTTON) || _renderer.getInput()->singleTapRecognized())
 		{
 			startNewGame();
 		}
@@ -125,13 +125,30 @@ void StartScreenRenderer::showStartScreen()
 
 		modelMatrix = vmml::create_translation(vmml::Vector3f(0.2f, -0.7f, -0.65f)) * scaling;
 		_renderer.getModelRenderer()->drawModel(_renderer.getObjects()->getTextSprite("new-game-text"), modelMatrix, _viewMatrixHUD, vmml::Matrix4f::IDENTITY, std::vector<std::string>({}), false);
+
+		// Controls
 		double xpos, ypos; bool hasCursor = false;
-		_renderer.getInput()->getCursorPosition(&xpos, &ypos, &hasCursor);
+
+		if (Input::isTouchDevice())
+		{
+			TouchMap touchMap = _renderer.getInput()->getTouches();
+
+			for (auto t = touchMap.begin(); t != touchMap.end(); t++)
+			{
+				Touch touch = t->second;
+				xpos = touch.currentPositionX;
+				ypos = touch.currentPositionY;
+			}
+		}
+		else {
+			_renderer.getInput()->getCursorPosition(&xpos, &ypos, &hasCursor);
+		}
+		
 
 		if (isInScreenBounds(xpos, 2, 4, ypos, 2, 2)) {
 			_renderer.getObjects()->getTextSprite("resume-text")->setColor(vmml::Vector3f(0.11f, 0.29f, 0.42f));
 
-			if (_renderer.getInput()->getMouseButtonState(bRenderer::LEFT_MOUSE_BUTTON))
+			if (_renderer.getInput()->getMouseButtonState(bRenderer::LEFT_MOUSE_BUTTON) || _renderer.getInput()->singleTapRecognized())
 			{
 				_showScreen = false;
 				_camera->setMovable(true);
@@ -142,6 +159,9 @@ void StartScreenRenderer::showStartScreen()
 		else {
 			_renderer.getObjects()->getTextSprite("resume-text")->setColor(vmml::Vector3f(1.0f, 1.0f, 1.0f));
 		}
+
+
+	
 
 		handleNewGameButton(xpos, ypos);
 	}
