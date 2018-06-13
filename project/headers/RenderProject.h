@@ -11,6 +11,7 @@
 #include "Cam.h"
 #include "Sun.h"
 #include "Skydome.h"
+#include "StartScreenRenderer.h"
 
 class RenderProject : public IRenderProject
 {
@@ -93,6 +94,7 @@ private:
 	SunPtr _sun;
     SkydomePtr _skydome;
     std::vector<TerrainPtr> terrains;
+	StartScreenRendererPtr _startScreenRenderer;
     
     float _fogDensity;
     float _fogGradient;

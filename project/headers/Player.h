@@ -19,7 +19,6 @@ public:
     void test();
     void process(std::string cameraName, const double &deltaTime);
     void customProcess(std::string cameraName, const double &deltaTime, vmml::Matrix4f view, vmml::Matrix4f proj);
-    double getNoiseInput(float coord);
     void checkInputs(std::string cameraName);
     
 private:

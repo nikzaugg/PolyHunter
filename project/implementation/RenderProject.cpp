@@ -7,6 +7,7 @@
 #include "PlayerCamera.h"
 #include "Cam.h"
 #include "ShadowModelRenderer.h"
+#include "StartScreenRenderer.h"
 
 /* Initialize the Project */
 void RenderProject::init()
@@ -40,6 +41,7 @@ void RenderProject::initFunction()
     _animation_forward = true;
     _animation = 0.0;
     _animationSpeed = 20.0;
+
 
 	// set shader versions (optional)
 	bRenderer().getObjects()->setShaderVersionDesktop("#version 120");
@@ -90,7 +92,10 @@ void RenderProject::initFunction()
     
     // PLAYER - FPS-CAMERA
     bRenderer().getObjects()->createCamera("camera");
+
     _cam = CamPtr(new Cam(getProjectRenderer()));
+
+
     
     // TORCH-LIGHTS
     bRenderer().getObjects()->createLight("torch", -bRenderer().getObjects()->getCamera("camera")->getPosition(), vmml::Vector3f(0.92, 1.0, 0.99), vmml::Vector3f(1.0), 1400.0, 0.9, 100.0);
@@ -110,6 +115,9 @@ void RenderProject::initFunction()
     // BLOOMRENDERER
     _bloomRenderer = BloomRendererPtr(new BloomRenderer(getProjectRenderer(), _terrainLoader));
     
+	// START SCREEN
+	_startScreenRenderer = StartScreenRendererPtr(new StartScreenRenderer(getProjectRenderer(), _cam, _terrainLoader, _viewMatrixHUD));
+
 	// Update render queue
     updateRenderQueue("camera", 0.0f);
 
@@ -120,8 +128,9 @@ void RenderProject::initFunction()
 void RenderProject::loopFunction(const double &deltaTime, const double &elapsedTime)
 {
 	// bRenderer::log("FPS: " + std::to_string(1 / deltaTime));	// write number of frames per second to the console every frame
-    // std::cout << "FPS: " << std::to_string(1 / deltaTime) << std::endl;
-
+	// std::cout << "FPS: " << std::to_string(1 / deltaTime) << std::endl;
+	_startScreenRenderer->bindBlurFbo();
+	
     /* SHADOW MAPPING */
     _shadowModelRenderer->doShadowRenderPass("terrain", deltaTime, elapsedTime);
     
@@ -134,7 +143,11 @@ void RenderProject::loopFunction(const double &deltaTime, const double &elapsedT
     /* BLOOM POSTPROCESSING */
     /* Terrain is loaded inside _bloomRenderer */
     /* Render Queue is drawn inside _bloomRenderer */
-    _bloomRenderer->doBloomRenderPass("camera", deltaTime);
+    //_bloomRenderer->doBloomRenderPass("camera", deltaTime);
+
+	bRenderer().getModelRenderer()->drawQueue(/*GL_LINES*/);
+	bRenderer().getModelRenderer()->clearQueue();
+
     
     /*** GUI - Crystal Icon ***/
     // translate and scale
@@ -154,6 +167,8 @@ void RenderProject::loopFunction(const double &deltaTime, const double &elapsedT
 	// Quit renderer when escape is pressed
 	if (bRenderer().getInput()->getKeyState(bRenderer::KEY_ESCAPE) == bRenderer::INPUT_PRESS)
 		bRenderer().terminateRenderer();
+
+	_startScreenRenderer->showStartScreen();	
 }
 
 // checks collision between player and crystals
@@ -283,22 +298,22 @@ void RenderProject::updateCamera(const std::string &camera, const double &deltaT
 	bRenderer().getObjects()->getCamera(camera)->setAspectRatio(bRenderer().getView()->getAspectRatio());
 
     // pause using double tap
-	if (Input::isTouchDevice()) {
-		if (bRenderer().getInput()->doubleTapRecognized()) {
-			_running = !_running;
-		}
-	}
-	else {
-		GLint currentStateSpaceKey = bRenderer().getInput()->getKeyState(bRenderer::KEY_SPACE);
-		if (currentStateSpaceKey != _lastStateSpaceKey)
-		{
-		    _lastStateSpaceKey = currentStateSpaceKey;
-		    if (currentStateSpaceKey == bRenderer::INPUT_PRESS){
-		        _running = !_running;
-		        bRenderer().getInput()->setCursorEnabled(!_running);
-		    }
-		}
-	}
+	//if (Input::isTouchDevice()) {
+	//	if (bRenderer().getInput()->doubleTapRecognized()) {
+	//		_running = !_running;
+	//	}
+	//}
+	//else {
+	//	GLint currentStateSpaceKey = bRenderer().getInput()->getKeyState(bRenderer::KEY_SPACE);
+	//	if (currentStateSpaceKey != _lastStateSpaceKey)
+	//	{
+	//	    _lastStateSpaceKey = currentStateSpaceKey;
+	//	    if (currentStateSpaceKey == bRenderer::INPUT_PRESS){
+	//	        _running = !_running;
+	//	        bRenderer().getInput()->setCursorEnabled(!_running);
+	//	    }
+	//	}
+	//}
 }
 
 /* For iOS only: Handle device rotation */

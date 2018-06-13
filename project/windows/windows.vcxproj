@@ -169,7 +169,8 @@
     <ClCompile Include="..\implementation\ProceduralOBJLoader.cpp" />
     <ClCompile Include="..\implementation\RenderProject.cpp" />
     <ClCompile Include="..\implementation\ShadowModelRenderer.cpp" />
-    <ClCompile Include="..\implementation\Skybox.cpp" />
+    <ClCompile Include="..\implementation\Skydome.cpp" />
+    <ClCompile Include="..\implementation\StartScreenRenderer.cpp" />
     <ClCompile Include="..\implementation\Sun.cpp" />
     <ClCompile Include="..\implementation\Terrain.cpp" />
     <ClCompile Include="..\implementation\TerrainLoader.cpp" />
@@ -239,7 +240,8 @@
     <ClInclude Include="..\headers\ProceduralOBJLoader.h" />
     <ClInclude Include="..\headers\RenderProject.h" />
     <ClInclude Include="..\headers\ShadowModelRenderer.h" />
-    <ClInclude Include="..\headers\Skybox.h" />
+    <ClInclude Include="..\headers\Skydome.h" />
+    <ClInclude Include="..\headers\StartScreenRenderer.h" />
     <ClInclude Include="..\headers\Sun.h" />
     <ClInclude Include="..\headers\Terrain.h" />
     <ClInclude Include="..\headers\TerrainLoader.h" />

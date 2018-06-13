@@ -300,9 +300,6 @@
     <ClCompile Include="..\implementation\Terrain.cpp">
       <Filter>project\implementation</Filter>
     </ClCompile>
-    <ClCompile Include="..\implementation\Skybox.cpp">
-      <Filter>project\implementation</Filter>
-    </ClCompile>
     <ClCompile Include="..\implementation\Entity.cpp">
       <Filter>project\implementation</Filter>
     </ClCompile>
@@ -331,6 +328,12 @@
       <Filter>project\implementation</Filter>
     </ClCompile>
     <ClCompile Include="..\implementation\Crystal.cpp">
+      <Filter>project\implementation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\implementation\StartScreenRenderer.cpp">
+      <Filter>project\implementation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\implementation\Skydome.cpp">
       <Filter>project\implementation</Filter>
     </ClCompile>
   </ItemGroup>
@@ -503,9 +506,6 @@
     <ClInclude Include="..\headers\Terrain.h">
       <Filter>project\headers</Filter>
     </ClInclude>
-    <ClInclude Include="..\headers\Skybox.h">
-      <Filter>project\headers</Filter>
-    </ClInclude>
     <ClInclude Include="..\headers\Entity.h">
       <Filter>project\headers</Filter>
     </ClInclude>
@@ -537,6 +537,12 @@
       <Filter>project\headers</Filter>
     </ClInclude>
     <ClInclude Include="..\headers\Crystal.h">
+      <Filter>project\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\headers\StartScreenRenderer.h">
+      <Filter>project\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\headers\Skydome.h">
       <Filter>project\headers</Filter>
     </ClInclude>
   </ItemGroup>

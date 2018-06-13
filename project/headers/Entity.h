@@ -32,14 +32,16 @@ public:
     float getRotZ();
     void setScale(float scale);
     float getScale();
-	double noise(double nx, double nz);
-    float getHeightFromNoise(double nx, double nz);
     float degreeToRadians(float degree);
     Renderer renderer() {
         return _renderer;
     }
     vmml::Matrix4f computeTransformationMatrix();
+	void setSeed(int seed);
     typedef std::unordered_map< std::string, GeometryPtr > GroupMap;
+
+protected:
+	int _seed;
     
 private:
     vmml::Matrix4f _modelMatrix;
@@ -60,6 +62,7 @@ private:
     float _rotY;
     float _rotZ;
     float _scale;
+	
     
     GroupMap        _groups;
     vmml::AABBf        _boundingBox;

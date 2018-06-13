@@ -11,19 +11,18 @@ public:
     Cam(Renderer &renderer);
     void process(std::string camera, const double &deltaTime);
     vmml::Vector3f getPosition();
+	void setMovable(bool enable);
+	void setPosition(vmml::Vector3f position);
     
 private:
     CameraPtr _camera;
     Renderer _renderer;
+	vmml::Matrix4f _viewMatrixHUD;
     
     Renderer renderer() {
         return _renderer;
     }
     
-    double getNoiseInput(float coord);
-    float getHeightFromNoise(double nx, double nz);
-    double noise(double nx, double nz);
-
     vmml::Vector3f _position = vmml::Vector3f(0.0);
     float _cameraFloorOffset = 10.0;
     float _dx;
@@ -32,7 +31,7 @@ private:
     double _mouseX, _mouseY;
     GLint _lastStateSpaceKey = 0;
 	bool _running = true;
-    
+	bool _movementEnabled;
     // Helper Functions
     float degreeToRadians(float degree);
 };

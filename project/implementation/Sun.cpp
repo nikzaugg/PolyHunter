@@ -93,6 +93,7 @@ void Sun::renderFragments(std::string camera, vmml::Vector3f pos)
 {
 	_shader->setUniform("lowerSicknessRange", vmml::Vector2f(0.125, 0.325));
 	_shader->setUniform("upperSicknessRange", vmml::Vector2f(0.625, 0.875));
+
 }
 
 void Sun::increaseSunSize(float deltaScale){
