@@ -119,7 +119,6 @@ void main()
         intensityBasedOnDist_1 = clamp(lightIntensity_1 / (lightAttenuation_1*lightDistance*lightDistance), 0.0, 1.0);
     };
 
-
     // Position of Vertex
     gl_Position = ProjectionMatrix * ModelViewMatrix * Position;
 }

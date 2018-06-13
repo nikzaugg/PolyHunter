@@ -49,7 +49,7 @@ void RenderProject::initFunction()
 	ShaderPtr basicShader = bRenderer().getObjects()->loadShaderFile("basic", 2, false, true, true, true, false);
 	ShaderPtr terrainShader = bRenderer().getObjects()->loadShaderFile("terrain", 2, false, true, true, true, false);
     ShaderPtr skyboxShader = bRenderer().getObjects()->loadShaderFile("skybox", 1, false, true, true, true, false);
-    ShaderPtr torchLightShader = bRenderer().getObjects()->loadShaderFile("torchLight", 1, false, true, true, true, false);
+    ShaderPtr torchLightShader = bRenderer().getObjects()->loadShaderFile("torchLight", 4, false, true, true, true, false);
 	ShaderPtr sunShader = bRenderer().getObjects()->loadShaderFile_o("sun", 0, AMBIENT_LIGHTING);
 	
 	// PROPERTIES FOR THE MODELS
@@ -254,10 +254,59 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
     bRenderer().getObjects()->getShader("terrain")->setUniform("torchOuterCutOff", cos(M_PI_F/180 * 20.0));
     bRenderer().getObjects()->getLight("torch")->setPosition(_cam->getPosition() - bRenderer().getObjects()->getCamera("camera")->getForward()*10.0f);
     modelMatrix = bRenderer().getObjects()->getCamera(camera)->getInverseViewMatrix();        // position and orient to match camera
-    modelMatrix *= vmml::create_translation(vmml::Vector3f(0.75f, -0.75f, 0.8f)) * vmml::create_scaling(vmml::Vector3f(0.25f)) * vmml::create_rotation(1.64f, vmml::Vector3f::UNIT_Y); // now position it relative to the camera
+    modelMatrix *= vmml::create_translation(vmml::Vector3f(0.75f, -0.70f, 0.8f)) * vmml::create_scaling(vmml::Vector3f(0.15f)) * vmml::create_rotation(1.64f, vmml::Vector3f::UNIT_Y);
+    modelMatrix *= vmml::create_rotation(float(M_PI_F/10.0 * elapsedTime), vmml::Vector3f::UNIT_Y);
     // submit to render queue
     bRenderer().getModelRenderer()->queueModelInstance("torch", "torch_instance", camera, modelMatrix, std::vector<std::string>({ "sun" }));
+    
+    ///*** Torch - Particles ***/
+    float origX = 0.8;
+    float origZ = 0.8;
+    int gridX = _terrainLoader->getPlayerGridX();
+    int gridZ = _terrainLoader->getPlayerGridZ();
+    std::string currentTerrainKey = _terrainLoader->generateTerrainKey(gridX, gridZ);
+    TerrainPtr currentTerrain = _terrainLoader->getSingleTerrain(currentTerrainKey);
+    int nrOfCrystals = currentTerrain->getNrOfCrystalsCollected();
+    
+    for (int i = 1; i <= nrOfCrystals; i++) {
+        float angle = 2*M_PI_F / nrOfCrystals;
+        angle *= i + ((M_PI_F/20.0)*elapsedTime);
+    
+        float x = origX + 0.3 * cos(angle);
+        float z = origZ + 0.3 * sin(angle);
+        
+        std::cout << "x " << x << std::endl;
+        std::cout << "y " << z << std::endl;
+        modelMatrix = bRenderer().getObjects()->getCamera(camera)->getInverseViewMatrix();        // position and orient to match camera
+        modelMatrix *= vmml::create_translation(vmml::Vector3f(x, -0.2f, z)) * vmml::create_scaling(vmml::Vector3f(0.02f)) *
+        vmml::create_rotation(-0.82f, vmml::Vector3f::UNIT_Z);
+        modelMatrix *= vmml::create_rotation(float(M_PI_F/10.0 * elapsedTime), vmml::Vector3f::UNIT_Y);
+        bRenderer().getModelRenderer()->queueModelInstance("torch", &"torch_particle_"[i], camera, modelMatrix, std::vector<std::string>({ "torch" }));
+    }
 
+    
+//    ///*** Torch - Particles ***/
+//    modelMatrix = bRenderer().getObjects()->getCamera(camera)->getInverseViewMatrix();        // position and orient to match camera
+//    modelMatrix *= vmml::create_translation(vmml::Vector3f(0.75f, -0.2f, 0.3)) * vmml::create_scaling(vmml::Vector3f(0.02f)) *
+//    vmml::create_rotation(-0.82f, vmml::Vector3f::UNIT_Z);
+//    modelMatrix *= vmml::create_rotation(float(M_PI_F/10.0 * elapsedTime), vmml::Vector3f::UNIT_Y);
+//    bRenderer().getModelRenderer()->queueModelInstance("torch", "torch_particle_2", camera, modelMatrix, std::vector<std::string>({ "sun" }));
+//
+//    ///*** Torch - Particles ***/
+//    modelMatrix = bRenderer().getObjects()->getCamera(camera)->getInverseViewMatrix();        // position and orient to match camera
+//    modelMatrix *= vmml::create_translation(vmml::Vector3f(0.5f, -0.2f, 0.3)) * vmml::create_scaling(vmml::Vector3f(0.02f)) *
+//    vmml::create_rotation(-0.82f, vmml::Vector3f::UNIT_Z);
+//    modelMatrix *= vmml::create_rotation(float(M_PI_F/10.0 * elapsedTime), vmml::Vector3f::UNIT_Y);
+//    bRenderer().getModelRenderer()->queueModelInstance("torch", "torch_particle_3", camera, modelMatrix, std::vector<std::string>({ "sun" }));
+//
+//    ///*** Torch - Particles ***/
+//    modelMatrix = bRenderer().getObjects()->getCamera(camera)->getInverseViewMatrix();        // position and orient to match camera
+//    modelMatrix *= vmml::create_translation(vmml::Vector3f(0.75f, -0.2f, 0.8)) * vmml::create_scaling(vmml::Vector3f(0.02f)) *
+//    vmml::create_rotation(-0.82f, vmml::Vector3f::UNIT_Z);
+//    modelMatrix *= vmml::create_rotation(float(M_PI_F/10.0 * elapsedTime), vmml::Vector3f::UNIT_Y);
+//    bRenderer().getModelRenderer()->queueModelInstance("torch", "torch_particle_4", camera, modelMatrix, std::vector<std::string>({ "sun" }));
+    
+    
 	/// SUN ///
 	_sun->render(camera, _cam->getPosition(), _viewMatrixHUD);
 }
