@@ -65,8 +65,7 @@ void RenderProject::initFunction()
     _skydome = SkydomePtr(new Skydome("skydome", getProjectRenderer()));
     
     // FOG
-    vmml::Vector3f fogC = vmml::Vector3f(0.026, 0.048, 0.096);
-    _fogColor = fogC * 0.3;
+    _fogColor = _skydome->getSkyColor() * 0.8;
     _fogDensity = 0.005;
     _fogGradient = 10.00;
     
@@ -92,7 +91,12 @@ void RenderProject::initFunction()
     
     // TORCH-LIGHTS
     bRenderer().getObjects()->createLight("torch", -bRenderer().getObjects()->getCamera("camera")->getPosition(), vmml::Vector3f(0.92, 1.0, 0.99), vmml::Vector3f(1.0), 1400.0, 0.9, 100.0);
-    bRenderer().getObjects()->createLight("torch_top", -bRenderer().getObjects()->getCamera("camera")->getPosition(), vmml::Vector3f(0.92, 1.0, 0.99), vmml::Vector3f(1.0), 300.0, 0.9, 10.0);
+    bRenderer().getObjects()->getShader("basic")->setUniform("torchDamper", _torchDamper);
+    bRenderer().getObjects()->getShader("basic")->setUniform("torchInnerCutOff", _torchInnerCutOff);
+    bRenderer().getObjects()->getShader("basic")->setUniform("torchOuterCutOff", _torchOuterCutOff);
+    bRenderer().getObjects()->getShader("terrain")->setUniform("torchDamper", _torchDamper);
+    bRenderer().getObjects()->getShader("terrain")->setUniform("torchInnerCutOff", _torchInnerCutOff);
+    bRenderer().getObjects()->getShader("terrain")->setUniform("torchOuterCutOff", _torchOuterCutOff);
     
     // TERRAIN LOADER //
     _terrainLoader = TerrainLoaderPtr(new TerrainLoader(getProjectRenderer(), terrainShader, _cam));
@@ -170,31 +174,35 @@ void RenderProject::checkCollision()
 // updates gameplay-variables (fog, sun-healt, points etc.)
 void RenderProject::updateGameVariables()
 {
-    float sunHealth = _sun->getHealth();
+    // update skyColor
     vmml::Vector3f skyColor = _skydome->getSkyColor();
-
-    // update sun-health
-    sunHealth += 0.05;
-    std::cout << "skyColor: " <<skyColor << std::endl;
-    // set new skycolor
-    vmml::Vector3f newSkyColor = skyColor * (1.0 + sunHealth);
+    vmml::Vector3f newSkyColor = skyColor * 1.1;
     _skydome->setSkyColor(newSkyColor);
     
-    // new fogColor
-    _fogDensity = 0.005 * 0.95;
-    _fogGradient = 10.00 * 1.05;
-    updateFogVariables("terrain");
-    updateFogVariables("basic");
-    
-    // set new fogDensity
-    
-    // set new fogDistance
-    
     // updateFogVariables
+    _fogDensity = _fogDensity * 0.97;
+    _fogGradient = _fogGradient * 1.05;
     updateFogVariables("basic");
     updateFogVariables("terrain");
     
-    // updateSkyBoxVariables
+    // update sun inentisty
+    float currentSunIntensity = _sun->getSunIntensity();
+    _sun->updateSunIntensityInShader("terrain", currentSunIntensity * 1.1);
+    _sun->updateSunIntensityInShader("basic", currentSunIntensity * 1.1);
+    _sun->updateSunIntensityInShader("torchLight", currentSunIntensity * 1.1);
+    
+    // update torch
+//    _torchDamper -= 0.1;
+//    bRenderer().getObjects()->getShader("terrain")->setUniform("torchDamper", _torchDamper);
+//    bRenderer().getObjects()->getShader("basic")->setUniform("torchDamper", _torchDamper);
+    
+//    _torchInnerCutOff *= 0.99;
+//    _torchOuterCutOff *= 0.99;
+//    bRenderer().getObjects()->getShader("basic")->setUniform("torchInnerCutOff", _torchInnerCutOff);
+//    bRenderer().getObjects()->getShader("basic")->setUniform("torchOuterCutOff", _torchOuterCutOff);
+//
+//    bRenderer().getObjects()->getShader("terrain")->setUniform("torchInnerCutOff", _torchInnerCutOff);
+//    bRenderer().getObjects()->getShader("terrain")->setUniform("torchOuterCutOff", _torchOuterCutOff);
 }
 
 // updates fog variables in specified shader
@@ -239,26 +247,20 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
     bRenderer().getObjects()->getShader("basic")->setUniform("playerPos", _cam->getPosition());
     bRenderer().getObjects()->getShader("terrain")->setUniform("playerPos", _cam->getPosition());
     
-    /////// Skydome ///
+    /// Skydome ///
     _skydome->render(camera, _cam->getPosition());
     
     ///*** Torch ***/
     // Position the torch relative to the camera
     bRenderer().getObjects()->getShader("basic")->setUniform("torchDir", bRenderer().getObjects()->getCamera("camera")->getForward());
-    bRenderer().getObjects()->getShader("basic")->setUniform("torchInnerCutOff", cos(M_PI_F/180 * 15.0));
-    bRenderer().getObjects()->getShader("basic")->setUniform("torchOuterCutOff", cos(M_PI_F/180 * 20.0));
     bRenderer().getObjects()->getShader("terrain")->setUniform("torchDir", bRenderer().getObjects()->getCamera("camera")->getForward());
-    bRenderer().getObjects()->getShader("terrain")->setUniform("torchInnerCutOff", cos(M_PI_F/180 * 15.0));
-    bRenderer().getObjects()->getShader("terrain")->setUniform("torchOuterCutOff", cos(M_PI_F/180 * 20.0));
     // place torch-light
     bRenderer().getObjects()->getLight("torch")->setPosition(_cam->getPosition() - bRenderer().getObjects()->getCamera("camera")->getForward()*10.0f);
-    bRenderer().getObjects()->getLight("torch_top")->setPosition(_cam->getPosition() - bRenderer().getObjects()->getCamera("camera")->getForward());
-    
-    modelMatrix = bRenderer().getObjects()->getCamera(camera)->getInverseViewMatrix();        // position and orient to match camera
+    // draw torch
+    modelMatrix = bRenderer().getObjects()->getCamera(camera)->getInverseViewMatrix();
     modelMatrix *= vmml::create_translation(vmml::Vector3f(0.75f, -0.70f, 0.8f)) * vmml::create_scaling(vmml::Vector3f(0.15f)) * vmml::create_rotation(1.64f, vmml::Vector3f::UNIT_Y);
     modelMatrix *= vmml::create_rotation(float(M_PI_F/10.0 * elapsedTime), vmml::Vector3f::UNIT_Y);
-    // submit to render queue
-    bRenderer().getModelRenderer()->queueModelInstance("torch", "torch_instance", camera, modelMatrix, std::vector<std::string>({ "sun", "torch_top" }));
+    bRenderer().getModelRenderer()->queueModelInstance("torch", "torch_instance", camera, modelMatrix, std::vector<std::string>({ "sun", "torch" }));
     
     ///*** Torch - Particles ***/
     float origX = 0.8;
@@ -280,7 +282,7 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
         modelMatrix *= vmml::create_translation(vmml::Vector3f(x, -0.2f, z)) * vmml::create_scaling(vmml::Vector3f(0.02f)) *
         vmml::create_rotation(-0.82f, vmml::Vector3f::UNIT_Z);
         modelMatrix *= vmml::create_rotation(float(M_PI_F/10.0 * elapsedTime), vmml::Vector3f::UNIT_Y);
-        bRenderer().getModelRenderer()->queueModelInstance("torch", &"torch_particle_"[i], camera, modelMatrix, std::vector<std::string>({ "sun", "torch_top" }));
+        bRenderer().getModelRenderer()->queueModelInstance("torch", &"torch_particle_"[i], camera, modelMatrix, std::vector<std::string>({ "sun", "torch" }));
     }
 
 	/// SUN ///

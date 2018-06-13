@@ -18,6 +18,8 @@ public:
     
     void updateSunIntensityInShader(std::string shaderName, float intensity);
     
+    float getSunIntensity();
+    
     void setHealth(float health);
     
     float getHealth();
@@ -44,6 +46,7 @@ private:
 	ModelData::GroupMap createFragments();
     
     float _health = 0.2;
+    float _sunIntensity = 0.25;
 
 	void renderFragments(std::string camera, vmml::Vector3f pos);
 

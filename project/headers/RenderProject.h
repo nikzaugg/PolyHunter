@@ -97,6 +97,10 @@ private:
     float _fogDensity;
     float _fogGradient;
     vmml::Vector3f _fogColor;
+    
+    float _torchDamper = 1.0;
+    float _torchInnerCutOff = cos(M_PI_F/180 * 15.0);
+    float _torchOuterCutOff = cos(M_PI_F/180 * 20.0);
 
 	int currentSecond;
     int _nrOfCollectedCrystals = 0;

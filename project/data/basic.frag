@@ -60,6 +60,7 @@ varying lowp vec4 v_texCoord;
 varying mediump float visibility;
 
 // Torch Uniforms
+uniform float torchDamper;
 uniform vec3 torchDir;
 uniform float torchInnerCutOff;
 uniform float torchOuterCutOff;
@@ -92,7 +93,7 @@ void main()
         float coneInstensity = clamp((theta - torchOuterCutOff) / epsilon, 0.0, 1.0);
         
         intensity = clamp(intensity, 0.0, 1.0);
-        intensity *= coneInstensity;
+        intensity *= coneInstensity * torchDamper;
         diffuse += vec4(lightDiffuseColor_1 * (intensity * intensityBasedOnDist_1), 0.0);
         specularCoefficient = pow(max(0.0, dot(surfaceToCamera, reflect(-normalize(lightVector_1), normal))), Ns);
         specular += vec4(lightSpecularColor_1 * (specularCoefficient * intensity * intensityBasedOnDist_1), 0.0);

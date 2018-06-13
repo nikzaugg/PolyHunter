@@ -19,9 +19,9 @@ Sun::Sun(std::string objName, std::string modelName, std::string propName, Shade
 	this->setIntensity(1.0f);
     
     // updates the strength of the sun (between 0 and 1)
-    updateSunIntensityInShader("terrain", 0.25);
-    updateSunIntensityInShader("basic", 0.25);
-    updateSunIntensityInShader("torchLight", 0.25);
+    updateSunIntensityInShader("terrain", _sunIntensity);
+    updateSunIntensityInShader("basic", _sunIntensity);
+    updateSunIntensityInShader("torchLight", _sunIntensity);
 
  
 	//_sunProperties = renderer.getObjects()->createProperties("sun");
@@ -34,6 +34,10 @@ Sun::Sun(std::string objName, std::string modelName, std::string propName, Shade
 void Sun::updateSunIntensityInShader(std::string shaderName, float intensity)
 {
     _renderer.getObjects()->getShader(shaderName)->setUniform("sunIntensity", intensity);
+}
+
+float Sun::getSunIntensity(){
+    return _sunIntensity;
 }
 
 void Sun::setIntensity(float intensity)
