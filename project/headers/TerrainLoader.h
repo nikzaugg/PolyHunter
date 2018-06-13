@@ -23,6 +23,7 @@ public:
     std::string generateTerrainKey(int x, int z);
     std::string generateTerrainName(int x, int z);
     TerrainPtr getSingleTerrain(std::string terrainKey);
+	void reloadTerrains();
 private:
     TerrainPtr generateTerrain(int gridX, int gridZ);
     void refreshTerrainTiles();
@@ -38,6 +39,8 @@ private:
     
     int _terrainXPlayer;
     int _terrainZPlayer;
+
+	int _seed;
 
 };
 typedef std::shared_ptr< TerrainLoader >  TerrainLoaderPtr;

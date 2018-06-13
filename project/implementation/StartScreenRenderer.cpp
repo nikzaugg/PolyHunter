@@ -1,11 +1,13 @@
 #include "StartScreenRenderer.h"
+#include "TerrainLoader.h"
 
-StartScreenRenderer::StartScreenRenderer(Renderer & renderer, CamPtr camera, vmml::Matrix4f viewMatrixHUD)
+StartScreenRenderer::StartScreenRenderer(Renderer & renderer, CamPtr camera, TerrainLoaderPtr terrainLoader, vmml::Matrix4f viewMatrixHUD)
 {
 	_renderer = renderer;
 	_viewMatrixHUD = viewMatrixHUD;
 	_showScreen = true;
 	_camera = camera;
+	_terrainLoader = terrainLoader;
 
 	// Create Blur Framebuffer Object
 	_renderer.getObjects()->createFramebuffer("blurFbo");
@@ -53,6 +55,18 @@ bool StartScreenRenderer::isInScreenBounds(double xpos, int numeratorX, int deno
 	bool isInYBounds = (numeratorY - 1) * (height / denominatorY) <= ypos && ypos <= numeratorY * (width / denominatorY);
 
 	return isInXBounds && isInYBounds;
+}
+
+bool StartScreenRenderer::isOverNewGameButton(double xpos, double ypos)
+{
+	if (isInScreenBounds(xpos, 3, 4, ypos, 2, 2)) {
+		_renderer.getObjects()->getTextSprite("new-game-text")->setColor(vmml::Vector3f(0.11f, 0.29f, 0.42f));
+		return true;
+	}
+	else {
+		_renderer.getObjects()->getTextSprite("new-game-text")->setColor(vmml::Vector3f(1.0f, 1.0f, 1.0f));
+		return false;
+	}
 }
 
 
@@ -125,12 +139,7 @@ void StartScreenRenderer::showStartScreen()
 			_renderer.getObjects()->getTextSprite("resume-text")->setColor(vmml::Vector3f(1.0f, 1.0f, 1.0f));
 		}
 
-		if (isInScreenBounds(xpos, 3, 4, ypos, 2, 2)) {
-			_renderer.getObjects()->getTextSprite("new-game-text")->setColor(vmml::Vector3f(0.11f, 0.29f, 0.42f));
-		}
-		else {
-			_renderer.getObjects()->getTextSprite("new-game-text")->setColor(vmml::Vector3f(1.0f, 1.0f, 1.0f));
-		}
+		isOverNewGameButton(xpos, ypos);
 	}
 	else {
 		// Case: Start Screen inactive
@@ -144,4 +153,9 @@ void StartScreenRenderer::showStartScreen()
 	}
 
 	
+}
+
+void StartScreenRenderer::startNewGame()
+{
+
 }

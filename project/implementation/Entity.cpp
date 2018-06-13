@@ -13,6 +13,7 @@ Entity::Entity(std::string objName, std::string modelName, std::string propName,
     _modelName = modelName;
     _propertiesName = propName;
     _shader = shader;
+
     this->_properties = _renderer.getObjects()->createProperties(_propertiesName);
     this->_model = _renderer.getObjects()->loadObjModel(objName, false, true, _shader, _properties);
     this->_position = pos;
@@ -30,7 +31,8 @@ Entity::Entity(std::string modelName, std::string materialFile, std::string mate
     _propertiesName = propName;
     _materialName = materialName;
     _materialFile = materialFile;
-    
+	static int seed = 1000;
+
     this->_shader = shader;
     this->_material = _renderer.getObjects()->loadObjMaterial(_materialFile, _materialName);
     this->_properties = _renderer.getObjects()->createProperties(_propertiesName);
@@ -153,7 +155,7 @@ float Entity::getScale()
 double Entity::noise(double nx, double nz)
 {
 	noise::module::Perlin perlin;
-	perlin.SetSeed(549);
+	perlin.SetSeed(_seed);
 	perlin.SetOctaveCount(4);
 	perlin.SetFrequency(1);
 	perlin.SetLacunarity(2.5);
@@ -190,4 +192,9 @@ vmml::Matrix4f Entity::computeTransformationMatrix()
     modelMatrix *= vmml::create_scaling(vmml::Vector3f(_scale));
     this->_modelMatrix = modelMatrix;
     return modelMatrix;
+}
+
+void Entity::setSeed(int seed)
+{
+	_seed = seed;
 }

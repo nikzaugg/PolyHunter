@@ -10,7 +10,7 @@
 class Terrain : public Entity
 {
 public:
-    Terrain(std::string modelName, std::string materialFile, std::string materialName, std::string propName, ShaderPtr shader, Renderer & renderer, int gridX, int gridZ, int terrain_size, int vertex_count ,vmml::Vector3f pos, float rotX, float rotY, float rotZ, float scale);
+    Terrain(std::string modelName, std::string materialFile, std::string materialName, std::string propName, ShaderPtr shader, Renderer & renderer, int gridX, int gridZ, int terrain_size, int vertex_count ,vmml::Vector3f pos, float rotX, float rotY, float rotZ, float scale, int seed);
 	
     typedef std::unordered_map< std::string, TreePtr > TreeMap;
     typedef std::unordered_map< std::string, CrystalPtr > CrystalMap;

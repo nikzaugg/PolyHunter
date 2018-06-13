@@ -42,6 +42,7 @@ void RenderProject::initFunction()
     _animation = 0.0;
     _animationSpeed = 20.0;
 
+
 	// set shader versions (optional)
 	bRenderer().getObjects()->setShaderVersionDesktop("#version 120");
 	bRenderer().getObjects()->setShaderVersionES("#version 100");
@@ -93,8 +94,7 @@ void RenderProject::initFunction()
 
     _cam = CamPtr(new Cam(getProjectRenderer()));
 
-	// START SCREEN
-	_startScreenRenderer = StartScreenRendererPtr(new StartScreenRenderer(getProjectRenderer(), _cam, _viewMatrixHUD));
+
     
     // TORCH-LIGHTS
     bRenderer().getObjects()->createLight("torch", -bRenderer().getObjects()->getCamera("camera")->getPosition(), vmml::Vector3f(0.92, 1.0, 0.99), vmml::Vector3f(1.0), 1400.0, 0.9, 100.0);
@@ -109,6 +109,9 @@ void RenderProject::initFunction()
     // BLOOMRENDERER
     _bloomRenderer = BloomRendererPtr(new BloomRenderer(getProjectRenderer(), _terrainLoader));
     
+	// START SCREEN
+	_startScreenRenderer = StartScreenRendererPtr(new StartScreenRenderer(getProjectRenderer(), _cam, _terrainLoader, _viewMatrixHUD));
+
 	// Update render queue
     updateRenderQueue("camera", 0.0f);
 
@@ -233,6 +236,11 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
 	elapsedTime += deltaTime;
 	vmml::Matrix4f modelMatrix;
 	ShaderPtr skybox;
+
+	if (bRenderer().getInput()->getKeyState(bRenderer::KEY_L))
+	{
+		_terrainLoader->reloadTerrains();
+	}
     
     _cam->process(camera, deltaTime);
     _terrainLoader->process(camera, deltaTime);
@@ -300,6 +308,8 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
 
 	/// SUN ///
 	_sun->render(camera, _cam->getPosition(), _viewMatrixHUD);
+
+
 }
 
 /* Camera movement */

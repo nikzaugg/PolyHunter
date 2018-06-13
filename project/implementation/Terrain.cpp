@@ -10,15 +10,16 @@
 
 Terrain::CrystalMap Terrain::_collectedCrystals;
 
-Terrain::Terrain(std::string modelName, std::string materialFile, std::string materialName, std::string propName, ShaderPtr shader, Renderer & renderer, int gridX, int gridZ ,int terrain_size, int vertex_count, vmml::Vector3f pos, float rotX, float rotY, float rotZ, float scale)
+Terrain::Terrain(std::string modelName, std::string materialFile, std::string materialName, std::string propName, ShaderPtr shader, Renderer & renderer, int gridX, int gridZ ,int terrain_size, int vertex_count, vmml::Vector3f pos, float rotX, float rotY, float rotZ, float scale, int seed)
 : Entity(modelName, materialFile, materialName, propName, shader, renderer, pos, rotX, rotY, rotZ, scale)
 {
-    // std::cout << "TERRAIN WORKS!!!" << std::endl;
+     std::cout << "TERRAIN WORKS!!!" << std::endl;
+	 std::cout << seed << std::endl;
     _gridX = gridX;
     _gridZ = gridZ;
     _TERRAIN_SIZE = terrain_size;
     _VERTEX_COUNT = vertex_count;
-    
+	_seed = seed;
     _amplitude = 70;
 
     this->_offsetX = gridX * _TERRAIN_SIZE;

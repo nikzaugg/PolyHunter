@@ -1,6 +1,7 @@
 #include "Terrain.h"
 #include "TerrainLoader.h"
 #include "bRenderer.h"
+#include "Entity.h"
 #include <math.h>
 #include <tuple>
 
@@ -13,7 +14,8 @@ TerrainLoader::TerrainLoader(Renderer & renderer, ShaderPtr shader, CamPtr playe
     this->_player = playerCam;
     this->_renderer = renderer;
     this-> _shader = shader;
-    
+	srand(time(NULL));
+	this->_seed = 10 + (rand() % static_cast<int>(10000 - 10 + 1));
     // generate initial terrains
     generateTerrain(0, 0);
     generateTerrain(0, 1);
@@ -30,7 +32,7 @@ TerrainPtr TerrainLoader::generateTerrain(int gridX, int gridZ)
 {
     std::string key = generateTerrainKey(gridX, gridZ);
     std::string terrainName = generateTerrainName(gridX, gridZ);
-    TerrainPtr terrain = TerrainPtr(new Terrain(terrainName, "terrain.mtl", "terrain", "terrainProperties", _shader, _renderer, gridX, gridZ, _TERRAIN_SIZE, _VERTEX_COUNT, vmml::Vector3f(0.0), 0.0, 0.0, 0.0, 1.0));
+    TerrainPtr terrain = TerrainPtr(new Terrain(terrainName, "terrain.mtl", "terrain", "terrainProperties", _shader, _renderer, gridX, gridZ, _TERRAIN_SIZE, _VERTEX_COUNT, vmml::Vector3f(0.0), 0.0, 0.0, 0.0, 1.0, _seed));
     _terrains.insert(TerrainMap::value_type(key , terrain));
     return terrain;
 }
@@ -94,7 +96,6 @@ void TerrainLoader::customProcess(std::string camera, const double &deltaTime, v
     
     // check if tile has changed
     if((gridX != _terrainXPlayer) ||(gridZ != _terrainZPlayer)){
-        std::cout <<  "CHANGED TILES!!!!!!!!!!" << std::endl;
         _terrainXPlayer = gridX;
         _terrainZPlayer = gridZ;
         refreshTerrainTiles();
@@ -234,4 +235,24 @@ TerrainLoader::TerrainMap TerrainLoader::getTerrainMap()
 TerrainPtr TerrainLoader::getSingleTerrain(std::string terrainKey)
 {
     return this->_terrains[terrainKey];
+}
+
+void TerrainLoader::reloadTerrains()
+{
+	_seed = 1 + (rand() % static_cast<int>(10000 - 1 + 1));
+
+	for (auto const& x : _terrains) {
+		_renderer.getObjects()->removeModel(x.second->getModelName(), true);
+	}
+	_terrains.clear();
+
+	generateTerrain(0, 0);
+	generateTerrain(0, 1);
+	generateTerrain(1, 0);
+	generateTerrain(1, 1);
+	generateTerrain(-1, 1);
+	generateTerrain(-1, 0);
+	generateTerrain(-1, -1);
+	generateTerrain(0, -1);
+	generateTerrain(1, -1);
 }
