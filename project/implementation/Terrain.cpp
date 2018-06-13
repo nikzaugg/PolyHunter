@@ -9,21 +9,23 @@
 #include "noise.h"
 
 Terrain::CrystalMap Terrain::_collectedCrystals;
+int Terrain::seed = 10 + (rand() % static_cast<int>(10000 - 10 + 1));
+int Terrain::TERRAIN_SIZE = 400;
+int Terrain::VERTEX_COUNT = 30;
 
-Terrain::Terrain(std::string modelName, std::string materialFile, std::string materialName, std::string propName, ShaderPtr shader, Renderer & renderer, int gridX, int gridZ ,int terrain_size, int vertex_count, vmml::Vector3f pos, float rotX, float rotY, float rotZ, float scale, int seed)
+Terrain::Terrain(std::string modelName, std::string materialFile, std::string materialName, std::string propName, ShaderPtr shader, Renderer & renderer, int gridX, int gridZ ,int terrain_size, int vertex_count, vmml::Vector3f pos, float rotX, float rotY, float rotZ, float scale)
 : Entity(modelName, materialFile, materialName, propName, shader, renderer, pos, rotX, rotY, rotZ, scale)
 {
      std::cout << "TERRAIN WORKS!!!" << std::endl;
 	 std::cout << seed << std::endl;
     _gridX = gridX;
     _gridZ = gridZ;
-    _TERRAIN_SIZE = terrain_size;
-    _VERTEX_COUNT = vertex_count;
-	_seed = seed;
+    Terrain::TERRAIN_SIZE = terrain_size;
+    Terrain::VERTEX_COUNT = vertex_count;
     _amplitude = 70;
 
-    this->_offsetX = gridX * _TERRAIN_SIZE;
-    this->_offsetZ = gridZ * _TERRAIN_SIZE;
+    this->_offsetX = gridX * Terrain::TERRAIN_SIZE;
+    this->_offsetZ = gridZ * Terrain::TERRAIN_SIZE;
     
     _data = generateTerrain();
     ModelPtr terrainModel = ModelPtr(new Model(_data, getMaterial(), getProperties()));
@@ -44,37 +46,37 @@ ModelData::GroupMap Terrain::generateTerrain()
 void Terrain::generateTerrainGeometry()
 {
     int counter = 0;
-    for (int i = 0; i < _VERTEX_COUNT-1; i++)
+    for (int i = 0; i < Terrain::VERTEX_COUNT -1; i++)
     {
-        for (int j = 0; j < _VERTEX_COUNT-1; j++)
+        for (int j = 0; j < Terrain::VERTEX_COUNT-1; j++)
         {
             /***************************
              CALCULATE VERTEX POSITIONS
              **************************/
-            float xTopLeft = ((float)i / ((float)_VERTEX_COUNT - 1)) * _TERRAIN_SIZE;
+            float xTopLeft = ((float)i / ((float)Terrain::VERTEX_COUNT - 1)) * Terrain::TERRAIN_SIZE;
             xTopLeft += _offsetX;
-            float zTopLeft = ((float)j / ((float)_VERTEX_COUNT - 1)) * _TERRAIN_SIZE;
+            float zTopLeft = ((float)j / ((float)Terrain::VERTEX_COUNT - 1)) * Terrain::TERRAIN_SIZE;
             zTopLeft += _offsetZ;
 
             // std::cout << "TopLeft: "<< xTopLeft << " | " << zTopLeft << std::endl;
 
-            float xTopRight = ((float)(i) / ((float)_VERTEX_COUNT - 1)) * _TERRAIN_SIZE;
+            float xTopRight = ((float)(i) / ((float)Terrain::VERTEX_COUNT - 1)) * Terrain::TERRAIN_SIZE;
             xTopRight += _offsetX;
-            float zTopRight = ((float)(j+1) / ((float)_VERTEX_COUNT - 1)) * _TERRAIN_SIZE;
+            float zTopRight = ((float)(j+1) / ((float)Terrain::VERTEX_COUNT - 1)) * Terrain::TERRAIN_SIZE;
             zTopRight += _offsetZ;
 
             // std::cout << "TopRight: "<< xTopRight << " | " << zTopRight << std::endl;
 
-            float xBottomLeft = ((float)(i+1) / ((float)_VERTEX_COUNT - 1)) * _TERRAIN_SIZE;
+            float xBottomLeft = ((float)(i+1) / ((float)Terrain::VERTEX_COUNT - 1)) * Terrain::TERRAIN_SIZE;
             xBottomLeft += _offsetX;
-            float zBottomLeft = ((float)(j) / ((float)_VERTEX_COUNT - 1)) * _TERRAIN_SIZE;
+            float zBottomLeft = ((float)(j) / ((float)Terrain::VERTEX_COUNT - 1)) * Terrain::TERRAIN_SIZE;
             zBottomLeft += _offsetZ;
 
             // std::cout << "BottomLeft: "<< xBottomLeft << " | " << zBottomLeft << std::endl;
 
-            float xBottomRight = ((float)(i + 1) / ((float)_VERTEX_COUNT - 1)) * _TERRAIN_SIZE;
+            float xBottomRight = ((float)(i + 1) / ((float)Terrain::VERTEX_COUNT - 1)) * Terrain::TERRAIN_SIZE;
             xBottomRight += _offsetX;
-            float zBottomRight = ((float)(j + 1) / ((float)_VERTEX_COUNT - 1)) * _TERRAIN_SIZE;
+            float zBottomRight = ((float)(j + 1) / ((float)Terrain::VERTEX_COUNT - 1)) * Terrain::TERRAIN_SIZE;
             zBottomRight += _offsetZ;
 
             // std::cout << "BottomRight: "<< xBottomRight << " | " << zBottomRight << std::endl;
@@ -125,10 +127,10 @@ void Terrain::placeTree(int i, int j)
     ridgedMulti.SetSeed(100);
     
     // Rescale from -1.0:+1.0 to 0.0:1.0
-    float xPos = ((float)i / ((float)_VERTEX_COUNT - 1)) * _TERRAIN_SIZE;
+    float xPos = ((float)i / ((float)Terrain::VERTEX_COUNT - 1)) * Terrain::TERRAIN_SIZE;
     xPos += _offsetX;
     
-    float zPos = ((float)j / ((float)_VERTEX_COUNT - 1)) * _TERRAIN_SIZE;
+    float zPos = ((float)j / ((float)Terrain::VERTEX_COUNT - 1)) * Terrain::TERRAIN_SIZE;
     zPos += _offsetZ;
     
     float treeHeight;
@@ -152,10 +154,10 @@ void Terrain::placeCrystal(int i, int j)
     ridgedMulti.SetSeed(50);
     
     // Rescale from -1.0:+1.0 to 0.0:1.0
-    float xPos = ((float)i / ((float)_VERTEX_COUNT - 1)) * _TERRAIN_SIZE;
+    float xPos = ((float)i / ((float)Terrain::VERTEX_COUNT - 1)) * Terrain::TERRAIN_SIZE;
     xPos += _offsetX;
     
-    float zPos = ((float)j / ((float)_VERTEX_COUNT - 1)) * _TERRAIN_SIZE;
+    float zPos = ((float)j / ((float)Terrain::VERTEX_COUNT - 1)) * Terrain::TERRAIN_SIZE;
     zPos += _offsetZ;
     
     float crystalHeight;
@@ -179,11 +181,6 @@ void Terrain::placeCrystal(int i, int j)
             _treeCount++;
         
     }
-}
-
-double Terrain::getNoiseInput(float coord)
-{
-    return coord / (float)(_TERRAIN_SIZE * 3);
 }
 
 void Terrain::process(std::string cameraName, const double &deltaTime)
@@ -305,4 +302,35 @@ float Terrain::barryCentric(vmml::Vector3f p1, vmml::Vector3f p2, vmml::Vector3f
     float l2 = ((p3.z() - p1.z()) * (pos.x() - p3.x()) + (p1.x() - p3.x()) * (pos.y() - p3.z())) / det;
     float l3 = 1.0f - l1 - l2;
     return l1 * p1.y() + l2 * p2.y() + l3 * p3.y();
+}
+
+double Terrain::noise(double nx, double nz)
+{
+	noise::module::Perlin perlin;
+	perlin.SetSeed(Terrain::seed);
+	perlin.SetOctaveCount(4);
+	perlin.SetFrequency(1);
+	perlin.SetLacunarity(2.5);
+
+	// Rescale from -1.0:+1.0 to 0.0:1.0
+	double value = perlin.GetValue(nx, nz, 0.0) / 2.0 + 0.5;
+
+	// Prevent NaN error by not allowing values below 0
+	value = value < 0.0 ? 0.0 : value;
+
+	return value;
+}
+
+float Terrain::getHeightFromNoise(double nx, double nz)
+{
+	// Rescale from -1.0:+1.0 to 0.0:1.0
+	float res = Terrain::noise(nx, nz);
+	res = pow(res, 1.27);
+	res *= 300;
+	return res;
+}
+
+double Terrain::getNoiseInput(float coord)
+{
+	return coord / (float)(Terrain::TERRAIN_SIZE * 3);
 }

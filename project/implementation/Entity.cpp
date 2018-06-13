@@ -152,32 +152,6 @@ float Entity::getScale()
     return _scale;
 }
 
-double Entity::noise(double nx, double nz)
-{
-	noise::module::Perlin perlin;
-	perlin.SetSeed(_seed);
-	perlin.SetOctaveCount(4);
-	perlin.SetFrequency(1);
-	perlin.SetLacunarity(2.5);
-
-	// Rescale from -1.0:+1.0 to 0.0:1.0
-	double value = perlin.GetValue(nx, nz, 0.0) / 2.0 + 0.5;
-
-	// Prevent NaN error by not allowing values below 0
-	value = value < 0.0 ? 0.0 : value;
-
-	return value;
-}
-
-float Entity::getHeightFromNoise(double nx, double nz)
-{
-    // Rescale from -1.0:+1.0 to 0.0:1.0
-	float res = noise(nx, nz);
-    res = pow(res, 1.27);
-    res *= 300;
-    return res;
-}
-
 float Entity::degreeToRadians(float degree) {
     return degree * M_PI/180.0;
 }

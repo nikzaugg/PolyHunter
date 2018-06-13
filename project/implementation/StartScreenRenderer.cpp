@@ -152,10 +152,16 @@ void StartScreenRenderer::showStartScreen()
 		}
 	}
 
+	if (_renderer.getInput()->getKeyState(bRenderer::KEY_L))
+	{
+		startNewGame();
+	}
 	
 }
 
 void StartScreenRenderer::startNewGame()
 {
-
+	Terrain::seed = 10 + (rand() % static_cast<int>(10000 - 10 + 1));
+	_camera->setPosition(vmml::Vector3f(0.0f, Terrain::getHeightFromNoise(0.0, 0.0), 0.0f));
+	_terrainLoader->reloadTerrains();
 }

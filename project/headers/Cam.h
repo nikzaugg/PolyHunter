@@ -12,6 +12,7 @@ public:
     void process(std::string camera, const double &deltaTime);
     vmml::Vector3f getPosition();
 	void setMovable(bool enable);
+	void setPosition(vmml::Vector3f position);
     
 private:
     CameraPtr _camera;
@@ -22,10 +23,6 @@ private:
         return _renderer;
     }
     
-    double getNoiseInput(float coord);
-    float getHeightFromNoise(double nx, double nz);
-    double noise(double nx, double nz);
-
     vmml::Vector3f _position = vmml::Vector3f(0.0);
     float _cameraFloorOffset = 10.0;
     float _dx;

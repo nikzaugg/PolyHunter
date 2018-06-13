@@ -4,6 +4,7 @@
 #include "Entity.h"
 #include <math.h>
 #include <tuple>
+#include "noise.h"
 
 TerrainLoader::TerrainLoader(Renderer & renderer, ShaderPtr shader, CamPtr playerCam)
 {
@@ -32,7 +33,7 @@ TerrainPtr TerrainLoader::generateTerrain(int gridX, int gridZ)
 {
     std::string key = generateTerrainKey(gridX, gridZ);
     std::string terrainName = generateTerrainName(gridX, gridZ);
-    TerrainPtr terrain = TerrainPtr(new Terrain(terrainName, "terrain.mtl", "terrain", "terrainProperties", _shader, _renderer, gridX, gridZ, _TERRAIN_SIZE, _VERTEX_COUNT, vmml::Vector3f(0.0), 0.0, 0.0, 0.0, 1.0, _seed));
+    TerrainPtr terrain = TerrainPtr(new Terrain(terrainName, "terrain.mtl", "terrain", "terrainProperties", _shader, _renderer, gridX, gridZ, _TERRAIN_SIZE, _VERTEX_COUNT, vmml::Vector3f(0.0), 0.0, 0.0, 0.0, 1.0));
     _terrains.insert(TerrainMap::value_type(key , terrain));
     return terrain;
 }
@@ -236,6 +237,7 @@ TerrainPtr TerrainLoader::getSingleTerrain(std::string terrainKey)
 {
     return this->_terrains[terrainKey];
 }
+
 
 void TerrainLoader::reloadTerrains()
 {

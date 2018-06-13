@@ -10,7 +10,7 @@
 class Terrain : public Entity
 {
 public:
-    Terrain(std::string modelName, std::string materialFile, std::string materialName, std::string propName, ShaderPtr shader, Renderer & renderer, int gridX, int gridZ, int terrain_size, int vertex_count ,vmml::Vector3f pos, float rotX, float rotY, float rotZ, float scale, int seed);
+    Terrain(std::string modelName, std::string materialFile, std::string materialName, std::string propName, ShaderPtr shader, Renderer & renderer, int gridX, int gridZ, int terrain_size, int vertex_count ,vmml::Vector3f pos, float rotX, float rotY, float rotZ, float scale);
 	
     typedef std::unordered_map< std::string, TreePtr > TreeMap;
     typedef std::unordered_map< std::string, CrystalPtr > CrystalMap;
@@ -25,8 +25,12 @@ public:
     bool checkCollisionWithEntities(vmml::Vector3f playerPos);
     int getNrOfCrystalsCollected();
 
-    int _TERRAIN_SIZE;
-    int _VERTEX_COUNT;
+	static int seed;
+	static double Terrain::noise(double nx, double nz);
+	static float Terrain::getHeightFromNoise(double nx, double nz);
+	static double Terrain::getNoiseInput(float coord);
+	static int TERRAIN_SIZE;
+	static int VERTEX_COUNT;
 
 private:
     ModelData::GroupMap generateTerrain();
@@ -37,7 +41,6 @@ private:
     void processCrystals(std::string camera);
     void customProcessTrees(std::string camera, vmml::Matrix4f view, vmml::Matrix4f proj);
     void customProcessCrystals(std::string camera, vmml::Matrix4f view, vmml::Matrix4f proj);
-    double getNoiseInput(float coord);
     
     float barryCentric(vmml::Vector3f p1, vmml::Vector3f p2, vmml::Vector3f p3, vmml::Vector2f pos);
     

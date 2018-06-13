@@ -4,6 +4,8 @@
 #include "bRenderer.h"
 #include "Cam.h"
 #include "TerrainLoader.h"
+#include "Player.h"
+#include "PlayerCamera.h"
 
 class StartScreenRenderer
 {
@@ -33,7 +35,6 @@ private:
 	TerrainLoaderPtr _terrainLoader;
 	
 	bool isInScreenBounds(double xpos, int numeratorX, int denominatorX, double ypos, int numeratorY, int denominatorY);
-	
 };
 typedef std::shared_ptr< StartScreenRenderer >  StartScreenRendererPtr;
 #endif /* defined(B_START_SCREEN_RENDERER_H) */

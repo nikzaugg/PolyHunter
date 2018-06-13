@@ -236,11 +236,6 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
 	elapsedTime += deltaTime;
 	vmml::Matrix4f modelMatrix;
 	ShaderPtr skybox;
-
-	if (bRenderer().getInput()->getKeyState(bRenderer::KEY_L))
-	{
-		_terrainLoader->reloadTerrains();
-	}
     
     _cam->process(camera, deltaTime);
     _terrainLoader->process(camera, deltaTime);

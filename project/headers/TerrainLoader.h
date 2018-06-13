@@ -7,7 +7,7 @@
 #include "Cam.h"
 
 class TerrainLoader {
-
+	
 public:
 	typedef std::unordered_map< std::string, TerrainPtr > TerrainMap;
     TerrainLoader(Renderer & renderer, ShaderPtr shader, CamPtr playerCam);
