@@ -31,7 +31,7 @@ uniform vec3 lightDiffuseColor_0;
 uniform vec3 lightSpecularColor_0;
 varying float intensityBasedOnDist_0;
 
-// Light-Info: TORCH
+// Light-Info: TORCH_TOP
 uniform vec4 lightPositionViewSpace_1;
 uniform vec4 lightPos_World_1;
 uniform float lightIntensity_1;
@@ -77,7 +77,7 @@ void main()
         specular += vec4(lightSpecularColor_0 * (specularCoefficient * intensity * intensityBasedOnDist_0), 0.0);
     }
     
-    // TORCH-LIGHT
+    // TORCH-LIGHT-TOP
     if (intensityBasedOnDist_1 > 0.0 && (intensity = max(dot(normal, normalize(lightVector_1)), 0.0)) > 0.0){
         intensity = clamp(intensity, 0.0, 1.0);
         diffuse += vec4(lightDiffuseColor_1 * (intensity * intensityBasedOnDist_1), 0.0);

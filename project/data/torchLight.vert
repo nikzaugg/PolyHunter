@@ -31,7 +31,7 @@ uniform vec3 lightDiffuseColor_0;
 uniform vec3 lightSpecularColor_0;
 varying float intensityBasedOnDist_0;
 
-// Light-Info: TORCH
+// Light-Info: TORCH_TOP
 uniform vec4 lightPositionViewSpace_1;
 uniform vec4 lightPos_World_1;
 uniform float lightIntensity_1;
