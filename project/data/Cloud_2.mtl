@@ -1,0 +1,13 @@
+# Blender MTL File: 'Cloud_2.blend'
+# Material Count: 1
+
+newmtl Cloud2
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.613150 0.601222 0.640000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd Cloud2.png

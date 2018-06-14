@@ -65,6 +65,10 @@ void RenderProject::initFunction()
     bRenderer().getObjects()->loadObjModel("sun.obj", false, true, sunShader, nullptr);
     bRenderer().getObjects()->loadObjModel("torch.obj", false, true, torchLightShader, nullptr);
     bRenderer().getObjects()->loadObjModel("skydome.obj", false, true, skydomeShader, nullptr);
+	bRenderer().getObjects()->loadObjModel("Cloud_1.obj", false, true, basicShader, nullptr);
+	bRenderer().getObjects()->loadObjModel("Cloud_2.obj", false, true, basicShader, nullptr);
+	bRenderer().getObjects()->loadObjModel("Cloud_3.obj", false, true, basicShader, nullptr);
+	bRenderer().getObjects()->loadObjModel("Cloud_4.obj", false, true, basicShader, nullptr);
     
     // SKYDOME
     _skydome = SkydomePtr(new Skydome("skydome", getProjectRenderer()));
@@ -263,6 +267,8 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
     bRenderer().getObjects()->getShader("terrain")->setUniform("torchDir", bRenderer().getObjects()->getCamera("camera")->getForward());
     // place torch-light
     bRenderer().getObjects()->getLight("torch")->setPosition(_cam->getPosition() - bRenderer().getObjects()->getCamera("camera")->getForward()*10.0f);
+	bRenderer().getModelRenderer()->queueModelInstance("Cloud_1", "Cloud_1_instance", camera, modelMatrix, std::vector<std::string>({ "sun", "torch" }));
+	
     
     ///*** Torch - little crystals ***/
     float origX = 0.75;
@@ -286,7 +292,6 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
         modelMatrix *= vmml::create_rotation(float(M_PI_F/10.0 * elapsedTime), vmml::Vector3f(0.5, 0.5, -0.5));
         bRenderer().getModelRenderer()->queueModelInstance("torch", &"torch_particle_"[i], camera, modelMatrix, std::vector<std::string>({ "sun", "torch" }));
     }
-
 	/// SUN (Torch) ///
 	_sun->render(camera, _cam->getPosition(), _viewMatrixHUD, elapsedTime);
 }
@@ -296,24 +301,6 @@ void RenderProject::updateCamera(const std::string &camera, const double &deltaT
 {
 	//// Adjust aspect ratio ////
 	bRenderer().getObjects()->getCamera(camera)->setAspectRatio(bRenderer().getView()->getAspectRatio());
-
-    // pause using double tap
-	//if (Input::isTouchDevice()) {
-	//	if (bRenderer().getInput()->doubleTapRecognized()) {
-	//		_running = !_running;
-	//	}
-	//}
-	//else {
-	//	GLint currentStateSpaceKey = bRenderer().getInput()->getKeyState(bRenderer::KEY_SPACE);
-	//	if (currentStateSpaceKey != _lastStateSpaceKey)
-	//	{
-	//	    _lastStateSpaceKey = currentStateSpaceKey;
-	//	    if (currentStateSpaceKey == bRenderer::INPUT_PRESS){
-	//	        _running = !_running;
-	//	        bRenderer().getInput()->setCursorEnabled(!_running);
-	//	    }
-	//	}
-	//}
 }
 
 /* For iOS only: Handle device rotation */

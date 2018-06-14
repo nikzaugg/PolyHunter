@@ -264,6 +264,10 @@
     <None Include="..\data\cave_stream.frag" />
     <None Include="..\data\cave_stream.mtl" />
     <None Include="..\data\cave_stream.vert" />
+    <None Include="..\data\Cloud_1.mtl" />
+    <None Include="..\data\Cloud_2.mtl" />
+    <None Include="..\data\Cloud_3.mtl" />
+    <None Include="..\data\Cloud_4.mtl" />
     <None Include="..\data\config.json" />
     <None Include="..\data\crystal.mtl" />
     <None Include="..\data\flame.frag" />
@@ -288,6 +292,10 @@
     <Image Include="..\data\cave_d.png" />
     <Image Include="..\data\cave_n.png" />
     <Image Include="..\data\cave_stream_n.png" />
+    <Image Include="..\data\Cloud1.png" />
+    <Image Include="..\data\Cloud2.png" />
+    <Image Include="..\data\Cloud3.png" />
+    <Image Include="..\data\Cloud4.png" />
     <Image Include="..\data\crystal.png" />
     <Image Include="..\data\crystal_d.png" />
     <Image Include="..\data\crystal_icon.png" />

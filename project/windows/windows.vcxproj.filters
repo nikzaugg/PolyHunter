@@ -649,6 +649,18 @@
     <None Include="..\data\sunShader.vert">
       <Filter>project\data</Filter>
     </None>
+    <None Include="..\data\Cloud_1.mtl">
+      <Filter>project\data</Filter>
+    </None>
+    <None Include="..\data\Cloud_2.mtl">
+      <Filter>project\data</Filter>
+    </None>
+    <None Include="..\data\Cloud_3.mtl">
+      <Filter>project\data</Filter>
+    </None>
+    <None Include="..\data\Cloud_4.mtl">
+      <Filter>project\data</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\data\flame.png">
@@ -688,6 +700,18 @@
       <Filter>project\data</Filter>
     </Image>
     <Image Include="..\data\crystal_icon.png">
+      <Filter>project\data</Filter>
+    </Image>
+    <Image Include="..\data\Cloud1.png">
+      <Filter>project\data</Filter>
+    </Image>
+    <Image Include="..\data\Cloud3.png">
+      <Filter>project\data</Filter>
+    </Image>
+    <Image Include="..\data\Cloud4.png">
+      <Filter>project\data</Filter>
+    </Image>
+    <Image Include="..\data\Cloud2.png">
       <Filter>project\data</Filter>
     </Image>
   </ItemGroup>
