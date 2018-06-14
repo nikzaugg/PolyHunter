@@ -105,7 +105,7 @@ float ShadowCalculation(vec3 normal, vec3 lightDir)
         abs(shadowCoords.z) > 1.0 )
         shadow = 1.0;
 
-    return shadow;
+    return shadow + 0.6;
 }
 
 void main()
@@ -125,6 +125,10 @@ void main()
         vec3 lightVector_1 = normalize(vec3(lightPos_World_1) - vec3(position));
         vec3 surfaceToCamera = vec3(normalize(vec4(viewPos, 1.0) - position));
         
+        float shadow = 1.0;
+        // shadow-value
+        shadow = ShadowCalculation(v_normal, lightVector_0);
+        
         // SUN-LIGHT
         float intensity = 0.0;
         if (intensityBasedOnDist_0 > 0.0 && (intensity = max(dot(normal, normalize(lightVector_0)), 0.0)) > 0.0){
@@ -139,23 +143,20 @@ void main()
             float theta     = dot(lightVector_1, normalize(-torchDir));
             float epsilon   = torchInnerCutOff - torchOuterCutOff;
             float coneInstensity = clamp((theta - torchOuterCutOff) / epsilon, 0.0, 1.0);
-            
             intensity = clamp(intensity, 0.0, 1.0);
             intensity *= coneInstensity * torchDamper;
             diffuse += vec4(lightDiffuseColor_1 * (intensity * intensityBasedOnDist_1), 0.0);
             specularCoefficient = pow(max(0.0, dot(surfaceToCamera, reflect(-normalize(lightVector_1), normal))), Ns);
             specular += vec4(lightSpecularColor_1 * (specularCoefficient * intensity * intensityBasedOnDist_1), 0.0);
         }
-        
-        // shadow-value
-        float shadow = ShadowCalculation(v_normal, lightVector_0);
+
         
         // ambient part
         vec4 ambient = vec4(ambientColor * Ks, 1.0);
         ambient = clamp(ambient, 0.0, 1.0);
-        diffuse = diffuse * vec4(Kd,1.0) * (shadow * 0.5);
+        diffuse = diffuse * vec4(Kd,1.0);
         specular = specular  * vec4(Ks, 0.0);
-        vec4 outColor = clamp(ambient+diffuse+specular, 0.0, 1.0);
+        vec4 outColor = clamp((ambient+ shadow * diffuse) * v_color +specular, 0.0, 1.0);
 
         gl_FragColor = mix(vec4(vec3(fogColor), 1.0), outColor, visibility);
     }

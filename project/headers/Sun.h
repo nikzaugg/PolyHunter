@@ -46,7 +46,7 @@ private:
 	ModelData::GroupMap createFragments();
     
     float _health = 0.0;
-    float _sunIntensity = 0.25;
+    float _sunIntensity = 0.3;
 
 	void renderFragments(std::string camera, vmml::Vector3f pos);
 
