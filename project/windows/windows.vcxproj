@@ -273,6 +273,8 @@
     <None Include="..\data\flame.frag" />
     <None Include="..\data\flame.mtl" />
     <None Include="..\data\flame.vert" />
+    <None Include="..\data\Pine1.mtl" />
+    <None Include="..\data\Pine2.mtl" />
     <None Include="..\data\skybox.frag" />
     <None Include="..\data\skybox.vert" />
     <None Include="..\data\Stone1.mtl" />

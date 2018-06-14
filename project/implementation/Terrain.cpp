@@ -14,12 +14,11 @@ Terrain::CrystalMap Terrain::_collectedCrystals;
 int Terrain::seed = Terrain::getRandomSeed();
 int Terrain::TERRAIN_SIZE = 400;
 int Terrain::VERTEX_COUNT = 30;
+float Terrain::AMPLITUDE = 300;
 
 Terrain::Terrain(std::string modelName, std::string materialFile, std::string materialName, std::string propName, ShaderPtr shader, Renderer & renderer, int gridX, int gridZ ,int terrain_size, int vertex_count, vmml::Vector3f pos, float rotX, float rotY, float rotZ, float scale)
 : Entity(modelName, materialFile, materialName, propName, shader, renderer, pos, rotX, rotY, rotZ, scale)
 {
-     std::cout << "TERRAIN WORKS!!!" << std::endl;
-	 std::cout << seed << std::endl;
     _gridX = gridX;
     _gridZ = gridZ;
     Terrain::TERRAIN_SIZE = terrain_size;
@@ -139,16 +138,33 @@ void Terrain::placeTree(int i, int j)
     
     float treeHeight;
     treeHeight = Terrain::getHeightFromNoise(getNoiseInput(xPos), getNoiseInput(zPos));
-    
+	
+	float normHeight = treeHeight / Terrain::AMPLITUDE;
+
     float value = ridgedMulti.GetValue(xPos, treeHeight, zPos);
     if (value > 1.0f)
     {
-        TreePtr tree = TreePtr(new Tree(getModelName() + std::to_string(i), "tree.obj", "tree", "treeProperties", renderer().getObjects()->loadShaderFile("basic", 1, false, true, true, true, false), renderer(), vmml::Vector3f(xPos, treeHeight, zPos), 0.0f, 0.0f, 0.0f, 1.0f));
-        tree->setYPosition(treeHeight);
-        _trees.insert(
-                      TreeMap::value_type( getModelName() + std::to_string(i), tree)
-                      );
-        _treeCount++;
+		TerrainObject tree;
+	//if (normHeight > 0.9f)
+	//	{
+			tree = {
+				vmml::Vector3f(xPos, treeHeight, zPos),
+				5.0f,
+				"Pine1"
+			};
+	//	}
+	//else if (normHeight > 0.8f) {
+		//tree = {
+		//	vmml::Vector3f(xPos, treeHeight, zPos),
+		//	1.0f,
+		//	"tree"
+		//};
+	//}
+
+		_trees.insert(
+			TreeMap::value_type(tree.type + std::to_string(i) + std::to_string(j), tree)
+		);
+        
     }
 }
 
@@ -166,9 +182,11 @@ void Terrain::placeCrystal(int i, int j)
     
     float crystalHeight;
     crystalHeight = getHeightFromNoise(getNoiseInput(xPos), getNoiseInput(zPos));
-    
+
+	float normHeight = crystalHeight / Terrain::AMPLITUDE;
+
     float value = ridgedMulti.GetValue(xPos, crystalHeight, zPos);
-    if (value > 1.0f)
+    if (value > 1.0f && normHeight > 0.9f)
     {
         std::string crystalName = getModelName() + std::to_string(i);
         if(Terrain::_collectedCrystals.find(crystalName) != Terrain::_collectedCrystals.end()){
@@ -204,7 +222,7 @@ void Terrain::placeRocks(int i, int j)
 	float value = ridgedMulti.GetValue(xPos, height, zPos);
 	if (0.8f < value && value < 0.9f)
 	{
-		Rock rock = {
+		TerrainObject rock = {
 			vmml::Vector3f(xPos, height - 20.f, zPos),
 			5.0f,
 			"Stone" + std::to_string(1 + (rand() % static_cast<int>(4 - 1 + 1)))
@@ -230,10 +248,15 @@ void Terrain::customProcess(std::string cameraName, const double &deltaTime, vmm
 
 void Terrain::processTrees(std::string camera)
 {
-    TreeMap::iterator it;
-    for (auto const& x : _trees) {
-        x.second->render(camera);
-    }
+	vmml::Matrix4f modelMatrix;
+	for (auto const& tree : _trees)
+	{
+		modelMatrix =
+			vmml::create_translation(tree.second.position) *
+			vmml::create_scaling(vmml::Vector3f(tree.second.scale));
+		renderer().getObjects()->setAmbientColor(vmml::Vector3f(0.5f));
+		renderer().getModelRenderer()->queueModelInstance(tree.second.type, tree.first, camera, modelMatrix, std::vector<std::string>({ "sun", "torch" }), true, true);
+	}
 }
 
 void Terrain::processCrystals(std::string camera)
@@ -271,10 +294,10 @@ void Terrain::drawCrystals(std::string camera)
 
 void Terrain::customProcessTrees(std::string camera, vmml::Matrix4f view, vmml::Matrix4f proj)
 {
-    TreeMap::iterator it;
+  /*  TreeMap::iterator it;
     for (auto const& x : _trees) {
         x.second->customRender(camera, view, proj);
-    }
+    }*/
 }
 
 void Terrain::renderTerrain(std::string camera)
@@ -371,7 +394,7 @@ float Terrain::getHeightFromNoise(double nx, double nz)
 	// Rescale from -1.0:+1.0 to 0.0:1.0
 	float res = Terrain::noise(nx, nz);
 	res = pow(res, 1.27);
-	res *= 300;
+	res *= Terrain::AMPLITUDE;
 	return res;
 }
 

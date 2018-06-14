@@ -673,6 +673,12 @@
     <None Include="..\data\Stone4.mtl">
       <Filter>project\data</Filter>
     </None>
+    <None Include="..\data\Pine1.mtl">
+      <Filter>project\data</Filter>
+    </None>
+    <None Include="..\data\Pine2.mtl">
+      <Filter>project\data</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\data\flame.png">

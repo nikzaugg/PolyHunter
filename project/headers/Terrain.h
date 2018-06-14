@@ -11,17 +11,18 @@ typedef struct {
 	vmml::Vector3f position;
 	float scale;
 	std::string type;
-} Rock;
+} TerrainObject;
+
 
 class Terrain : public Entity
 {
 public:
     Terrain(std::string modelName, std::string materialFile, std::string materialName, std::string propName, ShaderPtr shader, Renderer & renderer, int gridX, int gridZ, int terrain_size, int vertex_count ,vmml::Vector3f pos, float rotX, float rotY, float rotZ, float scale);
 	
-    typedef std::unordered_map< std::string, TreePtr > TreeMap;
+    typedef std::unordered_map< std::string, TerrainObject > TreeMap;
     typedef std::unordered_map< std::string, CrystalPtr > CrystalMap;
     typedef std::unordered_map< std::string, GeometryPtr > GroupMap;
-	typedef std::unordered_map< std::string, Rock > RockMap;
+	typedef std::unordered_map< std::string, TerrainObject > RockMap;
     
 	void process(std::string cameraName, const double &deltaTime);
     void drawCrystals(std::string camera);
@@ -39,6 +40,7 @@ public:
     static int getRandomSeed();
 	static int TERRAIN_SIZE;
 	static int VERTEX_COUNT;
+	static float AMPLITUDE;
 
 private:
     ModelData::GroupMap generateTerrain();
