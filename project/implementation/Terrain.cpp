@@ -205,7 +205,7 @@ void Terrain::placeRocks(int i, int j)
 	if (0.8f < value && value < 0.9f)
 	{
 		Rock rock = {
-			vmml::Vector3f(xPos, height - 15.0f, zPos),
+			vmml::Vector3f(xPos, height - 20.f, zPos),
 			5.0f,
 			"Stone" + std::to_string(1 + (rand() % static_cast<int>(4 - 1 + 1)))
 		};
