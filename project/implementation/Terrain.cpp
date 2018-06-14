@@ -23,7 +23,6 @@ Terrain::Terrain(std::string modelName, std::string materialFile, std::string ma
     _gridZ = gridZ;
     Terrain::TERRAIN_SIZE = terrain_size;
     Terrain::VERTEX_COUNT = vertex_count;
-    _amplitude = 70;
 
     this->_offsetX = gridX * Terrain::TERRAIN_SIZE;
     this->_offsetZ = gridZ * Terrain::TERRAIN_SIZE;
@@ -144,26 +143,28 @@ void Terrain::placeTree(int i, int j)
     float value = ridgedMulti.GetValue(xPos, treeHeight, zPos);
     if (value > 1.0f)
     {
-		TerrainObject tree;
-	//if (normHeight > 0.9f)
-	//	{
-			tree = {
+		if (normHeight > 0.8f)
+		{
+			TerrainObject tree = {
 				vmml::Vector3f(xPos, treeHeight, zPos),
 				5.0f,
 				"Pine1"
 			};
-	//	}
-	//else if (normHeight > 0.8f) {
-		//tree = {
-		//	vmml::Vector3f(xPos, treeHeight, zPos),
-		//	1.0f,
-		//	"tree"
-		//};
-	//}
-
-		_trees.insert(
-			TreeMap::value_type(tree.type + std::to_string(i) + std::to_string(j), tree)
-		);
+			_trees.insert(
+				TreeMap::value_type(tree.type + std::to_string(i) + std::to_string(j), tree)
+			);
+		}
+		else if (normHeight > 0.5f) 
+		{
+			TerrainObject tree = {
+				vmml::Vector3f(xPos, treeHeight, zPos),
+				1.0f,
+				"tree"
+			};
+			_trees.insert(
+				TreeMap::value_type(tree.type + std::to_string(i) + std::to_string(j), tree)
+			);
+		}
         
     }
 }
@@ -171,7 +172,7 @@ void Terrain::placeTree(int i, int j)
 void Terrain::placeCrystal(int i, int j)
 {
     noise::module::RidgedMulti ridgedMulti;
-    ridgedMulti.SetSeed(50);
+    ridgedMulti.SetSeed(100);
     
     // Rescale from -1.0:+1.0 to 0.0:1.0
     float xPos = ((float)i / ((float)Terrain::VERTEX_COUNT - 1)) * Terrain::TERRAIN_SIZE;
@@ -186,7 +187,7 @@ void Terrain::placeCrystal(int i, int j)
 	float normHeight = crystalHeight / Terrain::AMPLITUDE;
 
     float value = ridgedMulti.GetValue(xPos, crystalHeight, zPos);
-    if (value > 1.0f && normHeight > 0.9f)
+    if (0.1f < value < 0.2f && normHeight > 0.9f)
     {
         std::string crystalName = getModelName() + std::to_string(i);
         if(Terrain::_collectedCrystals.find(crystalName) != Terrain::_collectedCrystals.end()){
@@ -302,7 +303,7 @@ void Terrain::customProcessTrees(std::string camera, vmml::Matrix4f view, vmml::
 
 void Terrain::renderTerrain(std::string camera)
 {
-    getShader()->setUniform("amplitude", _amplitude);
+    getShader()->setUniform("amplitude", Terrain::AMPLITUDE);
     getShader()->setUniform("ModelMatrix", computeTransformationMatrix());
     renderer().getObjects()->setAmbientColor(vmml::Vector3f(0.3f));
     // draw model
@@ -312,7 +313,7 @@ void Terrain::renderTerrain(std::string camera)
 
 void Terrain::customRenderTerrain(std::string camera, vmml::Matrix4f view, vmml::Matrix4f proj)
 {
-    getShader()->setUniform("amplitude", _amplitude);
+    getShader()->setUniform("amplitude", Terrain::AMPLITUDE);
     renderer().getObjects()->setAmbientColor(vmml::Vector3f(0.3f));
     // draw model
     // renderer().getModelRenderer()->drawModel(renderer().getObjects()->getModel(getModelName()), computeTransformationMatrix(), view, proj, std::vector<std::string>({}), false);
