@@ -148,7 +148,7 @@ void Terrain::placeTree(int i, int j)
 			TerrainObject tree = {
 				vmml::Vector3f(xPos, treeHeight, zPos),
 				5.0f,
-				"Pine1"
+				"ThinTree"
 			};
 			_trees.insert(
 				TreeMap::value_type(tree.type + std::to_string(i) + std::to_string(j), tree)
@@ -224,9 +224,9 @@ void Terrain::placeRocks(int i, int j)
 	if (0.8f < value && value < 0.9f)
 	{
 		TerrainObject rock = {
-			vmml::Vector3f(xPos, height - 20.f, zPos),
+			vmml::Vector3f(xPos, height, zPos),
 			5.0f,
-			"Stone" + std::to_string(1 + (rand() % static_cast<int>(4 - 1 + 1)))
+			"Rock" + std::to_string(1 + (rand() % static_cast<int>(4 - 1 + 1)))
 		};
 
 		_rocks.insert(RockMap::value_type("Rock" + std::to_string(i) + std::to_string(j), rock));

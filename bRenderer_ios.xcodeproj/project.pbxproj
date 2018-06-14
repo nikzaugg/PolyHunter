@@ -88,6 +88,42 @@
 		31AF851420A861140048FBF6 /* diffuse.png in Resources */ = {isa = PBXBuildFile; fileRef = 31AF851320A861130048FBF6 /* diffuse.png */; };
 		31B0FD772097A1D600601F21 /* Player.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 31B0FD752097A1D600601F21 /* Player.cpp */; };
 		31B0FD792097A20200601F21 /* Entity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 31B0FD782097A20200601F21 /* Entity.cpp */; };
+		31BBB4FF20D2DACC00A2F620 /* Cloud2.png in Resources */ = {isa = PBXBuildFile; fileRef = 31BBB4F320D2DAC600A2F620 /* Cloud2.png */; };
+		31BBB50020D2DACC00A2F620 /* Cloud_2.obj in Resources */ = {isa = PBXBuildFile; fileRef = 31BBB4F420D2DAC600A2F620 /* Cloud_2.obj */; };
+		31BBB50120D2DACC00A2F620 /* Cloud_2.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 31BBB4F520D2DAC700A2F620 /* Cloud_2.mtl */; };
+		31BBB50220D2DACC00A2F620 /* Cloud_4.obj in Resources */ = {isa = PBXBuildFile; fileRef = 31BBB4F620D2DAC700A2F620 /* Cloud_4.obj */; };
+		31BBB50320D2DACC00A2F620 /* Cloud4.png in Resources */ = {isa = PBXBuildFile; fileRef = 31BBB4F720D2DAC700A2F620 /* Cloud4.png */; };
+		31BBB50420D2DACC00A2F620 /* Cloud_3.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 31BBB4F820D2DAC700A2F620 /* Cloud_3.mtl */; };
+		31BBB50520D2DACC00A2F620 /* Cloud_1.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 31BBB4F920D2DACB00A2F620 /* Cloud_1.mtl */; };
+		31BBB50620D2DACC00A2F620 /* Cloud_1.obj in Resources */ = {isa = PBXBuildFile; fileRef = 31BBB4FA20D2DACB00A2F620 /* Cloud_1.obj */; };
+		31BBB50720D2DACC00A2F620 /* Cloud_4.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 31BBB4FB20D2DACB00A2F620 /* Cloud_4.mtl */; };
+		31BBB50820D2DACC00A2F620 /* Cloud1.png in Resources */ = {isa = PBXBuildFile; fileRef = 31BBB4FC20D2DACB00A2F620 /* Cloud1.png */; };
+		31BBB50920D2DACC00A2F620 /* Cloud3.png in Resources */ = {isa = PBXBuildFile; fileRef = 31BBB4FD20D2DACC00A2F620 /* Cloud3.png */; };
+		31BBB50A20D2DACC00A2F620 /* Cloud_3.obj in Resources */ = {isa = PBXBuildFile; fileRef = 31BBB4FE20D2DACC00A2F620 /* Cloud_3.obj */; };
+		31BBB52020D2DAE800A2F620 /* ThinTree.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 31BBB51D20D2DAE700A2F620 /* ThinTree.mtl */; };
+		31BBB52120D2DAE800A2F620 /* ThinTree.obj in Resources */ = {isa = PBXBuildFile; fileRef = 31BBB51E20D2DAE700A2F620 /* ThinTree.obj */; };
+		31BBB52220D2DAE800A2F620 /* ThinTree.png in Resources */ = {isa = PBXBuildFile; fileRef = 31BBB51F20D2DAE800A2F620 /* ThinTree.png */; };
+		31BBB52920D2DAF400A2F620 /* PineTree1.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 31BBB52320D2DAF200A2F620 /* PineTree1.mtl */; };
+		31BBB52A20D2DAF400A2F620 /* PineTree1.png in Resources */ = {isa = PBXBuildFile; fileRef = 31BBB52420D2DAF300A2F620 /* PineTree1.png */; };
+		31BBB52B20D2DAF400A2F620 /* PineTree2.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 31BBB52520D2DAF300A2F620 /* PineTree2.mtl */; };
+		31BBB52C20D2DAF400A2F620 /* PineTree2.png in Resources */ = {isa = PBXBuildFile; fileRef = 31BBB52620D2DAF300A2F620 /* PineTree2.png */; };
+		31BBB52D20D2DAF400A2F620 /* PineTree1.obj in Resources */ = {isa = PBXBuildFile; fileRef = 31BBB52720D2DAF300A2F620 /* PineTree1.obj */; };
+		31BBB52E20D2DAF400A2F620 /* PineTree2.obj in Resources */ = {isa = PBXBuildFile; fileRef = 31BBB52820D2DAF300A2F620 /* PineTree2.obj */; };
+		31BBB53220D2DB0000A2F620 /* RoundTree.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 31BBB52F20D2DAFF00A2F620 /* RoundTree.mtl */; };
+		31BBB53320D2DB0000A2F620 /* RoundTree.obj in Resources */ = {isa = PBXBuildFile; fileRef = 31BBB53020D2DB0000A2F620 /* RoundTree.obj */; };
+		31BBB53420D2DB0000A2F620 /* RoundTree.png in Resources */ = {isa = PBXBuildFile; fileRef = 31BBB53120D2DB0000A2F620 /* RoundTree.png */; };
+		31BBB54120D2F14700A2F620 /* Rock1.png in Resources */ = {isa = PBXBuildFile; fileRef = 31BBB53520D2F14400A2F620 /* Rock1.png */; };
+		31BBB54220D2F14700A2F620 /* Rock4.png in Resources */ = {isa = PBXBuildFile; fileRef = 31BBB53620D2F14500A2F620 /* Rock4.png */; };
+		31BBB54320D2F14700A2F620 /* Rock1.obj in Resources */ = {isa = PBXBuildFile; fileRef = 31BBB53720D2F14500A2F620 /* Rock1.obj */; };
+		31BBB54420D2F14700A2F620 /* Rock2.png in Resources */ = {isa = PBXBuildFile; fileRef = 31BBB53820D2F14500A2F620 /* Rock2.png */; };
+		31BBB54520D2F14700A2F620 /* Rock2.obj in Resources */ = {isa = PBXBuildFile; fileRef = 31BBB53920D2F14500A2F620 /* Rock2.obj */; };
+		31BBB54620D2F14700A2F620 /* Rock3.obj in Resources */ = {isa = PBXBuildFile; fileRef = 31BBB53A20D2F14600A2F620 /* Rock3.obj */; };
+		31BBB54720D2F14700A2F620 /* Rock3.png in Resources */ = {isa = PBXBuildFile; fileRef = 31BBB53B20D2F14600A2F620 /* Rock3.png */; };
+		31BBB54820D2F14700A2F620 /* Rock4.obj in Resources */ = {isa = PBXBuildFile; fileRef = 31BBB53C20D2F14600A2F620 /* Rock4.obj */; };
+		31BBB54920D2F14700A2F620 /* Rock2.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 31BBB53D20D2F14600A2F620 /* Rock2.mtl */; };
+		31BBB54A20D2F14700A2F620 /* Rock3.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 31BBB53E20D2F14600A2F620 /* Rock3.mtl */; };
+		31BBB54B20D2F14700A2F620 /* Rock4.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 31BBB53F20D2F14700A2F620 /* Rock4.mtl */; };
+		31BBB54C20D2F14700A2F620 /* Rock1.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 31BBB54020D2F14700A2F620 /* Rock1.mtl */; };
 		31E5CD6D20B03883005DC7D5 /* simpleTexture.frag in Resources */ = {isa = PBXBuildFile; fileRef = 31E5CD6B20B03883005DC7D5 /* simpleTexture.frag */; };
 		31E5CD6E20B03883005DC7D5 /* simpleTexture.vert in Resources */ = {isa = PBXBuildFile; fileRef = 31E5CD6C20B03883005DC7D5 /* simpleTexture.vert */; };
 		31E5CD7020B052CB005DC7D5 /* ShadowModelRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 31E5CD6F20B052CB005DC7D5 /* ShadowModelRenderer.cpp */; };
@@ -380,6 +416,42 @@
 		31B0FD782097A20200601F21 /* Entity.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Entity.cpp; sourceTree = "<group>"; };
 		31B0FD7A2097A21D00601F21 /* Entity.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Entity.h; sourceTree = "<group>"; };
 		31B0FD7B2097A22F00601F21 /* Player.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Player.h; sourceTree = "<group>"; };
+		31BBB4F320D2DAC600A2F620 /* Cloud2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Cloud2.png; sourceTree = "<group>"; };
+		31BBB4F420D2DAC600A2F620 /* Cloud_2.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Cloud_2.obj; sourceTree = "<group>"; };
+		31BBB4F520D2DAC700A2F620 /* Cloud_2.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Cloud_2.mtl; sourceTree = "<group>"; };
+		31BBB4F620D2DAC700A2F620 /* Cloud_4.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Cloud_4.obj; sourceTree = "<group>"; };
+		31BBB4F720D2DAC700A2F620 /* Cloud4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Cloud4.png; sourceTree = "<group>"; };
+		31BBB4F820D2DAC700A2F620 /* Cloud_3.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Cloud_3.mtl; sourceTree = "<group>"; };
+		31BBB4F920D2DACB00A2F620 /* Cloud_1.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Cloud_1.mtl; sourceTree = "<group>"; };
+		31BBB4FA20D2DACB00A2F620 /* Cloud_1.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Cloud_1.obj; sourceTree = "<group>"; };
+		31BBB4FB20D2DACB00A2F620 /* Cloud_4.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Cloud_4.mtl; sourceTree = "<group>"; };
+		31BBB4FC20D2DACB00A2F620 /* Cloud1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Cloud1.png; sourceTree = "<group>"; };
+		31BBB4FD20D2DACC00A2F620 /* Cloud3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Cloud3.png; sourceTree = "<group>"; };
+		31BBB4FE20D2DACC00A2F620 /* Cloud_3.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Cloud_3.obj; sourceTree = "<group>"; };
+		31BBB51D20D2DAE700A2F620 /* ThinTree.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ThinTree.mtl; sourceTree = "<group>"; };
+		31BBB51E20D2DAE700A2F620 /* ThinTree.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ThinTree.obj; sourceTree = "<group>"; };
+		31BBB51F20D2DAE800A2F620 /* ThinTree.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ThinTree.png; sourceTree = "<group>"; };
+		31BBB52320D2DAF200A2F620 /* PineTree1.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = PineTree1.mtl; sourceTree = "<group>"; };
+		31BBB52420D2DAF300A2F620 /* PineTree1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = PineTree1.png; sourceTree = "<group>"; };
+		31BBB52520D2DAF300A2F620 /* PineTree2.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = PineTree2.mtl; sourceTree = "<group>"; };
+		31BBB52620D2DAF300A2F620 /* PineTree2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = PineTree2.png; sourceTree = "<group>"; };
+		31BBB52720D2DAF300A2F620 /* PineTree1.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = PineTree1.obj; sourceTree = "<group>"; };
+		31BBB52820D2DAF300A2F620 /* PineTree2.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = PineTree2.obj; sourceTree = "<group>"; };
+		31BBB52F20D2DAFF00A2F620 /* RoundTree.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = RoundTree.mtl; sourceTree = "<group>"; };
+		31BBB53020D2DB0000A2F620 /* RoundTree.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = RoundTree.obj; sourceTree = "<group>"; };
+		31BBB53120D2DB0000A2F620 /* RoundTree.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = RoundTree.png; sourceTree = "<group>"; };
+		31BBB53520D2F14400A2F620 /* Rock1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Rock1.png; sourceTree = "<group>"; };
+		31BBB53620D2F14500A2F620 /* Rock4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Rock4.png; sourceTree = "<group>"; };
+		31BBB53720D2F14500A2F620 /* Rock1.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Rock1.obj; sourceTree = "<group>"; };
+		31BBB53820D2F14500A2F620 /* Rock2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Rock2.png; sourceTree = "<group>"; };
+		31BBB53920D2F14500A2F620 /* Rock2.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Rock2.obj; sourceTree = "<group>"; };
+		31BBB53A20D2F14600A2F620 /* Rock3.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Rock3.obj; sourceTree = "<group>"; };
+		31BBB53B20D2F14600A2F620 /* Rock3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Rock3.png; sourceTree = "<group>"; };
+		31BBB53C20D2F14600A2F620 /* Rock4.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Rock4.obj; sourceTree = "<group>"; };
+		31BBB53D20D2F14600A2F620 /* Rock2.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Rock2.mtl; sourceTree = "<group>"; };
+		31BBB53E20D2F14600A2F620 /* Rock3.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Rock3.mtl; sourceTree = "<group>"; };
+		31BBB53F20D2F14700A2F620 /* Rock4.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Rock4.mtl; sourceTree = "<group>"; };
+		31BBB54020D2F14700A2F620 /* Rock1.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Rock1.mtl; sourceTree = "<group>"; };
 		31E5CD6B20B03883005DC7D5 /* simpleTexture.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = simpleTexture.frag; sourceTree = "<group>"; };
 		31E5CD6C20B03883005DC7D5 /* simpleTexture.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = simpleTexture.vert; sourceTree = "<group>"; };
 		31E5CD6F20B052CB005DC7D5 /* ShadowModelRenderer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ShadowModelRenderer.cpp; sourceTree = "<group>"; };
@@ -787,6 +859,42 @@
 		B47949841BA6742B00B5E9DC /* data */ = {
 			isa = PBXGroup;
 			children = (
+				31BBB54020D2F14700A2F620 /* Rock1.mtl */,
+				31BBB53720D2F14500A2F620 /* Rock1.obj */,
+				31BBB53520D2F14400A2F620 /* Rock1.png */,
+				31BBB53D20D2F14600A2F620 /* Rock2.mtl */,
+				31BBB53920D2F14500A2F620 /* Rock2.obj */,
+				31BBB53820D2F14500A2F620 /* Rock2.png */,
+				31BBB53E20D2F14600A2F620 /* Rock3.mtl */,
+				31BBB53A20D2F14600A2F620 /* Rock3.obj */,
+				31BBB53B20D2F14600A2F620 /* Rock3.png */,
+				31BBB53F20D2F14700A2F620 /* Rock4.mtl */,
+				31BBB53C20D2F14600A2F620 /* Rock4.obj */,
+				31BBB53620D2F14500A2F620 /* Rock4.png */,
+				31BBB52F20D2DAFF00A2F620 /* RoundTree.mtl */,
+				31BBB53020D2DB0000A2F620 /* RoundTree.obj */,
+				31BBB53120D2DB0000A2F620 /* RoundTree.png */,
+				31BBB52320D2DAF200A2F620 /* PineTree1.mtl */,
+				31BBB52720D2DAF300A2F620 /* PineTree1.obj */,
+				31BBB52420D2DAF300A2F620 /* PineTree1.png */,
+				31BBB52520D2DAF300A2F620 /* PineTree2.mtl */,
+				31BBB52820D2DAF300A2F620 /* PineTree2.obj */,
+				31BBB52620D2DAF300A2F620 /* PineTree2.png */,
+				31BBB51D20D2DAE700A2F620 /* ThinTree.mtl */,
+				31BBB51E20D2DAE700A2F620 /* ThinTree.obj */,
+				31BBB51F20D2DAE800A2F620 /* ThinTree.png */,
+				31BBB4F920D2DACB00A2F620 /* Cloud_1.mtl */,
+				31BBB4FA20D2DACB00A2F620 /* Cloud_1.obj */,
+				31BBB4F520D2DAC700A2F620 /* Cloud_2.mtl */,
+				31BBB4F420D2DAC600A2F620 /* Cloud_2.obj */,
+				31BBB4F820D2DAC700A2F620 /* Cloud_3.mtl */,
+				31BBB4FE20D2DACC00A2F620 /* Cloud_3.obj */,
+				31BBB4FB20D2DACB00A2F620 /* Cloud_4.mtl */,
+				31BBB4F620D2DAC700A2F620 /* Cloud_4.obj */,
+				31BBB4FC20D2DACB00A2F620 /* Cloud1.png */,
+				31BBB4F320D2DAC600A2F620 /* Cloud2.png */,
+				31BBB4FD20D2DACC00A2F620 /* Cloud3.png */,
+				31BBB4F720D2DAC700A2F620 /* Cloud4.png */,
 				B47949851BA6742B00B5E9DC /* arial.ttf */,
 				31A71EDD20865D6E00A2D46A /* basic.frag */,
 				31A71ED120865D6C00A2D46A /* basic.vert */,
@@ -1186,8 +1294,13 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				31BBB52120D2DAE800A2F620 /* ThinTree.obj in Resources */,
+				31BBB50120D2DACC00A2F620 /* Cloud_2.mtl in Resources */,
+				31BBB50620D2DACC00A2F620 /* Cloud_1.obj in Resources */,
 				31A71EE620865D6F00A2D46A /* sun.mtl in Resources */,
+				31BBB54B20D2F14700A2F620 /* Rock4.mtl in Resources */,
 				B47949A31BA6742B00B5E9DC /* basicTitle_light.png in Resources */,
+				31BBB52A20D2DAF400A2F620 /* PineTree1.png in Resources */,
 				B47949B81BA6742B00B5E9DC /* flame.png in Resources */,
 				B47949A51BA6742B00B5E9DC /* blurShader.vert in Resources */,
 				31FEB34820AF57970033CD99 /* combineShader.frag in Resources */,
@@ -1195,20 +1308,33 @@
 				B47949BB1BA6742B00B5E9DC /* sparks.png in Resources */,
 				313C9ED520BAECDD00D6E2F0 /* crystal.mtl in Resources */,
 				31A71EE520865D6F00A2D46A /* sun.png in Resources */,
+				31BBB54120D2F14700A2F620 /* Rock1.png in Resources */,
+				31BBB50220D2DACC00A2F620 /* Cloud_4.obj in Resources */,
 				31FEB34720AF57970033CD99 /* combineShader.vert in Resources */,
+				31BBB54720D2F14700A2F620 /* Rock3.png in Resources */,
 				B47949A21BA6742B00B5E9DC /* arial.ttf in Resources */,
 				31AF851420A861140048FBF6 /* diffuse.png in Resources */,
 				B47949AD1BA6742B00B5E9DC /* cave_stream.vert in Resources */,
+				31BBB54420D2F14700A2F620 /* Rock2.png in Resources */,
+				31BBB54620D2F14700A2F620 /* Rock3.obj in Resources */,
 				B47949A41BA6742B00B5E9DC /* blurShader.frag in Resources */,
+				31BBB52C20D2DAF400A2F620 /* PineTree2.png in Resources */,
 				B47949A91BA6742B00B5E9DC /* cave_n.png in Resources */,
+				31BBB52D20D2DAF400A2F620 /* PineTree1.obj in Resources */,
 				31F1B7BA20CF2309001D53A1 /* sun.frag in Resources */,
+				31BBB54320D2F14700A2F620 /* Rock1.obj in Resources */,
+				31BBB53320D2DB0000A2F620 /* RoundTree.obj in Resources */,
 				31F1B7BB20CF2309001D53A1 /* sun.vert in Resources */,
 				31A71EE720865D6F00A2D46A /* tree.mtl in Resources */,
+				31BBB54C20D2F14700A2F620 /* Rock1.mtl in Resources */,
 				B47949A61BA6742B00B5E9DC /* cave.mtl in Resources */,
 				31A71EE020865D6F00A2D46A /* tree.png in Resources */,
+				31BBB50520D2DACC00A2F620 /* Cloud_1.mtl in Resources */,
+				31BBB50920D2DACC00A2F620 /* Cloud3.png in Resources */,
 				B47949B61BA6742B00B5E9DC /* flame.mtl in Resources */,
 				B47949AF1BA6742B00B5E9DC /* config.json in Resources */,
 				31448ADA20D10464002B91CE /* skydome.obj in Resources */,
+				31BBB52220D2DAE800A2F620 /* ThinTree.png in Resources */,
 				B47949AB1BA6742B00B5E9DC /* cave_stream.mtl in Resources */,
 				B47949BC1BA6742B00B5E9DC /* torch.mtl in Resources */,
 				31581B0E20B7809A0074783C /* moon_test.png in Resources */,
@@ -1220,34 +1346,52 @@
 				B47949AA1BA6742B00B5E9DC /* cave_stream.frag in Resources */,
 				313C9EDA20BB1C0600D6E2F0 /* crystal_icon.png in Resources */,
 				B47949BA1BA6742B00B5E9DC /* KozGoPro-ExtraLight.otf in Resources */,
+				31BBB50A20D2DACC00A2F620 /* Cloud_3.obj in Resources */,
 				31A71EE220865D6F00A2D46A /* sun.obj in Resources */,
+				31BBB52B20D2DAF400A2F620 /* PineTree2.mtl in Resources */,
 				31A71EDF20865D6F00A2D46A /* terrain.vert in Resources */,
 				B47949B51BA6742B00B5E9DC /* flame.frag in Resources */,
 				B47949A81BA6742B00B5E9DC /* cave_d.png in Resources */,
 				B47949AE1BA6742B00B5E9DC /* cave_stream_n.png in Resources */,
 				3139FC5720D0075600CA46A7 /* torch.png in Resources */,
+				31BBB4FF20D2DACC00A2F620 /* Cloud2.png in Resources */,
 				3139FC5420CFFE1400CA46A7 /* torchLight.vert in Resources */,
 				B47949A71BA6742B00B5E9DC /* cave.obj in Resources */,
+				31BBB50320D2DACC00A2F620 /* Cloud4.png in Resources */,
+				31BBB52020D2DAE800A2F620 /* ThinTree.mtl in Resources */,
 				315E0D9820A2D4340085984D /* guy.obj in Resources */,
+				31BBB52920D2DAF400A2F620 /* PineTree1.mtl in Resources */,
 				313C9ED420BAECDD00D6E2F0 /* crystal.png in Resources */,
 				B47949AC1BA6742B00B5E9DC /* cave_stream.obj in Resources */,
 				3139FC5520CFFE1400CA46A7 /* torchLight.frag in Resources */,
+				31BBB53220D2DB0000A2F620 /* RoundTree.mtl in Resources */,
 				31AF850E20A8552B0048FBF6 /* player.vert in Resources */,
+				31BBB54A20D2F14700A2F620 /* Rock3.mtl in Resources */,
+				31BBB50820D2DACC00A2F620 /* Cloud1.png in Resources */,
 				31A71EE320865D6F00A2D46A /* terrain.mtl in Resources */,
 				31AF851020A8553D0048FBF6 /* player.frag in Resources */,
 				B47949B71BA6742B00B5E9DC /* flame.obj in Resources */,
+				31BBB54920D2F14700A2F620 /* Rock2.mtl in Resources */,
 				31581B0B20B7809A0074783C /* moon_test.mtl in Resources */,
 				B47949B91BA6742B00B5E9DC /* flame.vert in Resources */,
 				31448AD920D10464002B91CE /* skydome.mtl in Resources */,
+				31BBB54820D2F14700A2F620 /* Rock4.obj in Resources */,
 				B4794A311BA6743D00B5E9DC /* LICENSE.txt in Resources */,
+				31BBB50720D2DACC00A2F620 /* Cloud_4.mtl in Resources */,
 				313C9ED620BAECDD00D6E2F0 /* crystal.obj in Resources */,
+				31BBB54520D2F14700A2F620 /* Rock2.obj in Resources */,
+				31BBB50420D2DACC00A2F620 /* Cloud_3.mtl in Resources */,
 				B4794A2A1BA6743D00B5E9DC /* LICENSE.txt in Resources */,
 				3136FA24209A1D76008436CF /* skydome.vert in Resources */,
 				B4794A301BA6743D00B5E9DC /* LICENSE.txt in Resources */,
 				31E5CD6D20B03883005DC7D5 /* simpleTexture.frag in Resources */,
+				31BBB50020D2DACC00A2F620 /* Cloud_2.obj in Resources */,
+				31BBB52E20D2DAF400A2F620 /* PineTree2.obj in Resources */,
 				B4CB8CD01B72E43300FE041B /* Project-Info.plist in Resources */,
+				31BBB53420D2DB0000A2F620 /* RoundTree.png in Resources */,
 				3136FA23209A1D76008436CF /* skydome.frag in Resources */,
 				31A71EE420865D6F00A2D46A /* terrain.frag in Resources */,
+				31BBB54220D2F14700A2F620 /* Rock4.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

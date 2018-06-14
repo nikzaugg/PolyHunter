@@ -1,12 +1,13 @@
-# Blender MTL File: 'Low-Poly_Models.blend'
+# Blender MTL File: 'Rock1.blend'
 # Material Count: 1
 
 newmtl Rock1
-Ns 96.078431
+Ns 94.117647
 Ka 1.000000 1.000000 1.000000
-Kd 0.358382 0.358382 0.358382
+Kd 0.600000 0.600000 0.600000
+Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 2
-map_Kd Stone.png
+map_Kd Rock1.png
