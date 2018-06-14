@@ -74,7 +74,7 @@ void StartScreenRenderer::handleNewGameButton(double xpos, double ypos)
 
 
 
-void StartScreenRenderer::showStartScreen()
+void StartScreenRenderer::showStartScreen(bool gameHasEnded)
 {
 	if (_showScreen)
 	{

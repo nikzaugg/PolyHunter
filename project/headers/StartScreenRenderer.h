@@ -20,7 +20,7 @@ public:
 
 	void showStartScreen(vmml::Matrix4f modelMatrix);
 
-	void showStartScreen();
+    void showStartScreen(bool gameHasEnded);
 
 	void startNewGame();
 

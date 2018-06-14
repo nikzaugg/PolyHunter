@@ -27,6 +27,7 @@ public:
     void increaseHealth(float hx);
 
 	void setPosition(vmml::Vector3f position);
+    void startEndGameAnimation(const double &deltaTime, const double &elapsedTime);
 
 	float getVertexPos();
 
@@ -54,8 +55,15 @@ private:
     
     double _shaderOffset = 0.0;
     float _sunSize = 1.0;
+    float _sunScale = 0.025;
     float _pulsateMin = 0.9;
     float _pulsateMax = 1.0;
+    double _animationTimer = 0.0;
+    bool _gameHasEnded = false;
+    bool _positionReached = false;
+    bool _sizeReached = false;
+    float _vanishFactor = 0.0;
+    vmml::Vector3f _screenSunPosition = vmml::Vector3f(0.75f, -0.70f, 0.8f);
 
 };
 typedef std::shared_ptr< Sun >  SunPtr;

@@ -102,19 +102,65 @@ void Sun::increaseSunSize(float deltaScale){
 
 void Sun::render(std::string camera, vmml::Vector3f playerPos, vmml::Matrix4f viewMatrixHUD, const double &elapsedTime )
 {
-    vmml::Matrix4f modelMatrix = _renderer.getObjects()->getCamera(camera)->getInverseViewMatrix();
-    modelMatrix *=
-    vmml::create_translation(vmml::Vector3f(0.75f, -0.70f, 0.8f)) *
-    vmml::create_scaling(vmml::Vector3f(0.025f));
-    modelMatrix *= vmml::create_rotation(float(M_PI_F/10.0 * elapsedTime), vmml::Vector3f::UNIT_Y);
+    if(!_gameHasEnded){
+        vmml::Matrix4f modelMatrix = _renderer.getObjects()->getCamera(camera)->getInverseViewMatrix();
+        modelMatrix *=
+        vmml::create_translation(vmml::Vector3f(0.75f, -0.70f, 0.8f)) *
+        vmml::create_scaling(vmml::Vector3f(0.025f));
+        modelMatrix *= vmml::create_rotation(float(M_PI_F/10.0 * elapsedTime), vmml::Vector3f::UNIT_Y);
+        
+        _shaderOffset += 0.2;
+        float sinScale = sin(_shaderOffset);
+        sinScale =  (sinScale - (-1.0)) * (_pulsateMax - _pulsateMin) / (1.0 - (-1.0)) + _pulsateMin;
+        
+        getShader()->setUniform("time", sinScale);
+        getShader()->setUniform("sickness", _health);
+        modelMatrix *= vmml::create_scaling(vmml::Vector3f(_sunSize * sinScale));
+        _renderer.getModelRenderer()->queueModelInstance("sun", "sun_instance", camera, modelMatrix, std::vector<std::string>({ "sun", "torch" }));
+    }
+}
 
-    _shaderOffset += 0.2;
-    float sinScale = sin(_shaderOffset);
-    sinScale =  (sinScale - (-1.0)) * (_pulsateMax - _pulsateMin) / (1.0 - (-1.0)) + _pulsateMin;
+void Sun::startEndGameAnimation(const double &deltaTime, const double &elapsedTime)
+{
+    _gameHasEnded = true;
+    _animationTimer += 0.1;
+    float lazy = 0.95;
     
-    getShader()->setUniform("time", sinScale);
-    getShader()->setUniform("sickness", _health);
-    modelMatrix *= vmml::create_scaling(vmml::Vector3f(_sunSize * sinScale));
-
-	_renderer.getModelRenderer()->queueModelInstance("sun", "sun_instance", camera, modelMatrix, std::vector<std::string>({ "sun", "torch" }));
+    vmml::Vector3f nextPosition;
+    vmml::Matrix4f inverseView = _renderer.getObjects()->getCamera("camera")->getInverseViewMatrix();
+    vmml::Vector3f targetPosition = vmml::Vector3f(0.0f, 0.0f, 0.8f);
+    
+    if (!_positionReached) {
+        nextPosition.x() = (lazy * _screenSunPosition.x()) + ((1.0-lazy) * targetPosition.x());
+        nextPosition.y() = (lazy * _screenSunPosition.y()) + ((1.0-lazy) * targetPosition.y());
+        nextPosition.z() = (lazy * _screenSunPosition.z()) + ((1.0-lazy) * targetPosition.z());
+        _screenSunPosition = nextPosition;
+        
+        vmml::Vector3f distance = targetPosition - _screenSunPosition;
+        float dist = distance.squared_length();
+        std::cout << dist << std::endl;
+        _positionReached =  dist < 0.0001 ? true : false;
+    } else if(_positionReached) {
+        _screenSunPosition = targetPosition;
+        nextPosition = _screenSunPosition;
+        if(_sunSize < 2.0){
+            _sunSize += 0.01;
+        }
+        if(_sunSize >= 2.0){
+            _sizeReached = true;
+        }
+    }
+    if(_sizeReached) {
+        _renderer.getObjects()->getShader("sun")->setUniform("doVanish", 1.0);
+        _renderer.getObjects()->getShader("sun")->setUniform("vanish", _vanishFactor);
+        _vanishFactor += 0.01;
+    }
+    
+    std::cout << _sunSize << std::endl;
+    
+    vmml::Matrix4f modelMatrix = inverseView *
+    vmml::create_translation(nextPosition) *
+    vmml::create_scaling(vmml::Vector3f(_sunSize * _sunScale));
+    
+    _renderer.getModelRenderer()->queueModelInstance("sun", "sun_instance", "camera", modelMatrix, std::vector<std::string>({ "sun", "torch" }));
 }

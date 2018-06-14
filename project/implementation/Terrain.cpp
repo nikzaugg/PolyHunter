@@ -186,7 +186,7 @@ void Terrain::placeCrystal(int i, int j)
 	float normHeight = crystalHeight / Terrain::AMPLITUDE;
 
     float value = ridgedMulti.GetValue(xPos, crystalHeight, zPos);
-    if (value > 1.0f && normHeight > 0.9f)
+    if (value > 1.0f && normHeight > 0.5f)
     {
         std::string crystalName = getModelName() + std::to_string(i);
         if(Terrain::_collectedCrystals.find(crystalName) != Terrain::_collectedCrystals.end()){

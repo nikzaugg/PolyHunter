@@ -66,9 +66,10 @@ private:
     /* Update Player Camera */
     void updatePlayerCamera(const std::string &camera, PlayerPtr _player, const double &deltaTime);
     
-    void checkCollision();
+    void checkCollision(const double &deltaTime, const double &elapsedTime);
     
     void updateGameVariables();
+    void endGameAnimation(const double &deltaTime, const double &elapsedTime);
     void updateFogVariables(std::string shaderName);
     void updateSkyBoxVariables(vmml::Vector3f skyColor, float gradient, float density);
 
@@ -106,6 +107,8 @@ private:
 
 	int currentSecond;
     int _nrOfCollectedCrystals = 0;
+    int _maxNrOfCollectedCrystals = 1;
+    bool _gameHasEnded = false;
     
     bool _animation_forward;
     float _animation;

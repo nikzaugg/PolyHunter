@@ -37,6 +37,10 @@ varying mediump float noise;
 uniform float time;
 uniform float sickness;
 
+// End Game Animation
+uniform float doVanish;
+uniform float vanish;
+
 
 // GLSL textureless classic 3D noise "cnoise",
 // with an RSL-style periodic variant "pnoise".
@@ -235,6 +239,15 @@ void main()
     float n  = abs(sin(time)) * 10.0 *  -.10 * turbulence( 0.5 * offset * vec3(v_position_model));
     vec3 sickColor = n * sunColor;
     vec3 outColor = mix(sickColor, sunColor, sickness);
-    gl_FragColor = vec4(outColor, 1.0);
+    if (doVanish > 0.0) {
+        outColor = sunColor;
+        if (1.0 -vanish <= 0.2) {
+            discard;
+        } else {
+            gl_FragColor = vec4(outColor, 1.0 - vanish);
+        }
+    }else{
+        gl_FragColor = vec4(outColor, 1.0);
+    }
 }
 

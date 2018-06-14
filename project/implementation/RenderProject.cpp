@@ -109,8 +109,6 @@ void RenderProject::initFunction()
 
     _cam = CamPtr(new Cam(getProjectRenderer()));
 
-
-    
     // TORCH-LIGHTS
     bRenderer().getObjects()->createLight("torch", -bRenderer().getObjects()->getCamera("camera")->getPosition(), vmml::Vector3f(0.92, 1.0, 0.99), vmml::Vector3f(1.0), 1400.0, 0.9, 100.0);
     bRenderer().getObjects()->getShader("basic")->setUniform("torchDamper", _torchDamper);
@@ -149,7 +147,7 @@ void RenderProject::loopFunction(const double &deltaTime, const double &elapsedT
     _shadowModelRenderer->doShadowRenderPass("terrain", deltaTime, elapsedTime);
     
     // check for collisions of the player with crystals
-    checkCollision();
+    checkCollision(deltaTime, elapsedTime);
 
     /* Add Models to the RenderQueue */
     updateRenderQueue("camera", deltaTime);
@@ -182,11 +180,11 @@ void RenderProject::loopFunction(const double &deltaTime, const double &elapsedT
 	if (bRenderer().getInput()->getKeyState(bRenderer::KEY_ESCAPE) == bRenderer::INPUT_PRESS)
 		bRenderer().terminateRenderer();
 
-	_startScreenRenderer->showStartScreen();	
+	_startScreenRenderer->showStartScreen(_gameHasEnded);
 }
 
 // checks collision between player and crystals
-void RenderProject::checkCollision()
+void RenderProject::checkCollision(const double &deltaTime, const double &elapsedTime)
 {
     int gridX = _terrainLoader->getPlayerGridX();
     int gridZ = _terrainLoader->getPlayerGridZ();
@@ -199,8 +197,15 @@ void RenderProject::checkCollision()
         // handle crystal addition
         updateGameVariables();
         _nrOfCollectedCrystals = nrOfCrystalsCollected;
+    } else if(_nrOfCollectedCrystals == 1) {
+        _gameHasEnded = true;
+        endGameAnimation(deltaTime, elapsedTime);
     }
     bRenderer().getObjects()->getTextSprite("gui-crystal-info")->setText(std::to_string(_nrOfCollectedCrystals));
+}
+
+void RenderProject::endGameAnimation(const double &deltaTime, const double &elapsedTime){
+    _sun->startEndGameAnimation(deltaTime, elapsedTime);
 }
 
 // updates gameplay-variables (fog, sun-healt, points etc.)
@@ -279,7 +284,6 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
     bRenderer().getObjects()->getLight("torch")->setPosition(_cam->getPosition() - bRenderer().getObjects()->getCamera("camera")->getForward()*10.0f);
 	bRenderer().getModelRenderer()->queueModelInstance("Cloud_1", "Cloud_1_instance", camera, modelMatrix, std::vector<std::string>({ "sun", "torch" }));
 	
-    
     ///*** Torch - little crystals ***/
     float origX = 0.75;
     float origZ = 0.8;
