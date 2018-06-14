@@ -165,7 +165,6 @@ void main()
         diffuse = diffuse * vec4(Kd,1.0);
         specular = specular  * vec4(Ks, 0.0);
         vec4 outColor = clamp((ambient+ shadow * diffuse) * v_color +specular, 0.0, 1.0);
-
         gl_FragColor = mix(vec4(vec3(fogColor), 1.0), outColor, visibility);
     }
 }

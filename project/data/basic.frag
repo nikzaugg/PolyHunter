@@ -23,6 +23,7 @@ uniform lowp vec3 Ks;   // specular material coefficient
 uniform mediump float Ns;   // specular material exponent (shininess)
 
 uniform sampler2D DiffuseMap;
+uniform sampler2D ssaoTexture;
 
 // Light-Info: SUN
 uniform vec4 lightPositionViewSpace_0;
@@ -52,6 +53,7 @@ uniform vec3 fogColor;
 
 varying mediump vec3 v_normal;
 varying mediump vec4 v_position;
+varying mediump vec4 v_position_viewspace;
 varying mediump vec3 v_tangent;
 varying mediump vec3 v_bitangent;
 varying mediump vec3 v_nomal_viewspace;
@@ -115,6 +117,12 @@ void main()
         specular = specular  * vec4(Ks, 0.0);
         vec4 outColor = clamp(ambient+diffuse+specular, 0.0, 1.0) * color;
         gl_FragColor = mix(vec4(vec3(fogColor), 1.0), outColor, visibility);
+        
+//        // ssao test
+//        vec4 ssaoCoord = v_position_viewspace/v_position_viewspace.w;
+//        ssaoCoord = ssaoCoord;
+//        vec4 ssao = texture2D(ssaoTexture, ssaoCoord.xy);
+//        gl_FragColor = ssao;
     }
 }
 

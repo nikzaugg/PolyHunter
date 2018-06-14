@@ -65,6 +65,7 @@ attribute vec4 TexCoord;
 varying mediump vec3 v_normal;
 varying mediump vec3 v_nomal_viewspace;
 varying mediump vec4 v_position;
+varying mediump vec4 v_position_viewspace;
 varying mediump vec3 v_tangent;
 varying mediump vec3 v_bitangent;
 
@@ -84,6 +85,7 @@ void main()
     v_tangent = normalize(NormalMatrix * Tangent);
     v_bitangent = normalize(NormalMatrix * Bitangent);
     v_position = ModelMatrix * Position;
+    v_position_viewspace = ProjectionMatrix * ModelViewMatrix * Position;
     v_texCoord = TexCoord;
     
     vec3 posRelativeToPlayer = playerPos - vec3(v_position);
