@@ -198,6 +198,25 @@ void Terrain::customProcess(std::string cameraName, const double &deltaTime, vmm
     customRenderTerrain(cameraName, view, proj);
 }
 
+void Terrain::drawNormalsOnly(std::string camera, const double &deltaTime, std::string entityName)
+{
+    if (entityName == "terrain") {
+        renderer().getObjects()->setAmbientColor(vmml::Vector3f(0.3f));
+        // draw model
+        renderer().getModelRenderer()->drawModel(getModelName(), camera, computeTransformationMatrix(), std::vector<std::string>({ "sun" }), true, true);
+    } else if (entityName == "tree") {
+        TreeMap::iterator it;
+        for (auto const& x : _trees) {
+            x.second->drawNormalsOnly(camera, deltaTime, entityName);
+        }
+    } else if (entityName == "crystal") {
+        CrystalMap::iterator it;
+        for (auto const& x : _crystals) {
+            x.second->drawNormalsOnly(camera, deltaTime, entityName);
+        }
+    }
+}
+
 void Terrain::processTrees(std::string camera)
 {
     TreeMap::iterator it;

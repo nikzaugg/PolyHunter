@@ -74,6 +74,7 @@ private:
 
 	/* Helper Functions */
 	GLfloat randomNumber(GLfloat min, GLfloat max);
+    float lerp(float a, float b, float f);
     
 	/* Variables */
 	GLfloat _randomOffset;

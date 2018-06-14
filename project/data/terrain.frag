@@ -3,6 +3,9 @@ $B_SHADER_VERSION
 precision mediump float;
 #endif
 
+// for ssao render pass, writes normals into texture
+uniform float writeNormalsOnly;
+
 uniform mat4 depthMVP;
 uniform mat4 depthView;
 uniform mat4 depthProjection;
@@ -48,6 +51,7 @@ varying mediump float visibility;
 
 // World Space Coordinates
 varying highp vec3 v_normal;
+varying highp vec3 v_normal_viewspace;
 varying highp vec4 v_position;
 varying mediump vec3 v_tangent;
 varying mediump vec3 v_bitangent;
@@ -110,10 +114,14 @@ float ShadowCalculation(vec3 normal, vec3 lightDir)
 
 void main()
 {
-    // In the bloom Pass we draw everything black, as terrain should not get the bloom effect.
-    if (bloomPass > 0.0) {
+    // if in ssao render pass
+    if (writeNormalsOnly > 0.0) {
+        vec3 normal = normalize(v_normal_viewspace);
+        normal = normal / 2.0 + 0.5;
+        gl_FragColor = vec4(normal, 1.0);
+    } else if(bloomPass > 0.0) {
+        // In the bloom Pass we draw everything black, as terrain should not get the bloom effect.
         gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
-        
     } else {
         vec4 diffuse = vec4(0.0,0.0,0.0,1.0);
         vec4 specular = vec4(0.0,0.0,0.0,1.0);

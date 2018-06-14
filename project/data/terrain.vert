@@ -3,6 +3,9 @@ $B_SHADER_VERSION
 precision mediump float;
 #endif
 
+// for ssao render pass, writes normals into texture
+uniform float writeNormalsOnly;
+
 uniform highp mat4 depthMVP;
 uniform highp mat4 depthView;
 uniform highp mat4 depthProjection;
@@ -64,6 +67,7 @@ uniform float shadowDistance;
 
 // World Space Coordinates
 varying highp vec3 v_normal;
+varying highp vec3 v_normal_viewspace;
 varying highp vec4 v_position;
 varying mediump vec3 v_tangent;
 varying mediump vec3 v_bitangent;
@@ -95,32 +99,36 @@ vec4 biome()
 
 void main()
 {
-    v_normal = normalize(NormalMatrix * (Normal * vec3(-1.0, -1.0, 1.0)));
-    v_tangent = normalize(NormalMatrix * Tangent);
-    v_bitangent = normalize(NormalMatrix * Bitangent);
-    v_position = ModelMatrix * Position;
-    v_texCoord = TexCoord;
-    v_shadowCoord = depthOffset * depthProjection * depthView * Position;
-    v_color = biome();
-    
-    vec3 posRelativeToPlayer = playerPos - vec3(v_position);
-    float dist = length(posRelativeToPlayer.xyz);
-    
-    visibility = exp(-pow((dist * fogDensity), fogGradient));
-    
-    float lightDistance = 0.0;
-    lightDistance = distance(v_position, lightPos_World_0);
-    intensityBasedOnDist_0 = 0.0;
-    if (lightDistance <= lightRadius_0) {
-        intensityBasedOnDist_0 = sunIntensity;
-    };
-    
-    lightDistance = distance(v_position, lightPos_World_1);
-    intensityBasedOnDist_1 = 0.0;
-    if (lightDistance <= lightRadius_1) {
-        intensityBasedOnDist_1 = clamp(lightIntensity_1 / (lightAttenuation_1*lightDistance*lightDistance), 0.0, 1.0);
-    };
-
+    // if in ssao render pass
+    if (writeNormalsOnly > 0.0) {
+        v_normal_viewspace = normalize(mat3(ModelViewMatrix) * (Normal * vec3(-1.0, -1.0, 1.0)));
+    } else {
+        v_normal = normalize(NormalMatrix * (Normal * vec3(-1.0, -1.0, 1.0)));
+        v_tangent = normalize(NormalMatrix * Tangent);
+        v_bitangent = normalize(NormalMatrix * Bitangent);
+        v_position = ModelMatrix * Position;
+        v_texCoord = TexCoord;
+        v_shadowCoord = depthOffset * depthProjection * depthView * Position;
+        v_color = biome();
+        
+        vec3 posRelativeToPlayer = playerPos - vec3(v_position);
+        float dist = length(posRelativeToPlayer.xyz);
+        
+        visibility = exp(-pow((dist * fogDensity), fogGradient));
+        
+        float lightDistance = 0.0;
+        lightDistance = distance(v_position, lightPos_World_0);
+        intensityBasedOnDist_0 = 0.0;
+        if (lightDistance <= lightRadius_0) {
+            intensityBasedOnDist_0 = sunIntensity;
+        };
+        
+        lightDistance = distance(v_position, lightPos_World_1);
+        intensityBasedOnDist_1 = 0.0;
+        if (lightDistance <= lightRadius_1) {
+            intensityBasedOnDist_1 = clamp(lightIntensity_1 / (lightAttenuation_1*lightDistance*lightDistance), 0.0, 1.0);
+        };
+    }
     // Position of Vertex
     gl_Position = ProjectionMatrix * ModelViewMatrix * Position;
 }

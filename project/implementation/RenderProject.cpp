@@ -8,6 +8,7 @@
 #include "Cam.h"
 #include "ShadowModelRenderer.h"
 #include "StartScreenRenderer.h"
+#include <random>
 
 /* Initialize the Project */
 void RenderProject::init()
@@ -57,7 +58,6 @@ void RenderProject::initFunction()
 	// PROPERTIES FOR THE MODELS
     PropertiesPtr treeProperties = bRenderer().getObjects()->createProperties("treeProperties");
     PropertiesPtr skydomeProperties = bRenderer().getObjects()->createProperties("skydomeProperties");
-    PropertiesPtr guyProperties = bRenderer().getObjects()->createProperties("guyProperties");
 
 	// BLENDER MODELS (.obj)
     bRenderer().getObjects()->loadObjModel("tree.obj", false, true, basicShader, treeProperties);
@@ -118,6 +118,28 @@ void RenderProject::initFunction()
 	// START SCREEN
 	_startScreenRenderer = StartScreenRendererPtr(new StartScreenRenderer(getProjectRenderer(), _cam, _terrainLoader, _viewMatrixHUD));
 
+    // SSAO FBO
+    bRenderer().getObjects()->createFramebuffer("SSAO_FBO");
+    bRenderer().getObjects()->createFramebuffer("SSAO_FBO2");
+    bRenderer().getObjects()->createFramebuffer("SSAO_FBO3");
+    bRenderer().getObjects()->createFramebuffer("SSAO_FBO4");
+    bRenderer().getObjects()->createDepthMap("ssao_scene_depth", bRenderer().getView()->getWidth(), bRenderer().getView()->getHeight());
+    bRenderer().getObjects()->createTexture("ssao_normal_texture", bRenderer().getView()->getWidth(), bRenderer().getView()->getHeight());
+    bRenderer().getObjects()->createTexture("ssao_noise_texture", bRenderer().getView()->getWidth(), bRenderer().getView()->getHeight());
+    bRenderer().getObjects()->createTexture("ssao_texture", bRenderer().getView()->getWidth(), bRenderer().getView()->getHeight());
+    bRenderer().getObjects()->createTexture("ssao_blurred_texture", bRenderer().getView()->getWidth(), bRenderer().getView()->getHeight());
+    bRenderer().getObjects()->createSprite("randomNoiseSprite", "randomNoise.png");
+    
+    // Shader to create occlusion-Texture
+    ShaderPtr ssaoShader = bRenderer().getObjects()->loadShaderFile("ssaoShader", 0);
+    MaterialPtr ssaoMaterial = bRenderer().getObjects()->createMaterial("ssaoMaterial", ssaoShader);
+    bRenderer().getObjects()->createSprite("ssaoSprite", ssaoMaterial);
+    
+    // Shader to create blurred occlusion-Texture
+    ShaderPtr ssaoBlurShader = bRenderer().getObjects()->loadShaderFile("ssaoBlurShader", 0);
+    MaterialPtr ssaoBlurMaterial = bRenderer().getObjects()->createMaterial("ssaoBlurMaterial", ssaoBlurShader);
+    bRenderer().getObjects()->createSprite("ssaoBlurSprite", ssaoBlurMaterial);
+    
 	// Update render queue
     updateRenderQueue("camera", 0.0f);
 
@@ -129,31 +151,114 @@ void RenderProject::loopFunction(const double &deltaTime, const double &elapsedT
 {
 	// bRenderer::log("FPS: " + std::to_string(1 / deltaTime));	// write number of frames per second to the console every frame
 	// std::cout << "FPS: " << std::to_string(1 / deltaTime) << std::endl;
-	_startScreenRenderer->bindBlurFbo();
-	
-    /* SHADOW MAPPING */
-    _shadowModelRenderer->doShadowRenderPass("terrain", deltaTime, elapsedTime);
+    bool SSAO = true;
+    vmml::Matrix4f modelMatrix;
+    _startScreenRenderer->bindBlurFbo();
+//
+//    /* SHADOW MAPPING */
+//    _shadowModelRenderer->doShadowRenderPass("terrain", deltaTime, elapsedTime);
+//
+//    // check for collisions of the player with crystals
+//    checkCollision();
+//
+//    /* Add Models to the RenderQueue */
+//    updateRenderQueue("camera", deltaTime);
+//
+//    /* BLOOM POSTPROCESSING */
+//    /* Terrain is loaded inside _bloomRenderer */
+//    /* Render Queue is drawn inside _bloomRenderer */
+//    //_bloomRenderer->doBloomRenderPass("camera", deltaTime);
+//
+//    bRenderer().getModelRenderer()->drawQueue(/*GL_LINES*/);
+//    bRenderer().getModelRenderer()->clearQueue();
     
-    // check for collisions of the player with crystals
-    checkCollision();
-
-    /* Add Models to the RenderQueue */
-    updateRenderQueue("camera", deltaTime);
-
-    /* BLOOM POSTPROCESSING */
-    /* Terrain is loaded inside _bloomRenderer */
-    /* Render Queue is drawn inside _bloomRenderer */
-    //_bloomRenderer->doBloomRenderPass("camera", deltaTime);
-
-	bRenderer().getModelRenderer()->drawQueue(/*GL_LINES*/);
-	bRenderer().getModelRenderer()->clearQueue();
+    if (SSAO) {
+        GLint defaultFBO = Framebuffer::getCurrentFramebuffer();
+        _cam->process("camera", deltaTime);
+        
+        /**************************
+         * BIND FBO 1
+         *************************/
+        bRenderer().getObjects()->getFramebuffer("SSAO_FBO")->bind(false);
+        bRenderer().getObjects()->getFramebuffer("SSAO_FBO")->bindDepthMap(bRenderer().getObjects()->getDepthMap("ssao_scene_depth"), false);
+        bRenderer().getObjects()->getFramebuffer("SSAO_FBO")->bindTexture(bRenderer().getObjects()->getTexture("ssao_normal_texture"), false);
+        
+        // render depth and normals to texture
+        bRenderer().getObjects()->getShader("basic")->setUniform("writeNormalsOnly", static_cast<GLfloat>(true));
+        bRenderer().getObjects()->getShader("terrain")->setUniform("writeNormalsOnly", static_cast<GLfloat>(true));
+        _terrainLoader->drawNormalsOnly("camera", deltaTime, "tree");
+        _terrainLoader->drawNormalsOnly("camera", deltaTime, "crystal");
+        _terrainLoader->drawNormalsOnly("camera", deltaTime, "terrain");
+        
+        bRenderer().getObjects()->getShader("basic")->setUniform("writeNormalsOnly", static_cast<GLfloat>(false));
+        bRenderer().getObjects()->getShader("terrain")->setUniform("writeNormalsOnly", static_cast<GLfloat>(false));
+        
+        bRenderer().getObjects()->getFramebuffer("SSAO_FBO")->unbind();
+        
+        /**************************
+         * BIND FBO 3
+         *************************/
+        bRenderer().getObjects()->getFramebuffer("SSAO_FBO3")->bind(false);
+        bRenderer().getObjects()->getFramebuffer("SSAO_FBO3")->bindTexture(bRenderer().getObjects()->getTexture("ssao_noise_texture"), false);
+        
+        modelMatrix = vmml::create_translation(vmml::Vector3f(0.0f, 0.0f, -0.5)) *
+        vmml::create_scaling(vmml::Vector3f(1.0));
+        bRenderer().getModelRenderer()->drawModel(bRenderer().getObjects()->getModel("randomNoiseSprite"), modelMatrix, _viewMatrixHUD, vmml::Matrix4f::IDENTITY, std::vector<std::string>({}), false);
+        bRenderer().getObjects()->getFramebuffer("SSAO_FBO3")->unbind();
+        
+        /**************************
+         * BIND FBO 4
+         *************************/
+        bRenderer().getObjects()->getFramebuffer("SSAO_FBO4")->bind(false);
+        bRenderer().getObjects()->getFramebuffer("SSAO_FBO4")->bindTexture(bRenderer().getObjects()->getTexture("ssao_texture"), false);
+        
+        std::uniform_real_distribution<float> randomFloats(0.0, 1.0);
+        std::default_random_engine generator;
+        std::vector<vmml::Vector3f> ssaoKernel;
+        float kernelSize = 16.0;
+        for (unsigned int i = 0; i<kernelSize; ++i) {
+            vmml::Vector3f sample(randomFloats(generator) * 2.0 - 1.0,
+                                  randomFloats(generator) * 2.0 - 1.0,
+                                  randomFloats(generator)
+                                  );
+            sample = vmml::normalize(sample);
+            sample *= randomFloats(generator);
+            float scale = (float)i/kernelSize;
+            scale = lerp(0.1, 1.0, scale*scale);
+            sample *= scale;
+            ssaoKernel.push_back(sample);
+        }
+        
+        for (unsigned int i = 0; i<kernelSize; ++i) {
+            bRenderer().getObjects()->getShader("ssaoShader")->setUniform("samples[" + std::to_string(i) + "]", ssaoKernel[i]);
+        }
+        
+        
+        modelMatrix = vmml::create_translation(vmml::Vector3f(0.0f, 0.0f, -0.5)) *
+        vmml::create_scaling(vmml::Vector3f(1.0));
+        bRenderer().getObjects()->getShader("ssaoShader")->setUniform("ViewMatrix", bRenderer().getObjects()->getCamera("camera")->getViewMatrix());
+        bRenderer().getObjects()->getMaterial("ssaoMaterial")->setTexture("depthMap", bRenderer().getObjects()->getDepthMap("ssao_scene_depth"));
+        bRenderer().getObjects()->getMaterial("ssaoMaterial")->setTexture("normalMap", bRenderer().getObjects()->getTexture("ssao_normal_texture"));
+        bRenderer().getObjects()->getMaterial("ssaoMaterial")->setTexture("noiseTex", bRenderer().getObjects()->getTexture("ssao_noise_texture"));
+        
+        bRenderer().getModelRenderer()->drawModel(bRenderer().getObjects()->getModel("ssaoSprite"), modelMatrix, _viewMatrixHUD, vmml::Matrix4f::IDENTITY, std::vector<std::string>({}), false);
+        
+        // RENDER TO DEFAULT FRAMEBUFFER
+        bRenderer().getObjects()->getFramebuffer("SSAO_FBO4")->unbind(defaultFBO); //unbind (original fbo will be bound)
+        bRenderer().getView()->setViewportSize(bRenderer().getView()->getWidth(), bRenderer().getView()->getHeight());
+        
+        modelMatrix = vmml::create_translation(vmml::Vector3f(0.0f, 0.0f, -0.5)) * vmml::create_scaling(vmml::Vector3f(1.0));
+        
+        bRenderer().getObjects()->getMaterial("ssaoBlurMaterial")->setTexture("ssao_Texture", bRenderer().getObjects()->getTexture("ssao_texture"));
+        bRenderer().getModelRenderer()->drawModel(bRenderer().getObjects()->getModel("ssaoBlurSprite"), modelMatrix, _viewMatrixHUD, vmml::Matrix4f::IDENTITY, std::vector<std::string>({}), false);
+    }
 
     
     /*** GUI - Crystal Icon ***/
     // translate and scale
     GLfloat titleScale = 0.1f;
     vmml::Matrix4f scaling = vmml::create_scaling(vmml::Vector3f(titleScale / bRenderer().getView()->getAspectRatio(), titleScale, titleScale));
-    vmml::Matrix4f modelMatrix = vmml::create_translation(vmml::Vector3f(-0.95f, 0.9f, -0.65f)) * scaling;
+    modelMatrix = vmml::create_translation(vmml::Vector3f(-0.95f, 0.9f, -0.65f)) * scaling;
     // draw
     bRenderer().getModelRenderer()->drawModel(bRenderer().getObjects()->getModel("crystal_icon"), modelMatrix, _viewMatrixHUD, vmml::Matrix4f::IDENTITY, std::vector<std::string>({}), false, false);
     
@@ -168,7 +273,7 @@ void RenderProject::loopFunction(const double &deltaTime, const double &elapsedT
 	if (bRenderer().getInput()->getKeyState(bRenderer::KEY_ESCAPE) == bRenderer::INPUT_PRESS)
 		bRenderer().terminateRenderer();
 
-	_startScreenRenderer->showStartScreen();	
+    _startScreenRenderer->showStartScreen();
 }
 
 // checks collision between player and crystals
@@ -296,24 +401,6 @@ void RenderProject::updateCamera(const std::string &camera, const double &deltaT
 {
 	//// Adjust aspect ratio ////
 	bRenderer().getObjects()->getCamera(camera)->setAspectRatio(bRenderer().getView()->getAspectRatio());
-
-    // pause using double tap
-	//if (Input::isTouchDevice()) {
-	//	if (bRenderer().getInput()->doubleTapRecognized()) {
-	//		_running = !_running;
-	//	}
-	//}
-	//else {
-	//	GLint currentStateSpaceKey = bRenderer().getInput()->getKeyState(bRenderer::KEY_SPACE);
-	//	if (currentStateSpaceKey != _lastStateSpaceKey)
-	//	{
-	//	    _lastStateSpaceKey = currentStateSpaceKey;
-	//	    if (currentStateSpaceKey == bRenderer::INPUT_PRESS){
-	//	        _running = !_running;
-	//	        bRenderer().getInput()->setCursorEnabled(!_running);
-	//	    }
-	//	}
-	//}
 }
 
 /* For iOS only: Handle device rotation */
@@ -356,5 +443,10 @@ void RenderProject::appWillTerminate()
 /* Helper functions */
 GLfloat RenderProject::randomNumber(GLfloat min, GLfloat max){
 	return min + static_cast <GLfloat> (rand()) / (static_cast <GLfloat> (RAND_MAX / (max - min)));
+}
+
+float RenderProject::lerp(float a, float b, float f)
+{
+    return a + f * (b-a);
 }
 

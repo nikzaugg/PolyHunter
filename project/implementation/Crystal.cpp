@@ -28,3 +28,9 @@ void Crystal::customRender(std::string camera, vmml::Matrix4f view ,vmml::Matrix
     renderer().getModelRenderer()->drawModel(renderer().getObjects()->getModel(getModelName()), computeTransformationMatrix(), view, proj, std::vector<std::string>({}), false);
 }
 
+void Crystal::drawNormalsOnly(std::string camera, const double &deltaTime, std::string entityName)
+{
+    renderer().getObjects()->setAmbientColor(vmml::Vector3f(0.3f));
+    // draw model
+    renderer().getModelRenderer()->drawModel(getModelName(), camera, getModelMatrix(), std::vector<std::string>({ "sun" }), true, true);
+}

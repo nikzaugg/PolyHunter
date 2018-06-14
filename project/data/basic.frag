@@ -3,6 +3,9 @@ $B_SHADER_VERSION
 precision mediump float;
 #endif
 
+// for ssao render pass, writes normals into texture
+uniform float writeNormalsOnly;
+
 uniform mat4 depthMVP;
 uniform mat4 depthView;
 uniform mat4 depthProjection;
@@ -47,11 +50,11 @@ uniform vec3 ambientColor;
 uniform vec3 skyColor;
 uniform vec3 fogColor;
 
-// World Space Coordinates
 varying mediump vec3 v_normal;
 varying mediump vec4 v_position;
 varying mediump vec3 v_tangent;
 varying mediump vec3 v_bitangent;
+varying mediump vec3 v_nomal_viewspace;
 
 // texture Coords and Color
 varying lowp vec4 v_texCoord;
@@ -67,44 +70,51 @@ uniform float torchOuterCutOff;
 
 void main()
 {
-    vec4 diffuse = vec4(0.0,0.0,0.0,1.0);
-    vec4 specular = vec4(0.0,0.0,0.0,1.0);
-    float specularCoefficient = 0.0;
-    
-    vec4 position = v_position;
-    vec3 normal = normalize(v_normal);
-    vec3 lightVector_0 = normalize(vec3(lightPos_World_0) - vec3(position));
-    vec3 lightVector_1 = normalize(vec3(lightPos_World_1) - vec3(position));
-    vec3 surfaceToCamera = vec3(normalize(vec4(viewPos, 1.0) - position));
-    
-    // SUN-LIGHT
-    float intensity = 0.0;
-    if (intensityBasedOnDist_0 > 0.0 && (intensity = max(dot(normal, normalize(lightVector_0)), 0.0)) > 0.0){
-        intensity = clamp(intensity, 0.0, 1.0);
-        diffuse += vec4(lightDiffuseColor_0 * (intensity * intensityBasedOnDist_0), 0.0);
-        specularCoefficient = pow(max(0.0, dot(surfaceToCamera, reflect(-normalize(lightVector_0), normal))), Ns);
-        specular += vec4(lightSpecularColor_0 * (specularCoefficient * intensity * intensityBasedOnDist_0), 0.0);
-    }
-    
-    // TORCH-LIGHT
-    if (intensityBasedOnDist_1 > 0.0 && (intensity = max(dot(normal, normalize(lightVector_1)), 0.0)) > 0.0){
-        float theta     = dot(lightVector_1, normalize(-torchDir));
-        float epsilon   = torchInnerCutOff - torchOuterCutOff;
-        float coneInstensity = clamp((theta - torchOuterCutOff) / epsilon, 0.0, 1.0);
+    // if in ssao render pass
+    if (writeNormalsOnly > 0.0) {
+        vec3 normal = normalize(v_nomal_viewspace);
+        normal = normal / 2.0 + 0.5;
+        gl_FragColor = vec4(normal, 1.0);
+    } else {
+        vec4 diffuse = vec4(0.0,0.0,0.0,1.0);
+        vec4 specular = vec4(0.0,0.0,0.0,1.0);
+        float specularCoefficient = 0.0;
         
-        intensity = clamp(intensity, 0.0, 1.0);
-        intensity *= coneInstensity * torchDamper;
-        diffuse += vec4(lightDiffuseColor_1 * (intensity * intensityBasedOnDist_1), 0.0);
-        specularCoefficient = pow(max(0.0, dot(surfaceToCamera, reflect(-normalize(lightVector_1), normal))), Ns);
-        specular += vec4(lightSpecularColor_1 * (specularCoefficient * intensity * intensityBasedOnDist_1), 0.0);
-    }
+        vec4 position = v_position;
+        vec3 normal = normalize(v_normal);
+        vec3 lightVector_0 = normalize(vec3(lightPos_World_0) - vec3(position));
+        vec3 lightVector_1 = normalize(vec3(lightPos_World_1) - vec3(position));
+        vec3 surfaceToCamera = vec3(normalize(vec4(viewPos, 1.0) - position));
+        
+        // SUN-LIGHT
+        float intensity = 0.0;
+        if (intensityBasedOnDist_0 > 0.0 && (intensity = max(dot(normal, normalize(lightVector_0)), 0.0)) > 0.0){
+            intensity = clamp(intensity, 0.0, 1.0);
+            diffuse += vec4(lightDiffuseColor_0 * (intensity * intensityBasedOnDist_0), 0.0);
+            specularCoefficient = pow(max(0.0, dot(surfaceToCamera, reflect(-normalize(lightVector_0), normal))), Ns);
+            specular += vec4(lightSpecularColor_0 * (specularCoefficient * intensity * intensityBasedOnDist_0), 0.0);
+        }
+        
+        // TORCH-LIGHT
+        if (intensityBasedOnDist_1 > 0.0 && (intensity = max(dot(normal, normalize(lightVector_1)), 0.0)) > 0.0){
+            float theta     = dot(lightVector_1, normalize(-torchDir));
+            float epsilon   = torchInnerCutOff - torchOuterCutOff;
+            float coneInstensity = clamp((theta - torchOuterCutOff) / epsilon, 0.0, 1.0);
+            
+            intensity = clamp(intensity, 0.0, 1.0);
+            intensity *= coneInstensity * torchDamper;
+            diffuse += vec4(lightDiffuseColor_1 * (intensity * intensityBasedOnDist_1), 0.0);
+            specularCoefficient = pow(max(0.0, dot(surfaceToCamera, reflect(-normalize(lightVector_1), normal))), Ns);
+            specular += vec4(lightSpecularColor_1 * (specularCoefficient * intensity * intensityBasedOnDist_1), 0.0);
+        }
 
-    vec4 color = texture2D(DiffuseMap, v_texCoord.st);
-    vec4 ambient = vec4(ambientColor * Ks, 1.0);
-    ambient = clamp(ambient, 0.0, 1.0);
-    diffuse = diffuse * vec4(Kd,1.0);
-    specular = specular  * vec4(Ks, 0.0);
-    vec4 outColor = clamp(ambient+diffuse+specular, 0.0, 1.0) * color;
-    gl_FragColor = mix(vec4(vec3(fogColor), 1.0), outColor, visibility);
+        vec4 color = texture2D(DiffuseMap, v_texCoord.st);
+        vec4 ambient = vec4(ambientColor * Ks, 1.0);
+        ambient = clamp(ambient, 0.0, 1.0);
+        diffuse = diffuse * vec4(Kd,1.0);
+        specular = specular  * vec4(Ks, 0.0);
+        vec4 outColor = clamp(ambient+diffuse+specular, 0.0, 1.0) * color;
+        gl_FragColor = mix(vec4(vec3(fogColor), 1.0), outColor, visibility);
+    }
 }
 

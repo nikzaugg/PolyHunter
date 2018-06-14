@@ -3,6 +3,9 @@ $B_SHADER_VERSION
 precision mediump float;
 #endif
 
+// for ssao render pass, writes normals into texture
+uniform float writeNormalsOnly;
+
 uniform mat4 depthMVP;
 uniform mat4 depthView;
 uniform mat4 depthProjection;
@@ -59,8 +62,8 @@ attribute vec3 Tangent;
 attribute vec3 Bitangent;
 attribute vec4 TexCoord;
 
-// World Space Coordinates
 varying mediump vec3 v_normal;
+varying mediump vec3 v_nomal_viewspace;
 varying mediump vec4 v_position;
 varying mediump vec3 v_tangent;
 varying mediump vec3 v_bitangent;
@@ -73,6 +76,10 @@ varying mediump float visibility;
 
 void main()
 {
+    // if in ssao render pass
+    if (writeNormalsOnly > 0.0) {
+        v_nomal_viewspace = normalize(mat3(ModelViewMatrix) * (Normal * vec3(1.0, 1.0, -1.0)));
+    } else {
     v_normal = normalize(NormalMatrix * (Normal * vec3(1.0, 1.0, -1.0)));
     v_tangent = normalize(NormalMatrix * Tangent);
     v_bitangent = normalize(NormalMatrix * Bitangent);
@@ -96,9 +103,10 @@ void main()
     if (lightDistance <= lightRadius_1) {
         intensityBasedOnDist_1 = clamp(lightIntensity_1 / (lightAttenuation_1*lightDistance*lightDistance), 0.0, 1.0);
     };
-    
+    }
     
     // Position of Vertex
     gl_Position = ProjectionMatrix * ModelViewMatrix * Position;
+
 }
 

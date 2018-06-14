@@ -14,6 +14,7 @@ public:
         _treeName = treeName;
     };
 
+    void drawNormalsOnly(std::string camera, const double &deltaTime, std::string entityName);
     void draw(std::string camera);
 	void render(std::string camera);
     void customRender(std::string camera, vmml::Matrix4f view ,vmml::Matrix4f proj);
