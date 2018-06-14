@@ -150,7 +150,7 @@ void Terrain::placeTree(int i, int j)
 			tree = {
 				vmml::Vector3f(xPos, treeHeight, zPos),
 				5.0f,
-				"Pine1"
+				"ThinTree"
 			};
 	//	}
 	//else if (normHeight > 0.8f) {

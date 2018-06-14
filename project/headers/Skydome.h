@@ -42,7 +42,7 @@ private:
     float _skydomeGradient = 0.04;
     float _skydomeDensity = 0.09;
 
-	int Skydome::getRandomIntInRange(int lower, int upper);
+    int getRandomIntInRange(int lower, int upper);
 	void createClouds();
 };
 typedef std::shared_ptr< Skydome >  SkydomePtr;

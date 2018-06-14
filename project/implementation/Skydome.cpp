@@ -67,7 +67,7 @@ void Skydome::createClouds()
 
 		Cloud cloud = {
 			vmml::Vector3f(0.0f + (float)x, 350.0f + (float)height, 0.0f + (float)z), // Cloud Position
-			scale, // scale
+            static_cast<float>(scale), // scale
 			cloudType // Cloud type [1,4]
 		};
 
