@@ -258,12 +258,6 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
     
     _cam->process(camera, deltaTime);
     _terrainLoader->process(camera, deltaTime);
-    
-	//if ((int)elapsedTime % 10 == 0 && currentSecond != (int)elapsedTime) {
-	//	std::cout << elapsedTime << std::endl;
-	//	currentSecond = (int)elapsedTime;
-	//	_sun->setIntensity(0.1 * currentSecond);
-	//}
 
     bRenderer().getObjects()->getShader("basic")->setUniform("playerPos", _cam->getPosition());
     bRenderer().getObjects()->getShader("terrain")->setUniform("playerPos", _cam->getPosition());

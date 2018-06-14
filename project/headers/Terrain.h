@@ -38,6 +38,8 @@ public:
     static float getHeightFromNoise(double nx, double nz);
     static double getNoiseInput(float coord);
     static int getRandomSeed();
+	static int getRandomIntInRange(int lower, int upper);
+	static float getRandomFloatInRange(float lower, float upper);
 	static int TERRAIN_SIZE;
 	static int VERTEX_COUNT;
 	static float AMPLITUDE;
@@ -63,6 +65,8 @@ private:
     float _offsetZ;
 
     float _amplitude;
+
+	int _crystalCount = 0;
 
 	int _numFaces;
 
