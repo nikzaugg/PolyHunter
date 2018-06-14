@@ -69,6 +69,13 @@ void RenderProject::initFunction()
 	bRenderer().getObjects()->loadObjModel("Cloud_2.obj", false, true, basicShader, nullptr);
 	bRenderer().getObjects()->loadObjModel("Cloud_3.obj", false, true, basicShader, nullptr);
 	bRenderer().getObjects()->loadObjModel("Cloud_4.obj", false, true, basicShader, nullptr);
+	bRenderer().getObjects()->loadObjModel("Stone1.obj", false, true, basicShader, nullptr);
+	bRenderer().getObjects()->loadObjModel("Stone2.obj", false, true, basicShader, nullptr);
+	bRenderer().getObjects()->loadObjModel("Stone3.obj", false, true, basicShader, nullptr);
+	bRenderer().getObjects()->loadObjModel("Stone4.obj", false, true, basicShader, nullptr);
+	bRenderer().getObjects()->loadObjModel("Pine1.obj", false, true, basicShader, nullptr);
+	bRenderer().getObjects()->loadObjModel("Pine2.obj", false, true, basicShader, nullptr);
+	bRenderer().getObjects()->loadObjModel("Tree_Round.obj", false, true, basicShader, nullptr);
     
     // SKYDOME
     _skydome = SkydomePtr(new Skydome("skydome", getProjectRenderer()));

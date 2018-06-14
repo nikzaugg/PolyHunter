@@ -49,7 +49,6 @@ vmml::Vector3f Skydome::getSkyColor()
 
 int Skydome::getRandomIntInRange(int lower, int upper)
 {
-	
 	int random = lower + (rand() % static_cast<int>(upper - lower + 1));
 	return random;
 }

@@ -661,6 +661,18 @@
     <None Include="..\data\Cloud_4.mtl">
       <Filter>project\data</Filter>
     </None>
+    <None Include="..\data\Stone1.mtl">
+      <Filter>project\data</Filter>
+    </None>
+    <None Include="..\data\Stone2.mtl">
+      <Filter>project\data</Filter>
+    </None>
+    <None Include="..\data\Stone3.mtl">
+      <Filter>project\data</Filter>
+    </None>
+    <None Include="..\data\Stone4.mtl">
+      <Filter>project\data</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\data\flame.png">
@@ -712,6 +724,9 @@
       <Filter>project\data</Filter>
     </Image>
     <Image Include="..\data\Cloud2.png">
+      <Filter>project\data</Filter>
+    </Image>
+    <Image Include="..\data\Stone.png">
       <Filter>project\data</Filter>
     </Image>
   </ItemGroup>

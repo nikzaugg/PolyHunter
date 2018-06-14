@@ -7,6 +7,12 @@
 #include "Tree.h"
 #include "Crystal.h"
 
+typedef struct {
+	vmml::Vector3f position;
+	float scale;
+	std::string type;
+} Rock;
+
 class Terrain : public Entity
 {
 public:
@@ -15,6 +21,7 @@ public:
     typedef std::unordered_map< std::string, TreePtr > TreeMap;
     typedef std::unordered_map< std::string, CrystalPtr > CrystalMap;
     typedef std::unordered_map< std::string, GeometryPtr > GroupMap;
+	typedef std::unordered_map< std::string, Rock > RockMap;
     
 	void process(std::string cameraName, const double &deltaTime);
     void drawCrystals(std::string camera);
@@ -38,8 +45,10 @@ private:
     void generateTerrainGeometry();
     void placeTree(int i, int j);
     void placeCrystal(int i, int j);
+	void placeRocks(int i, int j);
     void processTrees(std::string camera);
     void processCrystals(std::string camera);
+	void processRocks(std::string camera);
     void customProcessTrees(std::string camera, vmml::Matrix4f view, vmml::Matrix4f proj);
     void customProcessCrystals(std::string camera, vmml::Matrix4f view, vmml::Matrix4f proj);
     
@@ -60,6 +69,7 @@ private:
     CrystalMap _crystals;
     static CrystalMap _collectedCrystals;
     int _treeCount = 0;
+	RockMap _rocks;
 
     ProceduralOBJLoader _objLoader;
     ModelData::GroupMap _data;

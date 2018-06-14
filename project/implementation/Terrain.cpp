@@ -47,6 +47,7 @@ ModelData::GroupMap Terrain::generateTerrain()
 
 void Terrain::generateTerrainGeometry()
 {
+	srand(NULL);
     int counter = 0;
     for (int i = 0; i < Terrain::VERTEX_COUNT -1; i++)
     {
@@ -119,6 +120,7 @@ void Terrain::generateTerrainGeometry()
              *****************/
             placeTree(i, j);
             placeCrystal(i, j);
+			placeRocks(i, j);
         }
     }
 }
@@ -136,7 +138,7 @@ void Terrain::placeTree(int i, int j)
     zPos += _offsetZ;
     
     float treeHeight;
-    treeHeight = getHeightFromNoise(getNoiseInput(xPos), getNoiseInput(zPos));
+    treeHeight = Terrain::getHeightFromNoise(getNoiseInput(xPos), getNoiseInput(zPos));
     
     float value = ridgedMulti.GetValue(xPos, treeHeight, zPos);
     if (value > 1.0f)
@@ -185,10 +187,38 @@ void Terrain::placeCrystal(int i, int j)
     }
 }
 
+void Terrain::placeRocks(int i, int j)
+{
+	noise::module::RidgedMulti ridgedMulti;
+	ridgedMulti.SetSeed(100);
+
+	// Rescale from -1.0:+1.0 to 0.0:1.0
+	float xPos = ((float)i / ((float)Terrain::VERTEX_COUNT - 1)) * Terrain::TERRAIN_SIZE;
+	xPos += _offsetX;
+
+	float zPos = ((float)j / ((float)Terrain::VERTEX_COUNT - 1)) * Terrain::TERRAIN_SIZE;
+	zPos += _offsetZ;
+
+	float height = getHeightFromNoise(getNoiseInput(xPos), getNoiseInput(zPos));
+
+	float value = ridgedMulti.GetValue(xPos, height, zPos);
+	if (0.8f < value && value < 0.9f)
+	{
+		Rock rock = {
+			vmml::Vector3f(xPos, height - 15.0f, zPos),
+			5.0f,
+			"Stone" + std::to_string(1 + (rand() % static_cast<int>(4 - 1 + 1)))
+		};
+
+		_rocks.insert(RockMap::value_type("Rock" + std::to_string(i) + std::to_string(j), rock));
+	}
+}
+
 void Terrain::process(std::string cameraName, const double &deltaTime)
 {
     processTrees(cameraName);
     processCrystals(cameraName);
+	processRocks(cameraName);
     renderTerrain(cameraName);
 }
 
@@ -214,6 +244,19 @@ void Terrain::processCrystals(std::string camera)
             x.second->render(camera);
         }
     }
+}
+
+void Terrain::processRocks(std::string camera)
+{
+	vmml::Matrix4f modelMatrix;
+	for (auto const& rock : _rocks)
+	{
+		modelMatrix =
+			vmml::create_translation(rock.second.position) *
+			vmml::create_scaling(vmml::Vector3f(rock.second.scale));
+		renderer().getObjects()->setAmbientColor(vmml::Vector3f(0.5f));
+		renderer().getModelRenderer()->queueModelInstance(rock.second.type, rock.first, camera, modelMatrix, std::vector<std::string>({ "sun", "torch" }), true, true);
+	}
 }
 
 void Terrain::drawCrystals(std::string camera)
