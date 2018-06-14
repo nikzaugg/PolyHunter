@@ -205,7 +205,7 @@ void RenderProject::checkCollision(const double &deltaTime, const double &elapse
 }
 
 void RenderProject::endGameAnimation(const double &deltaTime, const double &elapsedTime){
-    _sun->startEndGameAnimation(deltaTime, elapsedTime);
+    _sun->startEndGameAnimation(deltaTime, elapsedTime, _skydome);
 }
 
 // updates gameplay-variables (fog, sun-healt, points etc.)
@@ -284,28 +284,31 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
     bRenderer().getObjects()->getLight("torch")->setPosition(_cam->getPosition() - bRenderer().getObjects()->getCamera("camera")->getForward()*10.0f);
 	bRenderer().getModelRenderer()->queueModelInstance("Cloud_1", "Cloud_1_instance", camera, modelMatrix, std::vector<std::string>({ "sun", "torch" }));
 	
-    ///*** Torch - little crystals ***/
-    float origX = 0.75;
-    float origZ = 0.8;
-    int gridX = _terrainLoader->getPlayerGridX();
-    int gridZ = _terrainLoader->getPlayerGridZ();
-    std::string currentTerrainKey = _terrainLoader->generateTerrainKey(gridX, gridZ);
-    TerrainPtr currentTerrain = _terrainLoader->getSingleTerrain(currentTerrainKey);
-    int nrOfCrystals = currentTerrain->getNrOfCrystalsCollected();
-    
-    for (int i = 1; i <= nrOfCrystals; i++) {
-        float angle = 2*M_PI_F / nrOfCrystals;
-        angle *= i + ((M_PI_F/20.0)*elapsedTime);
-    
-        float x = origX + 0.3 * cos(angle);
-        float z = origZ + 0.3 * sin(angle);
+    if(!_gameHasEnded){
+        ///*** Torch - little crystals ***/
+        float origX = 0.75;
+        float origZ = 0.8;
+        int gridX = _terrainLoader->getPlayerGridX();
+        int gridZ = _terrainLoader->getPlayerGridZ();
+        std::string currentTerrainKey = _terrainLoader->generateTerrainKey(gridX, gridZ);
+        TerrainPtr currentTerrain = _terrainLoader->getSingleTerrain(currentTerrainKey);
+        int nrOfCrystals = currentTerrain->getNrOfCrystalsCollected();
         
-        modelMatrix = bRenderer().getObjects()->getCamera(camera)->getInverseViewMatrix();        // position and orient to match camera
-        modelMatrix *= vmml::create_translation(vmml::Vector3f(x, -0.7, z)) * vmml::create_scaling(vmml::Vector3f(0.015f)) *
-        vmml::create_rotation(-0.82f, vmml::Vector3f::UNIT_Z);
-        modelMatrix *= vmml::create_rotation(float(M_PI_F/10.0 * elapsedTime), vmml::Vector3f(0.5, 0.5, -0.5));
-        bRenderer().getModelRenderer()->queueModelInstance("torch", &"torch_particle_"[i], camera, modelMatrix, std::vector<std::string>({ "sun", "torch" }));
+        for (int i = 1; i <= nrOfCrystals; i++) {
+            float angle = 2*M_PI_F / nrOfCrystals;
+            angle *= i + ((M_PI_F/20.0)*elapsedTime);
+            
+            float x = origX + 0.3 * cos(angle);
+            float z = origZ + 0.3 * sin(angle);
+            
+            modelMatrix = bRenderer().getObjects()->getCamera(camera)->getInverseViewMatrix();        // position and orient to match camera
+            modelMatrix *= vmml::create_translation(vmml::Vector3f(x, -0.7, z)) * vmml::create_scaling(vmml::Vector3f(0.015f)) *
+            vmml::create_rotation(-0.82f, vmml::Vector3f::UNIT_Z);
+            modelMatrix *= vmml::create_rotation(float(M_PI_F/10.0 * elapsedTime), vmml::Vector3f(0.5, 0.5, -0.5));
+            bRenderer().getModelRenderer()->queueModelInstance("torch", &"torch_particle_"[i], camera, modelMatrix, std::vector<std::string>({ "sun", "torch" }));
+        }
     }
+    
 	/// SUN (Torch) ///
 	_sun->render(camera, _cam->getPosition(), _viewMatrixHUD, elapsedTime);
 }

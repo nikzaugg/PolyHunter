@@ -120,7 +120,7 @@ void Sun::render(std::string camera, vmml::Vector3f playerPos, vmml::Matrix4f vi
     }
 }
 
-void Sun::startEndGameAnimation(const double &deltaTime, const double &elapsedTime)
+void Sun::startEndGameAnimation(const double &deltaTime, const double &elapsedTime, SkydomePtr skydome)
 {
     _gameHasEnded = true;
     _animationTimer += 0.1;
@@ -144,7 +144,7 @@ void Sun::startEndGameAnimation(const double &deltaTime, const double &elapsedTi
         _screenSunPosition = targetPosition;
         nextPosition = _screenSunPosition;
         if(_sunSize < 2.0){
-            _sunSize += 0.01;
+            _sunSize += 0.02;
         }
         if(_sunSize >= 2.0){
             _sizeReached = true;
@@ -152,8 +152,27 @@ void Sun::startEndGameAnimation(const double &deltaTime, const double &elapsedTi
     }
     if(_sizeReached) {
         _renderer.getObjects()->getShader("sun")->setUniform("doVanish", 1.0);
-        _renderer.getObjects()->getShader("sun")->setUniform("vanish", _vanishFactor);
-        _vanishFactor += 0.01;
+        _renderer.getObjects()->getShader("sun")->setUniform("vanish", 1.0);
+
+        vmml::Vector3f skyColor = vmml::Vector3f(0.26, 0.48, 0.96) * 1.2;
+        vmml::Vector3f fogColor = vmml::Vector3f(0.8);
+        
+        ShaderPtr basic = _renderer.getObjects()->getShader("basic");
+        ShaderPtr terrain = _renderer.getObjects()->getShader("terrain");
+        basic->setUniform("fogDensity", 0.0025);
+        basic->setUniform("fogGradient", 20.0);
+        basic->setUniform("fogColor", skyColor);
+        terrain->setUniform("fogDensity", 0.0025);
+        terrain->setUniform("fogGradient", 20.0);
+        terrain->setUniform("fogColor", skyColor);
+        
+        skydome->setSkyColor(skyColor);
+        
+        updateSunIntensityInShader("terrain", 1.0);
+        updateSunIntensityInShader("basic", 1.0);
+        updateSunIntensityInShader("torchLight", 1.0);
+        
+        _renderer.getObjects()->getLight("torch")->setIntensity(1.0);
     }
     
     std::cout << _sunSize << std::endl;

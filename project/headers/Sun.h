@@ -4,6 +4,7 @@
 #include "bRenderer.h"
 #include "Entity.h"
 #include "ProceduralOBJLoader.h"
+#include "Skydome.h"
 
 class Sun : public Entity
 {
@@ -27,7 +28,7 @@ public:
     void increaseHealth(float hx);
 
 	void setPosition(vmml::Vector3f position);
-    void startEndGameAnimation(const double &deltaTime, const double &elapsedTime);
+    void startEndGameAnimation(const double &deltaTime, const double &elapsedTime, SkydomePtr skydome);
 
 	float getVertexPos();
 
