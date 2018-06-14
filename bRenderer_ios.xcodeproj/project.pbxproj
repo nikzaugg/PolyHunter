@@ -93,6 +93,7 @@
 		31AF851420A861140048FBF6 /* diffuse.png in Resources */ = {isa = PBXBuildFile; fileRef = 31AF851320A861130048FBF6 /* diffuse.png */; };
 		31B0FD772097A1D600601F21 /* Player.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 31B0FD752097A1D600601F21 /* Player.cpp */; };
 		31B0FD792097A20200601F21 /* Entity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 31B0FD782097A20200601F21 /* Entity.cpp */; };
+		31BBB4F020D2968800A2F620 /* bigNoise.png in Resources */ = {isa = PBXBuildFile; fileRef = 31BBB4EF20D2968700A2F620 /* bigNoise.png */; };
 		31E5CD6D20B03883005DC7D5 /* simpleTexture.frag in Resources */ = {isa = PBXBuildFile; fileRef = 31E5CD6B20B03883005DC7D5 /* simpleTexture.frag */; };
 		31E5CD6E20B03883005DC7D5 /* simpleTexture.vert in Resources */ = {isa = PBXBuildFile; fileRef = 31E5CD6C20B03883005DC7D5 /* simpleTexture.vert */; };
 		31E5CD7020B052CB005DC7D5 /* ShadowModelRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 31E5CD6F20B052CB005DC7D5 /* ShadowModelRenderer.cpp */; };
@@ -390,6 +391,7 @@
 		31B0FD782097A20200601F21 /* Entity.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Entity.cpp; sourceTree = "<group>"; };
 		31B0FD7A2097A21D00601F21 /* Entity.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Entity.h; sourceTree = "<group>"; };
 		31B0FD7B2097A22F00601F21 /* Player.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Player.h; sourceTree = "<group>"; };
+		31BBB4EF20D2968700A2F620 /* bigNoise.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bigNoise.png; sourceTree = "<group>"; };
 		31E5CD6B20B03883005DC7D5 /* simpleTexture.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = simpleTexture.frag; sourceTree = "<group>"; };
 		31E5CD6C20B03883005DC7D5 /* simpleTexture.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = simpleTexture.vert; sourceTree = "<group>"; };
 		31E5CD6F20B052CB005DC7D5 /* ShadowModelRenderer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ShadowModelRenderer.cpp; sourceTree = "<group>"; };
@@ -797,6 +799,7 @@
 		B47949841BA6742B00B5E9DC /* data */ = {
 			isa = PBXGroup;
 			children = (
+				31BBB4EF20D2968700A2F620 /* bigNoise.png */,
 				312D860D20D2668B006C5AB5 /* ssaoBlurShader.frag */,
 				312D860B20D2668A006C5AB5 /* ssaoBlurShader.vert */,
 				312D860C20D2668B006C5AB5 /* ssaoShader.frag */,
@@ -1264,6 +1267,7 @@
 				3136FA24209A1D76008436CF /* skydome.vert in Resources */,
 				B4794A301BA6743D00B5E9DC /* LICENSE.txt in Resources */,
 				31E5CD6D20B03883005DC7D5 /* simpleTexture.frag in Resources */,
+				31BBB4F020D2968800A2F620 /* bigNoise.png in Resources */,
 				312D860A20D263ED006C5AB5 /* randomNoise.png in Resources */,
 				B4CB8CD01B72E43300FE041B /* Project-Info.plist in Resources */,
 				3136FA23209A1D76008436CF /* skydome.frag in Resources */,

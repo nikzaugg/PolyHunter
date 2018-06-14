@@ -78,7 +78,7 @@ void main()
 {
     // if in ssao render pass
     if (writeNormalsOnly > 0.0) {
-        v_nomal_viewspace = normalize(mat3(ModelViewMatrix) * (Normal * vec3(1.0, 1.0, -1.0)));
+        v_nomal_viewspace = normalize(mat3(ModelViewMatrix) * (Normal * vec3(1.0, 1.0, -1.0))) * vec3(1.0, 1.0, -1.0);
     } else {
     v_normal = normalize(NormalMatrix * (Normal * vec3(1.0, 1.0, -1.0)));
     v_tangent = normalize(NormalMatrix * Tangent);

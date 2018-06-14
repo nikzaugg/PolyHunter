@@ -13,12 +13,12 @@ uniform vec3 samples[16];
 
 varying vec4 texCoordVarying;
 
-mediump vec2 res = vec2(1024.0, 768.0);
+mediump vec2 res = vec2(768.0/512.0, 1024.0/512.0);
 float ssaoStrength = 1.0;
 float ssaoBase = 0.2;
-float ssaoArea = 0.025;
-float ssaoFalloff = 0.000001;
-float ssaoRadius = 0.2;
+float ssaoArea = 0.0025;
+float ssaoFalloff = 0.0001;
+float ssaoRadius = 0.3;
 
 const int nrSamples = 16;
 vec3 sampleSphere[nrSamples];
@@ -43,10 +43,8 @@ vec3 GetNormalFromDepth(float depth, vec2 uv)
 void main()
 {
     float depth = texture2D(depthMap, texCoordVarying.xy).r;
-    
-    mediump vec3 random = texture2D(noiseTex, 1.0 - texCoordVarying.xy).rgb * 2.0 - 1.0;
+    mediump vec3 random = texture2D(noiseTex, texCoordVarying.xy).rgb * 2.0 - 1.0;
     vec3 position = vec3(texCoordVarying.xy, depth);
-    position *= 2.0 - 1.0;
     mediump vec3 normal = texture2D(normalMap, texCoordVarying.xy).rgb * 2.0 - 1.0;
     
     sampleSphere[0] = vec3( 0.5381, 0.1856,-0.4319);
@@ -70,14 +68,14 @@ void main()
     float occlusion = 0.0;
     for(int i=0; i < nrSamples; i++)
     {
-        vec3 ray = radiusDepth * reflect(samples[i], random);
+        vec3 ray = radiusDepth * reflect(sampleSphere[i], random);
         vec3 hemiRay = position + sign(dot(ray, normal)) * ray;
         
         float occDepth = texture2D(depthMap, clamp(hemiRay.xy, 0.0, 1.0)).r;
         float difference = depth - occDepth;
         
-//        occlusion += step(ssaoFalloff, difference) * (1.0 - smoothstep(ssaoFalloff, ssaoArea, difference));
-//
+        occlusion += step(ssaoFalloff, difference) * (1.0 - smoothstep(ssaoFalloff, ssaoArea, difference));
+
         float rangeCheck = abs(difference) < radiusDepth ? 1.0 : 0.0;
         occlusion += (occDepth <= position.z ? 1.0 : 0.0) * rangeCheck;
     }
@@ -85,5 +83,4 @@ void main()
     float ao = 1.0 - ssaoStrength * occlusion * (1.0 / float(nrSamples));
     
     gl_FragColor = vec4(clamp(ao + ssaoBase, 0.0, 1.0));
-//    gl_FragColor = vec4(vec3(normal), 1.0);
 }

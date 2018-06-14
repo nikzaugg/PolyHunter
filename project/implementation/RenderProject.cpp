@@ -128,7 +128,7 @@ void RenderProject::initFunction()
     bRenderer().getObjects()->createTexture("ssao_noise_texture", bRenderer().getView()->getWidth(), bRenderer().getView()->getHeight());
     bRenderer().getObjects()->createTexture("ssao_texture", bRenderer().getView()->getWidth(), bRenderer().getView()->getHeight());
     bRenderer().getObjects()->createTexture("ssao_blurred_texture", bRenderer().getView()->getWidth(), bRenderer().getView()->getHeight());
-    bRenderer().getObjects()->createSprite("randomNoiseSprite", "randomNoise.png");
+    bRenderer().getObjects()->createSprite("randomNoiseSprite", "bigNoise.png");
     
     // Shader to create occlusion-Texture
     ShaderPtr ssaoShader = bRenderer().getObjects()->loadShaderFile("ssaoShader", 0);
