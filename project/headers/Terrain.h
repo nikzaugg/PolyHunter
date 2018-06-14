@@ -40,6 +40,7 @@ public:
     static int getRandomSeed();
 	static int getRandomIntInRange(int lower, int upper);
 	static float getRandomFloatInRange(float lower, float upper);
+	static float randomShift();
 	static int TERRAIN_SIZE;
 	static int VERTEX_COUNT;
 	static float AMPLITUDE;

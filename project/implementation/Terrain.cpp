@@ -123,6 +123,10 @@ void Terrain::placeTree(int i, int j)
     
     float zPos = ((float)j / ((float)Terrain::VERTEX_COUNT - 1)) * Terrain::TERRAIN_SIZE;
     zPos += _offsetZ;
+
+	// Shift away from vertex
+	xPos += randomShift();
+	zPos += randomShift();
     
     float treeHeight;
     treeHeight = Terrain::getHeightFromNoise(getNoiseInput(xPos), getNoiseInput(zPos));
@@ -132,7 +136,19 @@ void Terrain::placeTree(int i, int j)
     float value = ridgedMulti.GetValue(xPos, treeHeight, zPos);
     if (value > 1.0f)
     {
-		if (0.5f < normHeight < 0.8f)
+		if (normHeight > 0.8f)
+		{
+			TerrainObject tree = {
+				vmml::Vector3f(xPos, treeHeight, zPos),
+				2.0f,
+				"ThinTree"
+			};
+
+			_trees.insert(
+				TreeMap::value_type(tree.type + std::to_string(i) + std::to_string(j), tree)
+			);
+		}
+		else if (0.5f < normHeight < 0.8f)
 		{
 			TerrainObject tree = {
 				vmml::Vector3f(xPos, treeHeight, zPos),
@@ -180,6 +196,10 @@ void Terrain::placeCrystal(int i, int j)
     
     float zPos = ((float)j / ((float)Terrain::VERTEX_COUNT - 1)) * Terrain::TERRAIN_SIZE;
     zPos += _offsetZ;
+
+	// Shift away from vertex
+	xPos += randomShift();
+	zPos += randomShift();
     
     float crystalHeight;
     crystalHeight = getHeightFromNoise(getNoiseInput(xPos), getNoiseInput(zPos));
@@ -187,7 +207,7 @@ void Terrain::placeCrystal(int i, int j)
 	float normHeight = crystalHeight / Terrain::AMPLITUDE;
 
     float value = ridgedMulti.GetValue(xPos, crystalHeight, zPos);
-    if (0.1f < value < 0.2f && normHeight > 0.9f && _crystalCount < 4)
+    if (0.1f < value < 0.2f && normHeight > 0.9f && _crystalCount < 10)
     {
         std::string crystalName = getModelName() + std::to_string(i);
         
@@ -215,6 +235,10 @@ void Terrain::placeRocks(int i, int j)
 
 	float zPos = ((float)j / ((float)Terrain::VERTEX_COUNT - 1)) * Terrain::TERRAIN_SIZE;
 	zPos += _offsetZ;
+
+	// Shift away from vertex
+	xPos += randomShift();
+	zPos += randomShift();
 
 	float height = getHeightFromNoise(getNoiseInput(xPos), getNoiseInput(zPos));
 
@@ -418,4 +442,14 @@ int Terrain::getRandomSeed()
 int Terrain::getRandomIntInRange(int lower, int upper)
 {
 	return lower + (rand() % static_cast<int>(upper - lower + 1));
+}
+
+float Terrain::getRandomFloatInRange(float lower, float upper)
+{
+	return static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+}
+
+float Terrain::randomShift() 
+{
+	return getRandomFloatInRange(-1.0f, 1.0f) * (Terrain::TERRAIN_SIZE / Terrain::VERTEX_COUNT);
 }
