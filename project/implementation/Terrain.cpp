@@ -148,7 +148,7 @@ void Terrain::placeTree(int i, int j)
 				TreeMap::value_type(tree.type + std::to_string(i) + std::to_string(j), tree)
 			);
 		}
-		else if (0.5f < normHeight < 0.8f)
+		else if (0.5f < normHeight && normHeight < 0.8f)
 		{
 			TerrainObject tree = {
 				vmml::Vector3f(xPos, treeHeight, zPos),
@@ -160,7 +160,7 @@ void Terrain::placeTree(int i, int j)
 				TreeMap::value_type(tree.type + std::to_string(i) + std::to_string(j), tree)
 			);
 		}
-		else if (0.4f < normHeight < 0.5f) 
+		else if (0.4f < normHeight && normHeight < 0.5f) 
 		{
 			TerrainObject tree = {
 				vmml::Vector3f(xPos, treeHeight, zPos),
@@ -171,7 +171,7 @@ void Terrain::placeTree(int i, int j)
 				TreeMap::value_type(tree.type + std::to_string(i) + std::to_string(j), tree)
 			);
 		}
-		else if (0.0f < normHeight < 0.4f) {
+		else if (0.0f < normHeight && normHeight < 0.3f) {
 			TerrainObject tree = {
 				vmml::Vector3f(xPos, treeHeight, zPos),
 				4.0f,
