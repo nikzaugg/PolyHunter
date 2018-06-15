@@ -301,6 +301,7 @@ void Terrain::processRocks(std::string camera)
 	{
 		modelMatrix =
 			vmml::create_translation(rock.second.position) *
+			vmml::create_rotation(degreeToRadians((float)Terrain::getRandomIntInRange(0.0f, 180.0f)), vmml::Vector3f::UNIT_Y) *
 			vmml::create_scaling(vmml::Vector3f(rock.second.scale));
 		renderer().getObjects()->setAmbientColor(vmml::Vector3f(0.5f));
 		renderer().getModelRenderer()->queueModelInstance(rock.second.type, rock.first, camera, modelMatrix, std::vector<std::string>({ "sun", "torch" }), true, true);
