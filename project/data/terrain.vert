@@ -89,8 +89,16 @@ vec4 biome()
     else if (normHeight > 0.5)
     {
         return vec4(0.48, 0.32, 0.19, 1.0);
+    } 
+    else if (normHeight > 0.4)
+    {
+        return vec4(0.44, 0.7, 0.25, 1.0);
     }
-    return vec4(0.34, 0.58, 0.19, 1.0);
+    else if (normHeight > 0.3)
+    {
+        return vec4(0.34, 0.58, 0.19, 1.0);
+    }
+    return vec4(0.12, 0.44, 0.12, 1.0);
 }
 
 void main()

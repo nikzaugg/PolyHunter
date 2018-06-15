@@ -270,7 +270,7 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
     
     _cam->process(camera, deltaTime);
     _terrainLoader->process(camera, deltaTime);
-    
+
     bRenderer().getObjects()->getShader("basic")->setUniform("playerPos", _cam->getPosition());
     bRenderer().getObjects()->getShader("terrain")->setUniform("playerPos", _cam->getPosition());
     
