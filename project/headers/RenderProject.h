@@ -108,7 +108,7 @@ private:
 
 	int currentSecond;
     int _nrOfCollectedCrystals = 0;
-    int _maxNrOfCollectedCrystals = 10;
+    int _maxNrOfCollectedCrystals = 3;
     bool _gameHasEnded = false;
     
     bool _animation_forward;

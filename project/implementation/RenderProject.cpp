@@ -207,8 +207,7 @@ void RenderProject::checkCollision(const double &deltaTime, const double &elapse
         _gameHasEnded = true;
         endGameAnimation(deltaTime, elapsedTime);
     }
-    double x = (1 / deltaTime);
-    bRenderer().getObjects()->getTextSprite("gui-crystal-info")->setText(std::to_string(x));
+    bRenderer().getObjects()->getTextSprite("gui-crystal-info")->setText(std::to_string(_nrOfCollectedCrystals));
 }
 
 void RenderProject::endGameAnimation(const double &deltaTime, const double &elapsedTime){
