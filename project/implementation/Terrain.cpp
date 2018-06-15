@@ -266,7 +266,7 @@ void Terrain::process(std::string cameraName, const double &deltaTime)
 void Terrain::customProcess(std::string cameraName, const double &deltaTime, vmml::Matrix4f view, vmml::Matrix4f proj)
 {
     customProcessTrees(cameraName, view, proj);
-    customRenderTerrain(cameraName, view, proj);
+	customProcessRocks(cameraName, view, proj);
 }
 
 void Terrain::processTrees(std::string camera)
@@ -331,6 +331,19 @@ void Terrain::customProcessTrees(std::string camera, vmml::Matrix4f view, vmml::
 	}
 }
 
+void Terrain::customProcessRocks(std::string camera, vmml::Matrix4f view, vmml::Matrix4f proj)
+{
+	vmml::Matrix4f modelMatrix;
+	for (auto const& rock : _rocks)
+	{
+		modelMatrix =
+			vmml::create_translation(rock.second.position) *
+			vmml::create_scaling(vmml::Vector3f(rock.second.scale));
+		renderer().getObjects()->setAmbientColor(vmml::Vector3f(0.5f));
+		renderer().getModelRenderer()->drawModel(renderer().getObjects()->getModel(rock.second.type), modelMatrix, view, proj, std::vector<std::string>({}), false);
+	}
+}
+
 void Terrain::renderTerrain(std::string camera)
 {
     getShader()->setUniform("amplitude", Terrain::AMPLITUDE);
@@ -339,14 +352,6 @@ void Terrain::renderTerrain(std::string camera)
     // draw model
     renderer().getModelRenderer()->queueModelInstance(getModelName(), "terrain", camera, computeTransformationMatrix(), std::vector<std::string>({ "sun", "torch" }), true, true);
 
-}
-
-void Terrain::customRenderTerrain(std::string camera, vmml::Matrix4f view, vmml::Matrix4f proj)
-{
-    getShader()->setUniform("amplitude", Terrain::AMPLITUDE);
-    renderer().getObjects()->setAmbientColor(vmml::Vector3f(0.3f));
-    // draw model
-     renderer().getModelRenderer()->drawModel(renderer().getObjects()->getModel(getModelName()), computeTransformationMatrix(), view, proj, std::vector<std::string>({}), false);
 }
 
 Terrain::TreeMap Terrain::getTreeMap()

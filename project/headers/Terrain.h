@@ -58,6 +58,7 @@ private:
 	void processRocks(std::string camera);
     void customProcessTrees(std::string camera, vmml::Matrix4f view, vmml::Matrix4f proj);
     void customProcessCrystals(std::string camera, vmml::Matrix4f view, vmml::Matrix4f proj);
+	void customProcessRocks(std::string camera, vmml::Matrix4f view, vmml::Matrix4f proj);
     
     float barryCentric(vmml::Vector3f p1, vmml::Vector3f p2, vmml::Vector3f p3, vmml::Vector2f pos);
     
