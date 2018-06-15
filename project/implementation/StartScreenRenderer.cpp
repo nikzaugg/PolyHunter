@@ -175,12 +175,6 @@ void StartScreenRenderer::showStartScreen(bool gameHasEnded)
 			_camera->setMovable(false);
 			_renderer.getInput()->setCursorEnabled(true);
 		}
-		else if (_renderer.getInput()->getKeyState(bRenderer::KEY_SPACE)) {
-			// Show start screen and disable camera movement
-			_showScreen = true;
-			_camera->setMovable(false);
-			_renderer.getInput()->setCursorEnabled(true);
-		}
 	}
 }
 
