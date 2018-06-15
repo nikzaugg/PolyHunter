@@ -11,8 +11,6 @@ attribute vec4 TexCoord;
 
 varying vec4 texCoordVarying;
 
-uniform float isVertical;
-
 void main()
 {
     texCoordVarying = TexCoord;

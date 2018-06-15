@@ -29,10 +29,6 @@ void BloomRenderer::setupBloomFBO()
     _renderer.getObjects()->createTexture("vertBlurTexture", 0.f, 0.f);    // create texture to bind to the fbo
     _renderer.getObjects()->createTexture("combinedTexture", 0.f, 0.f);    // create texture to bind to the fbo
     
-    // create 2 depth buffers
-    _renderer.getObjects()->createDepthMap("sceneDepthMap", _renderer.getView()->getWidth(), _renderer.getView()->getHeight());
-    _renderer.getObjects()->createDepthMap("modelsToBlurDepthMap", _renderer.getView()->getWidth(), _renderer.getView()->getHeight());
-    
     // Create Materials for each processing step, so that we can pass a texture to the shader
     _modelsToBlurMaterial = _renderer.getObjects()->createMaterial("modelsToBlurMaterial", _simpleTextureShader);
     _blurMaterial = _renderer.getObjects()->createMaterial("blurMaterial", _blurShader);
@@ -59,9 +55,7 @@ void BloomRenderer::doBloomRenderPass(std::string camera, const double &deltaTim
     // Render to Color & Depth Texture Attachment
     _renderer.getObjects()->getFramebuffer("sceneFBO")->bind(false);
     _renderer.getObjects()->getFramebuffer("sceneFBO")->bindTexture(_renderer.getObjects()->getTexture("sceneTexture"), false);
-    _renderer.getObjects()->getFramebuffer("sceneFBO")->bindDepthMap(_renderer.getObjects()->getDepthMap("sceneDepthMap"), false);
     /// RENDER SCENE TO SCENE TEXTURE///
-    _terrainLoader->process(camera, deltaTime);
     _renderer.getModelRenderer()->drawQueue(/*GL_LINES*/);
     _renderer.getModelRenderer()->clearQueue();
     _renderer.getObjects()->getFramebuffer("sceneFBO")->unbind();
@@ -69,7 +63,6 @@ void BloomRenderer::doBloomRenderPass(std::string camera, const double &deltaTim
     // Render to Color & Depth Texture Attachment
     _renderer.getObjects()->getFramebuffer("bloomFBO")->bind(false);
     _renderer.getObjects()->getFramebuffer("bloomFBO")->bindTexture(_renderer.getObjects()->getTexture("crystalTexture"), false);
-    _renderer.getObjects()->getFramebuffer("bloomFBO")->bindDepthMap(_renderer.getObjects()->getDepthMap("modelsToBlurDepthMap"), false);
     /// DRAW MODELS THAT SHOULD HAVE THE BLOOM EFFECT ///
     // only draw the crystals which are visible -> use scene depthMap
     _terrainLoader->renderCrystals("camera", deltaTime);
@@ -109,12 +102,5 @@ void BloomRenderer::doBloomRenderPass(std::string camera, const double &deltaTim
     _renderer.getView()->setViewportSize(_renderer.getView()->getWidth(), _renderer.getView()->getHeight());
     _renderer.getObjects()->getMaterial("combinedMaterial")->setTexture("fbo_texture1", _renderer.getObjects()->getTexture("sceneTexture"));
     _renderer.getObjects()->getMaterial("combinedMaterial")->setTexture("fbo_texture2", _renderer.getObjects()->getTexture("vertBlurTexture"));
-    _renderer.getObjects()->getMaterial("combinedMaterial")->setTexture("fbo_depth1", _renderer.getObjects()->getDepthMap("sceneDepthMap"));
-    _renderer.getObjects()->getMaterial("combinedMaterial")->setTexture("fbo_depth2", _renderer.getObjects()->getDepthMap("modelsToBlurDepthMap"));
     _renderer.getModelRenderer()->drawModel(_renderer.getObjects()->getModel("combinedSprite"), modelMatrix, _viewMatrixHUD, vmml::Matrix4f::IDENTITY, std::vector<std::string>({}), false);
-    
-    // draw GUI element to show postprocessing
-//    modelMatrix = vmml::create_translation(vmml::Vector3f(-.75f, 0.75f, -0.5)) *
-//        vmml::create_scaling(vmml::Vector3f(0.25));
-//    _renderer.getModelRenderer()->drawModel(_renderer.getObjects()->getModel("blurSprite"), modelMatrix, _viewMatrixHUD, vmml::Matrix4f::IDENTITY, std::vector<std::string>({}), false);
 }

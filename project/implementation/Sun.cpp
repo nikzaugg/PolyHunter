@@ -19,7 +19,6 @@ Sun::Sun(std::string objName, std::string modelName, std::string propName, Shade
     // updates the strength of the sun (between 0 and 1)
     updateSunIntensityInShader("terrain", _sunIntensity);
     updateSunIntensityInShader("basic", _sunIntensity);
-    updateSunIntensityInShader("torchLight", _sunIntensity);
 }
 
 void Sun::updateSunIntensityInShader(std::string shaderName, float intensity)
@@ -172,7 +171,6 @@ void Sun::startEndGameAnimation(const double &deltaTime, const double &elapsedTi
         
         updateSunIntensityInShader("terrain", 1.0);
         updateSunIntensityInShader("basic", 1.0);
-        updateSunIntensityInShader("torchLight", 1.0);
         
         _renderer.getObjects()->getLight("torch")->setIntensity(1.0);
     }
@@ -201,6 +199,5 @@ void Sun::reset(){
     // updates the strength of the sun (between 0 and 1)
     updateSunIntensityInShader("terrain", _sunIntensity);
     updateSunIntensityInShader("basic", _sunIntensity);
-    updateSunIntensityInShader("torchLight", _sunIntensity);
     _renderer.getObjects()->getLight("torch")->setIntensity(1400);
 }

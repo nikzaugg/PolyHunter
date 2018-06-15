@@ -60,10 +60,10 @@ attribute vec3 Bitangent;
 attribute vec4 TexCoord;
 
 // World Space Coordinates
-varying mediump vec3 v_normal;
+varying lowp vec3 v_normal;
 varying mediump vec4 v_position;
-varying mediump vec3 v_tangent;
-varying mediump vec3 v_bitangent;
+varying lowp vec3 v_tangent;
+varying lowp vec3 v_bitangent;
 
 // texture Coords
 varying lowp vec4 v_texCoord;

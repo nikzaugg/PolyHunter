@@ -125,7 +125,6 @@ void ShadowModelRenderer::drawToDepthMap(const double &deltaTime)
     GLint defaultFBO = Framebuffer::getCurrentFramebuffer();
     _renderer.getObjects()->getFramebuffer("depthFBO")->bind(false);
     _renderer.getObjects()->getFramebuffer("depthFBO")->bindDepthMap(_renderer.getObjects()->getDepthMap("depthMap"), false);
-    //_renderer.getObjects()->getFramebuffer("depthFBO")->bindTexture(_renderer.getObjects()->getTexture("sceneTexture"), false);
     
     /********************************************
      * RENDER TERRAIN AND PLAYER TO DEPTH TEXTURE
@@ -150,7 +149,6 @@ void ShadowModelRenderer::drawToDepthMapDebug(const double &deltaTime)
     GLint defaultFBO = Framebuffer::getCurrentFramebuffer();
     _renderer.getObjects()->getFramebuffer("depthFBO")->bind(false);
     _renderer.getObjects()->getFramebuffer("depthFBO")->bindDepthMap(_renderer.getObjects()->getDepthMap("depthMap"), false);
-    //_renderer.getObjects()->getFramebuffer("depthFBO")->bindTexture(_renderer.getObjects()->getTexture("sceneTexture"), false);
     
     /********************************************
      * RENDER TERRAIN AND PLAYER TO DEPTH TEXTURE

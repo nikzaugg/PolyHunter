@@ -162,11 +162,10 @@ void RenderProject::loopFunction(const double &deltaTime, const double &elapsedT
     /* BLOOM POSTPROCESSING */
     /* Terrain is loaded inside _bloomRenderer */
     /* Render Queue is drawn inside _bloomRenderer */
-    //_bloomRenderer->doBloomRenderPass("camera", deltaTime);
+    _bloomRenderer->doBloomRenderPass("camera", deltaTime);
 
-	bRenderer().getModelRenderer()->drawQueue(/*GL_LINES*/);
-	bRenderer().getModelRenderer()->clearQueue();
-
+//    bRenderer().getModelRenderer()->drawQueue(/*GL_LINES*/);
+//    bRenderer().getModelRenderer()->clearQueue();
     
     /*** GUI - Crystal Icon ***/
     // translate and scale
@@ -208,7 +207,8 @@ void RenderProject::checkCollision(const double &deltaTime, const double &elapse
         _gameHasEnded = true;
         endGameAnimation(deltaTime, elapsedTime);
     }
-    bRenderer().getObjects()->getTextSprite("gui-crystal-info")->setText(std::to_string(_nrOfCollectedCrystals));
+    double x = (1 / deltaTime);
+    bRenderer().getObjects()->getTextSprite("gui-crystal-info")->setText(std::to_string(x));
 }
 
 void RenderProject::endGameAnimation(const double &deltaTime, const double &elapsedTime){
@@ -271,12 +271,6 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
     _cam->process(camera, deltaTime);
     _terrainLoader->process(camera, deltaTime);
     
-	//if ((int)elapsedTime % 10 == 0 && currentSecond != (int)elapsedTime) {
-	//	std::cout << elapsedTime << std::endl;
-	//	currentSecond = (int)elapsedTime;
-	//	_sun->setIntensity(0.1 * currentSecond);
-	//}
-
     bRenderer().getObjects()->getShader("basic")->setUniform("playerPos", _cam->getPosition());
     bRenderer().getObjects()->getShader("terrain")->setUniform("playerPos", _cam->getPosition());
     
