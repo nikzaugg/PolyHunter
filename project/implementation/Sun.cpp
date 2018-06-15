@@ -115,6 +115,8 @@ void Sun::render(std::string camera, vmml::Vector3f playerPos, vmml::Matrix4f vi
         
         getShader()->setUniform("time", sinScale);
         getShader()->setUniform("sickness", _health);
+        getShader()->setUniform("doVanish", 0.0);
+        getShader()->setUniform("vanish", 0.0);
         modelMatrix *= vmml::create_scaling(vmml::Vector3f(_sunSize * sinScale));
         _renderer.getModelRenderer()->queueModelInstance("sun", "sun_instance", camera, modelMatrix, std::vector<std::string>({ "sun", "torch" }));
     }
@@ -175,11 +177,30 @@ void Sun::startEndGameAnimation(const double &deltaTime, const double &elapsedTi
         _renderer.getObjects()->getLight("torch")->setIntensity(1.0);
     }
     
-    std::cout << _sunSize << std::endl;
-    
     vmml::Matrix4f modelMatrix = inverseView *
     vmml::create_translation(nextPosition) *
     vmml::create_scaling(vmml::Vector3f(_sunSize * _sunScale));
     
     _renderer.getModelRenderer()->queueModelInstance("sun", "sun_instance", "camera", modelMatrix, std::vector<std::string>({ "sun", "torch" }));
+}
+
+void Sun::reset(){
+    _health = 0.0;
+    _sunIntensity = 0.3;
+    _shaderOffset = 0.0;
+    _sunSize = 1.0;
+    _sunScale = 0.025;
+    _pulsateMin = 0.9;
+    _pulsateMax = 1.0;
+    _animationTimer = 0.0;
+    _gameHasEnded = false;
+    _positionReached = false;
+    _sizeReached = false;
+    _vanishFactor = 0.0;
+    _screenSunPosition = vmml::Vector3f(0.75f, -0.70f, 0.8f);
+    // updates the strength of the sun (between 0 and 1)
+    updateSunIntensityInShader("terrain", _sunIntensity);
+    updateSunIntensityInShader("basic", _sunIntensity);
+    updateSunIntensityInShader("torchLight", _sunIntensity);
+    _renderer.getObjects()->getLight("torch")->setIntensity(1400);
 }

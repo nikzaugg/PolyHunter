@@ -33,6 +33,8 @@ public:
 	float getVertexPos();
 
 	void render(std::string camera, vmml::Vector3f playerPos, vmml::Matrix4f viewMatrixHUD, const double &elapsedTime);
+    
+    void reset();
 
 private:
 	ProceduralOBJLoader _objLoader;

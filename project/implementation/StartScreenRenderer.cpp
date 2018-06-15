@@ -1,7 +1,11 @@
 #include "StartScreenRenderer.h"
 #include "TerrainLoader.h"
 
-StartScreenRenderer::StartScreenRenderer(Renderer & renderer, CamPtr camera, TerrainLoaderPtr terrainLoader, vmml::Matrix4f viewMatrixHUD)
+StartScreenRenderer::StartScreenRenderer(
+                                         Renderer & renderer,
+                                         CamPtr camera,
+                                         TerrainLoaderPtr terrainLoader,
+                                         vmml::Matrix4f viewMatrixHUD)
 {
 	_renderer = renderer;
 	_viewMatrixHUD = viewMatrixHUD;
@@ -176,7 +180,17 @@ void StartScreenRenderer::showStartScreen(bool gameHasEnded)
 
 void StartScreenRenderer::startNewGame()
 {
+    _startNewGame = true;
 	Terrain::seed = Terrain::getRandomSeed();
 	_camera->setPosition(vmml::Vector3f(0.0f, Terrain::getHeightFromNoise(0.0, 0.0), 0.0f));
 	_terrainLoader->reloadTerrains();
+}
+
+bool StartScreenRenderer::newGameButtonPressed()
+{
+    return _startNewGame;
+}
+
+void StartScreenRenderer::resetGameBoolean(){
+    _startNewGame = false;
 }

@@ -21,6 +21,19 @@ Skydome::Skydome(std::string modelName, Renderer & renderer)
 	createClouds();
 }
 
+void Skydome::reset(){
+    _skyColor = vmml::Vector3f(0.026, 0.048, 0.096);
+    _SIZE = 600;
+    _scale = 60.0;
+    _offsetBottom = 150.0;
+    _skydomeGradient = 0.04;
+    _skydomeDensity = 0.09;
+    _renderer.getObjects()->getShader("skydome")->setUniform("skydomeSize", _SIZE);
+    _renderer.getObjects()->getShader("skydome")->setUniform("skyColor", _skyColor);
+    _renderer.getObjects()->getShader("skydome")->setUniform("skydomeDensity", _skydomeDensity);
+    _renderer.getObjects()->getShader("skydome")->setUniform("skydomeGradient", _skydomeGradient);
+}
+
 void Skydome::setSkyColor(vmml::Vector3f color)
 {
 	_skyColor = color;

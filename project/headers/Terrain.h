@@ -41,6 +41,8 @@ public:
 	static int TERRAIN_SIZE;
 	static int VERTEX_COUNT;
 	static float AMPLITUDE;
+    
+    static CrystalMap _collectedCrystals;
 
 private:
     ModelData::GroupMap generateTerrain();
@@ -69,7 +71,6 @@ private:
     RendererPtr _renderer;
 	TreeMap _trees;
     CrystalMap _crystals;
-    static CrystalMap _collectedCrystals;
     int _treeCount = 0;
 	RockMap _rocks;
 

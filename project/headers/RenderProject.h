@@ -72,6 +72,7 @@ private:
     void endGameAnimation(const double &deltaTime, const double &elapsedTime);
     void updateFogVariables(std::string shaderName);
     void updateSkyBoxVariables(vmml::Vector3f skyColor, float gradient, float density);
+    void reloadGame();
 
 	/* Helper Functions */
 	GLfloat randomNumber(GLfloat min, GLfloat max);
@@ -107,12 +108,14 @@ private:
 
 	int currentSecond;
     int _nrOfCollectedCrystals = 0;
-    int _maxNrOfCollectedCrystals = 1;
+    int _maxNrOfCollectedCrystals = 10;
     bool _gameHasEnded = false;
     
     bool _animation_forward;
     float _animation;
     float _animationSpeed;
+    
+    bool _loadNewGame = false;
 };
 
 #endif /* defined(PROJECT_MAIN_H) */

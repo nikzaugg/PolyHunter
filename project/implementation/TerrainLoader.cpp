@@ -176,7 +176,6 @@ void TerrainLoader::refreshTerrainTiles()
     for (int i = 0; i<9; i++) {
         if(_terrains.find(newTerrainKeys[i]) == _terrains.end()){
             // DOES NOT exist already (create TerrainPtr and add it)
-            std::cout << "have to generate tile: " << newTerrainKeys[i] << std::endl;
             std::tuple<int, int> indexTuple = terrainIndexPairs[i];
             int x_Index = std::get<0>(indexTuple);
             int z_Index= std::get<1>(indexTuple);
@@ -192,7 +191,6 @@ void TerrainLoader::refreshTerrainTiles()
     // delete old map which only contains terrain tiles that are not needed anymore
     // reassign new map to old map variable
     _terrains = newTerrainMap;
-    std::cout << _terrains.size() << std::endl;
 }
 
 void TerrainLoader::renderCrystals(std::string camera, const double &deltaTime)
@@ -244,10 +242,11 @@ void TerrainLoader::reloadTerrains()
 	_seed = 1 + (rand() % static_cast<int>(10000 - 1 + 1));
 
 	for (auto const& x : _terrains) {
+        x.second->_collectedCrystals.clear();
 		_renderer.getObjects()->removeModel(x.second->getModelName(), true);
 	}
 	_terrains.clear();
-
+    
 	generateTerrain(0, 0);
 	generateTerrain(0, 1);
 	generateTerrain(1, 0);
@@ -258,3 +257,4 @@ void TerrainLoader::reloadTerrains()
 	generateTerrain(0, -1);
 	generateTerrain(1, -1);
 }
+

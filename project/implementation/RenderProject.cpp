@@ -9,6 +9,7 @@
 #include "ShadowModelRenderer.h"
 #include "StartScreenRenderer.h"
 
+
 /* Initialize the Project */
 void RenderProject::init()
 {
@@ -139,6 +140,12 @@ void RenderProject::initFunction()
 /* Draw your scene here */
 void RenderProject::loopFunction(const double &deltaTime, const double &elapsedTime)
 {
+    _loadNewGame = _startScreenRenderer->newGameButtonPressed();
+    if(_loadNewGame){
+        reloadGame();
+        _startScreenRenderer->resetGameBoolean();
+    }
+    
 	// bRenderer::log("FPS: " + std::to_string(1 / deltaTime));	// write number of frames per second to the console every frame
 	// std::cout << "FPS: " << std::to_string(1 / deltaTime) << std::endl;
 	_startScreenRenderer->bindBlurFbo();
@@ -197,7 +204,7 @@ void RenderProject::checkCollision(const double &deltaTime, const double &elapse
         // handle crystal addition
         updateGameVariables();
         _nrOfCollectedCrystals = nrOfCrystalsCollected;
-    } else if(_nrOfCollectedCrystals == 1) {
+    } else if(_nrOfCollectedCrystals == _maxNrOfCollectedCrystals) {
         _gameHasEnded = true;
         endGameAnimation(deltaTime, elapsedTime);
     }
@@ -362,3 +369,19 @@ GLfloat RenderProject::randomNumber(GLfloat min, GLfloat max){
 	return min + static_cast <GLfloat> (rand()) / (static_cast <GLfloat> (RAND_MAX / (max - min)));
 }
 
+void RenderProject::reloadGame(){
+    // reset all classes
+    _skydome->reset();
+    _sun->reset();
+    _gameHasEnded = false;
+    _nrOfCollectedCrystals = 0;
+    // FOG
+    _fogColor = vmml::Vector3f(0.026, 0.048, 0.096) * 0.8;
+    _fogDensity = 0.005;
+    _fogGradient = 10.00;
+    // Send fog-variables to shader
+    updateFogVariables("basic");
+    updateFogVariables("terrain");
+    bRenderer().getObjects()->getShader("basic")->setUniform("skyColor", vmml::Vector3f(0.026, 0.048, 0.096));
+    bRenderer().getObjects()->getShader("terrain")->setUniform("skyColor", vmml::Vector3f(0.026, 0.048, 0.096));
+}

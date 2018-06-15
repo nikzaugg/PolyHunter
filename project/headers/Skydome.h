@@ -21,6 +21,7 @@ public:
     void setSkydomeDensity(float density);
     void setSkydomeCenter(vmml::Vector3f center);
     void render(std::string camera, vmml::Vector3f position);
+    void reset();
 
 	vmml::Vector3f getSkyColor();
 

@@ -25,6 +25,10 @@ public:
 	void startNewGame();
 
 	bool isOverNewGameButton(double xpos, double ypos);
+    
+    bool newGameButtonPressed();
+    
+    void resetGameBoolean();
 
 private:
 	Renderer _renderer;
@@ -36,6 +40,7 @@ private:
 	
 	bool isInScreenBounds(double xpos, int numeratorX, int denominatorX, double ypos, int numeratorY, int denominatorY);
 	void handleNewGameButton(double xpos, double ypos);
+    bool _startNewGame = false;
 };
 typedef std::shared_ptr< StartScreenRenderer >  StartScreenRendererPtr;
 #endif /* defined(B_START_SCREEN_RENDERER_H) */
